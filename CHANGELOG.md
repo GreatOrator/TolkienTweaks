@@ -11,6 +11,12 @@ All notable changes to this project will be documented in this file.
   are pinned to the span's line, the profile is swept to at most one block of rise or fall a station so a
   fall reads as half-steps rather than a drop, and the column the alignment runs through is laid whatever
   the ground under it does, so the road narrows against a rock face instead of breaking over it.
+- A road finishes on its step sweep rather than on the ground clamp, so no station keeps the two- or three-block
+  riser the clamp was putting back after the sweeps had already pulled the profile a step at a time.
+- The hairpin apron is laid only where the alignment doubles back, not at every bend of more than thirty degrees,
+  so an ordinary corner no longer widens the band out over the bank it is turning beside.
+- The road carries only its own three columns over water and leaves the rest of the band at the bank, instead of
+  laying a stone-and-gravel shelf out onto the river at the wide stretches.
 
 - **The switchbacks are hairpins, not hinges.** The searched walk turns within a single block, so its
   corners were right angles a walker could not take. The alignment is simplified to the vertices that

@@ -122,6 +122,8 @@ public final class RoadCommands {
     private static final int CUT_FILL = 12;
     /** The most one station's surface may rise or fall above the one before it, in blocks. */
     private static final double MAX_STEP = 1.0D;
+    /** How many times the two step sweeps are alternated after the last pass, so both ends agree. */
+    private static final int SETTLE_PASSES = 8;
     /** How far above the road a column's trunks and leaves are cleared, so no crown hangs over the grade. */
     private static final int CANOPY_CLEAR = 16;
     /** The grade the descent aims for, in blocks of rise per block of travel; anything steeper is penalised. */
@@ -452,6 +454,20 @@ public final class RoadCommands {
             height[0] = startY;
             height[n - 1] = endY;
         }
+        // The clamp has the last word inside every pass, so a station whose ground stands two or three blocks
+        // over its neighbours is snapped to it after the step clamp has already run, and the road keeps the
+        // riser the clamp made. Finish on the step clamp instead: the ends stay on their pins - the path's own
+        // ground at one, the deck at the other - and nothing between them stands more than a step above or
+        // below the station before it. Alternated a few times, because a sweep from either end can undo the
+        // other's work until the profile is a ramp both ends agree with.
+        for (int settle = 0; settle < SETTLE_PASSES; settle++) {
+            for (int i = 1; i < n; i++) {
+                height[i] = Mth.clamp(height[i], height[i - 1] - MAX_STEP, height[i - 1] + MAX_STEP);
+            }
+            for (int i = n - 2; i >= 1; i--) {
+                height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
+            }
+        }
 
         int laid = 0, cut = 0, filled = 0, open = 0, steepest = 0, cleared = 0;
         Map<Long, Integer> tops = new LinkedHashMap<>();
@@ -472,9 +488,14 @@ public final class RoadCommands {
                     }
                     int groundAt = surfaceAt(level, at, into);
                     if (groundAt == WATER) {
-                        // The river is the bridge's, but the road still walks to its edge. Where the grade is
-                        // above the water line the last verge columns are carried over on stone rather than
-                        // stopping short of the bank and leaving a lip for the water to sit against.
+                        // The river is the bridge's. Only the road's own three columns are carried over it on
+                        // stone, and only where the grade stands above the water line: the whole band used to
+                        // go, so a wide stretch at the bank laid a gravel shelf out onto the water that
+                        // nothing walked on. The verge stops at the bank and the bank is the edge.
+                        if (Math.abs(dx) > 1 || Math.abs(dz) > 1) {
+                            open++;
+                            continue;
+                        }
                         int waterTop = level.getHeight(Heightmap.Types.MOTION_BLOCKING, at, into) - 1;
                         if (target <= waterTop) continue;
                         level.getChunk(at >> 4, into >> 4);
@@ -631,7 +652,14 @@ public final class RoadCommands {
         return Math.abs((point[0] - a[0]) * dz - (point[1] - a[1]) * dx) / length;
     }
 
-    /** Whether the alignment is turning here, which is where the surface is widened into a hairpin's apron. */
+    /**
+     * Whether the alignment is doubling back here, which is where the surface is widened into a hairpin's
+     * apron.
+     * <p>
+     * Only a switchback earns the apron. A road that is merely cornering - the right angle onto the bridge's
+     * own line, say - is laid at its ordinary width, because widening every bend of more than thirty degrees
+     * made the bank bulge out over the river for no reason a walker could see.
+     */
     private static boolean turning(List<int[]> line, int i) {
         int back = Math.max(0, i - 3);
         int forth = Math.min(line.size() - 1, i + 3);
@@ -642,7 +670,7 @@ public final class RoadCommands {
         double la = Math.hypot(ax, az);
         double lb = Math.hypot(bx, bz);
         if (la < 2.0D || lb < 2.0D) return false;
-        return (ax * bx + az * bz) / (la * lb) < 0.85D;
+        return (ax * bx + az * bz) / (la * lb) < -0.3D;
     }
 
     /** The straight line from the path's end to the run-in, for when the search finds no way down. */

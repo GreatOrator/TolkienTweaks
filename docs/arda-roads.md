@@ -184,11 +184,16 @@ face is too steep to fall down, and comes back lower. That turn is the switchbac
 a grade the mountain will not give, where the alternative was a hole in the road or an embankment forty
 blocks tall. The walk turns within a single block, so its corner is pulled straight and then cut
 back into a curve: a hairpin with a radius, widened by two blocks either side into an apron, rather
-than a hinge at right angles. The surface is the ground itself, smoothed: a moving average along the alignment takes the bumps out,
+than a hinge at right angles. Only a doubling back earns that apron: a road that is merely cornering -
+the right angle onto the bridge's own line, say - is laid at its ordinary width, so the bank stops
+bulging out over the river wherever the road changes direction. The surface is the ground itself, smoothed: a moving average along the alignment takes the bumps out,
 and the result is held within twelve blocks of the ground - cutting into the hill above its line and
-standing on stone where the hill falls away. It is also held to a step at a station: two sweeps pull
-every station within a block of its neighbours, so a fall is a stair of half-steps rather than a drop,
-and the column the alignment runs through is laid whatever the ground under it is doing - against a
+standing on stone where the hill falls away. The profile is also held to a step at a station: two sweeps pull
+every station within a block of its neighbours, so a fall is a stair of half-steps rather than a drop.
+The sweeps have the last word, after the last pass and after the clamp - alternated, so both of the
+pinned ends agree with the middle - because a clamp that ran last put the riser back on any station
+whose ground stood two or three blocks over its neighbours - that is the step a walker sees. The
+column the alignment runs through is laid whatever the ground under it is doing - against a
 rock face the road narrows to its own line rather than stopping - so the surface walked on is never
 broken by a patch the pass declined to cut or fill.
 That is the reference's own road-flatten idea - which is also cut and fill - rather than the paint-only
@@ -199,9 +204,11 @@ motion, tree crowns included, so the first run read the valley as a forest roof 
 up to the leaves; the ground is now read past leaves and trunks to the soil under them. A global grade between the two ends was tried next and was worse in another way: where the mountain
 falls faster than any walkable ramp, the ramp stands on stone columns the whole way and the road is
 missing wherever the cut would exceed the budget. The profile now follows the ground, smoothed and
-held within twelve blocks of it, so it hugs the hillside instead of spanning it. Where the road meets water it carries its last verge columns over on
+held within twelve blocks of it, so it hugs the hillside instead of spanning it. Where the road meets water it carries its own three columns over on
 stone while its grade is above the water line, instead of stopping short of the bank and leaving a lip
-for the river to sit against.
+for the river to sit against. The rest of the band stops at the bank, which is the edge: carrying the
+whole width over the water laid a gravel shelf out onto the river at the wide stretches, which nothing
+walked on and which took the water's edge with it.
 The corridor's own columns then have their trunks and leaves cleared for sixteen blocks above the
 road's surface, so a cut through the wood leaves no crown hanging where its tree used to be.
 
