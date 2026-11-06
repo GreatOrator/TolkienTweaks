@@ -66,9 +66,12 @@ what is still open, so the next session does not have to rebuild that from the c
   slopes instead of through a notch in a wall. It was built in `1e3149f0`, softened in `c9d9f72f` and
   measured to the nearest point of the course in `3ac048cc`, then removed with the profile in `7ecabee0`;
   it is back beside the wall profile, which stays flush wherever the river does not run.
-- The rim **climbs from the lawn's edge** to the crown over `VALLEY_STEEP = 90` blocks (74, 80, 90, 106,
-  138, 168, 212, 253, 318), holds the crown out to `VALLEY_RIM = 175`, then falls to the vale over
-  `VALLEY_FALL = 340`.
+- The rim **stands at the crown from the build's own edge outward.** The floor's rectangle is four blocks
+  inside the build's outside edge (`VALLEY_HALF_X` 272 of 277, `VALLEY_HALF_Z` 251 of 256), so the rock
+  meets the walls at 318 and holds that height out to `VALLEY_RIM = 96` blocks past them - a square, not a
+  ring, with `RIDGE_SWING` read at nothing - then falls to the vale over `VALLEY_FALL = 200`. It used to
+  climb from the floor over ninety blocks and hold the crown only out to 175, which is the bowl this was
+  drawn to replace.
 - Past the massif's foot the country is blended toward the city's water level over `VALLEY_VALE = 900`
   blocks, settling back to the heightmap's 156-193 by **1,415** blocks out, so the foot itself stands on
   **74**, the city's own floor. It used to stand on 82, eight above the floor, which put the country's
@@ -100,9 +103,11 @@ what is still open, so the next session does not have to rebuild that from the c
   drawn water at **4995, -3311**:
   **1,104 blocks** in all, twelve wide with 5 left and 7 right of the middle. The ground is the vale's
   **74** the whole way, so the river falls the eight blocks from the city's water at the wall and then
-  arrives level with the drawn river. The massif gives way to the course at **0.6 blocks of height per block
-  out** (about thirty degrees) over the whole bank, so the water leaves through a valley mouth rather than a
-  slot, and the drop at the wall is the only fall on the way.
+  arrives level with the drawn river. The massif gives way to the course at **6 blocks of height per block
+  out**, a gorge wall's grade, so the water leaves through a slot cut down to it and the rock is back at the
+  crown within forty blocks of the water; the drop at the wall is the only fall on the way. Six tenths was
+  drawn first, and at that grade the crown is not reached for 390 blocks, which laid the cone over the
+  massif's whole south side - the walls stood at 255 and the peaks read two hundred blocks out.
 - **One face is still to open.** The massif gives way to the branch only where the branch runs: the drawn
   Bruinen's own banks, where it runs 96 blocks east of the walls with no branch beside it, still stand at
   the crown to the water's edge, because a drawn river's distance is only read out to **64** blocks and a
@@ -123,7 +128,7 @@ what is still open, so the next session does not have to rebuild that from the c
 - **The branch is cut again, at the new mouth.** `BRANCH` is on and the course runs from 5200, -3067 to
   the drawn Bruinen at 5054, -3086 - a hundred and forty-seven blocks, the city's water at 82 at the wall
   falling to the vale's 74 at the join - so the map cuts a twelve-wide channel through the massif and opens
-  the rock along it at 0.6 blocks of height per block out. The spring at the rear, water at 239 over a floor
+  the rock along it at 6 blocks of height per block out. The spring at the rear, water at 239 over a floor
   at 74, still has no cut of its own.
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.

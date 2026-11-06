@@ -146,14 +146,15 @@ public final class ArdaMap {
      * The valley is a vale in a massif rather than a pan beside a hillside: the floor is smaller than the
      * city, so the mountain's foot starts inside the build rather than a lawn away from it, and its foot is
      * the city's own crown, so the climb begins where the build ends rather than a hundred and forty blocks
-     * out from it, and 175 blocks of it puts the ridge over the roofs rather than across a field from them.
+     * out from it, and 96 blocks of it keeps the range at the roofline out past the walls instead of a
+     * field away from them.
      */
-    private static final int VALLEY_RIM = 175;
-    private static final int VALLEY_FALL = 340;
+    private static final int VALLEY_RIM = 96;
+    private static final int VALLEY_FALL = 200;
     /**
      * How far past the massif's foot the country is brought down to the valley's own level, in blocks.
      * <p>
-     * A hundred and seventy-five blocks of mountain, then its fall, then nine
+     * Ninety-six blocks of mountain, then its fall, then nine
      * hundred more of country settling to the vale's floor: without the last of those the massif ends in
      * a wall of six blocks where the heightmap happens to be, and a valley that the map puts a hundred
      * blocks above the city is a pit with the whole country standing on its rim.
@@ -166,13 +167,20 @@ public final class ArdaMap {
      * The ridge tops out at the city's own crown, 318, because that is as high as this world can stand: a save
      * made before Arda was raised is 384 blocks tall, its ceiling is 319, and a summit drawn above it is cut
      * off flat. The mask's white means the same height, so the ranges and the build reach the same sky. The
-     * ridge's distance still wanders - the drawn noise swings it in and out over the scale below - and with
+     * ridge's distance does not wander - it is the shelf's own square edge, all the way round - and with
      * the crest swing at nothing its top is the crown itself, level with the roofs the massif shuts in.
      */
     private static volatile int VALLEY_CREST = VALLEY_CROWN;
     private static final int CREST_SWING = 0;
     private static final int CREST_SCALE = 420;
-    private static final double RIDGE_SWING = 0.35D;
+    /**
+     * How far the ridge's own distance wanders off the shelf's edge, as a share of it.
+     * <p>
+     * Nothing at all: the rock is to stand at the crown in a square, its inner face at the build's own
+     * outside edge, so the shelf's edge is four straight runs rather than a ring that swings in and out.
+     * The swing is left here, read at nothing, because it is what would make a range of it again.
+     */
+    private static final double RIDGE_SWING = 0.0D;
     private static final int RIDGE_SCALE = 320;
 
     /**
@@ -278,10 +286,18 @@ public final class ArdaMap {
      * <p>
      * The massif stands at the city's own crown where its floor ends, which is right behind the build's walls
      * and hidden by them - but a river at the floor's level at the foot of that crown is a slot with two
-     * hundred blocks of rock either side of it, not a river. Six tenths of a block of rise per block out is a
-     * mountainside's own grade, about thirty degrees, and it is what the rock falls away at beside any water.
+     * hundred blocks of rock either side of it, not a river. Six blocks of rise per block out is a gorge
+     * wall's grade, near enough vertical, and it puts the rock back at the crown within forty blocks of the
+     * water - a slot cut down to the river, with the massif standing at the roofline beyond it.
+     * <p>
+     * Six tenths was drawn at first, a mountainside's own grade of about thirty degrees, and it is what the
+     * save says is wrong with the ground: at six tenths the crown is not reached until (318 - 82) / 0.6,
+     * three hundred and ninety blocks from the water, so the cone reached right across the valley floor's
+     * own side. Measured off the save, the south wall stands at 255 one block out and only climbs back to
+     * 318 a hundred and forty blocks from the build, and the north wall falls to 272 and takes forty-five
+     * blocks to climb back: the massif was there, and the river's grade was lying over all of it.
      */
-    private static final double MOUNTAIN_SLOPE = 0.6D;
+    private static final double MOUNTAIN_SLOPE = 6.0D;
     /**
      * How far the crown's own surface rolls below the crown, in blocks.
      * <p>

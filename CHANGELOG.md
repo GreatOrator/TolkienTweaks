@@ -960,6 +960,16 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   than from the 72-block corner the Trollshaws' own ground needed.
 
 ### Fixed
+- **The massif stands at the roofline all round the city, and the range is a square.** What `giveWay`
+  gives a river is a cone: rock no higher than the water's level plus `MOUNTAIN_SLOPE` blocks per block
+  out. At six tenths that cone only reaches the crown (318 - 82) / 0.6 = 390 blocks from the water, so it
+  lay over the massif's whole south side - read off the save, the south wall stands at 255 one block out
+  and climbs back to 318 only a hundred and forty blocks from the build, and the north wall falls to 272
+  and takes forty-five blocks to climb back. Six blocks per block out is a gorge wall's grade, near
+  enough vertical: the rock returns to the crown within forty blocks of the river, so the channel keeps
+  the slot it had and the mountains stand at 318 out to the walls. The shelf's own edge came in from 175
+  to 96 blocks past the build, its fall from 340 to 200, and the ridge no longer swings in and out -
+  `RIDGE_SWING` is read at nothing - so the range is a square rather than a ring.
 - **A laying run that stops partway no longer has to be run twice.** The band mark was only written
   after the whole call, so a run that ended early left the mark at the band it started from: the world
   held bands the next call did not know about, and the pieces already down were laid again before it
