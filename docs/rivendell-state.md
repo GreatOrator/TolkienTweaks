@@ -103,11 +103,15 @@ what is still open, so the next session does not have to rebuild that from the c
   drawn water at **4995, -3311**:
   **1,104 blocks** in all, twelve wide with 5 left and 7 right of the middle. The ground is the vale's
   **74** the whole way, so the river falls the eight blocks from the city's water at the wall and then
-  arrives level with the drawn river. The massif gives way to the course at **6 blocks of height per block
-  out**, a gorge wall's grade, so the water leaves through a slot cut down to it and the rock is back at the
-  crown within forty blocks of the water; the drop at the wall is the only fall on the way. Six tenths was
-  drawn first, and at that grade the crown is not reached for 390 blocks, which laid the cone over the
-  massif's whole south side - the walls stood at 255 and the peaks read two hundred blocks out.
+  arrives level with the drawn river. The massif gives way to the course over `MOUTH_RUN = 96` blocks of
+  climb, and not at a grade: the ground leaves the water almost level, takes most of its height across the
+  middle of the mouth and eases into the crown at the shelf's own width, so the bank and the cone are one
+  curve and there is no line where either stops applying. Two grades were drawn first and each was wrong
+  in its own way: six tenths never reaches the crown inside 390 blocks and laid the cone over the whole
+  south flank (the walls stood at 255 and the peaks read two hundred blocks out), and six put the crown
+  back within forty but left the rock at 240 four blocks from ground at 100, because the branch's own
+  bank opened the ground at one and a fifth and the cone cut it at six - a seam two hundred blocks high,
+  which is the wall the save showed at x 5196 just outside the west wall.
 - **One face is still to open.** The massif gives way to the branch only where the branch runs: the drawn
   Bruinen's own banks, where it runs 96 blocks east of the walls with no branch beside it, still stand at
   the crown to the water's edge, because a drawn river's distance is only read out to **64** blocks and a
@@ -128,7 +132,7 @@ what is still open, so the next session does not have to rebuild that from the c
 - **The branch is cut again, at the new mouth.** `BRANCH` is on and the course runs from 5200, -3067 to
   the drawn Bruinen at 5054, -3086 - a hundred and forty-seven blocks, the city's water at 82 at the wall
   falling to the vale's 74 at the join - so the map cuts a twelve-wide channel through the massif and opens
-  the rock along it at 6 blocks of height per block out. The spring at the rear, water at 239 over a floor
+  the rock along it on the same curve, over `MOUTH_RUN` blocks of climb from the middle of the channel. The spring at the rear, water at 239 over a floor
   at 74, still has no cut of its own.
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.

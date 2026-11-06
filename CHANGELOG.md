@@ -960,6 +960,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   than from the 72-block corner the Trollshaws' own ground needed.
 
 ### Fixed
+
+- Open the ground round the Bruinen at one curve instead of two grades: the water's bank and the massif's
+  cone met in a two-hundred-block seam just outside the west wall, because the branch opened the ground
+  at 1.2 blocks per block and the cone cut it at 6, and the line where one gave way to the other was a
+  face. `MOUTH_RUN = 96` climbs from the water to the crown in one smooth curve read from the middle of
+  the channel, the drawn river's walk reaches 100 blocks and finds its edge a block at a time, and
+  `MOUNTAIN_SLOPE` and `BRUINEN_BANK` are gone.
 - **The massif stands at the roofline all round the city, and the range is a square.** What `giveWay`
   gives a river is a cone: rock no higher than the water's level plus `MOUNTAIN_SLOPE` blocks per block
   out. At six tenths that cone only reaches the crown (318 - 82) / 0.6 = 390 blocks from the water, so it

@@ -277,27 +277,27 @@ public final class ArdaMap {
     private static final int BRUINEN_RIGHT = 7;
     private static final int BRUINEN_FORD_X = 5054;
     private static final int BRUINEN_FORD_Z = -3086;
-    private static final double BRUINEN_BANK = 1.2D;
     private static final double BRUINEN_FORD_SHALLOW = 0.92D;
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
     private static final int BRUINEN_STEPS = 256;
     /**
-     * How fast the ground climbs away from water, in blocks of height per block out.
+     * How far out from water the ground climbs back to the city's crown, in blocks.
      * <p>
-     * The massif stands at the city's own crown where its floor ends, which is right behind the build's walls
-     * and hidden by them - but a river at the floor's level at the foot of that crown is a slot with two
-     * hundred blocks of rock either side of it, not a river. Six blocks of rise per block out is a gorge
-     * wall's grade, near enough vertical, and it puts the rock back at the crown within forty blocks of the
-     * water - a slot cut down to the river, with the massif standing at the roofline beyond it.
+     * The climb is one curve, not a grade: the ground leaves the water almost level, takes most of its
+     * height across the middle of the mouth and eases into the crown at the run's end, so the mountainside
+     * has no edge in it at either end. The run is the shelf's own width, so the rock a river opens is the
+     * rock the shelf would have stood at anyway.
      * <p>
-     * Six tenths was drawn at first, a mountainside's own grade of about thirty degrees, and it is what the
-     * save says is wrong with the ground: at six tenths the crown is not reached until (318 - 82) / 0.6,
-     * three hundred and ninety blocks from the water, so the cone reached right across the valley floor's
-     * own side. Measured off the save, the south wall stands at 255 one block out and only climbs back to
-     * 318 a hundred and forty blocks from the build, and the north wall falls to 272 and takes forty-five
-     * blocks to climb back: the massif was there, and the river's grade was lying over all of it.
+     * Two grades were drawn and both were wrong in the same place. Six tenths, a mountainside's own, does
+     * not reach the crown for 390 blocks, which laid the cone across the whole south flank: the walls stood
+     * at 255 and 272 and the peaks read two hundred blocks out. Six, a gorge wall's, puts the crown back
+     * within forty blocks - but at the water's own bank, so the river ran in a slot, and where the slot's
+     * open ground stopped the rock stood at 240 four blocks from ground at 100: the wall the save showed
+     * just outside the west wall. That is a seam rather than a slope. The branch's own bank opened the
+     * ground at one and a fifth blocks per block and the cone cut it at six, and the line where one gave
+     * way to the other is a face two hundred blocks high. One curve for both ends the seam.
      */
-    private static final double MOUNTAIN_SLOPE = 6.0D;
+    private static final int MOUTH_RUN = 96;
     /**
      * How far the crown's own surface rolls below the crown, in blocks.
      * <p>
@@ -306,8 +306,12 @@ public final class ArdaMap {
      * same distance as the ridge's wander costs the world no height and stops the top being a plane.
      */
     private static final double CROWN_ROLL = 3.0D;
-    /** How far out a column looks for a drawn river whose ground it has to give way to, in blocks. */
-    private static final int WATER_REACH = 64;
+    /**
+     * How far out a column looks for a drawn river whose ground it has to give way to, in blocks: longer
+     * than {@link #MOUTH_RUN}, so the climb is finished before the walk is and the ground past the walk
+     * is the crown rather than the step the walk would otherwise leave.
+     */
+    private static final int WATER_REACH = 100;
     /**
      * How far the branch wanders off its own course, and how many turns it makes on the way, in blocks and in
      * half turns. The wander falls to nothing at each corner, so the water is one channel rather than a
@@ -1178,8 +1182,8 @@ public final class ArdaMap {
      * The channel is cut into whatever stands there rather than drawn over it: the massif's flank and the
      * shoulder where the valley answers, the drawn country beyond the ridge where the valley has handed the
      * ground back, so the same cut opens the front of the valley and runs out to the ford. Its water falls
-     * along the course, its bed lies {@link #BRUINEN_BED} under that, and its walls climb from the water at
-     * {@link #BRUINEN_BANK} blocks for each block out. The climb stops where the natural ground is lower than
+     * along the course, its bed lies {@link #BRUINEN_BED} under that, and its walls climb from the water on the
+     * same curve the massif gives way on, {@link #MOUTH_RUN} blocks to the crown. The climb stops where the ground is lower than
      * the wall, which is what leaves the gorge an open mouth rather than a trench with a lid on it.
      * <p>
      * The cut begins at the outlet rather than a few blocks past it, because the build's own channel is there
@@ -1231,7 +1235,9 @@ public final class ArdaMap {
             // apart are terraces.
             double ribs = (fractal(x, z, CLIMB_SCALE, 23) - 0.5D) * 2.0D * CLIMB_ROUGH
                     * Math.min(1.0D, out / CLIMB_EASE);
-            double wall = Math.max(level, level + out * BRUINEN_BANK + ribs);
+            // The same curve the massif gives way with, read from the middle of the channel: one profile
+            // for the bank and for the cone means the two never meet in a face where one stops applying.
+            double wall = Math.max(level, mouthRise(level, Math.abs(side)) + ribs);
             height = (int) Math.round(Math.min(ground.height(), wall));
         }
         // Only the channel carries the river's own level: the walls stand above it, and the valley floor
@@ -1243,13 +1249,27 @@ public final class ArdaMap {
 
 
     /**
+     * The height the ground may stand at a run out from water, given that water's level.
+     * <p>
+     * The toe is nearly flat, so the water's own bank is a few blocks up the slope and no face is left
+     * beside it; the middle carries most of the climb; the last few blocks ease into the crown, so the
+     * mountainside meets the massif's flat top without a knee in it. Two grades drawn as straight lines
+     * meet in an edge wherever one stops applying - and a river mouth is exactly the place where the
+     * ground has to leave the water at one rate and reach the shelf at another.
+     */
+    private static double mouthRise(double level, double run) {
+        double share = Mth.clamp(run / (double) MOUTH_RUN, 0.0D, 1.0D);
+        return level + (VALLEY_CROWN - level) * smooth(share);
+    }
+
+    /**
      * The massif's own height, given way to the water it stands beside, in blocks.
      * <p>
      * The rock stands at the crown where the city's floor ends - which the build's own walls hide - but the
      * drawn Bruinen runs past the valley's east side at the floor's level, and the branch out of the city
      * meets it there: rock two hundred and forty blocks high beside water at seventy-four is not a valley a
-     * river runs through, it is a slot cut in a plateau. So the ground climbs away from any water at
-     * {@link #MOUNTAIN_SLOPE}, and both rivers open the massif into a valley instead of a trench.
+     * river runs through, it is a slot cut in a plateau. So the ground climbs away from any water on one curve,
+     * {@link #mouthRise}, and both rivers open the massif into a valley instead of a trench.
      * <p>
      * The nearest water is the branch's own course, measured exactly, or the nearest drawn river column found
      * in eight directions: the walk out to it is the bank's run, and its surface is the level the ground has
@@ -1263,11 +1283,15 @@ public final class ArdaMap {
         double run = Double.MAX_VALUE;
         int level = SEA_LEVEL;
         if (BRANCH) {
+            // Measured from the middle of the channel rather than from its bank, so the rise starts
+            // under the water: the rock has given way before the water's own edge, and the cut leaves
+            // no face beside the river for the bank to end on.
             double[] at = project(blockX, blockZ);
-            run = at[2] - BRUINEN_RIGHT;
+            double offsetX = blockX - courseX(at[0]);
+            double offsetZ = blockZ - courseZ(at[0]);
+            run = Math.abs(offsetX * -at[4] + offsetZ * at[3]);
             level = bruinenWater(at[0]);
         }
-        boolean drawn = false;
         for (int step = 0; step < 8; step++) {
             double dirX = Math.cos(step * Math.PI / 4.0D);
             double dirZ = Math.sin(step * Math.PI / 4.0D);
@@ -1277,9 +1301,18 @@ public final class ArdaMap {
                 if (!ArdaMasks.river(px, pz)) {
                     continue;
                 }
-                double away = reach - 2.0D;
+                // The walk is coarse, and four blocks of error in the run is a step in the ground it
+                // shapes, so the water's own edge is found a block at a time from where the walk met it.
+                int edge = reach;
+                for (int back = 1; back <= 3; back++) {
+                    if (!ArdaMasks.river(blockX + (int) Math.round(dirX * (reach - back)),
+                            blockZ + (int) Math.round(dirZ * (reach - back)))) {
+                        break;
+                    }
+                    edge = reach - back;
+                }
+                double away = edge - 2.0D;
                 if (away < run) {
-                    drawn = true;
                     run = away;
                     level = Math.max(SEA_LEVEL, groundAt(px / (double) CELL + ORIGIN_COLUMN,
                             pz / (double) CELL + ORIGIN_ROW, px, pz).height());
@@ -1287,14 +1320,14 @@ public final class ArdaMap {
                 break;
             }
         }
-        // The course's own distance is exact however far a column stands from it, so the rock can give way to
-        // the river the whole way up its bank. A drawn river is only found within the reach above, and a cone
-        // cut off at that reach would leave the step it was cut to remove - so the drawn river's own banks
-        // stay as they are until its distance can be read as far.
-        if (drawn && run >= WATER_REACH) {
+        // The course's own distance is exact however far a column stands from it, so the rock can give way
+        // to the river the whole way up its bank. A drawn river is only found within the reach above, and
+        // that reach is longer than the climb, so a column past it is already at the crown: the cut ends
+        // where the climb does rather than in a step.
+        if (run >= MOUTH_RUN) {
             return height;
         }
-        double limit = level + Math.max(0.0D, run) * MOUNTAIN_SLOPE;
+        double limit = mouthRise(level, Math.max(0.0D, run));
         return limit >= height ? height : (int) Math.round(limit);
     }
 
