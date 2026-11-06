@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **`/tmcity` finds the city the world generated.** A generated world writes no `_laid.txt`, so every hand used to
+  answer "no corner planted yet" - and planting at the pin would have laid a second copy of the same 584 pieces on
+  the first. The commands now read the structure start in the chunk the pin falls in, and treat it as a city that
+  is planted and whole: `status` says it was generated, `goto`, `drape`, `apron` and `folk` work on it, `band`
+  reports nothing left to lay, and `origin`/`summon` refuse to plant over it. `/tmcity relay` still takes such a
+  city over, which is how a re-cut is laid on top of it deliberately.
 - **The city generates from the jar, as a cut of 584 pieces.** A `tolkienmobs:piece_layout` structure carries a
   cut's corner and its piece table - a template and the step from the corner, for each of them - and places every
   piece there with no ground reading, no rotation and no terrain adaptation, so Rivendell stands from 5200, 75,

@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.Heightmap;
+import com.greatorator.tolkienmobs.world.components.structure.PieceLayoutStructure;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -70,6 +71,14 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * are cut against. The two differ by the width of the cut's own frame - five hundred blocks or more -
  * so the frame is kept to itself: a message that names it sends whoever is testing the build to a
  * hillside a long walk from the build.
+ * <p>
+ * A world that generated the city needs none of these words, and gets no marker either: the world places the
+ * pieces as its chunks are made, and a marker is a file in the game directory rather than in a save, so there
+ * is nothing for a generated world to write one with. Every hand here therefore reads a city the world built
+ * for itself as well as one it planted - the start in the chunk the pin falls in is the proof, and a world that
+ * has one is reported as standing with every band down - so {@code status}, {@code goto}, {@code drape},
+ * {@code apron} and {@code folk} answer for it, {@code band} finds nothing left to lay, and {@code origin} and
+ * {@code summon} refuse to plant, which is what stops a second city going up on the first.
  * <p>
  * It answers to the same caller the arrangement commands do: a gamemaster-level operator, or a player
  * in creative.
@@ -216,7 +225,7 @@ public final class CityCommands {
         ServerLevel level = source.getLevel();
         Path folder = folder();
         try {
-            Mark mark = read(folder);
+            Mark mark = mark(level, folder);
             if (mark == null) {
                 source.sendFailure(Component.literal("No corner planted yet - run /tmcity summon where it should stand."));
                 return 0;
@@ -253,6 +262,58 @@ public final class CityCommands {
             }
         }
         return spots;
+    }
+
+    /**
+     * The city the world built for itself, or null when it has not reached the pin.
+     * <p>
+     * Worldgen places the cut from the pin, so the corner is the pin less the cut's own low offsets - the same
+     * arithmetic {@link #plant} does - and the proof that it happened is the structure start in the chunk that
+     * corner falls in. Reading the world's blocks instead would call a mountain that has had a city cut into it a
+     * city, and reading the marker would answer nothing at all, since a generated world has none.
+     */
+    private static BlockPos generated(ServerLevel level, List<Part> parts) {
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return null;
+        BlockPos pin = Pins.at(level, Campaign.SUMMON_PLACE);
+        if (pin == null) return null;
+        BlockPos corner = new BlockPos(pin.getX() - parts.stream().mapToInt(Part::dx).min().orElse(0),
+                pin.getY() - parts.stream().mapToInt(Part::dy).min().orElse(0),
+                pin.getZ() - parts.stream().mapToInt(Part::dz).min().orElse(0));
+        return cutStandsAt(level, corner) ? corner : null;
+    }
+
+    /**
+     * Whether the world generated a cut build in the chunk a corner falls in.
+     * <p>
+     * The chunk is made rather than only looked for: the start is written into the chunk the pin falls in, and a
+     * world nobody has walked into the valley of yet would otherwise answer "not yet" to a question about what it
+     * will do the moment someone does - which is exactly the answer that would let a second planting go ahead. One
+     * chunk is a small thing to make for a question this decides.
+     */
+    private static boolean cutStandsAt(ServerLevel level, BlockPos corner) {
+        var chunk = level.getChunk(corner.getX() >> 4, corner.getZ() >> 4);
+        for (var structure : chunk.getAllStarts().keySet()) {
+            if (structure instanceof PieceLayoutStructure) return true;
+        }
+        return false;
+    }
+
+    /**
+     * What this world's city is: the corner the hand planted, or the one the world generated for itself.
+     * <p>
+     * A marker wins where there is one, because it is a decision - a corner planted by hand after a re-cut is where
+     * that world's city stands, whatever the world made when it was new. With no marker, a generated city is read as
+     * planted and whole: every band of it is down, because the world places a piece when the chunk it touches is
+     * made, so the hands that stand someone in it, dress its ground or put its people in it work on it unchanged,
+     * and the hand that lays bands finds nothing left to lay instead of laying the city again.
+     */
+    private static Mark mark(ServerLevel level, Path folder) throws IOException {
+        Mark planted = read(folder);
+        if (planted != null) return planted;
+        List<Part> parts = parts(folder);
+        BlockPos built = generated(level, parts);
+        if (built == null) return null;
+        return new Mark(built, bands(parts).size(), false, level.dimension().identifier().toString());
     }
 
     /**
@@ -321,6 +382,19 @@ public final class CityCommands {
                 source.sendFailure(Component.literal("No pieces in " + folder + " - is the cut there?"));
                 return false;
             }
+            // Planting is the one word that can put a second city down, so it is the one word that asks whether
+            // the world already built this one. In the valley the corner comes from the pin rather than from the
+            // caller's feet, so a hand planting over a generated city would land on the same blocks - and lay
+            // every one of them again, a hundred megabytes of templates, to no purpose.
+            BlockPos built = generated(level, parts);
+            if (built != null) {
+                String where = Box.of(parts, built).spoken();
+                source.sendFailure(Component.literal("This world generated the city itself, at " + where
+                        + " - nothing to plant, and a planting here would lay a second copy over it. "
+                        + "/tmcity status reads it, /tmcity goto stands you in it, and /tmcity relay takes it "
+                        + "over if you have a re-cut to lay."));
+                return false;
+            }
             // The city's lowest corner goes under the caller's feet, so the band that carries the ground
             // lands where they are standing and the rest of the city rises from there.
             int lowX = parts.stream().mapToInt(Part::dx).min().orElse(0);
@@ -387,7 +461,7 @@ public final class CityCommands {
         ServerLevel level = source.getLevel();
         Path folder = folder();
         try {
-            Mark mark = read(folder);
+            Mark mark = mark(level, folder);
             if (mark == null) {
                 source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin where it should stand."));
                 return 0;
@@ -488,7 +562,7 @@ public final class CityCommands {
         ServerLevel level = source.getLevel();
         Path folder = folder();
         try {
-            Mark mark = read(folder);
+            Mark mark = mark(level, folder);
             if (mark == null) {
                 source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin where it should stand."));
                 return 0;
@@ -525,7 +599,7 @@ public final class CityCommands {
         ServerLevel level = source.getLevel();
         Path folder = folder();
         try {
-            Mark mark = read(folder);
+            Mark mark = mark(level, folder);
             if (mark == null) {
                 source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin first."));
                 return 0;
@@ -558,7 +632,7 @@ public final class CityCommands {
         ServerLevel level = source.getLevel();
         Path folder = folder();
         try {
-            Mark mark = read(folder);
+            Mark mark = mark(level, folder);
             if (mark == null) {
                 source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin where it should stand."));
                 return 0;
@@ -595,12 +669,13 @@ public final class CityCommands {
         ServerLevel level = source.getLevel();
         Path folder = folder();
         try {
-            Mark mark = read(folder);
+            Mark planted = read(folder);
+            Mark mark = planted != null ? planted : mark(level, folder);
             List<Part> parts = parts(folder);
             if (mark == null) {
                 int waiting = parts.size();
-                source.sendSuccess(() -> Component.literal("Nothing planted; " + waiting
-                        + " pieces waiting in " + folder), false);
+                source.sendSuccess(() -> Component.literal("Nothing planted here, and the world has not "
+                        + "generated a city in this country; " + waiting + " pieces waiting in " + folder), false);
                 return 0;
             }
             Box box = Box.of(parts, mark.origin());
@@ -609,9 +684,12 @@ public final class CityCommands {
             int band = mark.band();
             int total = bands(parts).size();
             boolean blended = mark.apron();
-            source.sendSuccess(() -> Component.literal("City " + spoken + "; middle "
-                    + middle.toShortString() + "; band " + band + " of " + total + "; shoulder "
-                    + (blended ? "blended" : "not blended")), false);
+            // Said out loud, because it is the difference between a city an operator put down band by band and one
+            // the world made: the second has no marker, so nothing else would say where it came from.
+            boolean made = planted == null;
+            source.sendSuccess(() -> Component.literal((made ? "City generated by the world " : "City ")
+                    + spoken + "; middle " + middle.toShortString() + "; band " + band + " of " + total
+                    + "; shoulder " + (blended ? "blended" : "not blended")), false);
             String elsewhere = elsewhere(mark, level);
             if (elsewhere != null) source.sendFailure(Component.literal(elsewhere));
             return 1;
@@ -675,7 +753,7 @@ public final class CityCommands {
         ServerLevel level = source.getLevel();
         Path folder = folder();
         try {
-            Mark mark = read(folder);
+            Mark mark = mark(level, folder);
             if (mark == null) {
                 source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin where it should stand."));
                 return 0;

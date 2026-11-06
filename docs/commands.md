@@ -17,6 +17,14 @@ dropping it there; the jar is asked first, so a shipped world is the cut the pac
 marker `_laid.txt` is always the game directory's, being world state rather than part of the cut: it says
 where the corner was planted, how far the city has been laid, and in which dimension.
 
+The hands answer for a city the world generated as well as one they planted. A generated world has no marker,
+because a marker is a file in the game directory and worldgen writes no files there, so the commands read the
+structure start in the chunk the pin falls in instead: `status` reports such a city as standing with every band
+down, `goto`, `drape`, `apron` and `folk` work on it unchanged, and `band` finds nothing left to lay rather than
+laying the city a second time. `origin` and `summon` refuse to plant while a generated city stands, since in the
+valley the corner comes from the pin and a planting would land on the same blocks. To lay a re-cut over a
+generated city, `relay` takes the generated corner as its own and puts the counter back at the bottom.
+
 | hand | what it does |
 |---|---|
 | `origin` | Plants the cut's lowest corner at the caller's feet, in the dimension they stand in, forgetting any earlier plant. Answers with the ground the city covers and how many bands it has. |
