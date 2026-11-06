@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The wild tent's chests draw from the tent's own table.** The canvas the world generator scatters carries two
+  chests, and the template brought them across bare - no loot table, no contents - so `tolkienmobs:chests/wild_tent`
+  was registered and rolled by nothing, and every tent met on the road opened two empty boxes. Both are pointed at
+  the table now, the way the rider's ruin's chests are pointed at `desolate_ruins`, and the table fills them the
+  first time each is opened.
 - **The third crag answers to its name as well.** `/tmpin checklist` had the last of the stone's three caves down
   as "the third cave" while the page asks it as Sholdroth, so all three now read the names the notes give them -
   Bandrith, Hoklond and Sholdroth - in the order the page asks them.
