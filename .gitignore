@@ -36,3 +36,7 @@ __pycache__/
 
 # reference maps downloaded while planning: working copies, third-party art
 tools/geomorphs/
+
+# The map set, terrain masks, climate sheets and screenshots the drawing is read from.
+# Working material on this machine only: the set is 531 MB and one file is past GitHub's limit.
+/Reference/
