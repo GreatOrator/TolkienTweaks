@@ -105,7 +105,7 @@ written into the build.
 | 2, 4, 8 | Elladan's camp itself | `build camp` | 16 by 8 by 16; about 16 by 16 of level ground |
 | 3 | the wood ruin the black horse lies in | `build ruin` | a standing wall in the channels south of the road; about fourteen blocks across |
 | 6 | the ford the beryl is carried to | `place ford` | **water the road can cross** - the drawn cell has neither water nor the road |
-| 9 | Bandrith's, Sholdroth's and the third cave | `build cave`, `cave2`, `cave3` | three hillsides; each crag is cut rock and seats nine to ten blocks into the ground |
+| 9 | Bandrith's, Hoklond's and Sholdroth's | `build cave`, `cave2`, `cave3` | three hillsides; each crag is cut rock and seats nine to ten blocks into the ground |
 | 10, 11 | Barachen's fire | `place barachen` | level ground south of the road |
 | 14 | Matuna's lair | *(covered by the caves)* | the page reuses a crag, so it needs no pin of its own |
 

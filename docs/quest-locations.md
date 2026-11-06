@@ -103,9 +103,8 @@ Paste the fourteen back - or however many you got to - and they go into `Pins.SO
 which holds for every world including one nobody has walked. Lookup order is world pin, then source pin, then
 the drawing.
 
-## One naming question
+## The cave names
 
 The stone's three caves are named in `Campaign.CAVE_NAMES` - **Bandrith**, **Hoklond**, **Sholdroth** - and
-asked in that order, so `cave`/`cave1` is Bandrith's, `cave2` Hoklond's and `cave3` Sholdroth's. The
-`/tmpin checklist` line for `cave2` still calls it "Sholdroth's cave"; the labels and the pages disagree, and
-the pages are what a player reads.
+asked in that order, so `cave`/`cave1` is Bandrith's and `cave2` Hoklond's, which is how `/tmpin checklist`
+labels them; `cave3` is Sholdroth's, the last the stone asks for, and the checklist calls it the third cave.

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The checklist calls the second cave by the name the page gives it.** The stone asks its three caves in the
+  order the notes name them - Bandrith, Hoklond, Sholdroth - and `/tmpin checklist` had the middle one down as
+  Sholdroth's, so a scout pinning ground off that list would have put the second crag where the third cave is
+  asked. The label reads Hoklond's now, and the pinning guide's row names all three in the same order.
 - **The ground still to scout is written down in one place.** `docs/quest-locations.md` lists the fourteen
   locations the pages walk to once Rivendell is set aside - the pin command for each, the cell the drawing
   would use, the template's own footprint and what the sight of the ground should be - so a scouting pass can
