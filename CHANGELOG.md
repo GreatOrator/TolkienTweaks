@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The shoulder and the water line open the chunks they read.** A heightmap is only filled for a chunk
+  the world has opened, and the shoulder reads rings up to a hundred and twenty-eight blocks past the
+  walls while the water line reads a hundred and sixty: from the middle of a city this size that is far
+  outside the chunks a player keeps loaded, so the ground out there read as nothing and the blend was
+  written against a datum that was not there. `Sites.height` now opens the column's chunk before asking
+  for its height, the way laying a piece already does.
 - **The build's own water gets somewhere to land, which the shoulder cannot give it.** The apron reads dry
   columns only - a wet one is dropped from the rim datum and left exactly as it was - so where water leaves
   a wall the ground outside kept whatever height it had: the river leaves at 82 onto a vale already at 74,

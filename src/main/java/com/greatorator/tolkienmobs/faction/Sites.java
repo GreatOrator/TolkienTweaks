@@ -846,7 +846,15 @@ public final class Sites extends SavedData {
         return Math.min(APRON_REACH, Math.max(needed, 4));
     }
 
+    /**
+     * A column's height, with its chunk opened first: a heightmap is only filled for a chunk the world
+     * has opened, and the shoulder reads rings up to {@link #APRON_REACH} past the walls while the water
+     * line reads {@link #WATER_REACH}. From the middle of a city this size that is well outside the
+     * chunks a player keeps loaded, and ground out there reads as nothing - a blend written against a
+     * datum that is not there. Laying a piece already opens its chunks the same way.
+     */
     private static int height(ServerLevel level, int x, int z) {
+        level.getChunk(x >> 4, z >> 4);
         return level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
     }
 
