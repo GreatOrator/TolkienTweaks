@@ -44,6 +44,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -622,7 +623,7 @@ public final class Sites extends SavedData {
     private static void scenery(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
         if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
-        for (Scenery raised : SCENERY) {
+        for (Scenery raised : sceneryFor(level)) {
             String structure = raised.structure();
             Site standing = standing(level, structure);
             if (standing != null) {
@@ -684,6 +685,48 @@ public final class Sites extends SavedData {
     /** The key the world's own site for a building is held under, apart from every player's. */
     private static UUID sceneryId(String structure) {
         return UUID.nameUUIDFromBytes(("scenery:" + structure).getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Every building this world raises: the chapter's own list, and every structure a pin names.
+     * <p>
+     * Scouting is what makes a world the world the notes describe, so a pin is the whole of adding a building - a
+     * scout who walks a hillside and writes the numbers down expects the next world to have the thing standing on it,
+     * whether or not anybody has taken a page to it. The chapter's own list keeps the only thing a pin cannot say:
+     * what stands at a building when it is raised, the man at a camp and the animal at the ruin.
+     * <p>
+     * A pin that names a role rather than a building - a keeper's spot, a body's, a road's end - is not raised, and
+     * neither is a place's name: a pin with no path in it names ground to announce, not a template to build.
+     */
+    private static List<Scenery> sceneryFor(Level level) {
+        List<Scenery> all = new ArrayList<>(SCENERY);
+        Set<String> known = new HashSet<>();
+        for (Scenery raised : SCENERY) known.add(raised.structure());
+        for (String structure : pinnedStructures(level)) {
+            if (known.add(structure)) all.add(new Scenery(structure, Body.NONE));
+        }
+        return all;
+    }
+
+    /** The pins that name a building to raise, from the pack's own table and from this world's. */
+    private static Set<String> pinnedStructures(Level level) {
+        Set<String> structures = new LinkedHashSet<>();
+        for (String key : Pins.sourceKeys()) {
+            if (isStructure(key)) structures.add(key);
+        }
+        for (Pins.Pin pin : Pins.pinned(level)) {
+            if (isStructure(pin.key())) structures.add(pin.key());
+        }
+        return structures;
+    }
+
+    /** Whether a pin's key is a template to build, as against a name to announce or a role at a build. */
+    private static boolean isStructure(String key) {
+        if (!key.contains("/")) return false;
+        for (String role : List.of(KEEPER_PIN, BODY_PIN, ".end", ".road")) {
+            if (key.endsWith(role)) return false;
+        }
+        return true;
     }
 
     /**

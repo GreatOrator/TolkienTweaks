@@ -80,10 +80,15 @@ template's shape.
 
 ## Buildings the world raises
 
-A building pinned for every world is not waiting for a page. `Sites` walks the chapter's own list (`SCENERY` -
-Elladan's camp, Barachen's fire, the wood ruin and the three crags) on the clock it already looks at where a
-player is standing, and for each one not standing in this world it plants a site at the pin and builds it once a
-player is within four chunks. A world that has just been generated therefore has both camps, the ruin the rider
+A building pinned for every world is not waiting for a page. `Sites` walks every pinned build - the chapter's own list
+(`SCENERY` - Elladan's camp, Barachen's fire, the wood ruin and the three crags) and every pin that names a template -
+on the clock it already looks at where a player is standing, and for each one not standing in this world it plants a
+site at the pin and builds it once a player is within four chunks. A pin is therefore the whole of adding a building:
+scout it, write it down, and the next world has it standing there. Chapter one is the same six either way, since all
+of its buildings are pinned and were on the list already; the rule is what will carry chapter two's four and the last
+act's pair the day their pins are walked. Pages do not decide what exists - they decide who
+is at a place and what they say - so a page that names a building already raised finds that building and
+`Sites.standing` answers with it rather than raising a second. A world that has just been generated therefore has both camps, the ruin the rider
 lies in and all three caves in it whether anybody has taken a page to them, and a page that names one is answered
 with the ground already standing rather than a second copy.
 

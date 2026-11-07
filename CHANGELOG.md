@@ -1235,6 +1235,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   in any world; water is skipped, since a crossing is a bridge's or a ford's business. The table starts empty: a
   section becomes a line once its markers are walked and its ground settled, and the two chapter roads already laid
   keep the pass until then, because a painted line cannot cut a shelf into a hillside.
+- **The raised set follows the pins, so a scouted building no longer needs a page.** The auto-raised list was a
+  hand-kept six, and a building outside it had no way into a world except a page that named it. `Sites` now raises
+  every pin that names a template, from the pack's table and from the world's, and `SCENERY` keeps only what a pin
+  cannot say - the man at a camp and the animal at the ruin. Chapter one is unchanged, all six of its builds being
+  pinned and already on the list; the rule is what will carry chapter two's four and the last act's pair the day their
+  pins are walked. Roles (`.keeper`, `.body`, `.end`, `.road`) and place names are skipped, and a page naming ground
+  already standing is pointed at it rather than raising a copy.
 - **A new pin moves a building that has not been raised yet.** A scenery site planted before its pin was walked kept the
   drawing's guess forever, so a scout who re-pinned Elladan's camp found nothing at the pin and a camp - or nothing -
   at the old spot. A pin now outranks a recorded spot: an unbuilt site whose centre is not the pin is re-seated from
