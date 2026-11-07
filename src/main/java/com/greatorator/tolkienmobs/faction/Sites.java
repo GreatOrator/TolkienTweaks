@@ -1000,16 +1000,34 @@ public final class Sites extends SavedData {
         // a block written into an unloaded chunk is quietly dropped, and half a castle is worse than
         // none. The tent fit in one chunk and never needed to ask; a hilltop a hundred blocks across
         // does, and waits at the site until the player is close enough for all of it.
-        if (!chunksLoaded(level, site.centre(), size)) return;
-        Seat seat = seatFor(site.structure());
-        // A pinned building stands at its pin. The search for ground that will take a footprint is what a scout
-        // already did by walking the spot with the building on it, and searching anyway moved a camp up to eight
-        // rings away from its own door - while the road still leaves from the door's block, so the camp and its
-        // road ended up in different places. The pin is measured, not trusted blindly: the seat still reads the
-        // ground under the footprint, and a pin the world will not take falls back to the search.
+        // The corner it is laid from, before anything is measured: a pin names it, and a build with no pin is
+        // centred on the spot the drawing guessed at. Checked at the footprint's own two opposite corners - the pair
+        // furthest apart is the furthest anything can be - because a box around the centre is not the footprint of a
+        // build laid from its corner, and the blocks written past its far edge would be dropped without a word.
         BlockPos pinned = Pins.at(level, site.structure());
-        Plane found = pinned == null ? null : plane(level, pinned, size.getX(), size.getZ(), seat);
-        if (found == null) found = locate(level, site.centre(), size.getX(), size.getZ(), seat);
+        BlockPos anchor = pinned != null ? pinned : site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
+        if (!chunksLoaded(level, anchor, size.getX(), size.getZ())) return;
+        Seat seat = seatFor(site.structure());
+        // A pinned building stands at its pin, and nowhere else. The corner the pin names is the corner the
+        // template is laid from, so the door the road leaves by and the pin a scout walked are the same block; the
+        // search used to move a camp up to eight rings away from it and put the camp and its road in two places.
+        // A pin is measured, not trusted blindly - the seat still reads the ground under the footprint and sinks the
+        // build into it - but a pin whose own ground will not take the footprint is a pin to walk again, not a spot
+        // to drift away from: nothing is built, and the log says so. Only a building with no pin is searched for,
+        // which is a building the drawing guessed at and no scout has stood on.
+        Plane found;
+        if (pinned != null) {
+            found = plane(level, pinned, size.getX(), size.getZ(), seat);
+            if (found == null) {
+                if (UNBUILDABLE.add(site.player())) {
+                    LOGGER.info("The pin at {} will not take {} - re-pin it rather than move the build",
+                            pinned, site.structure());
+                }
+                return;
+            }
+        } else {
+            found = locate(level, site.centre(), size.getX(), size.getZ(), seat);
+        }
         if (found == null) {
             // Ground the drawing would take and the world would not: worth saying, because the
             // player standing on the spot sees only that nothing happened. Once per site, since
@@ -1208,6 +1226,11 @@ public final class Sites extends SavedData {
      * Whether every chunk the footprint covers is loaded, asked at the two opposite corners: a footprint
      * is a rectangle, so the pair that is furthest apart is the furthest anything can be.
      */
+    /** The same question asked of the footprint's own corners, which is what a build laid from its corner needs. */
+    private static boolean chunksLoaded(ServerLevel level, BlockPos corner, int wide, int deep) {
+        return level.hasChunkAt(corner) && level.hasChunkAt(corner.offset(wide, 0, deep));
+    }
+
     private static boolean chunksLoaded(ServerLevel level, BlockPos centre, Vec3i size) {
         int halfW = size.getX() / 2 + 1;
         int halfD = size.getZ() / 2 + 1;

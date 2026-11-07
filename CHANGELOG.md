@@ -17,9 +17,14 @@ All notable changes to this project will be documented in this file.
 - **A road follows the ground instead of boring through it.** The grade was free to stand twelve blocks off the
   ground and the alignment's own column was exempt from that limit, which cut shafts under ridges and stood stone
   towers over dips. The window is four blocks and no column is exempt: the ground has the last word on a station.
-- **A pinned building stands at its pin.** The ground search could walk a camp up to eight rings away from the pin
-  while its road still left from the door's block, so the camp and its road ended in different places. A pin is
-  measured and used now, with the search kept for a pin the world will not take.
+- **A pinned building stands at its pin, and nothing is searched for.** A pin names the corner the template is laid
+  from, and a scout has already walked that ground with the building on it; the only thing left to measure is how
+  deep the footprint's ground sits, which the seat reads. The ground search could walk a camp up to eight rings from
+  the pin - while its road still left from the door's block, so the camp and its road ended in different places - and
+  even with the pin tried first it still drifted to that search whenever the pin's ground was refused. A pin the
+  world will not take is now reported and left unbuilt, to be walked again. The footprint is also checked for
+  loaded chunks at its own far corner rather than in a box around the centre, so a build laid from its corner can no
+  longer write the far half of its walls into a chunk nobody has loaded and lose them.
 - **The valley's raise measures its reach from the city's box.** The pin is the city's own low corner, so a player at
   the far end of a five-hundred-block city, or on the road up to it, was never near enough to start it.
 - **Rivendell raises itself from its pin.** The city only ever appeared if worldgen happened to start it or an
