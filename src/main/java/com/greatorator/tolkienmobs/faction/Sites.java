@@ -173,19 +173,36 @@ public final class Sites extends SavedData {
      * asking: the world plants it once, at the pin the scout walked, and stands it when a player comes close enough
      * for its chunks to be loaded.
      */
-    /** One of the world's own buildings, and whether it stands with one of the mod's folk at it. */
-    private record Scenery(String structure, boolean keeper) {
+    /** What the world leaves standing at one of its own buildings. */
+    private enum Body {
+        /** Nothing: the hill, or the ruin's empty walls, is the whole of what is there. */
+        NONE,
+        /** One of the mod's folk at the fire, which is what a camp is. */
+        KEEPER,
+        /** The animal the rider came off, left where it fell. */
+        STEED
+    }
+
+    /** One of the world's own buildings, and what stands at it when it is raised. */
+    private record Scenery(String structure, Body body) {
+        /** Whether this building wants the mod's own folk at it, which the site records as well. */
+        boolean keeper() {
+            return body == Body.KEEPER;
+        }
     }
 
     private static final List<Scenery> SCENERY = List.of(
-            // Elladan's camp is a camp, and a camp is a fire with somebody minding it: the keeper is what a
-            // player who arrives before any page finds at the place. A crag is a hill with a way in, and the
-            // ruin's own body is the horse the rider's page brings with it rather than a keeper of the world's.
-            new Scenery(ELLADAN_CAMP, true),
-            new Scenery(WOOD_RUIN, false),
-            new Scenery(TROLL_CAVE, false),
-            new Scenery(TROLL_CAVE_2, false),
-            new Scenery(TROLL_CAVE_3, false));
+            // A camp is a fire with somebody minding it, and both camps are ground the world raises rather than
+            // ground a page builds: a player who walks to Thorenhad or Barachen's fire before any page finds the
+            // camp standing with its keeper, and a page that names it later finds that same camp instead of
+            // pitching a second. A crag is a hill with a way in and nothing at it; the ruin keeps the animal the
+            // rider came off, which the world leaves there whether or not anyone is sent to look.
+            new Scenery(ELLADAN_CAMP, Body.KEEPER),
+            new Scenery(BARACHENS_CAMP, Body.KEEPER),
+            new Scenery(WOOD_RUIN, Body.STEED),
+            new Scenery(TROLL_CAVE, Body.NONE),
+            new Scenery(TROLL_CAVE_2, Body.NONE),
+            new Scenery(TROLL_CAVE_3, Body.NONE));
     /**
      * The country each landmark stands in, where the books put it rather than where the page was taken.
      * <p>
@@ -303,9 +320,9 @@ public final class Sites extends SavedData {
      * on, and ten is as deep as it is ever set, which is the one-block error the shape of the ground
      * under a footprint this size is allowed to leave.
      */
-    private static final Seat SUNK_CRAG = new Seat(9, 10, 0, 0, -1);
+    private static final Seat SUNK_CRAG = new Seat(9, 10, 0, 0, -1, Direction.NORTH);
     /** A building that stands on its ground rather than in it: hall, tent, house, arena. */
-    private static final Seat ON_SURFACE = new Seat(0, SEAT_SINK, 0, 0, -1);
+    private static final Seat ON_SURFACE = new Seat(0, SEAT_SINK, 0, 0, -1, Direction.NORTH);
     /**
      * Where each cut build's doorway is, in its own template's blocks: the column on the footprint's edge, and
      * the layer its sill sits on. A building is the only thing that knows which of the gaps in its walls is the
@@ -320,15 +337,40 @@ public final class Sites extends SavedData {
      * not something either template names; if one of them sits a layer off, its numbers are the line to fix.
      */
     private static final Map<String, Seat> DOORWAYS = Map.of(
-            ELLADAN_CAMP, new Seat(0, SEAT_SINK, 8, 0, 1),
-            "tolkienmobs:key_structures/barachans_camp", new Seat(0, SEAT_SINK, 8, 0, 1),
-            WOOD_RUIN, new Seat(0, SEAT_SINK, 0, 0, 0),
-            WILD_TENT, new Seat(0, SEAT_SINK, 0, 3, 0),
-            BOSS_CASTLE, new Seat(0, SEAT_SINK, 31, 45, 2),
-            BOSS_ARENA, new Seat(0, SEAT_SINK, 0, 0, 1));
+            ELLADAN_CAMP, new Seat(0, SEAT_SINK, 8, 0, 1, Direction.NORTH),
+            BARACHENS_CAMP, new Seat(0, SEAT_SINK, 8, 0, 1, Direction.NORTH),
+            WOOD_RUIN, new Seat(0, SEAT_SINK, 0, 0, 0, Direction.WEST),
+            WILD_TENT, new Seat(0, SEAT_SINK, 0, 3, 0, Direction.WEST),
+            BOSS_CASTLE, new Seat(0, SEAT_SINK, 31, 45, 2, Direction.SOUTH),
+            BOSS_ARENA, new Seat(0, SEAT_SINK, 0, 0, 1, Direction.WEST));
+
+    /**
+     * What the stone standing at a building's door is called, by template: the name a player reads in the travel
+     * list. A building with no line here gets no stone of its own, since an unnamed stone asks whoever arrives to
+     * name it and the campaign's ground is not the player's to name.
+     * <p>
+     * The names are the places the books give these buildings: Thorenhad is Elladan's camp, the fire south of the
+     * road is Barachen's, the three crags are the three chambers the stone is asked in, and the castle and the
+     * arena under it are Carn Dum.
+     */
+    private static final Map<String, String> STONE_NAMES = Map.ofEntries(
+            Map.entry(ELLADAN_CAMP, "Thorenhad"),
+            Map.entry(BARACHENS_CAMP, "Barachen's fire"),
+            Map.entry(WOOD_RUIN, "the wood ruin"),
+            Map.entry(WILD_TENT, "the tent"),
+            Map.entry(WEATHERTOP, "Weathertop"),
+            Map.entry(GLOIN_CAMP, "Gloin's camp"),
+            Map.entry(GUNDABAD, "Gundabad"),
+            Map.entry(TROLL_CAVE, "Bandrith's crag"),
+            Map.entry(TROLL_CAVE_2, "Hoklond's crag"),
+            Map.entry(TROLL_CAVE_3, "Sholdroth's crag"),
+            Map.entry(BOSS_CASTLE, "Carn Dum"),
+            Map.entry(BOSS_ARENA, "the arena under Carn Dum"));
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
+    /** The tag the animal left at the ruin wears, so a second visit does not leave a second one. */
+    public static final String BODY_TAG = "tolkienmobs:fallen_steed";
     /** How close to a camp's fire another keeper counts as already minding it, in blocks. */
     private static final int KEEPER_REACH = 32;
 
@@ -514,7 +556,7 @@ public final class Sites extends SavedData {
                 SITES.put(key, site);
                 instance(level).setDirty();
             }
-            if (!site.built() && away(player, site) <= BUILD_REACH) build(level, site);
+            if (!site.built() && away(player, site) <= BUILD_REACH) build(level, site, player);
         }
     }
 
@@ -539,7 +581,7 @@ public final class Sites extends SavedData {
         if (!(player.level() instanceof ServerLevel level)) return;
         double away = away(player, site);
         if (!site.built()) {
-            if (away <= BUILD_REACH) build(level, site);
+            if (away <= BUILD_REACH) build(level, site, player);
             return;
         }
         if (site.found() || away > foundReach(level, site)) return;
@@ -629,7 +671,7 @@ public final class Sites extends SavedData {
      * that is not in the pack, or a footprint that no ground nearby will take, leaves the site unbuilt
      * rather than half-built, so the next look can try again.
      */
-    private static void build(ServerLevel level, Site site) {
+    private static void build(ServerLevel level, Site site, ServerPlayer player) {
         Identifier id = Identifier.tryParse(site.structure());
         if (id == null) return;
         StructureTemplate template = level.getStructureManager().get(id).orElse(null);
@@ -641,7 +683,8 @@ public final class Sites extends SavedData {
         // none. The tent fit in one chunk and never needed to ask; a hilltop a hundred blocks across
         // does, and waits at the site until the player is close enough for all of it.
         if (!chunksLoaded(level, site.centre(), size)) return;
-        Plane found = locate(level, site.centre(), size.getX(), size.getZ(), seatFor(site.structure()));
+        Seat seat = seatFor(site.structure());
+        Plane found = locate(level, site.centre(), size.getX(), size.getZ(), seat);
         if (found == null) {
             // Ground the drawing would take and the world would not: worth saying, because the
             // player standing on the spot sees only that nothing happened. Once per site, since
@@ -659,7 +702,12 @@ public final class Sites extends SavedData {
         underpin(level, corner, size.getX(), size.getZ(),
                 Math.min(UNDERPIN_MAX, Math.max(UNDERPIN_DEPTH, found.relief() + 2)));
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
-        if (site.keeper()) standKeeper(level, corner, size, seatFor(site.structure()));
+        // What the place carries once it stands: the man at a camp, the animal the rider came off at the ruin,
+        // and the stone every building has so the travel list can bring a player back to it.
+        Body body = site.keeper() ? Body.KEEPER : bodyFor(site.structure());
+        if (body == Body.KEEPER) standKeeper(level, corner, size, seat);
+        if (body == Body.STEED) standSteed(level, corner, size, seat);
+        stoneAt(level, corner, size, seat, site.structure(), player);
         SITES.put(site.player(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
         instance(level).setDirty();
     }
@@ -708,11 +756,16 @@ public final class Sites extends SavedData {
     }
 
     /**
-     * How deep a building is set into its ground: never less than {@code floor}, and never more than
-     * {@code cap}. A house asks for no floor and takes half the drop under it; the cave asks to be
-     * buried by its grass line rather than seated on its base.
+     * How deep a building is set into its ground, and which way its way in opens: never less than
+     * {@code floor}, and never more than {@code cap}. A house asks for no floor and takes half the drop
+     * under it; the cave asks to be buried by its grass line rather than seated on its base.
+     * <p>
+     * The door numbers are the cut's own: the column on the footprint's edge that is the doorway, the layer
+     * its sill sits on, and the direction the gap opens onto the outside. Everything that has to know which
+     * way a building faces is measured from them - the seat, the man at the fire, the stone beside the door -
+     * so a build's facing is read from its entrance rather than written down a second time.
      */
-    private record Seat(int floor, int cap, int doorX, int doorZ, int doorY) {
+    private record Seat(int floor, int cap, int doorX, int doorZ, int doorY, Direction front) {
         /** Whether this building knows where its door is, and is seated by that ground rather than by its own. */
         boolean doorway() {
             return doorY >= 0;
@@ -1173,16 +1226,9 @@ public final class Sites extends SavedData {
         if (!(entity instanceof Mob keeper)) return;
         // The building's own door decides where the man stands: two blocks outside it, on the ground the
         // road arrives on, rather than on the far side of the walls - which was the answer for a fair-weather
-        // tent and put the keeper of Elladan's camp behind it. A building with no door in the table keeps it.
-        BlockPos outside = corner.offset(size.getX() / 2, 0, size.getZ() + 2);
-        if (seat.doorway()) {
-            int stepX = seat.doorX() == 0 ? -1 : seat.doorX() == size.getX() - 1 ? 1 : 0;
-            int stepZ = seat.doorZ() == 0 ? -1 : seat.doorZ() == size.getZ() - 1 ? 1 : 0;
-            if (stepX != 0 || stepZ != 0) {
-                outside = corner.offset(seat.doorX() + stepX * 2, 0, seat.doorZ() + stepZ * 2);
-            }
-        }
-        BlockPos stand = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, outside);
+        // tent and put the keeper of Elladan's camp behind it.
+        BlockPos stand = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                outside(corner, size, seat));
         // One keeper per fire, whichever player raised the camp. A site belongs to the player who took
         // the page, but the ground it names is the same for everybody, so two players arriving at the
         // same camp both run the build - and without this each of them would put a second man at it.
@@ -1197,6 +1243,88 @@ public final class Sites extends SavedData {
         keeper.setCustomName(QuestPool.giverName(level.getRandom()));
         keeper.setCustomNameVisible(true);
         level.addFreshEntity(keeper);
+    }
+
+    /**
+     * The ground just outside a building's way in: two blocks out from the doorway's own column along the
+     * direction its gap opens. A cut with no door in the table keeps the older answer, which is past the far
+     * edge of its footprint.
+     */
+    private static BlockPos outside(BlockPos corner, Vec3i size, Seat seat) {
+        if (!seat.doorway()) return corner.offset(size.getX() / 2, 0, size.getZ() + 2);
+        return corner.offset(seat.doorX() + seat.front().getStepX() * 2, 0,
+                seat.doorZ() + seat.front().getStepZ() * 2);
+    }
+
+    /**
+     * Where the stone that travels with a building stands: two blocks out from the door and one block to the
+     * side, so every arrival at a place finds its stone in the same spot - beside the way in, off the walk, and
+     * not in the man standing at the door.
+     */
+    private static BlockPos besideDoor(BlockPos corner, Vec3i size, Seat seat) {
+        if (!seat.doorway()) return outside(corner, size, seat).offset(1, 0, 0);
+        Direction side = seat.front().getClockWise();
+        return corner.offset(seat.doorX() + seat.front().getStepX() * 2 + side.getStepX(), 0,
+                seat.doorZ() + seat.front().getStepZ() * 2 + side.getStepZ());
+    }
+
+    /**
+     * Which way a building's door opens, as its own cut has it, or null for a cut that names no door.
+     * <p>
+     * This is the facing a build was missing: the template already says where the way in is, and the way in is
+     * the front, so the direction is derived from the entrance rather than supplied as a compass word beside it.
+     */
+    @Nullable
+    public static Direction front(String structure) {
+        Seat seat = DOORWAYS.get(structure);
+        return seat == null || !seat.doorway() ? null : seat.front();
+    }
+
+    /** What the world leaves at a building of its own, which a page's own site is free to ask for itself. */
+    private static Body bodyFor(String structure) {
+        for (Scenery raised : SCENERY) {
+            if (raised.structure().equals(structure)) return raised.body();
+        }
+        return Body.NONE;
+    }
+
+    /**
+     * Leaves the animal the rider came off at the ruin: a black steed with no rider, on the ground before the
+     * way in, never minding anything. It is tagged so a second visit does not leave a second one, and it is
+     * invulnerable and silent so a player finds it rather than fights it.
+     */
+    private static void standSteed(ServerLevel level, BlockPos corner, Vec3i size, Seat seat) {
+        BlockPos spot = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                outside(corner, size, seat));
+        if (!level.getEntitiesOfClass(Mob.class, new AABB(spot).inflate(KEEPER_REACH),
+                found -> found.entityTags().contains(BODY_TAG)).isEmpty()) {
+            return;
+        }
+        Entity entity = TolkienEntities.ENTITY_TTM_NAZGULSTEED.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob steed)) return;
+        steed.snapTo(spot.getX() + 0.5D, spot.getY(), spot.getZ() + 0.5D, 0.0F, 0.0F);
+        steed.setPersistenceRequired();
+        steed.setNoAi(true);
+        steed.setSilent(true);
+        steed.setInvulnerable(true);
+        steed.addTag(BODY_TAG);
+        level.addFreshEntity(steed);
+    }
+
+    /**
+     * Stands the stone that travels with a building beside its door.
+     * <p>
+     * The stone used to be planted by the page that sent a player to the place, which is what put a second one
+     * at a camp whenever a second page named it, at whatever spot that page's ground happened to be written at.
+     * Ground that carries its own stone cannot be stoned twice.
+     */
+    private static void stoneAt(ServerLevel level, BlockPos corner, Vec3i size, Seat seat, String structure,
+                                ServerPlayer player) {
+        String name = STONE_NAMES.get(structure);
+        if (name == null) return;
+        BlockPos spot = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                besideDoor(corner, size, seat));
+        Stones.stone(level, spot, name, player);
     }
 
     /** Whether one of the mod's folk is standing within sight of the player, which a camp always has. */

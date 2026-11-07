@@ -48,19 +48,33 @@ arrival and a hilltop template raised for a page, and so are Gundabad and Gloin'
 ## Buildings the world raises
 
 A building pinned for every world is not waiting for a page. `Sites` walks the chapter's own list (`SCENERY` -
-Elladan's camp, the wood ruin and the three crags) on the clock it already looks at where a player is standing,
-and for each one not standing in this world it plants a site at the pin and builds it once a player is within
-four chunks. A world that has just been generated therefore has Thorenhad's camp, the ruin the rider lies in and
-all three caves in it whether anybody has taken a page to them, and a page that names one is answered with the
-ground already standing rather than a second copy.
+Elladan's camp, Barachen's fire, the wood ruin and the three crags) on the clock it already looks at where a
+player is standing, and for each one not standing in this world it plants a site at the pin and builds it once a
+player is within four chunks. A world that has just been generated therefore has both camps, the ruin the rider
+lies in and all three caves in it whether anybody has taken a page to them, and a page that names one is answered
+with the ground already standing rather than a second copy.
 
 The planting is cheap - a pin lookup and a template's own size - and nothing is raised until the chunks are
 loaded, which is the same rule a page's own site is held to. Nothing here builds at a distance.
 
 Elladan's camp is raised only this way: the worldgen anchor it used to have at `4864, 0, -3328` is retired, so
-the camp a world holds is the one at the pin and never a second at a cell middle. A camp also stands with one of
-the mod's folk at its fire - the keeper, who stands two blocks outside the door the build is seated by - while
-the crags and the ruin are raised empty, since what is at those belongs to the page that sends you there.
+the camp a world holds is the one at the pin and never a second at a cell middle. A camp stands with one of the
+mod's folk at its fire - the keeper, two blocks outside the door the build is seated by - and the ruin keeps the
+black steed its rider came off, standing where the ground was. The crags are raised empty, since what is at those
+belongs to the page that sends you there.
+
+Every building the world lays lays a milestone with it: `Sites` reads the entrance from the doorway table and
+stands the stone two blocks out from the door and one block to the side, on the ground. A stone used to be
+planted by each page that sent a player to the place, which is what put a second one at a camp whenever a second
+page named it; ground that carries its own stone is stoned once, in the same spot in every world. The hall a
+page is handed over in keeps the stone at its giver.
+
+The doorway table is also where a build's facing comes from. Each entry records the column on the footprint's
+edge that is the doorway, the layer its sill sits on and the direction the gap opens onto the outside, so the
+seat, the keeper and the stone are all measured from numbers the cut already supplies and nothing has to be told
+which way round a building is. The ruin's door and the arena's are cut in a corner, where the entrance itself
+does not say which face it is in: both take the direction the road reaches them by, and those are the two lines
+to change if one of them ever seems to face the wrong way.
 
 A crag's pin is a sighting point, not a doorway: it marks ground close enough to see the hill from, and the way
 in is the player's to find. Nothing here records which side a cave mouth opens on, and nothing needs to.

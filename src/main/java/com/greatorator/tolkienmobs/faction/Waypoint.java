@@ -226,9 +226,8 @@ public final class Waypoint {
     /** Sends the player the direction of the first page they are carrying, or an empty mark for none. */
     public static void send(ServerPlayer player, List<Quest> row) {
         Quest carried = carriedPage(row);
-        // The stone the page is worth is planted where the page is taken rather than where it is
-        // settled: a player walks out of the hall and up the road, and the stone that gets them back
-        // has to be standing at the valley by the time they get there.
+        // A page now stones its own hall and nothing else: the ground it sends a player to carries the stone
+        // its building laid, so taking the page a second time cannot put another one out there.
         if (carried != null) Stones.plant(player, carried);
         Mark mark = carried != null ? ground(player, carried) : onward(player);
         SENT.put(player.getUUID(), keyOf(mark));

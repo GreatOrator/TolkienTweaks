@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Every building carries its stone.** A milestone now stands at each build's door when the building is laid -
+  two blocks out from the entrance and one block to the side, the same spot in every world - instead of being
+  planted by each page that sent a player there, which is what left a second stone at a camp that two pages
+  named.
+- **A build's facing is read from its entrance.** The doorway table records which way each door opens, and the
+  keeper, the stone and the seat are all measured from it, so a building's front is data rather than a guess.
+- **Barachen's fire and the ruin's steed.** Barachen's camp is raised with the rest of chapter one rather than
+  waiting for a page, and the ruin keeps the black steed its rider came off, left there by the world.
 - **A camp's keeper stands at its door.** The body the world puts at a camp was placed beyond the far edge of the
   footprint, which is where a fair-weather tent's front was and is behind Elladan's camp; with the doorway known,
   he now stands two blocks outside it on the ground the road arrives on.

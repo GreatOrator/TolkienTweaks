@@ -68,6 +68,10 @@ public final class Pins extends SavedData {
             // measurement. Keys go through the Sites constants, so a checklist line and a placement cannot drift.
             Map.entry("thorenhad", new BlockPos(4691, 87, -3273)),
             Map.entry("barachen", new BlockPos(4812, 77, -2885)),
+            // Barachen's own camp, raised by the world rather than by a page: the corner of the doorway the scout
+            // marked at 4820, 76, -2885, that block being the middle of the template's south face, so the corner
+            // is eight west of it and the build is seated level with the ground the road arrives on.
+            Map.entry(Sites.BARACHENS_CAMP, new BlockPos(4812, 77, -2885)),
             Map.entry("ford", new BlockPos(5061, 75, -3136)),
             // Elladan's camp, re-pinned from the doorway the scout marked at 4642, 91, -3314: that block is the
             // middle of the template's south face, so the corner it is cut from is eight west of it and the

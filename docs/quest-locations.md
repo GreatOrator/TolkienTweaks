@@ -10,6 +10,7 @@ pinned, and the pins are in `Pins.SOURCE`, so every world has them.
 | Elladan's camp | `build camp` | `4634, 92, -3314` (its doorway is the middle of its south face, at `4642, 91, -3314`) |
 | the wood ruin | `build ruin` | `4782, 79, -3058` |
 | Barachen's fire | `place barachen` | `4812, 77, -2885` |
+| Barachen's camp | `build tolkienmobs:key_structures/barachans_camp` | `4812, 77, -2885` (its doorway is `4820, 76, -2885`) |
 | the ford | `place ford` | `5061, 75, -3136` |
 | Bandrith's cave | `build cave` | `4460, 125, -2477` |
 | Hoklond's cave | `build cave2` | `4568, 112, -2511` |
@@ -67,9 +68,11 @@ when a player comes near (see `arda-pinning.md`), so a fresh world has the camp 
 a cell middle. The datagen's `PINNED_BUILDS` is empty now: the anchor that used to put a second camp at
 `4864, 0, -3328` is retired.
 
-Barachen's camp - `build camp` is Elladan's, the other one is `tolkienmobs:key_structures/barachans_camp`,
-16 by 16 by 9 - has no page raising it yet. Page 10 walks to the **name**, so `place barachen` is the pin
-that matters.
+Barachen's camp is raised the same way, and `build camp` is Elladan's: the other one is
+`tolkienmobs:key_structures/barachans_camp`, 16 by 16 by 9, pinned at `4812, 77, -2885` - the corner of the
+doorway the scout marked at `4820, 76, -2885`. It stands whatever page the player has taken, with its keeper and
+its stone, and the road from the ruin already ends at that door. Page 10 still walks to the **name**, and
+`place barachen` is the pin that name is surveyed in.
 
 ## Chapter two - the pass, the range and Angmar
 

@@ -565,6 +565,11 @@ being written down in code - the number in the class would be wrong the moment a
 valley's square carries its own, and the air over that square is cleared to sixteen blocks when it is first
 laid, so a hillside or a stand of trees does not grow up through the plaza.
 
+The ground the campaign raises stands its own stone without being asked: every build `Sites` lays is given a
+milestone two blocks out from its door and one block to the side (`Sites.stoneAt`), laid once with the building
+rather than planted by each page that sends a player there. A place therefore has one stone in one spot, and a
+page that names the same camp twice leaves the stone that was already standing.
+
 Travellers are not monuments either. A giver whose offer nobody has taken goes after half an hour, with the
 offer, so a long-lived world does not fill with immortal strangers holding pages nobody will read; a giver
 whose work was taken stays, because that is the body it is carried back to.

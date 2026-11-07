@@ -8,11 +8,11 @@ import com.greatorator.tolkienmobs.util.block.MilestoneSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
@@ -29,10 +29,11 @@ import java.util.UUID;
  * chapter that sends a stranger four thousand blocks up the road and then asks them to walk back for
  * every errand needs a way back that is not the same road again.
  * <p>
- * So a stone is planted in two places whenever a page is taken: on the ground the page names, and where
- * the page was handed over. Neither is a gift - a milestone only lists itself to a player who has stood
- * at it - so the chapter's answer to "how do I get back" is a stone waiting where they arrive the first
- * time, not a free jump to ground they have never seen.
+ * So a stone comes with the ground rather than with the page: every building the campaign lays stands one
+ * beside its door ({@code Sites.build}), in the same spot in every world, and the hall a page is handed over
+ * in keeps the one at its giver. Neither is a gift - a milestone only lists itself to a player who has
+ * stood at it - so the chapter's answer to "how do I get back" is a stone already waiting at the place, and
+ * a page that names the same camp twice cannot leave a second stone there.
  * <p>
  * A stone is named for the place it stands at, because the name is what the travel list shows, and the
  * campaign's business with it is a place the player is meant to go back to and not a stranger's stone.
@@ -56,12 +57,9 @@ public final class Stones {
      */
     public static void plant(ServerPlayer player, Quest quest) {
         if (!quest.story()) return;
-        // A stone is a landmark, and a page of talk is a meeting: the stone a page earns is planted on
-        // ground it sends the player to walk, while a conversation already has a body standing at the end
-        // of it. Planting one beside every speaker put stones in fountains and camps, and the walk back
-        // from a finished page is the book's to answer now.
-        Waypoint.Mark ground = Waypoint.ground(player, quest);
-        if (ground != null && !quest.talks()) plantAt(player, words(ground.label()), ground.pos());
+        // Only the hall is stoned from a page now. The ground a page sends the player to carries the stone its
+        // building laid when it was built: planting one here as well is what left two stones at a camp that two
+        // pages named, at two different spots, neither of them the door.
         String hall = quest.giver().isEmpty() ? "" : Quest.label(quest.giver()).getString();
         if (!hall.isEmpty() && player.level() instanceof ServerLevel level) {
             // The hall's stone belongs in the middle of the hall, not wherever the herald happened to
@@ -75,15 +73,10 @@ public final class Stones {
         }
     }
 
-    /** A name as a stone shows it: a key if it is one, and the words themselves if they are a name. */
-    private static String words(String label) {
-        return label.indexOf('.') < 0 ? label : Component.translatable(label).getString();
-    }
-
     /** Plants one stone near a point, unless one already stands there. */
     private static void plantAt(ServerPlayer player, String name, BlockPos around) {
         if (!(player.level() instanceof ServerLevel level)) return;
-        if (name.isEmpty() || alreadyStood(player, name, around)) return;
+        if (name.isEmpty() || alreadyStood(level, name, around)) return;
         BlockPos spot = freeGround(level, around);
         if (spot == null) return;
         BlockState state = TolkienBlocks.MILESTONE_BLOCK.get().defaultBlockState()
@@ -182,8 +175,34 @@ public final class Stones {
     }
 
     /** Whether a stone of this name already stands within a short walk of the spot. */
-    private static boolean alreadyStood(ServerPlayer player, String name, BlockPos around) {
-        return MilestoneHandler.standsNear(player.level(), name, around, ALREADY);
+    private static boolean alreadyStood(Level level, String name, BlockPos around) {
+        return MilestoneHandler.standsNear(level, name, around, ALREADY);
+    }
+
+    /**
+     * Stands one of the campaign's stones on ground it was given, if the ground will take it and no stone of
+     * the same name already stands a short walk away.
+     * <p>
+     * This is a building's stone, laid once when the building is laid rather than whenever a page is taken, so
+     * it is a fact of the world: the same spot in every world, and the same stone for every player who walks
+     * up to it.
+     */
+    public static void stone(ServerLevel level, BlockPos spot, String name, ServerPlayer player) {
+        if (name.isEmpty() || !level.hasChunkAt(spot)) return;
+        if (!level.getBlockState(spot).isAir()) return;
+        if (!level.getBlockState(spot.below()).isSolid()) return;
+        if (alreadyStood(level, name, spot)) return;
+        BlockState state = TolkienBlocks.MILESTONE_BLOCK.get().defaultBlockState()
+                .setValue(MilestoneBlock.FACING, Direction.SOUTH);
+        level.setBlockAndUpdate(spot, state);
+        if (!(level.getBlockEntity(spot) instanceof MilestoneBlockEntity stone)) return;
+        MilestoneSettings settings = stone.getMilestoneSettings();
+        stone.setMilestoneSettings(new MilestoneSettings(settings.distance, settings.dimension, name,
+                settings.uuid == null || settings.uuid.isEmpty()
+                        ? UUID.randomUUID().toString() : settings.uuid));
+        stone.setChanged();
+        level.sendBlockUpdated(spot, state, state, 3);
+        MilestoneHandler.updateMilestone(stone, player);
     }
 
     /**
