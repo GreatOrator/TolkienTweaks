@@ -46,7 +46,7 @@ cell; a location with neither pin nor cell searches out from its country's middl
 
 | region | `/tmtp` point | covers |
 | --- | --- | --- |
-| Trollshaws | `4352, 166, -2816` | the whole chapter-one cluster and the key-stone |
+| Trollshaws | `4691, 87, -3273` - Thorenhad, the camp | the whole chapter-one cluster and the key-stone |
 | Gladden | `8192, 203, -3328` | Glóin's camp, at the pass's north side |
 | Hithaeglir | `5632, 180, -4608` | Gundabad, in the range itself |
 | Angmar | `4864, 204, -7168` | Carn Dûm, the castle and the arena |

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **`/tmtp trollshaws` lands at Thorenhad.** The region jump used to drop a caller in the middle of the
+  Trollshaws' cells, which is the drawing's answer and not the ground: the camp is settled now, so the
+  country is locked to the block the scout stood on and a jump puts a builder in the camp. The table takes
+  one line per region, keyed through the country enum so a region cannot be spelled two ways.
 - **Chapter one's ground is kept for every world.** The scouting world's pins are in `Pins.SOURCE` now -
   Thorenhad, Barachen's fire, the ford, Elladan's camp, the wood ruin and the three crags - so a world nobody
   has walked raises them where the scout stood instead of surveying the drawing for a hillside. The keys are

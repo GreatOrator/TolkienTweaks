@@ -66,15 +66,18 @@ public final class TeleportCommands {
      * Regions whose ground has been settled, in blocks, replacing the middle of the country.
      * <p>
      * A name here is a build, or the cell a page surveys it from, and a jump lands on that point
-     * exactly rather than on the middle of the cells the country was drawn in. This is the one place
-     * that changes when a build is pinned, so it is kept to names and positions with nothing else in
-     * it:
+     * exactly rather than on the middle of the cells the country was drawn in - which is what a pin
+     * is for, so the numbers below are pins the scout walked. The key is the country's own name, read
+     * through {@link #id}, so a region cannot be spelled two ways:
      * <pre>
-     * "bree", new BlockPos(1024, 96, 1024),
+     * id(ArdaMap.Country.BREE), new BlockPos(1024, 96, 1024),
      * </pre>
      */
     private static final Map<String, BlockPos> LOCKED = Map.of(
-            // Nothing is pinned yet: every region is still its country's middle.
+            // Thorenhad, where chapter one's cluster is spoken on: the block the scout stood on, so a
+            // jump lands in the camp rather than two hundred blocks west of it. A locked point is used
+            // as given - no clearance is added - so its y has to be a place a caller can be put down.
+            id(ArdaMap.Country.TROLLSHAWS), new BlockPos(4691, 87, -3273)
     );
 
     @SubscribeEvent
