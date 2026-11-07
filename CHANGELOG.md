@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A road can be written as places, and grades itself from the ground.** A line's waypoints now take `0` where a
+  walked height would be, and the road reads the drawn ground at each point along it and eight blocks either side,
+  averaged, so it follows the contours of whichever world raises it instead of the contours of the world it was scouted
+  in. Elladan's camp's road is the first: it runs from the camp's road end to the block the Rivendell road ends on,
+  along the contours the scouted ground allowed, with no height written down anywhere in it.
 - **A road's grade curves through its bends instead of kinking at each waypoint.** The height between two waypoints
   was the straight line between the heights walked at them, so a road that changed direction while it was falling had
   a corner in its profile, which a walker meets as a step. The grade is now a cubic through the waypoints, its slope at

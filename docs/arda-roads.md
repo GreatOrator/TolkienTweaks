@@ -201,6 +201,13 @@ a grade the hill between them does not have, and without the bound that promise 
 painted surface and the heights carvers and structure sites read are that same bounded shelf, so the road block and the
 ground under it cannot disagree.
 
+A line can be written either way. Waypoints that carry the height a scout walked are graded by those heights, which is
+what a section read back out of a world with `tools/road_line.py` gives. Waypoints that are places put `0` where the
+height would be, and the grade is then the ground's own: the drawn ground at each point along the line and eight
+blocks either side of it, averaged, so the road follows the contours of whichever world raises it rather than the
+contours of the one it was scouted in. That is the form a road baked between two markers takes - a marker says where
+the road goes, and says nothing about a height that has to survive a change of terrain code or a different seed.
+
 What it still cannot do is cross water: a road whose grade would stand at or under the waterline is left to the map,
 since a crossing is a ford's or a bridge's business. And a line's grade is only as good as the waypoints written on
 it - two markers six hundred blocks apart give a ramp the ground may not agree with, so a section is written down as

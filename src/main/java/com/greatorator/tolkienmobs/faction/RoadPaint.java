@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 
 import java.util.IdentityHashMap;
+import java.util.function.IntBinaryOperator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,9 @@ import java.util.Map;
  * column already has.
  * <p>
  * One line per road, and each line is where sections are written down as they are walked: a scout's markers become
- * waypoints here, and the road is in every world from then on without a command being run in any of them. The
+ * waypoints here, and the road is in every world from then on without a command being run in any of them. A line's
+ * waypoints can be heights walked at them, or places with {@link #GROUND} in the height's place - in which case the
+ * grade is read from the ground the world actually has, which is the form a road baked between two markers takes. The
  * surface is the one {@code docs/arda-roads.md} settled - a wild strip of gravel, coarse dirt, grass and path, and
  * a paved approach in the last stretch before a waypoint the road ends at - chosen per block from a hash of the
  * column, so the same column gets the same block whichever chunk asks for it.
@@ -51,6 +54,22 @@ public final class RoadPaint {
     /** How far it may stand above that ground. */
     public static final int MAX_FILL = 4;
 
+    /**
+     * A waypoint's y when the line follows the ground rather than carrying a height walked at it.
+     * <p>
+     * A baked line is a place, not a measurement: the alignment is what a walk found, and the height is read back out
+     * of the ground of whichever world raises it. That is what lets a road outlive a change of terrain code or a
+     * different seed - the places still mean what the scout meant, and the ground says the rest. A line's waypoints
+     * are either all heights or all places, and the first one's y says which.
+     */
+    public static final int GROUND = 0;
+
+    /**
+     * How far along a ground line either side of a point is read when its height is taken: eight blocks, so a boulder
+     * or a one-block dip is averaged out of the road rather than built into it.
+     */
+    private static final int GROUND_READ = 8;
+
     private RoadPaint() {
     }
 
@@ -69,6 +88,11 @@ public final class RoadPaint {
             if (waypoints.size() < 2) throw new IllegalArgumentException("a road needs two waypoints: " + id);
             if (half < 1) throw new IllegalArgumentException("a road needs a width: " + id);
         }
+
+        /** Whether the waypoints are places on the map, their heights to be read from the ground of the world. */
+        public boolean followsGround() {
+            return waypoints.getFirst()[1] == GROUND;
+        }
     }
 
     /**
@@ -79,6 +103,20 @@ public final class RoadPaint {
      * is the width that stretch asks for (three of wild road, two where it enters a settlement, one for a spur).
      */
     public static final List<Line> LINES = List.of(
+            // Elladan's camp's road end to the block the valley road ends on, walked along the contours of
+            // the scouted ground rather than over them. Every waypoint is a place rather than a height, so each
+            // world grades the road from its own ground.
+            new Line("Elladan's camp to the valley road", 3,
+                    List.of(new int[]{4648, 0, -3314}, new int[]{4654, 0, -3308}, new int[]{4654, 0, -3293},
+                            new int[]{4666, 0, -3294}, new int[]{4682, 0, -3288}, new int[]{4698, 0, -3289},
+                            new int[]{4711, 0, -3276}, new int[]{4723, 0, -3264}, new int[]{4736, 0, -3263},
+                            new int[]{4751, 0, -3271}, new int[]{4762, 0, -3266}, new int[]{4769, 0, -3251},
+                            new int[]{4785, 0, -3246}, new int[]{4795, 0, -3236}, new int[]{4809, 0, -3223},
+                            new int[]{4821, 0, -3211}, new int[]{4833, 0, -3198}, new int[]{4849, 0, -3193},
+                            new int[]{4864, 0, -3184}, new int[]{4867, 0, -3168}, new int[]{4879, 0, -3156},
+                            new int[]{4895, 0, -3150}, new int[]{4899, 0, -3132}, new int[]{4899, 0, -3112},
+                            new int[]{4903, 0, -3093}, new int[]{4911, 0, -3076}, new int[]{4911, 0, -3075},
+                            new int[]{5006, 0, -3075}))
             // A road is written as its markers, each one's own height included:
             // new Line("camp to the ruin", 3, List.of(new int[]{4642, 96, -3315}, new int[]{4787, 79, -3058}))
     );
@@ -105,9 +143,9 @@ public final class RoadPaint {
      * {@link #MAX_CUT} and {@link #MAX_FILL}. There is no search and no heightmap read: a chunk cannot see the ground it would have to compare itself with, and a pass that
      * guessed from the ground it could see would put the step back into the road.
      */
-    public static Integer heightAt(int x, int z) {
+    public static Integer heightAt(int x, int z, IntBinaryOperator ground) {
         Station on = nearest(x, z, VERGE);
-        return on == null ? null : on.height();
+        return on == null ? null : on.height(ground);
     }
 
     /** The paved road a column belongs to, or null where no pavement runs through it. */
@@ -149,7 +187,7 @@ public final class RoadPaint {
                 Profile grade = profile(line);
                 double walked = grade.along()[index - 1]
                         + along * (grade.along()[index] - grade.along()[index - 1]);
-                best = new Station(line, away, grade.heightAt(walked));
+                best = new Station(line, away, walked);
             }
         }
         return best;
@@ -251,8 +289,12 @@ public final class RoadPaint {
         return value ^ (value >>> 16);
     }
 
-    /** Where a column stands on its road: the line, its distance from the centre, and the road's height there. */
-    private record Station(Line line, double away, int height) {
+    /** Where a column stands on its road: the line, its distance from the centre, and how far along it it stands. */
+    private record Station(Line line, double away, double walked) {
+        /** The road's height there: the grade its waypoints carry, or the ground under a line of places. */
+        int height(IntBinaryOperator ground) {
+            return line.followsGround() ? along(line, walked, ground) : profile(line).heightAt(walked);
+        }
     }
 
     /**
@@ -324,5 +366,39 @@ public final class RoadPaint {
         double average = (before + after) / 2.0D;
         double limit = 3.0D * Math.min(Math.abs(before), Math.abs(after));
         return Math.clamp(average, -limit, limit);
+    }
+
+    /**
+     * The height of a ground line at a distance along it: the ground at that point and eight blocks either side,
+     * averaged, so the road takes the shape of the hillside and not the shape of one column.
+     * <p>
+     * The ground is asked for by coordinate alone, and every caller asks in the same way, so the answer is the same in
+     * every chunk: a road is still a function of x and z, it simply reads the draught of the world it is in rather than
+     * a height someone walked in another one.
+     */
+    private static int along(Line line, double walked, IntBinaryOperator ground) {
+        int total = 0;
+        for (int step = -GROUND_READ; step <= GROUND_READ; step += GROUND_READ) {
+            int[] spot = spot(line, walked + step);
+            total += ground.applyAsInt(spot[0], spot[1]);
+        }
+        return (int) Math.round(total / 3.0D);
+    }
+
+    /** The column a distance along a line falls on, rounded, so a ground line can be read between its waypoints. */
+    private static int[] spot(Line line, double distance) {
+        double[] along = profile(line).along();
+        List<int[]> points = line.waypoints();
+        int last = along.length - 1;
+        double clamped = Math.clamp(distance, along[0], along[last]);
+        int leg = 0;
+        while (leg < last - 1 && clamped > along[leg + 1]) leg++;
+        double run = along[leg + 1] - along[leg];
+        double turned = run <= 0.0D ? 0.0D : (clamped - along[leg]) / run;
+        int[] from = points.get(leg);
+        int[] to = points.get(leg + 1);
+        return new int[]{
+                (int) Math.round(from[0] + (to[0] - from[0]) * turned),
+                (int) Math.round(from[2] + (to[2] - from[2]) * turned)};
     }
 }
