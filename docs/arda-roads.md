@@ -181,15 +181,26 @@ a wild road's gravel falls if the ground under it is ever removed - a note, not 
 
 A road that stands in every world cannot search for its alignment: worldgen answers for a chunk whose neighbours do not
 exist yet, so the road has to be a pure function of x and z, exactly the way the drawn rivers are. That is
-`RoadPaint`: a table of lines, each a list of block waypoints and a half-width, painted over the drawn top in
-`ArdaChunkGenerator.buildSurface` after the surface rules have dressed the ground. Nothing is cut, filled or bridged,
-and water is skipped, so a generated road never crosses a river that nobody built a crossing for.
+`RoadPaint`: a table of lines, each a list of block waypoints and a half-width, and the generator does the rest -
+`ArdaChunkGenerator.reshape` cuts and fills the corridor to the road's grade, and `buildSurface` paves it after the
+surface rules have dressed the new ground.
 
-Writing a road down is one `Line` in `RoadPaint.LINES`, with the markers as its waypoints and the width that stretch
-asks for. The legs between waypoints are straight, so a road that bends is given a waypoint at the bend; the surface
-is the per-column hash mix settled below, and the last twenty-four blocks before either end are paved. Nothing else in
-the mod changes when a line is added, and no command has to be run in any world: the road is in the next world that
-generates.
+The grade is the line's own heights. A waypoint carries the height the scout stood at, the height between two
+waypoints is the straight line between theirs, and every column of the corridor takes the height of the nearest point
+of the line - so the strip is level across its width and a ramp along its length, and the ground above that height is
+cut away while the ground below it is filled. That is the shelf, answered per column from the column's own
+coordinates: a cutting where the hill stands over the line and an embankment where it falls away, with no heightmap
+read and no search, because a chunk cannot see the ground it would have to compare itself with.
+
+What it still cannot do is cross water: a road whose grade would stand at or under the waterline is left to the map,
+since a crossing is a ford's or a bridge's business. And a line's grade is only as good as the waypoints written on
+it - two markers six hundred blocks apart give a ramp the ground may not agree with, so a section is written down as
+the markers it was actually walked between, a bend and a change of height getting one each.
+
+Writing a road down is one `Line` in `RoadPaint.LINES`, with the markers as its waypoints - heights included - and the
+width that stretch asks for. The surface is the per-column hash mix settled below, and the last twenty-four blocks
+before either end are paved. Nothing else in the mod changes when a line is added, and no command has to be run in any
+world: the road is in the next world that generates.
 
 A painted road is painted before the features run, so a strip through wood would arrive with a forest growing out of
 it. `RoadCorridor` clears the corridor when a chunk holding a road loads - leaves, logs, vines and replaceable plants
@@ -202,10 +213,11 @@ one block off the edge would otherwise be cut back to bare legs wherever its cro
 the pavement reads worse than a road with a hem. Two blocks takes the trees that would stand on the verge and leaves
 the wood behind it.
 
-The pass below is still the shape a road with ground under it is laid by. A generated line paints; it cannot cut a
-shelf into a hillside or stand a bridge, so the roads the scouted world walked - the valley's approach and the two
-between the chapter's camps - keep being laid by the pass, and a section of those is promoted to a generated line only
-once its ground is settled enough to be described without searching it.
+The pass below is still the shape a road with ground under it is laid by, and it is still the only thing that bridges
+one: a generated line follows the grade its waypoints give, so the roads the scouted world walked - the valley's
+approach with its span and its switchback, and the two between the chapter's camps - keep being laid by the pass, and
+a section of those is promoted to a generated line only once it is walked densely enough to be described without
+searching it.
 
 ## The first road, as built
 

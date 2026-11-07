@@ -15,9 +15,13 @@ import java.util.List;
  * The campaign's own roads are laid by a pass, {@code /tmroad}, because their alignment is a search over ground that
  * exists: a shelf cut into a hillside needs the hill. A road that stands in every world cannot search for anything,
  * since it has to answer for a chunk that does not exist yet - so it is a pure function of x and z instead, exactly
- * the way the drawn rivers are: a line of waypoints, a half-width, and a per-column mix that a chunk border cannot
- * split. Nothing is cut or filled, so a generated road never has to know what stands beside it; it paints the column
- * it owns and leaves the ground's own height alone.
+ * the way the drawn rivers are: a line of waypoints, each carrying the height a scout walked it at, and a half-width.
+ * <p>
+ * The heights are what makes it a graded road rather than a painted one. Every column of the corridor takes the height
+ * of the nearest point of the line, so the strip is level across its width; between two waypoints the height is the
+ * straight line between the heights walked at them, so the road is a ramp along its length. The generator cuts the
+ * ground above that height and fills the ground below it, which is the shelf: a cutting where the hill stands over the
+ * line and an embankment where it falls away, both answered per chunk from nothing but the column's coordinates.
  * <p>
  * One line per road, and each line is where sections are written down as they are walked: a scout's markers become
  * waypoints here, and the road is in every world from then on without a command being run in any of them. The
@@ -45,9 +49,11 @@ public final class RoadPaint {
      * One road as generation draws it: the waypoints a surveyor walked, and how wide the strip is either side of the
      * line between them.
      * <p>
-     * A waypoint is {@code {x, z}} in blocks. Legs are straight, because a straight leg is the only shape a chunk can
-     * be asked about without knowing the ground of the chunk next door; a road that has to bend is given a waypoint at
-     * the bend, which is the same thing a surveyor writes in a notebook.
+     * A waypoint is {@code {x, y, z}} in blocks, where y is the height of the ground the scout stood on - the marker's
+     * own height, which is the height the road passes at there. Legs are straight, because a straight leg is the only
+     * shape a chunk can be asked about without knowing the ground of the chunk next door; a road that has to bend is
+     * given a waypoint at the bend, and one that has to change height is given a waypoint where it changes, since the
+     * grade between two waypoints is the line between their heights.
      */
     public record Line(String id, int half, List<int[]> waypoints) {
         public Line {
@@ -64,8 +70,8 @@ public final class RoadPaint {
      * is the width that stretch asks for (three of wild road, two where it enters a settlement, one for a spur).
      */
     public static final List<Line> LINES = List.of(
-            // A road is written as a line of blocks between the markers that establish it:
-            // new Line("camp to the ruin", 3, List.of(new int[]{4642, -3315}, new int[]{4787, -3058}))
+            // A road is written as its markers, each one's own height included:
+            // new Line("camp to the ruin", 3, List.of(new int[]{4642, 96, -3315}, new int[]{4787, 79, -3058}))
     );
 
     /**
@@ -80,28 +86,58 @@ public final class RoadPaint {
         return surface(x, z, approach(on, x, z));
     }
 
-    /** The road running through a column, or null where none does. The nearest line wins where two overlap. */
+    /**
+     * The height a road's corridor stands at in a column, or null where no road reaches it.
+     * <p>
+     * The ground under the road is cut and filled to this. The corridor is level across its width, because every column
+     * takes the height of the nearest point of the line rather than its own ground, and a ramp along its length,
+     * because between two waypoints the height is the straight line between the heights walked at them. There is no
+     * search and no heightmap read: a chunk cannot see the ground it would have to compare itself with, and a pass that
+     * guessed from the ground it could see would put the step back into the road.
+     */
+    public static Integer heightAt(int x, int z) {
+        Station on = nearest(x, z, VERGE);
+        return on == null ? null : on.height();
+    }
+
+    /** The paved road a column belongs to, or null where no pavement runs through it. */
     public static Line lineAt(int x, int z) {
-        return nearest(x, z, 0);
+        Station on = nearest(x, z, 0);
+        return on == null ? null : on.line();
+    }
+
+    /** The road whose corridor takes a column in: the pavement and the verge either side of it. */
+    private static Line clearingAt(int x, int z) {
+        Station on = nearest(x, z, VERGE);
+        return on == null ? null : on.line();
     }
 
     /**
-     * The road whose corridor takes a column in: the pavement and the verge either side of it, which is what is kept
-     * clear and not what is paved.
+     * A column's place on the nearest road: the line, how far it stands from the centre, and the height the road
+     * passes at there.
+     * <p>
+     * The legs are segments between waypoints, so the distance is measured to the segment rather than to a ray - a
+     * road's width is measured from the road, not from the corner it started at - and the height is read at the same
+     * point, so a column beside a bend takes the height of the bend it stands beside.
      */
-    private static Line clearingAt(int x, int z) {
-        return nearest(x, z, VERGE);
-    }
-
-    /** The nearest line within {@code slack} blocks of a column, or null when none is that close. */
-    private static Line nearest(int x, int z, int slack) {
-        Line best = null;
-        double nearest = Double.MAX_VALUE;
+    private static Station nearest(int x, int z, int slack) {
+        Station best = null;
         for (Line line : LINES) {
-            double away = distance(line, x, z);
-            if (away > line.half() + slack || away >= nearest) continue;
-            nearest = away;
-            best = line;
+            double reach = line.half() + slack;
+            List<int[]> points = line.waypoints();
+            for (int index = 1; index < points.size(); index++) {
+                int[] from = points.get(index - 1);
+                int[] to = points.get(index);
+                double dx = to[0] - from[0];
+                double dz = to[2] - from[2];
+                double length = dx * dx + dz * dz;
+                double along = length == 0.0D ? 0.0D
+                        : Math.clamp(((x - from[0]) * dx + (z - from[2]) * dz) / length, 0.0D, 1.0D);
+                double away = Math.hypot(x - (from[0] + dx * along), z - (from[2] + dz * along));
+                if (away > reach) continue;
+                if (best != null && away >= best.away()) continue;
+                best = new Station(line, away, (int) Math.round(from[1] + (to[1] - from[1]) * along));
+            }
         }
         return best;
     }
@@ -110,31 +146,9 @@ public final class RoadPaint {
     private static boolean approach(Line line, int x, int z) {
         List<int[]> points = line.waypoints();
         for (int[] end : List.of(points.getFirst(), points.getLast())) {
-            if (Math.hypot(x - end[0], z - end[1]) <= APPROACH) return true;
+            if (Math.hypot(x - end[0], z - end[2]) <= APPROACH) return true;
         }
         return false;
-    }
-
-    /**
-     * How far a column stands from a line's centre, in blocks: the nearest point of the nearest leg.
-     * <p>
-     * The legs are grid lines between waypoints, so the distance is the perpendicular to a segment rather than to a
-     * ray - a road's width is measured from the road, not from the corner it started at.
-     */
-    private static double distance(Line line, int x, int z) {
-        List<int[]> points = line.waypoints();
-        double best = Double.MAX_VALUE;
-        for (int index = 1; index < points.size(); index++) {
-            int[] from = points.get(index - 1);
-            int[] to = points.get(index);
-            double dx = to[0] - from[0];
-            double dz = to[1] - from[1];
-            double length = dx * dx + dz * dz;
-            double along = length == 0.0D ? 0.0D
-                    : Math.clamp(((x - from[0]) * dx + (z - from[1]) * dz) / length, 0.0D, 1.0D);
-            best = Math.min(best, Math.hypot(x - (from[0] + dx * along), z - (from[1] + dz * along)));
-        }
-        return best;
     }
 
     /**
@@ -222,5 +236,9 @@ public final class RoadPaint {
         int value = x * 374761393 + z * 668265263;
         value = (value ^ (value >>> 13)) * 1274126177;
         return value ^ (value >>> 16);
+    }
+
+    /** Where a column stands on its road: the line, its distance from the centre, and the road's height there. */
+    private record Station(Line line, double away, int height) {
     }
 }

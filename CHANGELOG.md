@@ -1235,6 +1235,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   in any world; water is skipped, since a crossing is a bridge's or a ford's business. The table starts empty: a
   section becomes a line once its markers are walked and its ground settled, and the two chapter roads already laid
   keep the pass until then, because a painted line cannot cut a shelf into a hillside.
+- **A generated road cuts its own shelf instead of only painting the ground.** Waypoints now carry the height walked at
+  them, so a line has a grade of its own: the corridor is cut and filled to it - level across its width, a ramp along
+  its length - and the road surface is laid at that height, with the carvers, the features and the structure sites all
+  reading the same shelf. A road whose grade would stand at or under the waterline is left to the map, since crossing
+  water is a ford's or a bridge's business.
 - **A generated road's corridor is cleared with two blocks of verge either side.** A trunk one block off the pavement
   was keeping its trunk and losing only the crown that overhung the road, which left a bare pole at the verge; the
   cleared corridor is now the road's width plus two, and the verge is cleared without being paved.
