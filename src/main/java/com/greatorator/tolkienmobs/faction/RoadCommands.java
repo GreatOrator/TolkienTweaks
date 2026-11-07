@@ -89,6 +89,11 @@ public final class RoadCommands {
 
     /** How far a pillar may be drawn down before the pass gives up on finding a bed, in blocks. */
     private static final int PILLAR_FLOOR = 48;
+    /** The four sides a terrace's step could face, which are the four sides a lip is drawn on. */
+    private static final int[][] BESIDE = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    /** Which of the bridge's two templates a planned piece is: the end of the span, or a middle between the ends. */
+    private static final int END_PIECE = 0;
+    private static final int MIDDLE_PIECE = 1;
 
     /** How close the ground has to be to the walls to count as the settlement's own ground, in blocks. */
     private static final int TOWN_BAND = 16;
@@ -197,8 +202,23 @@ public final class RoadCommands {
 
     /** How many columns of the sweep and the pillars one step may take. */
     private static final int COLUMNS_PER_STEP = 12;
-    /** How many stations of a graded road one step may lay. */
-    private static final int STATIONS_PER_STEP = 8;
+    /**
+     * How many columns of the graded roads one step may lay, shared between the two roads of a pass.
+     * <p>
+     * A station is the road's own band - seven columns across wild, five paved, eleven at a hairpin's apron - and
+     * every column of it may be cut or filled up to {@link #CUT_FILL} deep and cleared of canopy above. Eight
+     * stations was therefore up to a thousand columns and twelve thousand block writes in one tick; a budget of
+     * columns is the same road laid no more than a few hundred columns worth at a time.
+     */
+    private static final int PAVING_PER_STEP = 256;
+    /**
+     * How many laid columns one step may walk for a step between terraces.
+     * <p>
+     * The lip pass is the one that used to take the whole road at once: every terrace of two graded roads, tens of
+     * thousands of columns, in the tick after the last station. Four lookups a column is cheap work, but not that
+     * much of it at once.
+     */
+    private static final int LIPS_PER_STEP = 1024;
     /** How many candidate blocks of the descent one step may settle. */
     private static final int SEARCH_PER_STEP = 4096;
     /**
@@ -222,10 +242,12 @@ public final class RoadCommands {
      * <p>
      * The hand wants the road and gets it in one call; a world dressing itself has a tick, and a tick cannot carry
      * the sweep of the span, six templates, fifty pillars, a hundred and twenty thousand candidate blocks and two
-     * graded roads at once. So the pass is a cursor: twelve columns of sweep, then the bridge in one step - six
-     * templates is a step, not a schedule - twelve columns of pillars, four thousand settled candidates of the
-     * search, then eight stations of the approach and eight of the far side. Nothing here changes what the pass
-     * does, only when it does it.
+     * graded roads at once. So the pass is a cursor: twelve columns of sweep, one bridge piece a step, twelve columns
+     * of pillars, four thousand settled candidates of the search, then a few hundred columns of the graded roads and a
+     * thousand of their lips. Which is the same budget each stage has always had, measured in columns walked rather
+     * than in stations and pieces: a piece is a whole template and a station a band of up to a hundred and twenty-one
+     * columns, so counting those was counting the wrong thing. Nothing here changes what the pass does, only when it
+     * does it.
      */
     static final class RoadJob {
         private final Route route;
@@ -237,6 +259,8 @@ public final class RoadCommands {
         private int pieces;
         private int pillarsDrawn;
         private int pillarX;
+        /** The bridge's pieces, east end first; built on the stage's first step and stood one a step after it. */
+        private List<int[]> bridge;
         private Descent descent;
         private List<int[]> approach;
         private List<int[]> exit;
@@ -289,8 +313,9 @@ public final class RoadCommands {
                     if (swept > span.eastBankX() + 1) stage = Stage.BRIDGE;
                 }
                 case BRIDGE -> {
-                    pieces = bridge(level, span);
-                    stage = Stage.PILLARS;
+                    if (bridge == null) bridge = bridgePlan(level, span);
+                    if (pieces < bridge.size()) stand(level, span, bridge.get(pieces++));
+                    else stage = Stage.PILLARS;
                 }
                 case PILLARS -> {
                     int upto = Math.min(span.eastBankX(), pillarX + COLUMNS_PER_STEP - 1);
@@ -303,16 +328,20 @@ public final class RoadCommands {
                     if (!descent.step(level, SEARCH_PER_STEP)) align(level);
                 }
                 case GRADE -> {
-                    if (graded.step(level, STATIONS_PER_STEP)) return true;
-                    if (far != null && far.step(level, STATIONS_PER_STEP)) return true;
-                    stage = Stage.STEPS;
+                    int budget = PAVING_PER_STEP;
+                    if (graded != null) budget = graded.pave(level, budget);
+                    if (far != null) budget = far.pave(level, budget);
+                    if ((graded == null || graded.laid()) && (far == null || far.laid())) stage = Stage.STEPS;
                 }
                 case STEPS -> {
-                    steps(level, graded.tops);
-                    if (far != null) steps(level, far.tops);
-                    done = new Road(cleared, pieces, pillarsDrawn, approach.size(), searched,
-                            graded.summary(), far == null ? new int[6] : far.summary());
-                    return false;
+                    int budget = LIPS_PER_STEP;
+                    if (graded != null) budget = graded.lips(level, budget);
+                    if (far != null) budget = far.lips(level, budget);
+                    if ((graded == null || graded.lipped()) && (far == null || far.lipped())) {
+                        done = new Road(cleared, pieces, pillarsDrawn, approach.size(), searched,
+                                graded.summary(), far == null ? new int[6] : far.summary());
+                        return false;
+                    }
                 }
             }
             return true;
@@ -477,21 +506,24 @@ public final class RoadCommands {
     }
 
     /**
-     * Stands the two ends and the middles between them, east end turned about so its abutment faces the city.
+     * The bridge's pieces in the order they are stood, east end first and west end last, each as x, y, z, rotation
+     * and the kind of piece it is.
+     * <p>
+     * The two ends and the middles between them, east end turned about so its abutment faces the city.
      * <p>
      * A turned template is anchored at its own far corner, not its near one: the placement settings rotate
      * about the position handed in, so a nine-wide piece turned through half a circle occupies the nine columns
      * ending at that position rather than the nine starting from it. The east end is therefore anchored on
      * 5055 and -3071, its own north-east corner, and the middles follow from that corner east to west.
      */
-    private static int bridge(ServerLevel level, Route.Crossing route) throws IOException {
+    private static List<int[]> bridgePlan(ServerLevel level, Route.Crossing route) throws IOException {
         StructureTemplate end = template(level, route.endPiece());
         StructureTemplate middle = template(level, route.middlePiece());
         int z0 = route.bridgeZ() - route.half();
         int endWide = end.getSize().getX();
-
-        lay(level, end, new BlockPos(route.eastBankX(), route.endBase(), route.bridgeZ() + route.half()), Rotation.CLOCKWISE_180);
-        int placed = 1;
+        List<int[]> plan = new ArrayList<>();
+        plan.add(new int[]{route.eastBankX(), route.endBase(), route.bridgeZ() + route.half(),
+                Rotation.CLOCKWISE_180.ordinal(), END_PIECE});
 
         // Each middle is anchored on its own north-east corner too, so the piece's last column is the cursor
         // itself and the next free column is one further west. Only middles that leave room for the west end
@@ -500,12 +532,23 @@ public final class RoadCommands {
         // Room for one more middle and for the west end behind it: seventeen columns, not eighteen. Asking
         // for eighteen dropped the last middle and left a gap of open water in front of the far abutment.
         while (cursor - route.westBankX() + 1 >= middle.getSize().getX() + endWide) {
-            lay(level, middle, new BlockPos(cursor - middle.getSize().getX() + 1, route.bridgeBase(), z0), Rotation.NONE);
+            plan.add(new int[]{cursor - middle.getSize().getX() + 1, route.bridgeBase(), z0,
+                    Rotation.NONE.ordinal(), MIDDLE_PIECE});
             cursor -= middle.getSize().getX();
-            placed++;
         }
-        lay(level, end, new BlockPos(route.westBankX(), route.endBase(), z0), Rotation.NONE);
-        return placed + 1;
+        plan.add(new int[]{route.westBankX(), route.endBase(), z0, Rotation.NONE.ordinal(), END_PIECE});
+        return plan;
+    }
+
+    /**
+     * One of the plan's pieces, stood where the plan puts it.
+     * <p>
+     * A piece is a whole template - nine by nine by a few blocks of timber, every one of them placed, lit and
+     * updated - so the bridge is stood a piece a step rather than as many pieces as the span takes in one tick.
+     */
+    private static void stand(ServerLevel level, Route.Crossing route, int[] piece) throws IOException {
+        StructureTemplate template = template(level, piece[4] == END_PIECE ? route.endPiece() : route.middlePiece());
+        lay(level, template, new BlockPos(piece[0], piece[1], piece[2]), Rotation.values()[piece[3]]);
     }
 
     /** One piece, with every chunk it touches opened first: a block written into a closed chunk is lost. */
@@ -753,7 +796,11 @@ public final class RoadCommands {
         private final int[] ground;
         private final double[] height;
         private final Map<Long, Integer> tops = new LinkedHashMap<>();
+        /** Every column laid, in the order it was laid; taken once the lips are asked for, not while laying. */
+        private List<Long> order;
         private int at;
+        /** How many of the laid columns the lip pass has walked. */
+        private int lipsAt;
         private int laid;
         private int cut;
         private int filled;
@@ -823,6 +870,7 @@ public final class RoadCommands {
             tag.putInt("open", open);
             tag.putInt("steepest", steepest);
             tag.putInt("cleared", cleared);
+            tag.putInt("lips", lipsAt);
             long[] drawn = new long[tops.size() * 2];
             int index = 0;
             for (Map.Entry<Long, Integer> top : tops.entrySet()) {
@@ -854,26 +902,87 @@ public final class RoadCommands {
             graded.cleared = tag.getIntOr("cleared", 0);
             long[] drawn = tag.getLongArray("tops").orElse(new long[0]);
             for (int i = 0; i + 1 < drawn.length; i += 2) graded.tops.put(drawn[i], (int) drawn[i + 1]);
+            graded.lipsAt = Math.clamp(tag.getIntOr("lips", 0), 0, graded.tops.size());
             return graded;
         }
 
-        /** Lays up to {@code stations} stations; false when the road is laid. */
-        private boolean step(ServerLevel level, int stations) {
-            if (n < 2) return false;
-            int upto = Math.min(n, at + stations);
-            for (; at < upto; at++) {
-                lay(level, at);
+        /**
+         * Lays whole stations until the step's budget of columns is spent.
+         *
+         * @return the budget left for the other road of the pass, which is none when this one spent it all
+         */
+        private int pave(ServerLevel level, int budget) {
+            if (n < 2) return budget;
+            while (at < n && budget > 0) budget -= lay(level, at++);
+            return budget;
+        }
+
+        /** Whether every station of this road is laid. */
+        private boolean laid() {
+            return n < 2 || at >= n;
+        }
+
+        /**
+         * Turns the edge of a terrace that stands one block over the next into a bottom slab, so a step is made of
+         * two half steps. Only road columns count: a step beside a wall is the wall's business, not the road's.
+         * <p>
+         * The slab belongs to the higher column. A bottom slab fills the bottom of its cell, so in the lower column
+         * it sits a block and a half under the terrace above it: a walker drops a step and a half onto it, and then
+         * still has to jump to come back up. In the higher column it is a lip at the terrace's edge, half a block
+         * under the floor, and the terrace below the lip is the other half. Read either way along the road that is
+         * block, slab, block, slab - a stair a walker takes without breaking stride.
+         * <p>
+         * Every side of the terrace is checked. Comparing only the two positive ones put the slab on whichever side
+         * of the step happened to face the axes and none on the other two, so a diagonal step carried a sliver of
+         * slab off one corner instead of a lip along its whole edge.
+         * <p>
+         * Walked a budget of columns at a time, in the order they were laid, because the whole road at once is tens
+         * of thousands of them and the tick after the last station was paying for every one.
+         *
+         * @return the budget left for the other road of the pass
+         */
+        private int lips(ServerLevel level, int budget) {
+            List<Long> order = order();
+            int from = lipsAt;
+            int upto = Math.min(order.size(), from + budget);
+            for (; lipsAt < upto; lipsAt++) {
+                long key = order.get(lipsAt);
+                Integer top = tops.get(key);
+                if (top == null) continue;
+                int x = (int) (key >> 32);
+                int z = (int) (key & 0xFFFFFFFFL);
+                for (int[] beside : BESIDE) {
+                    Integer other = tops.get(key(x + beside[0], z + beside[1]));
+                    if (other == null || top != other + 1) continue;
+                    level.setBlock(new BlockPos(x, top, z), Blocks.COBBLESTONE_SLAB.defaultBlockState(), 2);
+                    break;
+                }
             }
-            return at < n;
+            return budget - (upto - from);
+        }
+
+        /** Whether every laid column has been looked at for a lip. */
+        private boolean lipped() {
+            return n < 2 || lipsAt >= order().size();
+        }
+
+        private List<Long> order() {
+            if (order == null) order = new ArrayList<>(tops.keySet());
+            return order;
         }
 
         private int[] summary() {
             return new int[]{laid, cut, filled, open, steepest, cleared};
         }
 
-        /** One station: its height, its width, and every column of it cut or filled to the grade. */
-        private void lay(ServerLevel level, int i) {
+        /**
+         * One station: its height, its width, and every column of it cut or filled to the grade.
+         *
+         * @return the columns the station walked, laid or left open, which is what the step's budget is spent on
+         */
+        private int lay(ServerLevel level, int i) {
             int target = Mth.floor(height[i]);
+            int counted = 0;
             if (i > 0) steepest = Math.max(steepest, Math.abs(target - Mth.floor(height[i - 1])));
             int x = line.get(i)[0], z = line.get(i)[1];
             int half = fromWalls(route, x, z) <= TRANSITION_BAND ? PAVED_HALF : WILD_HALF;
@@ -881,6 +990,7 @@ public final class RoadCommands {
             if (turning(line, i)) half += 2;
             for (int dx = -half; dx <= half; dx++) {
                 for (int dz = -half; dz <= half; dz++) {
+                    counted++;
                     int at = x + dx;
                     int into = z + dz;
                     if (half == WILD_HALF && (Math.abs(dx) == WILD_HALF || Math.abs(dz) == WILD_HALF)
@@ -942,6 +1052,7 @@ public final class RoadCommands {
                     }
                 }
             }
+            return counted;
         }
     }
 
@@ -1128,38 +1239,6 @@ public final class RoadCommands {
         }
         line.add(new int[]{toX, toZ});
         return line;
-    }
-
-    /**
-     * Turns the edge of a terrace that stands one block over the next into a bottom slab, so a step is made of
-     * two half steps. Only road columns count: a step beside a wall is the wall's business, not the road's.
-     * <p>
-     * The slab belongs to the higher column. A bottom slab fills the bottom of its cell, so in the lower column
-     * it sits a block and a half under the terrace above it: a walker drops a step and a half onto it, and then
-     * still has to jump to come back up. In the higher column it is a lip at the terrace's edge, half a block
-     * under the floor, and the terrace below the lip is the other half. Read either way along the road that is
-     * block, slab, block, slab - a stair a walker takes without breaking stride.
-     * <p>
-     * Every side of the terrace is checked. Comparing only the two positive ones put the slab on whichever side
-     * of the step happened to face the axes and none on the other two, so a diagonal step carried a sliver of
-     * slab off one corner instead of a lip along its whole edge.
-     */
-    private static int steps(ServerLevel level, Map<Long, Integer> tops) {
-        int[][] around = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-        int stepped = 0;
-        for (Map.Entry<Long, Integer> entry : tops.entrySet()) {
-            int x = (int) (entry.getKey() >> 32);
-            int z = (int) (entry.getKey() & 0xFFFFFFFFL);
-            int y = entry.getValue();
-            for (int[] beside : around) {
-                Integer other = tops.get(key(x + beside[0], z + beside[1]));
-                if (other == null || y != other + 1) continue;
-                level.setBlock(new BlockPos(x, y, z), Blocks.COBBLESTONE_SLAB.defaultBlockState(), 2);
-                stepped++;
-                break;
-            }
-        }
-        return stepped;
     }
 
     /** A column's key in the map of what this pass has laid, packed from its x and z. */

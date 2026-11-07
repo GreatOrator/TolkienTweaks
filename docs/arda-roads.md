@@ -216,7 +216,15 @@ building it belongs to, so a restart finds it laid rather than searching and gra
 A road that was stopped half-laid is carried the same way: the pass writes its own stage, the alignment the search
 found, the grade the profile settled and how far it is laid at every turn of the pass and every few steps between, so
 the next start continues the road instead of sweeping the bridge and cutting the shelf over again - and a world stopped
-between two writes re-lays only the few stations those steps had reached. The search is the one stage that is not carried -
+between two writes re-lays only the few stations those steps had reached. A pass is stepped, not run: a world dressing itself has one tick at a time, and no tick carries a whole bridge.
+Each stage therefore works to a budget of columns rather than to a stage's worth of work - twelve columns of sweep or
+pillars, one bridge piece, four thousand settled candidates of the search, two hundred and fifty-six columns of the
+graded roads shared between the two of them, a thousand columns of terraces walked for lips. A piece is a whole
+template of some five hundred blocks and a station a band of up to a hundred and twenty-one columns, so counting them
+was counting the wrong thing: the bridge used to be stood in a single tick and the lips walked in the tick after the
+last station, both of them tens of thousands of block writes at once.
+
+The search is the one stage that is not carried -
 its state is a hundred thousand candidate blocks - so a world stopped inside it searches again, and everything after
 it is picked up where it was left.
 

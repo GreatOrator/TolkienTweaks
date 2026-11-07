@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- **A road's progress is written at the turns of a pass, not every tick.** The snapshot carries a terrace for every
+- **Every stage of a road pass works to a budget of columns, so no tick stands a whole bridge.** The bridge was stood
+  in one step - ten templates, some five thousand blocks - and the lip pass walked every terrace of both roads in the
+  tick after the last station, while a graded step laid eight bands of up to a hundred and twenty-one columns each.
+  The bridge is now a piece a step, the lips a thousand columns a step with a cursor carried in the save, and the two
+  graded roads share two hundred and fifty-six columns a step between them.
   column laid, so writing it once per step cost more than the road did; it is now written when a stage is finished, when
   the road is down, and every eight steps between. A world stopped between two writes re-lays the few stations those
   steps had reached, which are the same stations they were the first time.
