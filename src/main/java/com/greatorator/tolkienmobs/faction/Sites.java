@@ -415,6 +415,8 @@ public final class Sites extends SavedData {
     private static final Map<UUID, Site> SITES = new HashMap<>();
     /** Players whose site has already been complained about, so a refusal is said once, not every tick. */
     private static final Set<UUID> UNBUILDABLE = new HashSet<>();
+    /** The world's own buildings already checked against the ground this session, so a proof is walked once. */
+    private static final Set<String> CHECKED = new HashSet<>();
     private static final Sites NO_SERVER = new Sites(false);
 
     /**
@@ -461,6 +463,7 @@ public final class Sites extends SavedData {
         if (fresh) {
             SITES.clear();
             STOOD.clear();
+            CHECKED.clear();
         }
     }
 
@@ -547,6 +550,41 @@ public final class Sites extends SavedData {
         return null;
     }
 
+    /**
+     * Whether a building the record says is standing is still in the world.
+     * <p>
+     * A sample of the template's own blocks is compared with what is at those blocks now, and a majority is enough:
+     * this answers whether a camp is there, not whether anybody has been inside it. Positions come from the template
+     * asked at its own origin, offset by the corner the site's centre was recorded from, so the comparison is between
+     * whole blocks rather than between block states.
+     * <p>
+     * Nothing is decided from chunks that are not loaded - an answer of "gone" has to be an answer and not a guess -
+     * and a template that will not read leaves the record trusted.
+     */
+    private static boolean standingBlocks(ServerLevel level, Site site) {
+        Identifier id = Identifier.tryParse(site.structure());
+        if (id == null) return true;
+        StructureTemplate template = level.getStructureManager().get(id).orElse(null);
+        if (template == null) return true;
+        Vec3i size = template.getSize();
+        BlockPos corner = site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
+        if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(size.getX() - 1, 0, size.getZ() - 1))) {
+            return true;
+        }
+        List<StructureTemplate.StructureBlockInfo> blocks =
+                template.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), (Block) null);
+        if (blocks.isEmpty()) return true;
+        int stride = Math.max(1, blocks.size() / 48);
+        int seen = 0;
+        int found = 0;
+        for (int index = 0; index < blocks.size(); index += stride) {
+            StructureTemplate.StructureBlockInfo info = blocks.get(index);
+            seen++;
+            if (level.getBlockState(corner.offset(info.pos())).is(info.state().getBlock())) found++;
+        }
+        return seen == 0 || found * 2 >= seen;
+    }
+
     /** Where this player's site is, or null when they have not been sent to one. */
     @Nullable
     public static Site siteOf(ServerPlayer player) {
@@ -586,7 +624,18 @@ public final class Sites extends SavedData {
         if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
         for (Scenery raised : SCENERY) {
             String structure = raised.structure();
-            if (standing(level, structure) != null) continue;
+            Site standing = standing(level, structure);
+            if (standing != null) {
+                if (away(player, standing) > BUILD_REACH) continue;
+                // The record is not the ground. A world whose chunks were regenerated or rolled back - a save copied
+                // without its region files is how this was found - keeps a site saying the camp stands and loses the
+                // camp, and then every approach dresses a building that is not there: a keeper in open ground beside
+                // a stone. The templaye's own blocks are compared against the ground once a session, and a building
+                // that is mostly gone is forgotten and raised again from the pin.
+                if (!CHECKED.add(structure) || standingBlocks(level, standing)) continue;
+                SITES.remove(standing.player());
+                instance(level).setDirty();
+            }
             UUID key = sceneryId(structure);
             Site site = SITES.get(key);
             if (site == null || !level.dimension().equals(site.dimension())) {
