@@ -211,7 +211,8 @@ the road goes, and says nothing about a height that has to survive a change of t
 A line is for a road with no build behind it at either end. A build's own road is a route: `Roads` holds one per build,
 `RoadCommands` searches and grades it, and the world runs that pass for whichever build a route has been walked for as
 soon as the build is standing - the same builder that laid the valley's road, so a road between two buildings never
-needs a height written down for it.
+needs a height written down for it. That the road is down is written into the world's own site record beside the
+building it belongs to, so a restart finds it laid rather than searching and grading the same ground again.
 
 What it still cannot do is cross water: a road whose grade would stand at or under the waterline is left to the map,
 since a crossing is a ford's or a bridge's business. And a line's grade is only as good as the waypoints written on

@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- **A build's road is laid once the build is standing.** Each build's two ends were already a route and the pass
+- **A laid road stays laid.** Which builds had their road down was kept in memory, so every start laid every route
+  again, once for each build a player walked up to - a contour search and four hundred blocks of grading apiece. The
+  answer now lives in the world's site record beside the building it belongs to, and a build with no route writes
+  nothing down, so the day a route is walked the world can still lay it.
   that laid the valley's road was already written, but only the city's own dressing ever started it - so no camp's road
   was ever laid by anybody. The world now plans a build's pass the first time a player is near enough for the build's
   ground to be loaded and steps it on each approach after that, and Elladan's camp's route ends where the valley road

@@ -423,8 +423,6 @@ public final class Sites extends SavedData {
     private static final Map<UUID, Site> SITES = new HashMap<>();
     /** The road passes being laid for the world's own builds, by the key of the site that owns each. */
     private static final Map<UUID, RoadCommands.RoadJob> ROADS = new HashMap<>();
-    /** Sites whose road is down or was not walked for them, so a finished pass is not started again this session. */
-    private static final Set<UUID> ROADED = new HashSet<>();
     /** Players whose site has already been complained about, so a refusal is said once, not every tick. */
     private static final Set<UUID> UNBUILDABLE = new HashSet<>();
     /** The world's own buildings already checked against the ground this session, so a proof is walked once. */
@@ -441,7 +439,7 @@ public final class Sites extends SavedData {
      * that, so a distance to it always means the same thing.
      */
     public record Site(UUID player, ResourceKey<Level> dimension, BlockPos centre, String structure,
-                       boolean keeper, boolean built, boolean found, String country) {
+                       boolean keeper, boolean built, boolean found, String country, boolean road) {
         static final Codec<Site> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 UUIDUtil.CODEC.fieldOf("player").forGetter(Site::player),
                 ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(Site::dimension),
@@ -450,16 +448,28 @@ public final class Sites extends SavedData {
                 Codec.BOOL.optionalFieldOf("keeper", false).forGetter(Site::keeper),
                 Codec.BOOL.optionalFieldOf("built", false).forGetter(Site::built),
                 Codec.BOOL.optionalFieldOf("found", false).forGetter(Site::found),
-                Codec.STRING.optionalFieldOf("country", "").forGetter(Site::country)
+                Codec.STRING.optionalFieldOf("country", "").forGetter(Site::country),
+                Codec.BOOL.optionalFieldOf("road", false).forGetter(Site::road)
         ).apply(instance, Site::new));
 
         Site builtAt(BlockPos middle) {
-            return new Site(player, dimension, middle, structure, keeper, true, found, country);
+            return new Site(player, dimension, middle, structure, keeper, true, found, country, road);
         }
 
         /** The same site, noted as walked into. Named apart from the accessor it shadows. */
         Site markedFound() {
-            return new Site(player, dimension, centre, structure, keeper, built, true, country);
+            return new Site(player, dimension, centre, structure, keeper, built, true, country, road);
+        }
+
+        /**
+         * The same site, noted as having its road down.
+         * <p>
+         * Written with the building rather than kept in memory, because laying a road twice is not free: a pass
+         * searches the contours over the ground and grades four hundred blocks of it, and the world would do that
+         * again on every start, once for each build a player walked up to.
+         */
+        Site roaded() {
+            return new Site(player, dimension, centre, structure, keeper, built, found, country, true);
         }
     }
 
@@ -527,7 +537,7 @@ public final class Sites extends SavedData {
         Site standing = standing(level, structure);
         if (standing != null) {
             SITES.put(player.getUUID(), new Site(player.getUUID(), standing.dimension(), standing.centre(),
-                    structure, keeper, true, false, standing.country()));
+                    structure, keeper, true, false, standing.country(), false));
             store.setDirty();
             return true;
         }
@@ -537,7 +547,7 @@ public final class Sites extends SavedData {
         ArdaSurvey.Ground surveyed = survey(level, player, structure);
         if (surveyed != null) {
             SITES.put(player.getUUID(), new Site(player.getUUID(), level.dimension(),
-                    surveyed.centre(), structure, keeper, false, false, surveyed.country().name()));
+                    surveyed.centre(), structure, keeper, false, false, surveyed.country().name(), false));
             store.setDirty();
             return true;
         }
@@ -552,7 +562,7 @@ public final class Sites extends SavedData {
                 0,
                 facing.getStepZ() * reach + across.getStepZ() * side);
         SITES.put(player.getUUID(), new Site(player.getUUID(), level.dimension(), centre, structure,
-                keeper, false, false, ""));
+                keeper, false, false, "", false));
         store.setDirty();
         return true;
     }
@@ -677,19 +687,16 @@ public final class Sites extends SavedData {
      * a little on each approach after that, because a road four hundred blocks long is not one tick's work.
      */
     private static void road(ServerLevel level, Site site) {
+        if (site.road()) return;
         UUID key = site.player();
-        if (ROADED.contains(key)) return;
         Vec3i size = footprint(level, site.structure());
         if (size == null) return;
         BlockPos corner = site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
         Route route = Roads.forGround(corner.getX(), corner.getZ(),
                 corner.getX() + size.getX() - 1, corner.getZ() + size.getZ() - 1);
-        if (route == null) {
-            // A build nobody has walked a road for gets none: a road laid to another build's numbers is worse than
-            // ground with no way down it.
-            ROADED.add(key);
-            return;
-        }
+        // A build nobody has walked a road for gets none: a road laid to another build's numbers is worse than ground
+        // with no way down it. Nothing is written down for that, so the day a route is walked the world can lay it.
+        if (route == null) return;
         RoadCommands.RoadJob job = ROADS.get(key);
         try {
             if (job == null) {
@@ -698,10 +705,12 @@ public final class Sites extends SavedData {
             }
             if (job.step(level)) return;
         } catch (IOException unreadable) {
-            // A road that could not be laid is the ground's business; it is not tried again this session.
+            // A pass that cannot run is not retried on every approach; the record says the road is the ground's now.
         }
         ROADS.remove(key);
-        ROADED.add(key);
+        // The record as it stands now, not as this step found it: dressing may have moved the build's centre since.
+        SITES.put(key, SITES.getOrDefault(key, site).roaded());
+        instance(level).setDirty();
     }
 
     /**
@@ -753,7 +762,7 @@ public final class Sites extends SavedData {
                 ArdaSurvey.Ground ground = survey(level, player, structure);
                 if (ground == null) continue;
                 site = new Site(key, level.dimension(), ground.centre(), structure, raised.keeper(), false,
-                        false, ground.country().name());
+                        false, ground.country().name(), false);
                 SITES.put(key, site);
                 instance(level).setDirty();
             }
