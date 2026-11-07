@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- **A road pass logs what each stage cost.** Every stage now reports the steps it took and the wall time of a step when
+- **A camp the world raises keeps its keeper and its road.** The scenery pass continued past every building whose
+  ground it had already proved, and a site is standing from the moment it is raised, so no world's own camp was ever
+  dressed or given a road: Elladan's camp stood empty and no road left its door. A standing build is now dressed and
+  roaded on every approach, and a keeper is stood in the first place his column will actually hold him - the pin's
+  own layer is where the scout stood, four blocks under the camp's floor.
   it finishes, and the pass reports the same of itself when the road is down, so the step budgets can be checked
   against real ticks instead of against a count of columns.
   in one step - ten templates, some five thousand blocks - and the lip pass walked every terrace of both roads in the

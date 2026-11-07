@@ -419,6 +419,8 @@ public final class Sites extends SavedData {
     public static final String BODY_TAG = "tolkienmobs:fallen_steed";
     /** How close to a camp's fire another keeper counts as already minding it, in blocks. */
     private static final int KEEPER_REACH = 32;
+    /** How far above a written spot a body is looked for, in blocks: a camp's floor sits above its door's ground. */
+    private static final int BODY_LIFT = 8;
 
     private static final Map<UUID, Site> SITES = new HashMap<>();
     /** The road passes being laid for the world's own builds, by the key of the site that owns each. */
@@ -736,10 +738,18 @@ public final class Sites extends SavedData {
                 if (away(player, standing) > BUILD_REACH) continue;
                 // The record is not the ground. A world whose chunks were regenerated or rolled back - a save copied
                 // without its region files is how this was found - keeps a site saying the camp stands and loses the
-                // camp, and then every approach dresses a building that is not there: a keeper in open ground beside
-                // a stone. The templaye's own blocks are compared against the ground once a session, and a building
-                // that is mostly gone is forgotten and raised again from the pin.
-                if (!CHECKED.add(structure) || standingBlocks(level, standing)) continue;
+                // camp. The template's own blocks are compared against the ground once a session, and a building that
+                // is mostly gone is forgotten and raised again from the pin.
+                if (!CHECKED.add(structure) || standingBlocks(level, standing)) {
+                    // What a build carries besides its walls: the man at the fire, the animal at the ruin, the stone
+                    // and the way down to it. Each of the three refuses to be placed twice, so asking on every
+                    // approach cannot multiply them. Asking has to happen here, on the path a standing build takes -
+                    // this used to continue past it, and a site is standing from the moment it is raised, so every
+                    // camp in the world stood with no keeper, no stone and no road ever laid from its door.
+                    dress(level, standing, player);
+                    road(level, standing);
+                    continue;
+                }
                 SITES.remove(standing.player());
                 instance(level).setDirty();
             }
@@ -1517,8 +1527,11 @@ public final class Sites extends SavedData {
         // road arrives on, rather than on the far side of the walls - which was the answer for a fair-weather
         // tent and put the keeper of Elladan's camp behind it.
         BlockPos marked = marker(level, structure + KEEPER_PIN);
-        BlockPos stand = marked != null ? marked
+        BlockPos stand = marked != null ? room(level, marked)
                 : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, outside(corner, size, seat));
+        // A third marker in a row is an NPC's spot, so the ammolite it was written with is not left at the man's
+        // feet: the body is what belongs there.
+        if (level.getBlockState(stand).is(TolkienBlocks.BLOCK_AMMOLITE.get())) level.removeBlock(stand, false);
         // One keeper per fire, whichever player raised the camp. A site belongs to the player who took
         // the page, but the ground it names is the same for everybody, so two players arriving at the
         // same camp both run the build - and without this each of them would put a second man at it.
@@ -1534,6 +1547,29 @@ public final class Sites extends SavedData {
         keeper.setCustomName(named != null ? Component.literal(named) : QuestPool.giverName(level.getRandom()));
         keeper.setCustomNameVisible(true);
         level.addFreshEntity(keeper);
+    }
+
+    /**
+     * The lowest place near a written spot where a body can actually be stood: air at its feet and at its head, and
+     * ground under them both.
+     * <p>
+     * A pin's y is the surface the scout stood on rather than a measurement of the ground, and a raised camp is
+     * brought to its own floor - Elladan's camp sits four blocks above the ground outside its door - so a keeper put
+     * on the pin's own layer stands inside the fill and suffocates before anybody walks up to him. The column is
+     * walked upward instead: inside the door that is the camp's floor, and on open ground it is where the marker
+     * already was.
+     */
+    private static BlockPos room(ServerLevel level, BlockPos at) {
+        for (int up = 0; up <= BODY_LIFT; up++) {
+            BlockPos feet = at.above(up);
+            if (!level.hasChunkAt(feet)) return at;
+            BlockState floor = level.getBlockState(feet.below());
+            if (floor.isAir() || !floor.getFluidState().isEmpty()) continue;
+            if (!level.getBlockState(feet).canBeReplaced()) continue;
+            if (!level.getBlockState(feet.above()).canBeReplaced()) continue;
+            return feet;
+        }
+        return at;
     }
 
     /**
