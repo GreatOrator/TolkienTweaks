@@ -62,10 +62,10 @@ cell; a location with neither pin nor cell searches out from its country's middl
 | 9 | the three caves (one page, three chambers) | `build cave`, `cave2`, `cave3` | `17,15` = `3840, -2304`; `18,16` = `4352, -1792`; `19,16` = `4864, -1792` | each 56 by 56, 36 high | three separate hillsides; a crag is cut rock and seats **nine to ten blocks into** the ground, so it wants a slope rather than a flat field |
 | 10 | Barachen's fire | `place barachen` | Trollshaws, cell `18,14` - `4352, -2816` | a 32-block circle | level ground **south of the road** |
 
-Elladan's camp is the one location here already placed for every world: `PINNED_BUILDS` carries it as a
-generation anchor at `4864, 0, -3328`, the middle of Thorenhad's own cell, so a fresh world grows the camp
-there whether anybody scouted it or not. A `/tmpin build camp` pin is still what a page-raised camp obeys, so
-pin it only if you want the camp somewhere other than that cell's middle.
+Elladan's camp is raised in every world by `Sites` rather than by worldgen: it is planted at its pin and stood
+when a player comes near (see `arda-pinning.md`), so a fresh world has the camp at `4634, 92, -3314` and not at
+a cell middle. The datagen's `PINNED_BUILDS` is empty now: the anchor that used to put a second camp at
+`4864, 0, -3328` is retired.
 
 Barachen's camp - `build camp` is Elladan's, the other one is `tolkienmobs:key_structures/barachans_camp`,
 16 by 16 by 9 - has no page raising it yet. Page 10 walks to the **name**, so `place barachen` is the pin

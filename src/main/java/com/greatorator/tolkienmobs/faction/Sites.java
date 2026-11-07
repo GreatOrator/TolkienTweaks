@@ -173,8 +173,19 @@ public final class Sites extends SavedData {
      * asking: the world plants it once, at the pin the scout walked, and stands it when a player comes close enough
      * for its chunks to be loaded.
      */
-    private static final List<String> SCENERY =
-            List.of(ELLADAN_CAMP, WOOD_RUIN, TROLL_CAVE, TROLL_CAVE_2, TROLL_CAVE_3);
+    /** One of the world's own buildings, and whether it stands with one of the mod's folk at it. */
+    private record Scenery(String structure, boolean keeper) {
+    }
+
+    private static final List<Scenery> SCENERY = List.of(
+            // Elladan's camp is a camp, and a camp is a fire with somebody minding it: the keeper is what a
+            // player who arrives before any page finds at the place. A crag is a hill with a way in, and the
+            // ruin's own body is the horse the rider's page brings with it rather than a keeper of the world's.
+            new Scenery(ELLADAN_CAMP, true),
+            new Scenery(WOOD_RUIN, false),
+            new Scenery(TROLL_CAVE, false),
+            new Scenery(TROLL_CAVE_2, false),
+            new Scenery(TROLL_CAVE_3, false));
     /**
      * The country each landmark stands in, where the books put it rather than where the page was taken.
      * <p>
@@ -292,18 +303,29 @@ public final class Sites extends SavedData {
      * on, and ten is as deep as it is ever set, which is the one-block error the shape of the ground
      * under a footprint this size is allowed to leave.
      */
-    private static final Seat SUNK_CRAG = new Seat(9, 10);
+    private static final Seat SUNK_CRAG = new Seat(9, 10, 0, 0, -1);
     /** A building that stands on its ground rather than in it: hall, tent, house, arena. */
-    private static final Seat ON_SURFACE = new Seat(0, SEAT_SINK);
+    private static final Seat ON_SURFACE = new Seat(0, SEAT_SINK, 0, 0, -1);
     /**
-     * Seats for the builds that ask for one of their own, by structure.
+     * Where each cut build's doorway is, in its own template's blocks: the column on the footprint's edge, and
+     * the layer its sill sits on. A building is the only thing that knows which of the gaps in its walls is the
+     * way in, so the numbers are read from the templates and written down here rather than guessed at build time.
      * <p>
-     * Elladan's camp is cut with its floor two blocks above its own base, so seated the way every other
-     * building is seated its doorway stands two above the ground a player walks up to it over - which is what
-     * the scouted camp showed, and what the doorway marked level with the ground beside it did not. It is sunk by
-     * that step instead, which puts the floor's own surface at the surface of the ground it stands on.
+     * The seat is then measured off that column: the ground the door opens onto is asked for, and the sill is put
+     * level with it, so a player who walks up to the building steps into its floor rather than up onto it. A
+     * building with no entry here keeps the older rule - half the drop under the footprint, within its own seat -
+     * and the crags keep the one that buries them.
+     * <p>
+     * The castle and the arena are read from the lowest gap on their edge, which is the front step of both and
+     * not something either template names; if one of them sits a layer off, its numbers are the line to fix.
      */
-    private static final Map<String, Seat> SEATS = Map.of(ELLADAN_CAMP, new Seat(2, SEAT_SINK));
+    private static final Map<String, Seat> DOORWAYS = Map.of(
+            ELLADAN_CAMP, new Seat(0, SEAT_SINK, 8, 0, 1),
+            "tolkienmobs:key_structures/barachans_camp", new Seat(0, SEAT_SINK, 8, 0, 1),
+            WOOD_RUIN, new Seat(0, SEAT_SINK, 0, 0, 0),
+            WILD_TENT, new Seat(0, SEAT_SINK, 0, 3, 0),
+            BOSS_CASTLE, new Seat(0, SEAT_SINK, 31, 45, 2),
+            BOSS_ARENA, new Seat(0, SEAT_SINK, 0, 0, 1));
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
@@ -479,15 +501,16 @@ public final class Sites extends SavedData {
     private static void scenery(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
         if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
-        for (String structure : SCENERY) {
+        for (Scenery raised : SCENERY) {
+            String structure = raised.structure();
             if (standing(level, structure) != null) continue;
             UUID key = sceneryId(structure);
             Site site = SITES.get(key);
             if (site == null || !level.dimension().equals(site.dimension())) {
                 ArdaSurvey.Ground ground = survey(level, player, structure);
                 if (ground == null) continue;
-                site = new Site(key, level.dimension(), ground.centre(), structure, false, false, false,
-                        ground.country().name());
+                site = new Site(key, level.dimension(), ground.centre(), structure, raised.keeper(), false,
+                        false, ground.country().name());
                 SITES.put(key, site);
                 instance(level).setDirty();
             }
@@ -689,7 +712,11 @@ public final class Sites extends SavedData {
      * {@code cap}. A house asks for no floor and takes half the drop under it; the cave asks to be
      * buried by its grass line rather than seated on its base.
      */
-    private record Seat(int floor, int cap) {
+    private record Seat(int floor, int cap, int doorX, int doorZ, int doorY) {
+        /** Whether this building knows where its door is, and is seated by that ground rather than by its own. */
+        boolean doorway() {
+            return doorY >= 0;
+        }
     }
 
     /**
@@ -708,9 +735,8 @@ public final class Sites extends SavedData {
     }
 
     private static Seat seatFor(String structure) {
-        Seat told = SEATS.get(structure);
-        if (told != null) return told;
-        return isCave(structure) ? SUNK_CRAG : ON_SURFACE;
+        Seat door = DOORWAYS.get(structure);
+        return door != null ? door : isCave(structure) ? SUNK_CRAG : ON_SURFACE;
     }
 
     /**
@@ -740,10 +766,20 @@ public final class Sites extends SavedData {
                 high = Math.max(high, height);
             }
         }
-        // Half the drop under the footprint, so the plinth it would have stood on is halved and the
-        // ground rises around its base. Bounded, because a castle on a hillside still has to keep its
-        // door above the ground it opens onto, and flat ground has nothing to sink into at all.
-        int sink = Math.min(seat.cap(), Math.max(seat.floor(), (high - low) / 2));
+        int sink;
+        if (seat.doorway()) {
+            // The doorway's own column is measured, and the template's sill laid level with what it opens
+            // onto. ground() answers with the first air over a column, so that column's surface is one below
+            // its answer, and the sill block sits on top of it.
+            int sill = ground(level, spot.getX() + seat.doorX(), spot.getZ() + seat.doorZ(), cursor);
+            if (sill == Integer.MIN_VALUE) return null;
+            sink = Math.min(seat.cap(), Math.max(0, high - (sill - 1 - seat.doorY())));
+        } else {
+            // Half the drop under the footprint, so the plinth it would have stood on is halved and the
+            // ground rises around its base. Bounded, because a castle on a hillside still has to keep its
+            // door above the ground it opens onto, and flat ground has nothing to sink into at all.
+            sink = Math.min(seat.cap(), Math.max(seat.floor(), (high - low) / 2));
+        }
         return new Plane(new BlockPos(spot.getX(), high - sink, spot.getZ()), high - low);
     }
 

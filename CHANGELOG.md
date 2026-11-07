@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **On-surface buildings are seated by their doorway.** The wood ruin, the tents, the castle and the arena - and
+  Elladan's camp, which was the same case fixed for one building - now measure the ground at the column their own
+  doorway opens onto and lay the sill level with it, so a player walks into the floor rather than up onto it. A
+  build with no entry in `DOORWAYS`, and every crag, keeps the older seat.
+- **One camp, at the pin.** The worldgen anchor that put Elladan's camp at the middle of Thorenhad's cell in every
+  world is retired - its structure, set, pool and biome tag are gone from the generated data - so the camp a world
+  holds is the one `Sites` raises at the pin the scout walked.
+- **The world's own camps stand with somebody at the fire.** A camp the world raises now plants its keeper with
+  it, the same named body a page-raised camp gets, so a player who walks to Thorenhad before any page finds
+  someone there. The crags and the ruin are still raised empty: what is at those belongs to the page.
 - **Elladan's camp sits where its door is, and level with it.** The camp's doorway was marked in the scouting
   world at 4642, 91, -3314 - the middle of the template's south face, eight blocks in from the corner it is cut
   from - so its pin moves to 4634, 92, -3314. The build's floor is also cut two blocks above its own base, which

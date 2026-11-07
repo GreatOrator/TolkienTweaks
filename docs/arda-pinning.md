@@ -57,9 +57,10 @@ ground already standing rather than a second copy.
 The planting is cheap - a pin lookup and a template's own size - and nothing is raised until the chunks are
 loaded, which is the same rule a page's own site is held to. Nothing here builds at a distance.
 
-Elladan's camp still has a worldgen anchor of its own: `PINNED_BUILDS` pins it at `4864, 0, -3328`,
-the middle of Thorenhad's cell, so a world can hold that camp as well as the one raised at the pin.
-Which of the two stays is the open question this pass leaves.
+Elladan's camp is raised only this way: the worldgen anchor it used to have at `4864, 0, -3328` is retired, so
+the camp a world holds is the one at the pin and never a second at a cell middle. A camp also stands with one of
+the mod's folk at its fire - the keeper - while the crags and the ruin are raised empty, since what is at those
+belongs to the page that sends you there.
 
 ## A pin in the world's own generation
 

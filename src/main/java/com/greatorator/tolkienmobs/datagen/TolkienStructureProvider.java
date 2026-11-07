@@ -141,14 +141,12 @@ public final class TolkienStructureProvider {
      * and everything the campaign names go on blocks a scout chose. A pinned build is one template, one anchor, the
      * biome it may stand in, and its own structure set with the placement that answers for that anchor's chunk alone.
      * <p>
-     * The anchor is a block, not a cell: a cell is the drawing's precision and a page needs the block. Thorenhad's
-     * is the middle of the cell the place is named in, which is where the survey would look for the camp anyway - the
-     * pin says it, so a world nobody has walked puts the camp there rather than where a survey happens to land.
+     * Empty now. Elladan's camp was the one entry, anchored at the middle of Thorenhad's cell, and the camp is
+     * planted by {@code Sites} at the pin the scout walked instead - so a world holds one camp, at the ground a page
+     * names, rather than a second at a cell middle no page mentions. A build that is a whole cut goes in
+     * {@link #ASSEMBLIES}; one template that genuinely belongs in every world goes here.
      */
-    public static final List<Pinned> PINNED_BUILDS = List.of(
-            new Pinned(TolkienStructures.THORENHAD_CAMP, "tolkienmobs:key_structures/elledancamp",
-                    List.of(TolkienBiomes.TROLLSHAWS), ArdaMap.centreOf(19, 13))
-    );
+    public static final List<Pinned> PINNED_BUILDS = List.of();
 
     /**
      * Builds that are a cut's worth of pieces rather than one template: the city, and anything else cut the same way.
