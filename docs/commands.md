@@ -130,18 +130,32 @@ fourth rung does to a Nazgul should not cost an afternoon.
 
 ## `/tmtp` — the quick map
 
-A jump to any of the drawing's 49 countries, so a region can be walked while no build is pinned.
+A jump to any of the drawing's 49 countries, or to any ground the world knows by name.
 
 | command | what it does |
 |---|---|
-| *(no argument)*, or `list` | Every region name, which is also what tab completion offers. |
-| `<region>` | Stands the caller in Arda at that country's middle, eight blocks over its ground - or over its water, for the three seas - moving them into the dimension from wherever they were. |
+| *(no argument)*, or `list` | Every region name, then the ground that has a name of its own. Both are what tab completion offers. |
+| `<name>` | Stands the caller in Arda, moving them into the dimension from wherever they were. A place or a build answers first, then a region. |
 
-The point is not typed: it is `ArdaMap.anchor`, the middle of the cells the country was drawn in, with the height read off the drawing itself. The table in `docs/arda-teleports.md` is the same set of points worked out by hand before the command existed, so the two agree - but only the command follows a fill that moves.
+A region is stood on at that country's middle, eight blocks over its ground - or over its water, for the
+three seas. The point is not typed: it is `ArdaMap.anchor`, the middle of the cells the country was drawn
+in, with the height read off the drawing itself. The table in `docs/arda-teleports.md` is the same set of
+points worked out by hand before the command existed, so the two agree - but only the command follows a
+fill that moves.
+
+A name is read out of the world, so it is wherever the ground actually is. `rivendell` is the place the
+world has named - the same circle `/tmplace` moves, so moving a name moves the jump with it - and
+`troll_cave` is the build's pin, named by the last word of its key
+(`tolkienmobs:key_structures/troll_cave`; the whole key is accepted too, and a name that is the whole key is
+matched before one that is only its end). A pin is stood on as given, since its y is the block the scout
+stood on, and a country is only what answers when no ground has taken the name. What it landed on is said
+back: `the place named rivendell`, `the pin tolkienmobs:key_structures/troll_cave`, `a set point` for a
+locked country, or `the middle of the country`.
 
 A country whose build is settled wants the build, not its middle. Add one line to `LOCKED` in
-`TeleportCommands` - `"bree", new BlockPos(x, y, z)` - and that name lands on the build exactly, with no
-other change anywhere. That is how the quick map becomes a map of the world rather than of the poster.
+`TeleportCommands` - `id(ArdaMap.Country.BREE), new BlockPos(x, y, z)` - and that country lands on the build
+exactly, with no other change anywhere. That is how the quick map becomes a map of the world rather than of
+the poster.
 
 ## `/tmpin` - pinning a location to the ground it was scouted on
 

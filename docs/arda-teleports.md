@@ -5,7 +5,9 @@ reference masks give that column plus eight blocks so the landing is above the g
 `/tmtp <region>` stands you on these same points without a coordinate typed - see `docs/commands.md`.
 A region whose build is settled is jumped to the build instead of to its mask point, one lock per country in
 `TeleportCommands.LOCKED`: the Trollshaws lands at **4691, 87, -3273**, Thorenhad's own ground, so a builder
-arrives in the camp rather than two hundred blocks west of it.
+arrives in the camp rather than two hundred blocks west of it. A name is answered before a region is:
+`/tmtp rivendell` is the place and `/tmtp troll_cave` is the build, read out of a world's own places and
+pins, so the table below is what a region lands on and not what a name does.
 Run them from anywhere; the dimension is `tolkienmobs:arda`. Each y is the mask height plus eight, so
 the landing is a few blocks above the ground. Minhiriath’s strip is drawn where the mask keeps only a
 narrow shelf of land, so its point is the first dry column of it rather than the middle of the patch.

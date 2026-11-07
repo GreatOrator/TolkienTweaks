@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **`/tmtp` takes a name as well as a region.** The jump read only countries, so the valley and every
+  building had to be reached by typed coordinates even though the world knows their ground. A name is now
+  looked up in the world's places and pins first - a build by the last word of its pin key, `troll_cave` -
+  and a country is only what answers when nothing has taken the name, so a name moved with `/tmplace` is
+  moved for the jump as well. What it landed on is said back.
 - **`/tmtp trollshaws` lands at Thorenhad.** The region jump used to drop a caller in the middle of the
   Trollshaws' cells, which is the drawing's answer and not the ground: the camp is settled now, so the
   country is locked to the block the scout stood on and a jump puts a builder in the camp. The table takes
