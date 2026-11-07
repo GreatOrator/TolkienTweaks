@@ -1235,6 +1235,10 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   in any world; water is skipped, since a crossing is a bridge's or a ford's business. The table starts empty: a
   section becomes a line once its markers are walked and its ground settled, and the two chapter roads already laid
   keep the pass until then, because a painted line cannot cut a shelf into a hillside.
+- **A laid road can be read back out of a save as waypoints.** `tools/road_line.py` takes the pass's own surface names,
+  groups the columns into the pieces a crossing splits them into, and prints a `RoadPaint.Line` every `--step` blocks
+  with the height of the surface - the way a walked alignment is promoted to a generated one. Gravel and coarse dirt
+  are shared with the terrain, so they are opt-in (`--wild`) rather than counted as road.
 - **A generated road cuts its own shelf instead of only painting the ground.** Waypoints now carry the height walked at
   them, so a line has a grade of its own: the corridor is cut and filled to it - level across its width, a ramp along
   its length - and the road surface is laid at that height, with the carvers, the features and the structure sites all

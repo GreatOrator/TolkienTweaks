@@ -213,6 +213,11 @@ one block off the edge would otherwise be cut back to bare legs wherever its cro
 the pavement reads worse than a road with a hem. Two blocks takes the trees that would stand on the verge and leaves
 the wood behind it.
 
+`tools/road_line.py` reads a laid road back out of a save as waypoints: it takes the pass's own surface names, groups
+the columns into the pieces a crossing splits them into, and prints a line every `--step` blocks with the height of
+the surface. It can only read a world that still has the road in it - a stretch whose chunks were never saved has no
+line to recover, and a box of ordinary terrain reports as pieces of gravel rather than a road.
+
 The pass below is still the shape a road with ground under it is laid by, and it is still the only thing that bridges
 one: a generated line follows the grade its waypoints give, so the roads the scouted world walked - the valley's
 approach with its span and its switchback, and the two between the chapter's camps - keep being laid by the pass, and
