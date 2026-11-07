@@ -90,6 +90,9 @@ public final class Dressing {
     public static void onServerTick(ServerTickEvent.Post event) {
         ServerLevel level = event.getServer().getLevel(TolkienDimensions.ARDA);
         if (level == null) return;
+        // A city the world has not raised for itself is raised from its pin as a player comes to the valley, the same
+        // way the camps are: a piece at a time, on this clock, and only while somebody is near enough to see it.
+        CityCommands.rouse(level);
         if (job == null) {
             // Looking for a city is a table read, so it happens once a second; working on one happens every tick,
             // because a step is what the whole job is made of.

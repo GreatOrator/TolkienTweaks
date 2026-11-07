@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- **A camp the world raises keeps its keeper and its road.** The scenery pass continued past every building whose
+- **Rivendell raises itself from its pin.** The city only ever appeared if worldgen happened to start it or an
+  operator ran the city command, so a world that generated the valley without the cut stayed empty. A player coming
+  within a hundred and sixty blocks of the pin now plants the corner there and lays the cut a piece every four ticks,
+  writing the same marker the hand writes, so the dressing pass and the road find it. A city already standing - made
+  by the world or planted by hand - is left alone.
   ground it had already proved, and a site is standing from the moment it is raised, so no world's own camp was ever
   dressed or given a road: Elladan's camp stood empty and no road left its door. A standing build is now dressed and
   roaded on every approach, and a keeper is stood in the first place his column will actually hold him - the pin's

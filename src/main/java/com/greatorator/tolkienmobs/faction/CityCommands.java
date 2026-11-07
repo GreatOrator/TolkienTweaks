@@ -45,6 +45,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 /**
  * The hand for standing the city up while it is still being cut.
@@ -156,6 +158,32 @@ public final class CityCommands {
      */
     private static final int RECHECK_TICKS = 20;
     private static long ASK_AGAIN;
+    /**
+     * How near the pin a player has to be for the city to raise itself, in blocks across the ground.
+     * <p>
+     * The rule the camps are held to: a chunk nobody is looking at is a chunk the game will not keep, and a block
+     * written into one is quietly dropped. A city is five hundred blocks across, so the reach is measured from the pin
+     * rather than from a middle nobody can see the edge of, and it is generous enough to cover the walk in from the
+     * shoulder.
+     */
+    private static final int ROUSE_REACH = 160;
+    /**
+     * How many ticks one piece of the city is given.
+     * <p>
+     * A piece is a forty-eight cube - a hundred thousand block writes, lit and updated. The hand lays all five hundred
+     * and eighty-four in one word because an operator asked for them and is waiting for the answer; a world raising the
+     * city under a walking player cannot spend minutes in a tick. Four ticks a piece is a city in about two minutes
+     * with nothing but a piece ever carried.
+     */
+    private static final int PIECE_TICKS = 4;
+    /** The raise in flight: the corner it is laying, the band it is on, and how many pieces of that band are down. */
+    private static BlockPos RAISING;
+    private static int raisingBand = -1;
+    private static int raisingPiece;
+    /** The cut's pieces, read once: the raise is asked every few ticks and the table is five hundred lines. */
+    private static List<Part> CUT_PARTS;
+    /** Where the raise says what went down, on the channel the hand prints to. */
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     /** One piece: its file, and where its corner sits in the frame the cut was taken in. */
     record Part(String name, int dx, int dy, int dz, int wide, int deep, int tall) {
@@ -294,10 +322,128 @@ public final class CityCommands {
     private static BlockPos generatedCorner(ServerLevel level, List<Part> parts) {
         if (!TolkienDimensions.ARDA.equals(level.dimension())) return null;
         BlockPos pin = Pins.at(level, Campaign.SUMMON_PLACE);
-        if (pin == null) return null;
+        return pin == null ? null : atPin(parts, pin);
+    }
+
+    /**
+     * The corner the cut's own low offsets put the city's lowest corner on when the pin is that corner's block.
+     * <p>
+     * The pin is written where the scout stood on the city's low corner, so the corner is the pin less the offsets the
+     * cut was taken at - the same arithmetic the hand planting from the valley does, kept here so the raise and the
+     * command cannot disagree about which block the city starts from.
+     */
+    private static BlockPos atPin(List<Part> parts, BlockPos pin) {
         return new BlockPos(pin.getX() - parts.stream().mapToInt(Part::dx).min().orElse(0),
                 pin.getY() - parts.stream().mapToInt(Part::dy).min().orElse(0),
                 pin.getZ() - parts.stream().mapToInt(Part::dz).min().orElse(0));
+    }
+
+    /**
+     * Raises the city from its pin as a player comes to the valley, the way the camps are raised from theirs.
+     * <p>
+     * A world that generates the city has it without this: the start goes down with the chunk the pin falls in, and a
+     * piece goes down with every chunk made around it, so the build arrives with the ground. This is for the world
+     * where that did not happen - and for a world walked before the cut was generated at all - and it lays the same
+     * pieces from the same pin, a piece at a time, so a city appears where somebody can see it rather than when a
+     * chunk is asked for in the dark.
+     * <p>
+     * Nothing here decides where the city goes: the pin does, exactly as {@code /tmcity origin} does. Nothing here
+     * lays a second one either - the generated start and a marker planted by hand are both read first, and a city that
+     * stands is left standing. What it does write is the marker the hand would have written, so the dressing pass, the
+     * road and the city's people all find the city they expect.
+     */
+    static void rouse(ServerLevel level) {
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
+        if (level.getGameTime() % PIECE_TICKS != 0) return;
+        BlockPos pin = Pins.at(level, Campaign.SUMMON_PLACE);
+        if (pin == null) {
+            forgetRaise();
+            return;
+        }
+        if (!near(level, pin)) return;
+        Path folder = folder();
+        try {
+            if (CUT_PARTS == null) {
+                CUT_PARTS = parts(folder);
+                if (CUT_PARTS.isEmpty()) return;
+            }
+            List<Part> parts = CUT_PARTS;
+            List<Integer> bands = bands(parts);
+            Mark mark = mark(level, folder);
+            // A corner planted in another country is not this world's city, whatever the marker says.
+            if (mark != null && elsewhere(mark, level) != null) mark = null;
+            if (mark != null && mark.band() >= bands.size()) {
+                forgetRaise();
+                return;
+            }
+            if (mark == null) {
+                BlockPos corner = atPin(parts, pin);
+                Campaign.setValleyOrigin(corner);
+                write(folder, new Mark(corner, 0, false, level.dimension().identifier().toString()));
+                forgetRaise();
+                LOGGER.info("Rivendell: raised from the pin at {} - {} bands, {} pieces, a piece at a time",
+                        Box.of(parts, corner).spoken(), bands.size(), parts.size());
+                return;
+            }
+            layPiece(level, folder, parts, bands, mark);
+        } catch (IOException unreadable) {
+            LOGGER.warn("Rivendell: the cut could not be read, so the city is not raised: {}",
+                    unreadable.getMessage());
+        }
+    }
+
+    /** One piece of the band the marker is on, and the band's turn when its last piece is down. */
+    private static void layPiece(ServerLevel level, Path folder, List<Part> parts, List<Integer> bands, Mark mark)
+            throws IOException {
+        if (RAISING == null || !RAISING.equals(mark.origin()) || raisingBand != mark.band()) {
+            RAISING = mark.origin();
+            raisingBand = mark.band();
+            raisingPiece = 0;
+        }
+        int height = bands.get(mark.band());
+        int seen = 0;
+        for (Part part : parts) {
+            if (part.dy() != height) continue;
+            if (seen++ < raisingPiece) continue;
+            BlockPos at = mark.origin().offset(part.dx(), part.dy(), part.dz());
+            // A piece that would stand above the sky is not laid at all: the world drops those blocks without a word,
+            // and asking for them again next tick would drop them again.
+            if (at.getY() + part.tall() - 1 <= level.getMaxY() && at.getY() >= level.getMinY()) {
+                lay(level, folder, part, mark.origin());
+                // The lowest band is the city's floor, so it is the one that needs ground under it.
+                if (mark.band() == 0) Sites.underpin(level, at, part.wide(), part.deep(), UNDERPIN);
+            }
+            raisingPiece = seen;
+            return;
+        }
+        Mark next = new Mark(mark.origin(), mark.band() + 1, mark.apron(), mark.dimension());
+        write(folder, next);
+        raisingPiece = 0;
+        raisingBand = next.band();
+        if (next.band() < bands.size()) {
+            LOGGER.info("Rivendell: band {} of {} is down", next.band(), bands.size());
+        } else {
+            LOGGER.info("Rivendell: the whole city is down at {} - the ground is dressed from here",
+                    Box.of(parts, mark.origin()).spoken());
+            forgetRaise();
+        }
+    }
+
+    /** Whether a player is near enough to the pin for the city's ground to be the game's to write in. */
+    private static boolean near(ServerLevel level, BlockPos pin) {
+        for (ServerPlayer player : level.players()) {
+            int dx = player.getBlockX() - pin.getX();
+            int dz = player.getBlockZ() - pin.getZ();
+            if (Math.hypot(dx, dz) <= ROUSE_REACH) return true;
+        }
+        return false;
+    }
+
+    /** Drops what the raise remembers of a city that is standing, or of a pin that is no longer there. */
+    private static void forgetRaise() {
+        RAISING = null;
+        raisingBand = -1;
+        raisingPiece = 0;
     }
 
     /**
