@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- **A road stopped half-laid is carried on rather than begun again.** A pass writes where it has got to after every
+- **A road's progress is written at the turns of a pass, not every tick.** The snapshot carries a terrace for every
+  column laid, so writing it once per step cost more than the road did; it is now written when a stage is finished, when
+  the road is down, and every eight steps between. A world stopped between two writes re-lays the few stations those
+  steps had reached, which are the same stations they were the first time.
   step - the stage, the alignment the search found, the grade the profile settled, the terraces it has drawn and how
   far each road is laid - into the world's own data, so a world stopped in the middle of one picks the road up on the
   next start instead of sweeping the bridge and re-cutting the shelf. The search itself is not carried: its state is a

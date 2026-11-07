@@ -201,6 +201,16 @@ public final class RoadCommands {
     private static final int STATIONS_PER_STEP = 8;
     /** How many candidate blocks of the descent one step may settle. */
     private static final int SEARCH_PER_STEP = 4096;
+    /**
+     * How many steps go by between one write of a pass's progress and the next, between the writes at the turns of the
+     * pass itself: a stage finished, a road down.
+     * <p>
+     * A long road is a few hundred steps and the snapshot grows with it, since it carries a terrace for every column
+     * laid, so writing it once per tick costs more than the road does. Missing a few steps is not free of consequence
+     * and not a problem: a world stopped between two writes re-lays the stations those steps laid, which are the same
+     * stations they were the first time.
+     */
+    private static final int SAVE_EVERY = 8;
 
     /** The stages of a road pass, in the order they have to happen. */
     private enum Stage {
@@ -235,6 +245,9 @@ public final class RoadCommands {
         private boolean searched;
         /** Whether this pass has already looked for its own progress, which it does once rather than every step. */
         private boolean looked;
+        /** The stage the last write was taken in, and the steps since it, so a write is not owed by every tick. */
+        private Stage written;
+        private int sinceWrite;
         private Road done;
 
         private RoadJob(Route route) {
@@ -258,9 +271,11 @@ public final class RoadCommands {
             try {
                 return stage(level);
             } finally {
-                // Written after every step, so a world stopped on the next tick carries on rather than laying the road
-                // again: the stage, the alignment, the grade and how far it is laid are this pass's whole memory.
-                Progress.remember(this, level);
+                if (saveWanted()) {
+                    Progress.remember(this, level);
+                    written = stage;
+                    sinceWrite = 0;
+                }
             }
         }
 
@@ -301,6 +316,13 @@ public final class RoadCommands {
                 }
             }
             return true;
+        }
+
+        /** Whether this step is worth writing down: the turn of a stage, a road finished, or every few steps between. */
+        private boolean saveWanted() {
+            if (done != null) return true;
+            if (stage != written) return true;
+            return ++sinceWrite >= SAVE_EVERY;
         }
 
         /**
@@ -358,6 +380,8 @@ public final class RoadCommands {
             graded = Graded.restore(route, approach, tag.getCompoundOrEmpty("graded"));
             far = exit.isEmpty() ? null : Graded.restore(route, exit, tag.getCompoundOrEmpty("far"));
             stage = saved;
+            // What was just read is what the file already holds, so the first step after a restart owes it nothing.
+            written = saved;
         }
 
         /** What the pass came to, once {@link #step} has said it is done. */
