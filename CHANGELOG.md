@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A marker on the ground is an ammolite block, and that is written down now.** It has been the scouting habit
+  for a long time - one `tolkienmobs:block_ammolite` where a doorway, a road end or a body belongs, corners for a
+  cut - but it lived only in conversation, so every pass over the ground re-derived the spots from a template's
+  shape. `AGENTS.md` and `docs/arda-pinning.md` now carry the convention, the block that counts (`block_ammolite`,
+  not the pane or the ore), and the way it is read back: `tools/ammolite_markers.py`, which groups the markers in a
+  save and prints their coordinates, with `--compare` to measure them against a known pin.
 - **The valley's stone is a place, not a page.** `Sites` keeps a table of stones that stand with no build of ours
   under them - ground another hand raised - each pinned under its own key and stood when a player comes near;
   Rivendell's is waiting on the marker that will be its spot.
@@ -1206,6 +1212,26 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 - **The steed's fallen pose is read from the file the steed actually loads.** GeckoLib resolves the animal's
   animations from `special/horse`, so the `fallen` animation now lives there; a missing name left an empty
   timeline and crashed the client while it was drawing the body at the ruin.
+- **A building the world raised before its keeper existed is dressed on the next visit.** A site is recorded as
+  built once its blocks are down, and the laying is what placed the man at a camp, the animal at the ruin and the
+  stone beside the door - so a world that had already raised Barachen's camp and the wood ruin kept the walls and
+  nothing at them, and no later visit ran the code that dresses them. `Sites` now asks again on every approach; a
+  keeper is still one a camp, a steed one a ruin, and a stone is never stood twice.
+- **The keeper and the steed stand where the scout marked them.** Both were placed two blocks outside the
+  building's door, which is the right answer for a camp nobody walked and the wrong one for a scout who has since
+  put a block down: Barachen's place inside his own camp and the spot the black horse lies in are both marked, and
+  read as pins (`<building>.keeper`, `<building>.body`) that the placement consumes.
+- **A stone replaces a marker rather than being refused by it.** The milestone stood on open air over solid
+  ground, so a scout's ammolite in the same cell read as a blocked spot; a marker is a placeholder, so the stone
+  takes its block.
+- **The valley's milestone is pinned.** It stands at `5499, 150, -3080`, marked inside the city once it was
+  standing. The page-time hall stone is retired with it: nothing is planted when a page changes hands any more, so
+  the stone at Rivendell is the city's own and cannot be laid twice.
+
+### Removed
+- **`Stones.nameLaid` is gone.** It named the stones a template had already laid, and nothing called it: no
+  template the pack ships contains a milestone block, so there was never anything for it to name. A place's stone
+  is the one `Sites` stands beside its door, or the valley's, which is pinned.
 
 - Set the drape's ring back to thirty-two blocks: at sixty-four the pass reached past the branch the river
   leaves the city by and overwrote the water, and the river left the build. Thirty-two keeps the settled

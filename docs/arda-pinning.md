@@ -45,6 +45,35 @@ arrival and a hilltop template raised for a page, and so are Gundabad and Gloin'
 - **The y** is a note of the surface the scout stood on. It is not used to seat a building, so a y a block or
   two out is not an error.
 
+## Markers on the ground
+
+A location is scouted by standing on the block it belongs on and placing a `tolkienmobs:block_ammolite` there -
+one marker per thing, called simply "a marker" in conversation. A doorway is marked on the block under the door
+itself, a road end on the last block of the road, a body's place on the floor it should stand on, and a build's
+corners when a cut is being taken.
+
+The markers are read back out of the save rather than transcribed:
+
+```
+python tools/ammolite_markers.py --world "run/saves/Scouting World" --dim tolkienmobs:arda
+python tools/ammolite_markers.py --world "run/saves/Scouting World" --dim tolkienmobs:arda \
+    --compare rivendell:5200,75,-3370 --compare "the wood ruin:4782,79,-3058"
+```
+
+It groups markers standing within a few blocks of each other - a doorway and the road end one block outside it,
+or a cut's corners - and prints every group with its own coordinates; `--compare` prints each group's distance to
+a known pin, which is how a marker is read against the ground it is supposed to mark without going back into the
+game. Only `block_ammolite` counts: `pane_ammolite` and `ore_ammolite` are reported and left alone, since the ore
+is generated ground and a marker is something a person put down.
+
+A marker is a placeholder rather than scenery. Code that places what the marker marks consumes it - the stone
+replaces it, the keeper or the steed stands where it stood (`<building>.keeper`, `<building>.body`) - so a
+finished world does not keep a scout's ammolite
+in it, and the next reader cannot mistake it for a player's leftover. Where a marker has been walked it is pinned
+in `Pins.SOURCE` under the key it serves, and the code reads the pin rather than guessing the spot from a
+template's shape.
+
+
 ## Buildings the world raises
 
 A building pinned for every world is not waiting for a page. `Sites` walks the chapter's own list (`SCENERY` -
@@ -72,8 +101,8 @@ page is handed over in keeps the stone at its giver.
 One stone stands on ground that has no build of ours under it: the valley's. `Sites` keeps a small table of them
 (`STANDING`), each pinned under its own key, and stands the stone the first time a player comes near the spot - so
 Rivendell's milestone lives at the city rather than wherever a page's giver happens to be standing. Its key is
-`rivendell.stone`, and its pin is the one spot of chapter one still to be walked: the marker goes down once the city
-has generated, and the page-time hall stone is retired in favour of it then.
+`rivendell.stone`, and it is pinned at **5499, 150, -3080**, marked inside the city once it was standing; the
+page-time hall stone is retired in favour of it.
 
 The doorway table is also where a build's facing comes from. Each entry records the column on the footprint's
 edge that is the doorway, the layer its sill sits on and the direction the gap opens onto the outside, so the

@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.entity.passive.NazgulSteedEntity;
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
@@ -577,7 +578,12 @@ public final class Sites extends SavedData {
                 SITES.put(key, site);
                 instance(level).setDirty();
             }
-            if (!site.built() && away(player, site) <= BUILD_REACH) build(level, site, player);
+            if (away(player, site) > BUILD_REACH) continue;
+            // A building raised before the man, the animal or the stone existed keeps its walls and nothing else:
+            // the site is recorded as built, so the laying never runs again. Asking again on every approach is
+            // cheap and each of the three refuses to be placed twice, which is what lets an old world catch up.
+            if (site.built()) dress(level, site, player);
+            else build(level, site, player);
         }
         for (Stand stand : STANDING) {
             if (STOOD.contains(stand.pin())) continue;
@@ -585,8 +591,12 @@ public final class Sites extends SavedData {
             if (pinned == null || away(player, pinned) > BUILD_REACH) continue;
             if (!level.hasChunkAt(pinned)) continue;
             STOOD.add(stand.pin());
-            Stones.stone(level, level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pinned),
-                    stand.name(), player);
+            // The marker is where the stone goes, and the stone replaces it; the surface under the pin is the
+            // answer for a world where the marker was never laid.
+            BlockPos spot = level.getBlockState(pinned).is(TolkienBlocks.BLOCK_AMMOLITE.get())
+                    ? pinned
+                    : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pinned);
+            Stones.stone(level, spot, stand.name(), player);
         }
     }
 
@@ -735,11 +745,28 @@ public final class Sites extends SavedData {
         // What the place carries once it stands: the man at a camp, the animal the rider came off at the ruin,
         // and the stone every building has so the travel list can bring a player back to it.
         Body body = site.keeper() ? Body.KEEPER : bodyFor(site.structure());
-        if (body == Body.KEEPER) standKeeper(level, corner, size, seat);
-        if (body == Body.STEED) standSteed(level, corner, size, seat);
+        if (body == Body.KEEPER) standKeeper(level, corner, size, seat, site.structure());
+        if (body == Body.STEED) standSteed(level, corner, size, seat, site.structure());
         stoneAt(level, corner, size, seat, site.structure(), player);
         SITES.put(site.player(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
         instance(level).setDirty();
+    }
+
+    /**
+     * Puts what belongs at a building that is already standing, for a world that raised it before any of it
+     * existed: the man at a camp, the animal at the ruin and the stone beside the door. All three refuse to be
+     * placed twice - one keeper a camp, one steed a ruin, a stone never stood over - so asking on every approach
+     * cannot multiply them.
+     */
+    private static void dress(ServerLevel level, Site site, ServerPlayer player) {
+        Vec3i size = footprint(level, site.structure());
+        if (size == null) return;
+        BlockPos corner = site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
+        Seat seat = seatFor(site.structure());
+        Body body = site.keeper() ? Body.KEEPER : bodyFor(site.structure());
+        if (body == Body.KEEPER) standKeeper(level, corner, size, seat, site.structure());
+        if (body == Body.STEED) standSteed(level, corner, size, seat, site.structure());
+        stoneAt(level, corner, size, seat, site.structure(), player);
     }
 
     /**
@@ -1251,14 +1278,15 @@ public final class Sites extends SavedData {
      * a camp is a place a player is sent to, and the man minding it is what makes it one rather than
      * what makes it another bench to take work from.
      */
-    private static void standKeeper(ServerLevel level, BlockPos corner, Vec3i size, Seat seat) {
+    private static void standKeeper(ServerLevel level, BlockPos corner, Vec3i size, Seat seat, String structure) {
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob keeper)) return;
         // The building's own door decides where the man stands: two blocks outside it, on the ground the
         // road arrives on, rather than on the far side of the walls - which was the answer for a fair-weather
         // tent and put the keeper of Elladan's camp behind it.
-        BlockPos stand = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                outside(corner, size, seat));
+        BlockPos marked = marker(level, structure + KEEPER_PIN);
+        BlockPos stand = marked != null ? marked
+                : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, outside(corner, size, seat));
         // One keeper per fire, whichever player raised the camp. A site belongs to the player who took
         // the page, but the ground it names is the same for everybody, so two players arriving at the
         // same camp both run the build - and without this each of them would put a second man at it.
@@ -1310,6 +1338,24 @@ public final class Sites extends SavedData {
         return seat == null || !seat.doorway() ? null : seat.front();
     }
 
+    /** The pin a building's man or animal is written under once a scout has marked where it goes. */
+    private static final String KEEPER_PIN = ".keeper";
+    private static final String BODY_PIN = ".body";
+
+    /**
+     * The spot a role was pinned at, consuming a scout's marker if one is still standing there: a block of
+     * ammolite is how a location is marked on the ground, and the thing that belongs there replaces it rather
+     * than standing beside it. Null when nothing is pinned, which leaves the older answer - the ground outside
+     * the door - to speak.
+     */
+    @Nullable
+    private static BlockPos marker(ServerLevel level, String key) {
+        BlockPos at = Pins.at(level, key);
+        if (at == null || !level.hasChunkAt(at)) return null;
+        if (level.getBlockState(at).is(TolkienBlocks.BLOCK_AMMOLITE.get())) level.removeBlock(at, false);
+        return at;
+    }
+
     /** What the world leaves at a building of its own, which a page's own site is free to ask for itself. */
     private static Body bodyFor(String structure) {
         for (Scenery raised : SCENERY) {
@@ -1323,9 +1369,11 @@ public final class Sites extends SavedData {
      * way in, never minding anything. It is tagged so a second visit does not leave a second one, and it is
      * invulnerable and silent so a player finds it rather than fights it.
      */
-    private static void standSteed(ServerLevel level, BlockPos corner, Vec3i size, Seat seat) {
-        BlockPos spot = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                outside(corner, size, seat));
+    private static void standSteed(ServerLevel level, BlockPos corner, Vec3i size, Seat seat, String structure) {
+        BlockPos spot = marker(level, structure + BODY_PIN);
+        if (spot == null) {
+            spot = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, outside(corner, size, seat));
+        }
         if (!level.getEntitiesOfClass(Mob.class, new AABB(spot).inflate(KEEPER_REACH),
                 found -> found.entityTags().contains(BODY_TAG)).isEmpty()) {
             return;

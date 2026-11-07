@@ -46,6 +46,26 @@ git:
   names what is left of the war (`Campaign.sayWhatIsLeft`). The long form of the rule, with the reasons,
   is in `docs/war-of-the-three-fronts.md`; check a new page against it before committing.
 
+## Scouting markers are ammolite blocks
+
+- **A location is scouted by placing one `tolkienmobs:block_ammolite` on the ground where the thing belongs**,
+  and it is called simply "a marker" in conversation. A doorway is marked on the block the door itself stands
+  over, a road end on the last block of the road, a body's place on the floor it should stand on, and a cut's
+  corners when a build is captured (`FACTION-HALL-BRIEF.md`). Nothing derives these spots from a template's
+  shape while a marker for them exists - the marker is the answer, and it was placed by someone standing there.
+- **Markers are read back out of a save, not transcribed.** `python tools/ammolite_markers.py --world
+  "run/saves/<world>" --dim tolkienmobs:arda` groups the blocks it finds (within a few blocks of each other)
+  and prints every group's coordinates; `--compare name:x,y,z` measures each group against a known pin, so a
+  marker can be read against the ground it marks without opening the game. Only `block_ammolite` counts:
+  `pane_ammolite` and `ore_ammolite` are reported and ignored, because ore is generated ground and a marker is
+  something a person put down.
+- **A marker is a placeholder, not scenery.** Code that places what a marker marks consumes it: the milestone
+  replaces it, the keeper or the steed stands where it stood (`Sites.marker`). A finished world must not keep a
+  scout's ammolite standing in it, because the next reader cannot tell it from a player's leftover.
+- A walked marker is pinned in `Pins.SOURCE` under the key it serves, so every world after it gets the same spot.
+  A marker given in chat becomes a `Map.entry` there rather than a one-off number inside code.
+
+
 # Project Core Guidelines & Agent Directives
 
 > **CRITICAL AUTOMATION NOTE:** the maintainer pushes to GitHub when they are ready to, and nothing

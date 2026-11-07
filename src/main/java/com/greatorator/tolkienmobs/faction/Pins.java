@@ -80,7 +80,14 @@ public final class Pins extends SavedData {
             Map.entry(Sites.WOOD_RUIN, new BlockPos(4782, 79, -3058)),
             Map.entry(Sites.TROLL_CAVE, new BlockPos(4460, 125, -2477)),
             Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4568, 112, -2511)),
-            Map.entry(Sites.TROLL_CAVE_3, new BlockPos(4508, 124, -2429))
+            Map.entry(Sites.TROLL_CAVE_3, new BlockPos(4508, 124, -2429)),
+            // The valley's stone, marked inside the city once it was standing: the block the milestone should stand
+            // on, walked at 5499, 150, -3080. It has no build of ours under it, so Sites.STANDING holds it.
+            Map.entry("rivendell.stone", new BlockPos(5499, 150, -3080)),
+            // Where the ruin's animal lies and where Barachen's keeper stands, marked after both builds had already
+            // been raised: a building is dressed every visit now, so these are read rather than only laid once.
+            Map.entry(Sites.WOOD_RUIN + ".body", new BlockPos(4787, 79, -3052)),
+            Map.entry(Sites.BARACHENS_CAMP + ".keeper", new BlockPos(4822, 77, -2875))
             // Chapter one is all of it. What is left is chapter two's four and the last act's two.
     ));
 
