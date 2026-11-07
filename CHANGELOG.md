@@ -1203,6 +1203,9 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   than from the 72-block corner the Trollshaws' own ground needed.
 
 ### Fixed
+- **The steed's fallen pose is read from the file the steed actually loads.** GeckoLib resolves the animal's
+  animations from `special/horse`, so the `fallen` animation now lives there; a missing name left an empty
+  timeline and crashed the client while it was drawing the body at the ruin.
 
 - Set the drape's ring back to thirty-two blocks: at sixty-four the pass reached past the branch the river
   leaves the city by and overwrote the water, and the river left the build. Thirty-two keeps the settled
