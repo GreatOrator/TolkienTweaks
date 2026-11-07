@@ -1249,7 +1249,7 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 - **A building the world says is standing is checked against the ground.** A site is written down once and trusted
   afterwards, which is right only while the world keeps its chunks: a save that keeps the site file and loses the
   region files loses the camp, and the world went on dressing a building that was not there instead of raising it.
-  A scenery site is now proved against a sample of its template's own blocks once a session, and one that is mostly
+  A scenery site is now proved against a sample of the blocks its own file holds, once a session, and one that is mostly
   gone is forgotten and built again at its pin.
 - **A laid road can be read back out of a save as waypoints.** `tools/road_line.py` takes the pass's own surface names,
   groups the columns into the pieces a crossing splits them into, and prints a `RoadPaint.Line` every `--step` blocks

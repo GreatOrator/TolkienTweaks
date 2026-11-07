@@ -52,6 +52,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.io.IOException;
+import java.io.InputStream;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 
 /**
  * The ground the campaign has built on: a structure it put down for one player, and the laying of it.
@@ -418,6 +425,10 @@ public final class Sites extends SavedData {
     private static final Set<UUID> UNBUILDABLE = new HashSet<>();
     /** The world's own buildings already checked against the ground this session, so a proof is walked once. */
     private static final Set<String> CHECKED = new HashSet<>();
+    /** The blocks read out of each template's own file, so a template is read once rather than once a session. */
+    private static final Map<String, List<Sample>> SAMPLES = new HashMap<>();
+    /** How many of a template's blocks are compared with the ground: enough to tell a camp from a clearing. */
+    private static final int SAMPLE = 48;
     private static final Sites NO_SERVER = new Sites(false);
 
     /**
@@ -465,6 +476,7 @@ public final class Sites extends SavedData {
             SITES.clear();
             STOOD.clear();
             CHECKED.clear();
+            SAMPLES.clear();
         }
     }
 
@@ -555,12 +567,16 @@ public final class Sites extends SavedData {
      * Whether a building the record says is standing is still in the world.
      * <p>
      * A sample of the template's own blocks is compared with what is at those blocks now, and a majority is enough:
-     * this answers whether a camp is there, not whether anybody has been inside it. Positions come from the template
-     * asked at its own origin, offset by the corner the site's centre was recorded from, so the comparison is between
-     * whole blocks rather than between block states.
+     * this answers whether a camp is there, not whether anybody has been inside it.
+     * <p>
+     * The sample is read from the template's file rather than from the loaded template. Vanilla's way of asking a
+     * template for its blocks takes a block to filter by and caches the answer under that block, so asking for all of
+     * them means handing it a null and crashing in its cache - which it did, in a player's tick. The file is the same
+     * source the template came from, the corner is the one the site's centre was recorded from, and the comparison is
+     * between block names, so nothing here depends on properties or on which palette variant was saved.
      * <p>
      * Nothing is decided from chunks that are not loaded - an answer of "gone" has to be an answer and not a guess -
-     * and a template that will not read leaves the record trusted.
+     * and a file that will not read leaves the record trusted rather than crashing the player it was reading for.
      */
     private static boolean standingBlocks(ServerLevel level, Site site) {
         Identifier id = Identifier.tryParse(site.structure());
@@ -572,18 +588,58 @@ public final class Sites extends SavedData {
         if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(size.getX() - 1, 0, size.getZ() - 1))) {
             return true;
         }
-        List<StructureTemplate.StructureBlockInfo> blocks =
-                template.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(), (Block) null);
-        if (blocks.isEmpty()) return true;
-        int stride = Math.max(1, blocks.size() / 48);
-        int seen = 0;
+        List<Sample> samples = samplesOf(level, id);
+        if (samples.isEmpty()) return true;
         int found = 0;
-        for (int index = 0; index < blocks.size(); index += stride) {
-            StructureTemplate.StructureBlockInfo info = blocks.get(index);
-            seen++;
-            if (level.getBlockState(corner.offset(info.pos())).is(info.state().getBlock())) found++;
+        for (Sample sample : samples) {
+            BlockState state = level.getBlockState(corner.offset(sample.x(), sample.y(), sample.z()));
+            if (BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString().equals(sample.block())) found++;
         }
-        return seen == 0 || found * 2 >= seen;
+        return found * 2 >= samples.size();
+    }
+
+    /** One of a template's own blocks: where it sits from the corner, and the block the file says is there. */
+    private record Sample(int x, int y, int z, String block) {}
+
+    /** A few of the template's blocks, read out of the file the template itself was loaded from. */
+    private static List<Sample> samplesOf(ServerLevel level, Identifier id) {
+        String key = id.toString();
+        List<Sample> samples = SAMPLES.get(key);
+        if (samples != null) return samples;
+        samples = readSamples(level, id);
+        SAMPLES.put(key, samples);
+        return samples;
+    }
+
+    private static List<Sample> readSamples(ServerLevel level, Identifier id) {
+        Identifier file = Identifier.fromNamespaceAndPath(id.getNamespace(), "structure/" + id.getPath() + ".nbt");
+        CompoundTag tag;
+        try (InputStream stream = level.getServer().getResourceManager().getResourceOrThrow(file).open()) {
+            tag = NbtIo.readCompressed(stream, NbtAccounter.unlimitedHeap());
+        } catch (IOException | RuntimeException unreadable) {
+            LOGGER.warn("Could not read {} to check a building the world says is standing", file, unreadable);
+            return List.of();
+        }
+        ListTag palette = tag.getList("palette").orElseGet(ListTag::new);
+        ListTag blocks = tag.getList("blocks").orElseGet(ListTag::new);
+        if (palette.isEmpty() || blocks.isEmpty()) return List.of();
+        String[] names = new String[palette.size()];
+        for (int index = 0; index < palette.size(); index++) {
+            names[index] = palette.getCompoundOrEmpty(index).getStringOr("Name", "");
+        }
+        int stride = Math.max(1, blocks.size() / SAMPLE);
+        List<Sample> samples = new ArrayList<>();
+        for (int index = 0; index < blocks.size() && samples.size() < SAMPLE; index += stride) {
+            CompoundTag block = blocks.getCompoundOrEmpty(index);
+            int state = block.getIntOr("state", -1);
+            if (state < 0 || state >= names.length) continue;
+            String name = names[state];
+            if (name.endsWith(":air") || name.endsWith("cave_air") || name.endsWith("void_air")) continue;
+            ListTag pos = block.getList("pos").orElseGet(ListTag::new);
+            if (pos.size() < 3) continue;
+            samples.add(new Sample(pos.getIntOr(0, 0), pos.getIntOr(1, 0), pos.getIntOr(2, 0), name));
+        }
+        return samples;
     }
 
     /** Where this player's site is, or null when they have not been sent to one. */
