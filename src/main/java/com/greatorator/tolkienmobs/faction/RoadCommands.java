@@ -37,6 +37,11 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import com.mojang.serialization.Codec;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 /**
@@ -228,6 +233,8 @@ public final class RoadCommands {
         private Graded graded;
         private Graded far;
         private boolean searched;
+        /** Whether this pass has already looked for its own progress, which it does once rather than every step. */
+        private boolean looked;
         private Road done;
 
         private RoadJob(Route route) {
@@ -243,6 +250,22 @@ public final class RoadCommands {
         /** One step; false when the road is down and {@link #summary} has the answer. */
         boolean step(ServerLevel level) throws IOException {
             if (done != null) return false;
+            if (!looked) {
+                looked = true;
+                CompoundTag carried = Progress.of(level, route.id());
+                if (carried != null) restore(carried);
+            }
+            try {
+                return stage(level);
+            } finally {
+                // Written after every step, so a world stopped on the next tick carries on rather than laying the road
+                // again: the stage, the alignment, the grade and how far it is laid are this pass's whole memory.
+                Progress.remember(this, level);
+            }
+        }
+
+        /** One step of whichever stage the pass is in; false once the road is down. */
+        private boolean stage(ServerLevel level) throws IOException {
             switch (stage) {
                 case SWEEP -> {
                     int upto = Math.min(span.eastBankX() + 1, swept + COLUMNS_PER_STEP - 1);
@@ -278,6 +301,63 @@ public final class RoadCommands {
                 }
             }
             return true;
+        }
+
+        /**
+         * Where this pass has got to: the stage it reached, what it has already done, and both graded roads with their
+         * own grades and cursors.
+         *
+         * @return the progress, or null when the road is down and there is nothing left to carry
+         */
+        private CompoundTag save() {
+            if (done != null) return null;
+            CompoundTag tag = new CompoundTag();
+            tag.putString("stage", stage.name());
+            tag.putInt("swept", swept);
+            tag.putInt("cleared", cleared);
+            tag.putInt("pieces", pieces);
+            tag.putInt("pillars", pillarsDrawn);
+            tag.putInt("pillarX", pillarX);
+            tag.putBoolean("searched", searched);
+            if (approach != null) tag.putIntArray("approach", flatten(approach));
+            if (exit != null) tag.putIntArray("exit", flatten(exit));
+            if (graded != null) tag.put("graded", graded.save());
+            if (far != null) tag.put("far", far.save());
+            return tag;
+        }
+
+        /**
+         * Puts the pass back where the last write left it, so no stage whose work is done is run a second time.
+         * <p>
+         * A stage that carries its own state in the file - the alignment the search found, the grade the profile
+         * settled - is resumed past. The search itself is the one that does not: its state is a map of a hundred
+         * thousand candidate blocks, so a world stopped inside it starts that stage again rather than carrying it. A
+         * pass that cannot be carried is still a pass; the ground it would have laid is the ground it lays.
+         */
+        private void restore(CompoundTag tag) {
+            Stage saved;
+            try {
+                saved = Stage.valueOf(tag.getStringOr("stage", Stage.SEARCH.name()));
+            } catch (IllegalArgumentException unknown) {
+                return;
+            }
+            swept = tag.getIntOr("swept", swept);
+            cleared = tag.getIntOr("cleared", 0);
+            pieces = tag.getIntOr("pieces", 0);
+            pillarsDrawn = tag.getIntOr("pillars", 0);
+            pillarX = tag.getIntOr("pillarX", pillarX);
+            searched = tag.getBooleanOr("searched", false);
+            List<int[]> carried = unflatten(tag.getIntArray("approach").orElse(new int[0]));
+            if (carried.size() < 2) {
+                // Nothing to carry on with, so the pass begins at its first stage rather than in the middle of nothing.
+                stage = span == null ? Stage.SEARCH : Stage.SWEEP;
+                return;
+            }
+            approach = carried;
+            exit = unflatten(tag.getIntArray("exit").orElse(new int[0]));
+            graded = Graded.restore(route, approach, tag.getCompoundOrEmpty("graded"));
+            far = exit.isEmpty() ? null : Graded.restore(route, exit, tag.getCompoundOrEmpty("far"));
+            stage = saved;
         }
 
         /** What the pass came to, once {@link #step} has said it is done. */
@@ -697,6 +777,62 @@ public final class RoadCommands {
             }
         }
 
+        /** A road with no grade yet: the shape a restored one fills its carried heights into. */
+        private Graded(Route route, List<int[]> line) {
+            this.route = route;
+            this.line = line;
+            this.n = line.size();
+            this.ground = new int[n];
+            this.height = new double[n];
+        }
+
+        /** The grade this road settled on, how much of it is laid, and the terraces it has drawn, as a restart needs. */
+        private CompoundTag save() {
+            CompoundTag tag = new CompoundTag();
+            long[] heights = new long[n];
+            for (int i = 0; i < n; i++) heights[i] = Double.doubleToRawLongBits(height[i]);
+            tag.putLongArray("height", heights);
+            tag.putInt("at", at);
+            tag.putInt("laid", laid);
+            tag.putInt("cut", cut);
+            tag.putInt("filled", filled);
+            tag.putInt("open", open);
+            tag.putInt("steepest", steepest);
+            tag.putInt("cleared", cleared);
+            long[] drawn = new long[tops.size() * 2];
+            int index = 0;
+            for (Map.Entry<Long, Integer> top : tops.entrySet()) {
+                drawn[index++] = top.getKey();
+                drawn[index++] = top.getValue();
+            }
+            tag.putLongArray("tops", drawn);
+            return tag;
+        }
+
+        /**
+         * The same road, put back where its grade left it.
+         * <p>
+         * Its heights are carried rather than read again: the ground under half a laid road is no longer the ground the
+         * grade was settled against, and reading it afresh would pull the profile about against the part already walked.
+         */
+        private static Graded restore(Route route, List<int[]> line, CompoundTag tag) {
+            Graded graded = new Graded(route, line);
+            long[] heights = tag.getLongArray("height").orElse(new long[0]);
+            if (heights.length == graded.n) {
+                for (int i = 0; i < graded.n; i++) graded.height[i] = Double.longBitsToDouble(heights[i]);
+            }
+            graded.at = Math.clamp(tag.getIntOr("at", 0), 0, graded.n);
+            graded.laid = tag.getIntOr("laid", 0);
+            graded.cut = tag.getIntOr("cut", 0);
+            graded.filled = tag.getIntOr("filled", 0);
+            graded.open = tag.getIntOr("open", 0);
+            graded.steepest = tag.getIntOr("steepest", 0);
+            graded.cleared = tag.getIntOr("cleared", 0);
+            long[] drawn = tag.getLongArray("tops").orElse(new long[0]);
+            for (int i = 0; i + 1 < drawn.length; i += 2) graded.tops.put(drawn[i], (int) drawn[i + 1]);
+            return graded;
+        }
+
         /** Lays up to {@code stations} stations; false when the road is laid. */
         private boolean step(ServerLevel level, int stations) {
             if (n < 2) return false;
@@ -1081,5 +1217,88 @@ public final class RoadCommands {
         template.load(level.holderLookup(Registries.BLOCK), tag);
         LOADED.put(name, template);
         return template;
+    }
+
+    /** A line of stations as one int array, and back: two numbers a station, which is all a station is. */
+    private static int[] flatten(List<int[]> line) {
+        int[] flat = new int[line.size() * 2];
+        for (int i = 0; i < line.size(); i++) {
+            flat[i * 2] = line.get(i)[0];
+            flat[i * 2 + 1] = line.get(i)[1];
+        }
+        return flat;
+    }
+
+    private static List<int[]> unflatten(int[] flat) {
+        List<int[]> line = new ArrayList<>(flat.length / 2);
+        for (int i = 0; i + 1 < flat.length; i += 2) line.add(new int[]{flat[i], flat[i + 1]});
+        return line;
+    }
+
+    /**
+     * The passes this world has started and has not finished.
+     * <p>
+     * A pass is a long job - a search over the ground and then the grading of a road several hundred blocks long, eight
+     * stations a step - and a world is often stopped in the middle of one. It used to begin again from its first stage
+     * on the next start: a bridge swept and stood again, contours searched again for a road already half cut. What a
+     * pass has done is written here instead, so the next start picks the road up where it was left.
+     * <p>
+     * The search is the one stage not written down, for the reason its own javadoc gives: its state is a map of a
+     * hundred thousand candidate blocks, and a world stopped inside it starts that stage again. Everything after it -
+     * the bridge, the pillars, the alignment and both graded roads - is carried.
+     */
+    static final class Progress extends SavedData {
+        private static final String NAME = "roads";
+        private static final Map<String, CompoundTag> ROADS = new HashMap<>();
+
+        static final Codec<Progress> CODEC = CompoundTag.CODEC.xmap(Progress::read, Progress::write);
+
+        static final SavedDataType<Progress> TYPE = new SavedDataType<>(
+                Identifier.fromNamespaceAndPath(MODID, NAME), Progress::new, CODEC);
+
+        /** A world with no progress file has no road half-laid, and forgets whatever the last world began. */
+        private Progress() {
+            this(true);
+        }
+
+        private Progress(boolean fresh) {
+            super();
+            if (fresh) ROADS.clear();
+        }
+
+        private static Progress read(CompoundTag tag) {
+            ROADS.clear();
+            for (String route : tag.keySet()) ROADS.put(route, tag.getCompoundOrEmpty(route));
+            return new Progress(false);
+        }
+
+        private CompoundTag write() {
+            CompoundTag tag = new CompoundTag();
+            ROADS.forEach(tag::put);
+            return tag;
+        }
+
+        private static Progress instance(ServerLevel level) {
+            ServerLevel overworld = level.getServer() == null ? null : level.getServer().getLevel(Level.OVERWORLD);
+            if (overworld == null) return new Progress(false);
+            return overworld.getDataStorage().computeIfAbsent(TYPE);
+        }
+
+        /** Where a pass on this route had got to, or null when nobody has begun one. */
+        private static CompoundTag of(ServerLevel level, String route) {
+            instance(level);
+            return ROADS.get(route);
+        }
+
+        /** Writes down where a pass has got to; a finished pass leaves nothing behind to carry. */
+        private static void remember(RoadJob job, ServerLevel level) {
+            CompoundTag tag = job.save();
+            if (tag == null) {
+                ROADS.remove(job.route.id());
+            } else {
+                ROADS.put(job.route.id(), tag);
+            }
+            instance(level).setDirty();
+        }
     }
 }

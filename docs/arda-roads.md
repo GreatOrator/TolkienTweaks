@@ -213,6 +213,11 @@ A line is for a road with no build behind it at either end. A build's own road i
 soon as the build is standing - the same builder that laid the valley's road, so a road between two buildings never
 needs a height written down for it. That the road is down is written into the world's own site record beside the
 building it belongs to, so a restart finds it laid rather than searching and grading the same ground again.
+A road that was stopped half-laid is carried the same way: the pass writes its own stage, the alignment the search
+found, the grade the profile settled and how far it is laid after every step, so the next start continues the road
+instead of sweeping the bridge and cutting the shelf over again. The search is the one stage that is not carried -
+its state is a hundred thousand candidate blocks - so a world stopped inside it searches again, and everything after
+it is picked up where it was left.
 
 What it still cannot do is cross water: a road whose grade would stand at or under the waterline is left to the map,
 since a crossing is a ford's or a bridge's business. And a line's grade is only as good as the waypoints written on

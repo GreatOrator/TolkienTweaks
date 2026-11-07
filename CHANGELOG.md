@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- **A laid road stays laid.** Which builds had their road down was kept in memory, so every start laid every route
+- **A road stopped half-laid is carried on rather than begun again.** A pass writes where it has got to after every
+  step - the stage, the alignment the search found, the grade the profile settled, the terraces it has drawn and how
+  far each road is laid - into the world's own data, so a world stopped in the middle of one picks the road up on the
+  next start instead of sweeping the bridge and re-cutting the shelf. The search itself is not carried: its state is a
+  hundred thousand candidate blocks, so a world stopped inside that stage searches again.
   again, once for each build a player walked up to - a contour search and four hundred blocks of grading apiece. The
   answer now lives in the world's site record beside the building it belongs to, and a build with no route writes
   nothing down, so the day a route is walked the world can still lay it.
