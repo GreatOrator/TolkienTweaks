@@ -81,6 +81,12 @@ The waypoints are the ammolite markers walked in the scouted world: the path's l
 -3034, and the two banks at 5055 and 5006 on z -3075. Both ends of the bridge are met along the span's
 own line, never diagonally, and the far side leaves along that same line.
 
+A route with no water on it takes the same pass without the bridge: the search runs from the build's own
+entry point to the far end, the alignment is simplified and rounded the same way, and the grade arrives on the
+ground at the far end instead of on a deck. Nothing is swept, bridged or pillared, and the answer leaves the
+bridge out of it. A route is one line in `Roads` - a `Route.Crossing` where there is water, a
+`Route.Riverless` where there is not - so a dry road is the build's entry point and a far end.
+
 ## `/tmquest` — work, given by hand
 
 | command | what it does |

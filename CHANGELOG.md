@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A dry road is a route of its own.** The pass was written around a crossing - a span to sweep, pieces to stand,
+  pillars to draw - so a road between two builds on the same bank had to carry numbers for water it never meets.
+  `Route` is two kinds now: a `Crossing` with banks and a deck, and a `Riverless` that is a build's entry point and
+  the far end, graded by the same search and the same profile and arriving on the ground rather than on a deck. A
+  new road is one line in `Roads`.
 - **`/tmtp` takes a name as well as a region.** The jump read only countries, so the valley and every
   building had to be reached by typed coordinates even though the world knows their ground. A name is now
   looked up in the world's places and pins first - a build by the last word of its pin key, `troll_cave` -

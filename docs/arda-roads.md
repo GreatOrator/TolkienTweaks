@@ -43,6 +43,17 @@ to this world's frame has never been established — `docs/arda-masks.md` record
 projection, where the block coordinates that land on Rivendell land on Swanfleet. Tracing roads block by
 block from that map would import that error with false precision. Cell waypoints are the honest resolution.
 
+## Two kinds of route
+
+A route is written down once per build, in `Roads`. Where the road crosses water it is a `Route.Crossing`: the
+path's last block, the two banks, the line of the span, the deck and the pieces that stand it up. Where it crosses
+none - which is every road between two builds on the same bank - it is a `Route.Riverless`: the build's footprint
+and entry point, and the far end a surveyor marked. Two ends and the distance between them is the whole route; the
+search finds the way, the grade lays it, and there is nothing to bridge.
+
+The far end is ground rather than a deck, which is why a dry road needs no water numbers at all: the grade arrives
+on whatever the ground there is, so nothing has to be levelled onto a span.
+
 ## What a road has to be in the game
 
 - **Stateless.** Worldgen runs per chunk with no persistent state, so a road has to be a pure function of

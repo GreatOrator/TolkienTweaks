@@ -17,8 +17,9 @@ import java.util.List;
  * bands are chosen by how close a column is to the walls, the descent may not cross it, and an eased corner may not
  * swing into it. All three are questions about where the road meets the build, which is the route's business.
  * <p>
- * One route per build that has a road. A build without one is generated, draped and left alone: better a city with no
- * road than a road laid to another city's coordinates.
+ * One route per build that has a road, of whichever kind the country asks for: a {@link Route.Crossing} where the
+ * road meets water and has a span to stand up, a {@link Route.Riverless} where it has only two ends. A build without
+ * one is generated, draped and left alone: better a city with no road than a road laid to another city's coordinates.
  */
 public final class Roads {
     private Roads() {
@@ -28,8 +29,12 @@ public final class Roads {
     public static final List<Route> ROUTES = List.of(
             // Rivendell: the path's last block at 5200, 134, -3034, the banks at 5055 and 5006 on z -3075, the deck
             // at 76 - the numbers the scouted valley was walked to, 584 pieces of city above the path's end.
-            new Route("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5006, -3075, 4,
+            new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5006, -3075, 4,
                     74, 75, 76, 16, 32, "bridge_end", "bridge_middle")
+            // A road with no water on it is the other kind, and is the whole of what a dry road needs: the build's
+            // footprint and its entry point, and the block the road ends at. Nothing is swept, bridged or pillared;
+            // the same search finds the way and the same grade lays it, arriving on the ground at the far end:
+            // new Route.Riverless("<build>", cityX0, cityX1, cityZ0, cityZ1, pathX, pathZ, farX, farZ)
     );
 
     /**

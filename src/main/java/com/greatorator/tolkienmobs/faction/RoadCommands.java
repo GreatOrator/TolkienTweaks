@@ -65,6 +65,12 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * <p>
  * The waypoints are the ammolite markers walked in the scouted world: the path's last block at 5200, 134,
  * -3034 and the two banks at 5055 and 5006 on -3075.
+ * <p>
+ * Not every road crosses water. A route with no river on it is a {@link Route.Riverless}: the build's entry point and
+ * the block the road ends at, and nothing else - no span to sweep, no pieces to stand, no pillars to draw. The search
+ * is the same one, run over the whole distance between the two ends instead of up to a run-in, and the grade is the
+ * same profile arriving on the ground at the far end rather than on a deck. So a second road is one line in
+ * {@link Roads}, of whichever kind its country asks for.
  */
 @EventBusSubscriber(modid = MODID)
 public final class RoadCommands {
@@ -145,19 +151,27 @@ public final class RoadCommands {
             String how = laid.searched() ? "searched" : "straight, the descent could not be searched";
             int[] graded = laid.graded();
             int[] far = laid.far();
-            source.sendSuccess(() -> Component.literal("Road to the valley: " + laid.cleared()
-                    + " old timbers cleared, bridge of " + laid.pieces()
-                    + " pieces from " + route.eastBankX() + " to " + route.westBankX() + " on z " + route.bridgeZ()
-                    + ", pillars drawn down " + laid.pillars() + " blocks. Approach " + laid.along()
-                    + " blocks, " + how
-                    + ", steepest graded step " + graded[4] + ": " + graded[0] + " columns laid, "
-                    + graded[1] + " cut, " + graded[2] + " filled, " + graded[5] + " canopy cleared, "
-                    + graded[3] + " left open."
-                    + " Far side " + far[0] + " columns laid, " + far[1] + " cut, " + far[2]
-                    + " filled. Both ends walk in along the span's own line."), true);
+            String surface = graded[0] + " columns laid, " + graded[1] + " cut, " + graded[2]
+                    + " filled, " + graded[5] + " canopy cleared, " + graded[3] + " left open.";
+            if (route instanceof Route.Crossing crossing) {
+                source.sendSuccess(() -> Component.literal("Road to the valley: " + laid.cleared()
+                        + " old timbers cleared, bridge of " + laid.pieces()
+                        + " pieces from " + crossing.eastBankX() + " to " + crossing.westBankX() + " on z "
+                        + crossing.bridgeZ() + ", pillars drawn down " + laid.pillars() + " blocks. Approach "
+                        + laid.along() + " blocks, " + how
+                        + ", steepest graded step " + graded[4] + ": " + surface
+                        + " Far side " + far[0] + " columns laid, " + far[1] + " cut, " + far[2]
+                        + " filled. Both ends walk in along the span's own line."), true);
+            } else {
+                Route.Riverless dry = (Route.Riverless) route;
+                source.sendSuccess(() -> Component.literal("Road from " + dry.id() + " to " + dry.farX()
+                        + ", " + dry.farZ() + ": " + laid.along() + " blocks, " + how
+                        + ", steepest graded step " + graded[4] + ": " + surface
+                        + " Nothing on the way is water, so nothing is bridged."), true);
+            }
             return 1;
         } catch (IOException failed) {
-            source.sendFailure(Component.literal("The bridge could not be read: " + failed.getMessage()));
+            source.sendFailure(Component.literal("The road could not be built: " + failed.getMessage()));
             return 0;
         }
     }
@@ -200,7 +214,9 @@ public final class RoadCommands {
      */
     static final class RoadJob {
         private final Route route;
-        private Stage stage = Stage.SWEEP;
+        /** The span, for a road that crosses water; null for one that has none to cross. */
+        private final Route.Crossing span;
+        private Stage stage;
         private int swept;
         private int cleared;
         private int pieces;
@@ -216,8 +232,12 @@ public final class RoadCommands {
 
         private RoadJob(Route route) {
             this.route = route;
-            this.swept = route.westBankX() - 1;
-            this.pillarX = route.westBankX();
+            this.span = route instanceof Route.Crossing crossing ? crossing : null;
+            // A road with no water on it has no span to sweep and nothing to bridge, so its first stage is the
+            // search and the whole distance between its ends is the alignment.
+            this.stage = span == null ? Stage.SEARCH : Stage.SWEEP;
+            this.swept = span == null ? 0 : span.westBankX() - 1;
+            this.pillarX = span == null ? 0 : span.westBankX();
         }
 
         /** One step; false when the road is down and {@link #summary} has the answer. */
@@ -225,20 +245,20 @@ public final class RoadCommands {
             if (done != null) return false;
             switch (stage) {
                 case SWEEP -> {
-                    int upto = Math.min(route.eastBankX() + 1, swept + COLUMNS_PER_STEP - 1);
-                    cleared += sweepColumns(level, route, swept, upto);
+                    int upto = Math.min(span.eastBankX() + 1, swept + COLUMNS_PER_STEP - 1);
+                    cleared += sweepColumns(level, span, swept, upto);
                     swept = upto + 1;
-                    if (swept > route.eastBankX() + 1) stage = Stage.BRIDGE;
+                    if (swept > span.eastBankX() + 1) stage = Stage.BRIDGE;
                 }
                 case BRIDGE -> {
-                    pieces = bridge(level, route);
+                    pieces = bridge(level, span);
                     stage = Stage.PILLARS;
                 }
                 case PILLARS -> {
-                    int upto = Math.min(route.eastBankX(), pillarX + COLUMNS_PER_STEP - 1);
-                    pillarsDrawn += pillarsColumns(level, route, pillarX, upto);
+                    int upto = Math.min(span.eastBankX(), pillarX + COLUMNS_PER_STEP - 1);
+                    pillarsDrawn += pillarsColumns(level, span, pillarX, upto);
                     pillarX = upto + 1;
-                    if (pillarX > route.eastBankX()) stage = Stage.SEARCH;
+                    if (pillarX > span.eastBankX()) stage = Stage.SEARCH;
                 }
                 case SEARCH -> {
                     if (descent == null) descent = new Descent(route);
@@ -246,14 +266,14 @@ public final class RoadCommands {
                 }
                 case GRADE -> {
                     if (graded.step(level, STATIONS_PER_STEP)) return true;
-                    if (far.step(level, STATIONS_PER_STEP)) return true;
+                    if (far != null && far.step(level, STATIONS_PER_STEP)) return true;
                     stage = Stage.STEPS;
                 }
                 case STEPS -> {
                     steps(level, graded.tops);
-                    steps(level, far.tops);
+                    if (far != null) steps(level, far.tops);
                     done = new Road(cleared, pieces, pillarsDrawn, approach.size(), searched,
-                            graded.summary(), far.summary());
+                            graded.summary(), far == null ? new int[6] : far.summary());
                     return false;
                 }
             }
@@ -273,20 +293,45 @@ public final class RoadCommands {
          * every corner left is cut back into a curve, so the switchbacks are hairpins a walker can take.
          */
         private void align(ServerLevel level) {
+            if (span == null) {
+                alignDry(level);
+                return;
+            }
             List<int[]> found = descent.path();
             searched = found != null;
-            if (!searched) found = straight(route);
+            if (!searched) found = straight(route, span.eastBankX() + span.runIn(), span.bridgeZ());
             List<int[]> line = new ArrayList<>(found);
-            for (int x = route.eastBankX() + route.runIn() - 1; x >= route.eastBankX() + 1; x--) {
-                line.add(new int[]{x, route.bridgeZ()});
+            for (int x = span.eastBankX() + span.runIn() - 1; x >= span.eastBankX() + 1; x--) {
+                line.add(new int[]{x, span.bridgeZ()});
             }
             approach = hairpins(level, route, simplify(line));
             exit = new ArrayList<>();
-            for (int x = route.westBankX() - 1; x >= route.westBankX() - route.exitReach(); x--) exit.add(new int[]{x, route.bridgeZ()});
+            for (int x = span.westBankX() - 1; x >= span.westBankX() - span.exitReach(); x--) exit.add(new int[]{x, span.bridgeZ()});
             int startY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, route.pathX(), route.pathZ()) - 1;
-            int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, route.westBankX() - route.exitReach(), route.bridgeZ()) - 1;
-            graded = new Graded(level, route, approach, startY, route.deckY());
-            far = new Graded(level, route, exit, route.deckY(), endY);
+            int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, span.westBankX() - span.exitReach(), span.bridgeZ()) - 1;
+            graded = new Graded(level, route, approach, startY, span.deckY());
+            far = new Graded(level, route, exit, span.deckY(), endY);
+            stage = Stage.GRADE;
+        }
+
+        /**
+         * The alignment of a road with no water on it: the search's walk from the build's entry point to the far end,
+         * simplified and rounded the same way, then graded once from the ground at one end to the ground at the other.
+         * <p>
+         * There is no run-in and no far side to split off, because there is no deck to arrive on. The far end is a
+         * block a surveyor walked, and the ground there is what the grade has to meet.
+         */
+        private void alignDry(ServerLevel level) {
+            Route.Riverless dry = (Route.Riverless) route;
+            List<int[]> found = descent.path();
+            searched = found != null;
+            if (!searched) found = straight(route, dry.farX(), dry.farZ());
+            approach = hairpins(level, route, simplify(found));
+            exit = List.of();
+            int startY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, route.pathX(), route.pathZ()) - 1;
+            int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, dry.farX(), dry.farZ()) - 1;
+            graded = new Graded(level, route, approach, startY, endY);
+            far = null;
             stage = Stage.GRADE;
         }
     }
@@ -301,7 +346,7 @@ public final class RoadCommands {
      * railings. Nothing but timber is touched, so the banks, the bed and the river are left exactly as they
      * are.
      */
-    private static int sweepColumns(ServerLevel level, Route route, int from, int to) {
+    private static int sweepColumns(ServerLevel level, Route.Crossing route, int from, int to) {
         int cleared = 0;
         int z0 = route.bridgeZ() - route.half() - 8;
         int z1 = route.bridgeZ() + route.half();
@@ -335,7 +380,7 @@ public final class RoadCommands {
      * ending at that position rather than the nine starting from it. The east end is therefore anchored on
      * 5055 and -3071, its own north-east corner, and the middles follow from that corner east to west.
      */
-    private static int bridge(ServerLevel level, Route route) throws IOException {
+    private static int bridge(ServerLevel level, Route.Crossing route) throws IOException {
         StructureTemplate end = template(level, route.endPiece());
         StructureTemplate middle = template(level, route.middlePiece());
         int z0 = route.bridgeZ() - route.half();
@@ -380,7 +425,7 @@ public final class RoadCommands {
      * column of the span; below it the column is filled with oak log while it is air or water, and the fill
      * stops at the first block that is neither - the bed, or the bank under an abutment.
      */
-    private static int pillarsColumns(ServerLevel level, Route route, int from, int to) {
+    private static int pillarsColumns(ServerLevel level, Route.Crossing route, int from, int to) {
         int drawn = 0;
         int z0 = route.bridgeZ() - route.half();
         for (int x = from; x <= to; x++) {
@@ -416,18 +461,24 @@ public final class RoadCommands {
      * It falls back to the straight line if the search finds nothing, so the command always lays something.
      */
     private static final class Descent {
-        private static final int X0 = 4985;
-        private static final int X1 = 5225;
-        private static final int Z0 = -3135;
-        private static final int Z1 = -2995;
-        private static final int DEEP = Z1 - Z0 + 1;
-        private static final int LIMIT = 120000;
+        /** How far a walk may wander off the straight line between its ends before it is out of bounds. */
+        private static final int MARGIN = 96;
+        /** The most candidates one search may hold: past it the window narrows, then the line goes straight. */
+        private static final long WINDOW = 600_000L;
         private final Route route;
-        private final int[] ground = new int[(X1 - X0 + 1) * DEEP];
-        private final double[] best = new double[(X1 - X0 + 1) * DEEP];
-        private final int[] from = new int[(X1 - X0 + 1) * DEEP];
-        private final byte[] heading = new byte[(X1 - X0 + 1) * DEEP];
-        private final boolean[] settled = new boolean[(X1 - X0 + 1) * DEEP];
+        private final int x0;
+        private final int x1;
+        private final int z0;
+        private final int z1;
+        private final int deep;
+        private final int limit;
+        /** Whether a window could be held at all: a route too wide is laid as the straight line between its ends. */
+        private final boolean fits;
+        private final int[] ground;
+        private final double[] best;
+        private final int[] from;
+        private final byte[] heading;
+        private final boolean[] settled;
         private final PriorityQueue<double[]> open =
                 new PriorityQueue<>((left, right) -> Double.compare(left[0], right[0]));
         private final int start;
@@ -437,8 +488,52 @@ public final class RoadCommands {
 
         private Descent(Route route) {
             this.route = route;
-            this.start = (route.pathX() - X0) * DEEP + (route.pathZ() - Z0);
-            this.goal = (route.eastBankX() + route.runIn() - X0) * DEEP + (route.bridgeZ() - Z0);
+            int startX = route.pathX();
+            int startZ = route.pathZ();
+            int goalX;
+            int goalZ;
+            if (route instanceof Route.Crossing crossing) {
+                // The approach arrives on the span's own line, a run-in back from the east bank.
+                goalX = crossing.eastBankX() + crossing.runIn();
+                goalZ = crossing.bridgeZ();
+            } else {
+                Route.Riverless dry = (Route.Riverless) route;
+                goalX = dry.farX();
+                goalZ = dry.farZ();
+            }
+            int[] bounds = window(startX, startZ, goalX, goalZ);
+            if (bounds == null) {
+                this.x0 = 0;
+                this.x1 = 0;
+                this.z0 = 0;
+                this.z1 = 0;
+                this.deep = 1;
+                this.limit = 0;
+                this.fits = false;
+                this.ground = new int[0];
+                this.best = new double[0];
+                this.from = new int[0];
+                this.heading = new byte[0];
+                this.settled = new boolean[0];
+                this.start = -1;
+                this.goal = -1;
+                return;
+            }
+            this.x0 = bounds[0];
+            this.x1 = bounds[1];
+            this.z0 = bounds[2];
+            this.z1 = bounds[3];
+            this.deep = bounds[3] - bounds[2] + 1;
+            int nodes = (bounds[1] - bounds[0] + 1) * deep;
+            this.fits = true;
+            this.limit = Math.max(120_000, nodes / 2);
+            this.ground = new int[nodes];
+            this.best = new double[nodes];
+            this.from = new int[nodes];
+            this.heading = new byte[nodes];
+            this.settled = new boolean[nodes];
+            this.start = (startX - x0) * deep + (startZ - z0);
+            this.goal = (goalX - x0) * deep + (goalZ - z0);
             Arrays.fill(ground, Integer.MIN_VALUE);
             Arrays.fill(best, Double.MAX_VALUE);
             Arrays.fill(from, -1);
@@ -447,11 +542,32 @@ public final class RoadCommands {
             open.add(new double[]{0.0D, start});
         }
 
+        /**
+         * The box the search may walk in: the two ends, and {@link #MARGIN} blocks either side of them.
+         * <p>
+         * The window used to be the valley's own constants. It is the route's now, because a road between two builds
+         * is wherever those builds are - so it is measured from the ends, and halved while it would hold more
+         * candidates than one server tick should pay for. A route so wide that even the narrowest window is too big
+         * answers null, and the pass lays the straight line rather than reserving memory the road is unlikely to use.
+         *
+         * @return x0, x1, z0, z1, or null when no window fits
+         */
+        private static int[] window(int startX, int startZ, int goalX, int goalZ) {
+            for (int margin = MARGIN; margin >= 8; margin /= 2) {
+                int x0 = Math.min(startX, goalX) - margin;
+                int x1 = Math.max(startX, goalX) + margin;
+                int z0 = Math.min(startZ, goalZ) - margin;
+                int z1 = Math.max(startZ, goalZ) + margin;
+                if ((long) (x1 - x0 + 1) * (z1 - z0 + 1) <= WINDOW) return new int[]{x0, x1, z0, z1};
+            }
+            return null;
+        }
+
         /** Settles up to {@code polls} candidates; false once there is nothing more to settle. */
         private boolean step(ServerLevel level, int polls) {
-            if (done) return false;
+            if (!fits || done) return false;
             for (int poll = 0; poll < polls; poll++) {
-                if (open.isEmpty() || looked >= LIMIT) {
+                if (open.isEmpty() || looked >= limit) {
                     done = true;
                     break;
                 }
@@ -463,7 +579,7 @@ public final class RoadCommands {
                     done = true;
                     break;
                 }
-                int x = X0 + node / DEEP, z = Z0 + node % DEEP;
+                int x = x0 + node / deep, z = z0 + node % deep;
                 if (ground[node] == Integer.MIN_VALUE) ground[node] = surfaceAt(level, x, z);
                 if (ground[node] == WATER) continue;
                 for (int dx = -1; dx <= 1; dx++) {
@@ -471,10 +587,10 @@ public final class RoadCommands {
                         if (dx == 0 && dz == 0) continue;
                         byte dir = (byte) ((dx + 1) * 3 + (dz + 1));
                         int nx = x + dx, nz = z + dz;
-                        if (nx < X0 || nx > X1 || nz < Z0 || nz > Z1) continue;
+                        if (nx < x0 || nx > x1 || nz < z0 || nz > z1) continue;
                         // The road never runs through the city; it leaves from the path's own end.
                         if (nx >= route.cityX0() && nx <= route.cityX1() && nz >= route.cityZ0() && nz <= route.cityZ1()) continue;
-                        int at = (nx - X0) * DEEP + (nz - Z0);
+                        int at = (nx - x0) * deep + (nz - z0);
                         if (settled[at]) continue;
                         if (ground[at] == Integer.MIN_VALUE) ground[at] = surfaceAt(level, nx, nz);
                         if (ground[at] == WATER) continue;
@@ -487,7 +603,7 @@ public final class RoadCommands {
                         best[at] = cost;
                         from[at] = node;
                         heading[at] = dir;
-                        double guess = Math.abs(route.eastBankX() + route.runIn() - nx) + Math.abs(route.bridgeZ() - nz);
+                        double guess = Math.abs(goal / deep - at / deep) + Math.abs(goal % deep - at % deep);
                         open.add(new double[]{cost + guess, at});
                     }
                 }
@@ -497,11 +613,12 @@ public final class RoadCommands {
 
         /** The walk that was found, or null when the search never reached the bend. */
         private List<int[]> path() {
+            if (!fits) return null;
             if (goal != start && from[goal] == -1) return null;
             List<int[]> path = new ArrayList<>();
             int node = goal;
             while (node >= 0) {
-                path.add(new int[]{X0 + node / DEEP, Z0 + node % DEEP});
+                path.add(new int[]{x0 + node / deep, z0 + node % deep});
                 node = from[node];
             }
             Collections.reverse(path);
@@ -840,13 +957,16 @@ public final class RoadCommands {
         return (ax * bx + az * bz) / (la * lb) < HAIRPIN;
     }
 
-    /** The straight line from the path's end to the run-in, for when the search finds no way down. */
-    private static List<int[]> straight(Route route) {
+    /** The straight line between the road's two ends, for when the search finds no way. */
+    private static List<int[]> straight(Route route, int toX, int toZ) {
         List<int[]> line = new ArrayList<>();
-        int steps = route.pathX() - route.eastBankX() - route.runIn() + 1;
+        int steps = Math.max(2, Math.abs(route.pathX() - toX) + 1);
         for (int i = 0; i < steps; i++) {
-            line.add(new int[]{route.pathX() - i, route.pathZ() + Math.round((float) (route.bridgeZ() - route.pathZ()) * i / steps)});
+            line.add(new int[]{
+                    route.pathX() + (int) Math.round((double) (toX - route.pathX()) * i / steps),
+                    route.pathZ() + (int) Math.round((double) (toZ - route.pathZ()) * i / steps)});
         }
+        line.add(new int[]{toX, toZ});
         return line;
     }
 
