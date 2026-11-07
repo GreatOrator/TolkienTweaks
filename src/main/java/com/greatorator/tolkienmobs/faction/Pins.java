@@ -70,10 +70,11 @@ public final class Pins extends SavedData {
             Map.entry("barachen", new BlockPos(4812, 77, -2885)),
             Map.entry("ford", new BlockPos(5061, 75, -3136)),
             Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4634, 93, -3314)),
+            Map.entry(Sites.WOOD_RUIN, new BlockPos(4782, 79, -3058)),
             Map.entry(Sites.TROLL_CAVE, new BlockPos(4460, 125, -2477)),
             Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4568, 112, -2511)),
             Map.entry(Sites.TROLL_CAVE_3, new BlockPos(4508, 124, -2429))
-            // The wood ruin, key_structures/ttmruin_large_2, is the one chapter-one build still to scout.
+            // Chapter one is all of it. What is left is chapter two's four and the last act's two.
     ));
 
     /**
