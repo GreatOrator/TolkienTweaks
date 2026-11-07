@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- **Every stage of a road pass works to a budget of columns, so no tick stands a whole bridge.** The bridge was stood
+- **A road pass logs what each stage cost.** Every stage now reports the steps it took and the wall time of a step when
+  it finishes, and the pass reports the same of itself when the road is down, so the step budgets can be checked
+  against real ticks instead of against a count of columns.
   in one step - ten templates, some five thousand blocks - and the lip pass walked every terrace of both roads in the
   tick after the last station, while a graded step laid eight bands of up to a hundred and twenty-one columns each.
   The bridge is now a piece a step, the lips a thousand columns a step with a cursor carried in the save, and the two

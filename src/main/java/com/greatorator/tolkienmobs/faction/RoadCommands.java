@@ -43,6 +43,8 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import com.mojang.serialization.Codec;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The road out of the valley, and the bridge that carries it over the Bruinen.
@@ -91,6 +93,8 @@ public final class RoadCommands {
     private static final int PILLAR_FLOOR = 48;
     /** The four sides a terrace's step could face, which are the four sides a lip is drawn on. */
     private static final int[][] BESIDE = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    /** Where a pass says what each of its stages cost, which is how the step budgets are checked against real ticks. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoadCommands.class);
     /** Which of the bridge's two templates a planned piece is: the end of the span, or a middle between the ends. */
     private static final int END_PIECE = 0;
     private static final int MIDDLE_PIECE = 1;
@@ -272,6 +276,11 @@ public final class RoadCommands {
         /** The stage the last write was taken in, and the steps since it, so a write is not owed by every tick. */
         private Stage written;
         private int sinceWrite;
+        /** Steps taken and wall time spent in each stage, by its ordinal, so a budget can be read as a tick. */
+        private final int[] taken = new int[Stage.values().length];
+        private final long[] nanos = new long[Stage.values().length];
+        /** Whether this pass began somewhere other than its own first stage, which the totals then start from. */
+        private boolean resumed;
         private Road done;
 
         private RoadJob(Route route) {
@@ -293,7 +302,11 @@ public final class RoadCommands {
                 if (carried != null) restore(carried);
             }
             try {
-                return stage(level);
+                Stage ran = stage;
+                long began = System.nanoTime();
+                boolean more = stage(level);
+                spend(ran, began);
+                return more;
             } finally {
                 if (saveWanted()) {
                     Progress.remember(this, level);
@@ -345,6 +358,45 @@ public final class RoadCommands {
                 }
             }
             return true;
+        }
+
+        /**
+         * Adds one step's wall time to the stage it ran in, and says so when that stage is done with.
+         * <p>
+         * A stage's budget is a count of work - columns, pieces, candidates - and a count only means anything against
+         * the tick it is spent in. So each stage reports how many steps it took and what a step cost, and the pass
+         * reports the same of itself once the road is down. A line at the turn of a stage and a line at the end: a log
+         * of every step would be a file, not a log.
+         */
+        private void spend(Stage ran, long began) {
+            int index = ran.ordinal();
+            taken[index]++;
+            nanos[index] += System.nanoTime() - began;
+            if (stage == ran && done == null) return;
+            LOGGER.info("Road {}: {} done in {} steps of {} each", route.id(), ran, taken[index],
+                    millis(nanos[index] / taken[index]));
+            if (done != null) {
+                LOGGER.info("Road {}: laid in {} steps, {} of work{}", route.id(), count(taken), millis(count(nanos)),
+                        resumed ? ", since the pass was last picked up" : "");
+            }
+        }
+
+        /** How many of a stage's counts were taken, added up. */
+        private static int count(int[] counts) {
+            int sum = 0;
+            for (int one : counts) sum += one;
+            return sum;
+        }
+
+        private static long count(long[] counts) {
+            long sum = 0;
+            for (long one : counts) sum += one;
+            return sum;
+        }
+
+        /** A duration in millis to one place: a step is fractions of a tick, and a whole pass is seconds. */
+        private static String millis(long nanos) {
+            return (nanos / 1_000_000L) + "." + (nanos / 100_000L % 10L) + " ms";
         }
 
         /** Whether this step is worth writing down: the turn of a stage, a road finished, or every few steps between. */
@@ -411,6 +463,7 @@ public final class RoadCommands {
             stage = saved;
             // What was just read is what the file already holds, so the first step after a restart owes it nothing.
             written = saved;
+            resumed = true;
         }
 
         /** What the pass came to, once {@link #step} has said it is done. */

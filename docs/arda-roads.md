@@ -223,6 +223,10 @@ graded roads shared between the two of them, a thousand columns of terraces walk
 template of some five hundred blocks and a station a band of up to a hundred and twenty-one columns, so counting them
 was counting the wrong thing: the bridge used to be stood in a single tick and the lips walked in the tick after the
 last station, both of them tens of thousands of block writes at once.
+A stage says what it cost when it is done with - how many steps it took and what a step came to - and the pass says the
+same of itself when the road is down, in the server log under `Road <route>:`. That is the only way a count of columns
+can be checked against a tick: a budget is a guess until a real pass has been timed, and the line is where to look when
+a road feels slow. A pass that was carried across a restart reports only the work it has done since it was picked up.
 
 The search is the one stage that is not carried -
 its state is a hundred thousand candidate blocks - so a world stopped inside it searches again, and everything after
