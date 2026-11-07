@@ -147,6 +147,24 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
+     * The top a generated road's corridor takes in a column: its shelf, held within a cut's or a fill's depth of the
+     * ground the column already has.
+     * <p>
+     * A line's heights are waypoints walked by hand, and two of them a long way apart can promise a grade the hill
+     * between them does not have. Taken at its word that promise is answered with a trench, or with an embankment
+     * standing on the ground rather than in it. The bound is what stops that: the corridor still cuts and fills, but no
+     * deeper than a person could climb out of, and past that the column keeps the ground it has. A road that would
+     * stand in water is still the map's business, since a crossing is a fords or a bridge's.
+     * <p>
+     * One answer for the noise, the paint and the height readings, so the block a road is surfaced with is always the
+     * block its shelf was cut to.
+     */
+    private static int roadTop(ArdaMap.Sample sample, Integer shelf) {
+        if (shelf == null || shelf <= sample.water() || sample.height() < sample.water()) return sample.height();
+        return Math.clamp(shelf, sample.height() - RoadPaint.MAX_CUT, sample.height() + RoadPaint.MAX_FILL);
+    }
+
+    /**
      * Paints the campaign's generated roads into the dressed ground.
      * <p>
      * A road that stands in every world cannot search for its alignment, because it has to answer for a chunk whose
@@ -169,10 +187,9 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 int blockZ = minZ + z;
                 BlockState surface = RoadPaint.at(blockX, blockZ);
                 if (surface == null) continue;
-                Integer shelf = RoadPaint.heightAt(blockX, blockZ);
                 ArdaMap.Sample sample = ArdaMap.sample(blockX, blockZ,
                         randomState.sampler().weirdness(), randomState.sampler().erosion());
-                int top = Math.min(maxY, Math.max(chunk.getMinY(), shelf == null ? sample.height() : shelf));
+                int top = Math.min(maxY, Math.max(chunk.getMinY(), roadTop(sample, RoadPaint.heightAt(blockX, blockZ))));
                 if (sample.height() < sample.water() || top <= sample.water()) continue;
                 BlockState ground = chunk.getBlockState(at.set(blockX, top, blockZ));
                 if (ground.isAir() || !ground.getFluidState().isEmpty()) continue;
@@ -254,9 +271,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 // the strip is level across its width and a ramp along its length rather than the hillside's
                 // staircase. A road that would stand in water is left to the map - a crossing is a bridge's or a
                 // ford's business - and nothing outside the corridor is touched.
-                Integer shelf = RoadPaint.heightAt(blockX, blockZ);
-                boolean dry = sample.height() >= sample.water();
-                int drawn = shelf != null && shelf > sample.water() && dry ? shelf : sample.height();
+                int drawn = roadTop(sample, RoadPaint.heightAt(blockX, blockZ));
                 int target = Math.max(minY + 1, Math.min(maxY, drawn));
 
                 // The column is made the drawn one outright - air above, rock below - rather than moved
@@ -364,11 +379,9 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor heightAccessor, RandomState randomState) {
         ArdaMap.liftTo(heightAccessor.getMaxY() - 1);
         ArdaMap.Sample sample = ArdaMap.sample(x, z, randomState.sampler().weirdness(), randomState.sampler().erosion());
-        int ground = sample.height();
         // A road's shelf is ground here too, so a carver, a feature and a structure site all read the surface the road
         // was cut to rather than the hillside it was cut from.
-        Integer shelf = RoadPaint.heightAt(x, z);
-        if (shelf != null && shelf > sample.water() && sample.height() >= sample.water()) ground = shelf;
+        int ground = roadTop(sample, RoadPaint.heightAt(x, z));
         int surface = switch (type) {
             case OCEAN_FLOOR, OCEAN_FLOOR_WG -> ground;
             default -> Math.max(ground, sample.water());
@@ -389,9 +402,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
         Arrays.fill(column, AIR);
 
         ArdaMap.Sample sample = ArdaMap.sample(x, z, randomState.sampler().weirdness(), randomState.sampler().erosion());
-        int top = sample.height();
-        Integer shelf = RoadPaint.heightAt(x, z);
-        if (shelf != null && shelf > sample.water() && sample.height() >= sample.water()) top = shelf;
+        int top = roadTop(sample, RoadPaint.heightAt(x, z));
         int waterTop = top < sample.water() ? sample.water() : top;
 
         for (int y = minY; y < minY + column.length; y++) {

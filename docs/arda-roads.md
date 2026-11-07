@@ -186,11 +186,20 @@ exist yet, so the road has to be a pure function of x and z, exactly the way the
 surface rules have dressed the new ground.
 
 The grade is the line's own heights. A waypoint carries the height the scout stood at, the height between two
-waypoints is the straight line between theirs, and every column of the corridor takes the height of the nearest point
-of the line - so the strip is level across its width and a ramp along its length, and the ground above that height is
+waypoints is a cubic through theirs - eased at each waypoint so the profile curves through a bend instead of kinking
+there - and every column of the corridor takes the height of the nearest point of the line - so the strip is level across its width and a ramp along its length, and the ground above that height is
 cut away while the ground below it is filled. That is the shelf, answered per column from the column's own
 coordinates: a cutting where the hill stands over the line and an embankment where it falls away, with no heightmap
 read and no search, because a chunk cannot see the ground it would have to compare itself with.
+
+Two limits keep a line honest. The slope at each waypoint is the two legs either side of it averaged, held to a third
+of the shallower one and levelled at a crest or a hollow, which is the easing that cannot overshoot - a cubic through
+two heights can otherwise leave the interval between them, and a road dug for a hollow nobody walked is not what the
+scout marked. And the shelf is held within four blocks of the ground the column already has, cutting and filling no
+deeper than that and keeping the ground beyond it: waypoints are walked by hand and a pair a long way apart can promise
+a grade the hill between them does not have, and without the bound that promise is answered with a trench. Both the
+painted surface and the heights carvers and structure sites read are that same bounded shelf, so the road block and the
+ground under it cannot disagree.
 
 What it still cannot do is cross water: a road whose grade would stand at or under the waterline is left to the map,
 since a crossing is a ford's or a bridge's business. And a line's grade is only as good as the waypoints written on

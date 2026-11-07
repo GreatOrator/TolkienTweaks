@@ -37,11 +37,11 @@ public final class Roads {
             // the ruin's own, so its surface is chosen by how close a column stands to the walls the road leaves
             // from, and the far end is ground rather than a deck.
             new Route.Riverless(Sites.WOOD_RUIN, 4782, 4795, -3058, -3046, 4782, -3057, 4820, -2886),
-            // Thorenhad's camp to that ruin: the block beside the camp's door at 4642, 91, -3315 to the ruin's
+            // Thorenhad's camp to that ruin: the block beside the camp's door at 4648, 90, -3314 to the ruin's
             // road end, the pair that were marked together - a doorway and a road end - in the scouting world.
-            // The camp's footprint is the sixteen by sixteen its door sits in the middle of, so the road starts
-            // one block outside its south edge.
-            new Route.Riverless(Sites.ELLADAN_CAMP, 4634, 4649, -3314, -3299, 4642, -3315, 4782, -3057)
+            // The footprint is the sixteen by sixteen the world raised at 4640, -3313 rather than the box the
+            // first pin guessed at, so the road leaves from the ground outside the door that is actually there.
+            new Route.Riverless(Sites.ELLADAN_CAMP, 4640, 4655, -3313, -3298, 4648, -3314, 4782, -3057)
             // A road with no water on it is the other kind, and is the whole of what a dry road needs: the build's
             // footprint and its entry point, and the block the road ends at. Nothing is swept, bridged or pillared;
             // the same search finds the way and the same grade lays it, arriving on the ground at the far end:

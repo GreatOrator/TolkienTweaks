@@ -73,10 +73,11 @@ public final class Pins extends SavedData {
             // is eight west of it and the build is seated level with the ground the road arrives on.
             Map.entry(Sites.BARACHENS_CAMP, new BlockPos(4812, 77, -2885)),
             Map.entry("ford", new BlockPos(5061, 75, -3136)),
-            // Elladan's camp, re-pinned from the doorway the scout marked at 4642, 91, -3314: that block is the
-            // middle of the template's south face, so the corner it is cut from is eight west of it and the
-            // build is seated level with the ground the road arrives on.
-            Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4634, 92, -3314)),
+            // Elladan's camp, read back out of the scouted save rather than written down from the drawing: the world
+            // raised it at 4640, 92, -3313, six east and one north of the pin that asked for it, with its floor four
+            // blocks above the ground outside its door. Its seat drops it by that four, so the pin is written where
+            // the camp will stand - the corner, dropped - and not where it happened to be standing when it was read.
+            Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4640, 88, -3313)),
             Map.entry(Sites.WOOD_RUIN, new BlockPos(4782, 79, -3058)),
             Map.entry(Sites.TROLL_CAVE, new BlockPos(4460, 125, -2477)),
             Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4568, 112, -2511)),
@@ -92,6 +93,12 @@ public final class Pins extends SavedData {
             // is the last block of the road that reaches that door, and the ruin's and Barachen's were both walked.
             Map.entry(Sites.WOOD_RUIN + ".end", new BlockPos(4787, 78, -3058)),
             Map.entry(Sites.BARACHENS_CAMP + ".end", new BlockPos(4820, 76, -2886)),
+            // Elladan's camp's own two: the door's block and the ground outside it, and the spot inside the camp a
+            // scout stood on, both walked on the camp as it stands and both written four lower - the drop its seat
+            // gives it - so the man at the fire stands on the floor that will be under him rather than the one under
+            // him now.
+            Map.entry(Sites.ELLADAN_CAMP + ".end", new BlockPos(4648, 90, -3314)),
+            Map.entry(Sites.ELLADAN_CAMP + ".keeper", new BlockPos(4645, 90, -3308)),
             // Where the road out of the valley's crossing ends and the next one begins: the marker at 4972 is both,
             // so the road south to Thorenhad starts here rather than at the water.
             Map.entry("ford.road", new BlockPos(4972, 86, -3075))

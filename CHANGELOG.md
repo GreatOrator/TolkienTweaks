@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A road's grade curves through its bends instead of kinking at each waypoint.** The height between two waypoints
+  was the straight line between the heights walked at them, so a road that changed direction while it was falling had
+  a corner in its profile, which a walker meets as a step. The grade is now a cubic through the waypoints, its slope at
+  each averaged from the legs either side, held to a third of the shallower and levelled at a crest, so a bend eases
+  through and the profile cannot dip below a height nobody walked.
+- **A generated road can no longer be dug into a trench by two waypoints that disagree with the hill.** The corridor's
+  shelf is held within four blocks of the ground it crosses, cutting and filling only that deep and keeping the ground
+  it has beyond it, and the painted surface and the heights carvers and structures read are all that same bounded
+  shelf. A road whose grade would stand in water is still left to the map.
+- **Elladan's camp is recorded where the world raised it, dropped by its own door.** Scanning the scouted save put the
+  camp at 4640, 92, -3313 - six east and one north of the pin that asked for it - with its floor four blocks above the
+  ground outside its door, which is the seat's drop. The pin, the doorway's pair and the fire are now written four
+  lower, so the keeper stands on the floor that will be under him, and the camp's route leaves from the block outside
+  the door that is actually there.
 - **A marker on the ground is an ammolite block, and that is written down now.** It has been the scouting habit
   for a long time - one `tolkienmobs:block_ammolite` where a doorway, a road end or a body belongs, corners for a
   cut - but it lived only in conversation, so every pass over the ground re-derived the spots from a template's
