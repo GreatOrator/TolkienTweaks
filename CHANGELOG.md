@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Chapter one's buildings are raised by the world.** Elladan's camp, the wood ruin and the three crags are cut
+  ground rather than generated ground, so they appeared only once a page named them and a player walked close. The
+  world now plants each one at the pin the scout walked and stands it when a player comes within four chunks,
+  whether or not anybody has been sent - so a regenerated world has the chapter's buildings in it, and a page that
+  names one is answered with the ground already standing rather than a fresh survey and a second copy.
+- **The wood ruin's road to Barachen's fire.** The first road on settled ground with no water on it: from the
+  block beside the ruin's door (4782, 78, -3057) to the block beside the fire (4820, 76, -2886), a hundred and
+  seventy-five blocks, searched and graded by the same pass the valley's approach uses and arriving on the ground
+  at the fire rather than on a deck.
 - **A marker scan for a scouting world.** `tools/ammolite_markers.py` reads the ammolite blocks a scout put
   down out of a save's region files, groups the ones standing next to each other, and measures every group
   against a pin named on the command line - so a location marked in the world can be read back without

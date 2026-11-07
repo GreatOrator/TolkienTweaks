@@ -30,7 +30,14 @@ public final class Roads {
             // Rivendell: the path's last block at 5200, 134, -3034, the banks at 5055 and 5006 on z -3075, the deck
             // at 76 - the numbers the scouted valley was walked to, 584 pieces of city above the path's end.
             new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5006, -3075, 4,
-                    74, 75, 76, 16, 32, "bridge_end", "bridge_middle")
+                    74, 75, 76, 16, 32, "bridge_end", "bridge_middle"),
+            // The wood ruin to Barachen's fire, the first road with no water on it: from the block beside the
+            // ruin's door to the block beside the fire, both marked in the scouting world - 4782, 78, -3057 and
+            // 4820, 76, -2886, a hundred and seventy-five blocks apart and never over water. The footprint box is
+            // the ruin's own, so its surface is chosen by how close a column stands to the walls the road leaves
+            // from, and the far end is ground rather than a deck.
+            new Route.Riverless("tolkienmobs:key_structures/ttmruin_large_2", 4782, 4795, -3058, -3046,
+                    4782, -3057, 4820, -2886)
             // A road with no water on it is the other kind, and is the whole of what a dry road needs: the build's
             // footprint and its entry point, and the block the road ends at. Nothing is swept, bridged or pillared;
             // the same search finds the way and the same grade lays it, arriving on the ground at the far end:

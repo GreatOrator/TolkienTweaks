@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -162,6 +163,18 @@ public final class Sites extends SavedData {
      * bridle is found at is that wall and no other.
      */
     public static final String WOOD_RUIN = "tolkienmobs:key_structures/ttmruin_large_2";
+    /**
+     * The chapter's own buildings, which the world raises whether or not a page has named them.
+     * <p>
+     * A crag, the ruin the rider is found at and Elladan's own camp are ground the campaign cuts rather than
+     * ground the generator makes, so a world that waits for a page to raise them is a world whose hills are empty
+     * until somebody is sent to them - and a player who walks to Thorenhad before taking a page finds a place with
+     * nothing at it. Each of these is pinned in {@link Pins}, so where it stands does not depend on who is
+     * asking: the world plants it once, at the pin the scout walked, and stands it when a player comes close enough
+     * for its chunks to be loaded.
+     */
+    private static final List<String> SCENERY =
+            List.of(ELLADAN_CAMP, WOOD_RUIN, TROLL_CAVE, TROLL_CAVE_2, TROLL_CAVE_3);
     /**
      * The country each landmark stands in, where the books put it rather than where the page was taken.
      * <p>
@@ -442,21 +455,62 @@ public final class Sites extends SavedData {
     }
 
     /**
+     * Plants the chapter's own buildings, and stands them as players come near.
+     * <p>
+     * A building the world raises is not one player's: it stands where the scout pinned it, and every player finds
+     * the same camp there. So it is held under a key of its own rather than under anybody's id, and a page that later
+     * names it is pointed at the ground already standing instead of pitching a second copy - {@link #plan} asks
+     * {@link #standing} before it surveys, and this is what makes that answer findable.
+     * <p>
+     * The planting is a pin lookup and a template's own size; nothing is built until a player is within
+     * {@link #BUILD_REACH} of it, because a chunk nobody is looking at is a chunk the game will not load, and a block
+     * written into an unloaded chunk is quietly dropped. That is the rule a page's own site is held to as well, and it
+     * is why a regenerated world fills in as its chapter is walked rather than all at once.
+     */
+    private static void scenery(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
+        for (String structure : SCENERY) {
+            if (standing(level, structure) != null) continue;
+            UUID key = sceneryId(structure);
+            Site site = SITES.get(key);
+            if (site == null || !level.dimension().equals(site.dimension())) {
+                ArdaSurvey.Ground ground = survey(level, player, structure);
+                if (ground == null) continue;
+                site = new Site(key, level.dimension(), ground.centre(), structure, false, false, false,
+                        ground.country().name());
+                SITES.put(key, site);
+                instance(level).setDirty();
+            }
+            if (!site.built() && away(player, site) <= BUILD_REACH) build(level, site);
+        }
+    }
+
+    /** The key the world's own site for a building is held under, apart from every player's. */
+    private static UUID sceneryId(String structure) {
+        return UUID.nameUUIDFromBytes(("scenery:" + structure).getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
      * Looks at where the player is, builds their site once they are close enough for the chunk to be
      * loaded, and tells them when they have walked into it. Called from the same clock that names the
      * ground they are walking over.
      */
     public static void tick(ServerPlayer player) {
+        // The chapter's own buildings are not a page's to raise: they are planted and stood before anybody is
+        // sent to them, so a world is the world the notes describe rather than empty hills until a page names
+        // something.
+        scenery(player);
         Site site = siteOf(player);
         if (site == null) return;
         if (!player.level().dimension().equals(site.dimension())) return;
+        if (!(player.level() instanceof ServerLevel level)) return;
         double away = away(player, site);
         if (!site.built()) {
-            if (away <= BUILD_REACH) build(player, site);
+            if (away <= BUILD_REACH) build(level, site);
             return;
         }
-        if (site.found() || away > foundReach(player.level(), site)) return;
-        if (!(player.level() instanceof ServerLevel level)) return;
+        if (site.found() || away > foundReach(level, site)) return;
         SITES.put(player.getUUID(), site.markedFound());
         instance(level).setDirty();
         player.sendSystemMessage(keeperNearby(player, site)
@@ -543,8 +597,7 @@ public final class Sites extends SavedData {
      * that is not in the pack, or a footprint that no ground nearby will take, leaves the site unbuilt
      * rather than half-built, so the next look can try again.
      */
-    private static void build(ServerPlayer player, Site site) {
-        if (!(player.level() instanceof ServerLevel level)) return;
+    private static void build(ServerLevel level, Site site) {
         Identifier id = Identifier.tryParse(site.structure());
         if (id == null) return;
         StructureTemplate template = level.getStructureManager().get(id).orElse(null);
@@ -575,7 +628,7 @@ public final class Sites extends SavedData {
                 Math.min(UNDERPIN_MAX, Math.max(UNDERPIN_DEPTH, found.relief() + 2)));
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
         if (site.keeper()) standKeeper(level, corner, size);
-        SITES.put(player.getUUID(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
+        SITES.put(site.player(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
         instance(level).setDirty();
     }
 

@@ -45,6 +45,18 @@ arrival and a hilltop template raised for a page, and so are Gundabad and Gloin'
 - **The y** is a note of the surface the scout stood on. It is not used to seat a building, so a y a block or
   two out is not an error.
 
+## Buildings the world raises
+
+A building pinned for every world is not waiting for a page. `Sites` walks the chapter's own list (`SCENERY` -
+Elladan's camp, the wood ruin and the three crags) on the clock it already looks at where a player is standing,
+and for each one not standing in this world it plants a site at the pin and builds it once a player is within
+four chunks. A world that has just been generated therefore has Thorenhad's camp, the ruin the rider lies in and
+all three caves in it whether anybody has taken a page to them, and a page that names one is answered with the
+ground already standing rather than a second copy.
+
+The planting is cheap - a pin lookup and a template's own size - and nothing is raised until the chunks are
+loaded, which is the same rule a page's own site is held to. Nothing here builds at a distance.
+
 ## A pin in the world's own generation
 
 The pins above are read while the game runs: `Places` and `Sites` ask for one when a page needs a location.
