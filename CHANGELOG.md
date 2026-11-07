@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A marker scan for a scouting world.** `tools/ammolite_markers.py` reads the ammolite blocks a scout put
+  down out of a save's region files, groups the ones standing next to each other, and measures every group
+  against a pin named on the command line - so a location marked in the world can be read back without
+  opening the game, and a pair of markers can be told apart by which one is nearer the build.
 - **A dry road is a route of its own.** The pass was written around a crossing - a span to sweep, pieces to stand,
   pillars to draw - so a road between two builds on the same bank had to carry numbers for water it never meets.
   `Route` is two kinds now: a `Crossing` with banks and a deck, and a `Riverless` that is a build's entry point and
