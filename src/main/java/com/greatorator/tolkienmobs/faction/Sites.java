@@ -144,6 +144,15 @@ public final class Sites extends SavedData {
     /** The third crag, for the last of the three chambers the notes name. */
     public static final String TROLL_CAVE_3 = "tolkienmobs:key_structures/troll_cave_3";
     /**
+     * The fourth crag, cut by the same hand for a hill of its own: Matuna keeps his lair in it.
+     * <p>
+     * The wood-troll's page names a body rather than a place, so its ground was the one crag nobody had cut for
+     * it - the three the stone asks in were all spoken for, and a lair in one of them sent the player back into a
+     * hill the stone had already emptied. This is a variant like the others (tools/make_troll_cave.py with its own
+     * seed and its chambers nudged), raised by the page that names him rather than by the world.
+     */
+    public static final String TROLL_CAVE_4 = "tolkienmobs:key_structures/troll_cave_4";
+    /**
      * The crags in the order the stone asks for them: Bandrith's first, Sholdroth's last.
      * <p>
      * Three crags rather than one raised three times. The notes name three caves and send the player to
@@ -235,6 +244,8 @@ public final class Sites extends SavedData {
             Map.entry(TROLL_CAVE, ArdaMap.Country.TROLLSHAWS),
             Map.entry(TROLL_CAVE_2, ArdaMap.Country.TROLLSHAWS),
             Map.entry(TROLL_CAVE_3, ArdaMap.Country.TROLLSHAWS),
+            // Matuna's lair is in the wood east of the valley, the same hills the stone asks its caves in.
+            Map.entry(TROLL_CAVE_4, ArdaMap.Country.TROLLSHAWS),
             // The camp is at the east end of the High Pass: the ground the pass drops into on the Anduin
             // side, which the drawing names Gladden, rather than the mountains it cuts through. That is where
             // the old world built it and where the notes send the player, north of the valley.
@@ -341,7 +352,7 @@ public final class Sites extends SavedData {
     private static final Map<String, Seat> DOORWAYS = Map.of(
             ELLADAN_CAMP, new Seat(0, SEAT_SINK, 8, 0, 1, Direction.NORTH),
             BARACHENS_CAMP, new Seat(0, SEAT_SINK, 8, 0, 1, Direction.NORTH),
-            WOOD_RUIN, new Seat(0, SEAT_SINK, 0, 0, 0, Direction.WEST),
+            WOOD_RUIN, new Seat(0, SEAT_SINK, 0, 0, 0, Direction.NORTH),
             WILD_TENT, new Seat(0, SEAT_SINK, 0, 3, 0, Direction.WEST),
             BOSS_CASTLE, new Seat(0, SEAT_SINK, 31, 45, 2, Direction.SOUTH),
             BOSS_ARENA, new Seat(0, SEAT_SINK, 0, 0, 1, Direction.WEST));
@@ -366,6 +377,7 @@ public final class Sites extends SavedData {
             Map.entry(TROLL_CAVE, "Bandrith's crag"),
             Map.entry(TROLL_CAVE_2, "Hoklond's crag"),
             Map.entry(TROLL_CAVE_3, "Sholdroth's crag"),
+            Map.entry(TROLL_CAVE_4, "Matuna's lair"),
             Map.entry(BOSS_CASTLE, "Carn Dum"),
             Map.entry(BOSS_ARENA, "the arena under Carn Dum"));
 
@@ -385,6 +397,13 @@ public final class Sites extends SavedData {
             new Stand("rivendell.stone", "Rivendell"));
     /** Which of the standing stones this world has already set, so the clock does not walk their ground again. */
     private static final Set<String> STOOD = new HashSet<>();
+
+    /**
+     * The name a camp's keeper answers to, by building. A camp the campaign names after a man is his fire, so the
+     * body minding it is that man rather than one of the mod's folk wearing a borrowed name; a camp with no line
+     * here keeps the drawn name.
+     */
+    private static final Map<String, String> KEEPER_NAMES = Map.of(BARACHENS_CAMP, "Barachen");
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
@@ -1298,7 +1317,8 @@ public final class Sites extends SavedData {
                 level.getRandom().nextFloat() * 360.0F, 0.0F);
         keeper.setPersistenceRequired();
         keeper.addTag(KEEPER_TAG);
-        keeper.setCustomName(QuestPool.giverName(level.getRandom()));
+        String named = KEEPER_NAMES.get(structure);
+        keeper.setCustomName(named != null ? Component.literal(named) : QuestPool.giverName(level.getRandom()));
         keeper.setCustomNameVisible(true);
         level.addFreshEntity(keeper);
     }

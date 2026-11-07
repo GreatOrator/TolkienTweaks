@@ -49,10 +49,12 @@ git:
 ## Scouting markers are ammolite blocks
 
 - **A location is scouted by placing one `tolkienmobs:block_ammolite` on the ground where the thing belongs**,
-  and it is called simply "a marker" in conversation. A doorway is marked on the block the door itself stands
-  over, a road end on the last block of the road, a body's place on the floor it should stand on, and a cut's
-  corners when a build is captured (`FACTION-HALL-BRIEF.md`). Nothing derives these spots from a template's
-  shape while a marker for them exists - the marker is the answer, and it was placed by someone standing there.
+  and it is called simply "a marker" in conversation. **Two markers side by side are a doorway and its road
+  end**: the first is the block the door itself stands over, the second is the last block of the road that
+  reaches it, which is how one visit gives a build its door and the route to it. **A third marker, and any after
+  it, is a body's feet**: ground level, where an NPC stands at that build. A cut's corners are marked when a
+  build is captured (`FACTION-HALL-BRIEF.md`). Nothing derives these spots from a template's shape while a marker
+  for them exists - the marker is the answer, and it was placed by someone standing there.
 - **Markers are read back out of a save, not transcribed.** `python tools/ammolite_markers.py --world
   "run/saves/<world>" --dim tolkienmobs:arda` groups the blocks it finds (within a few blocks of each other)
   and prints every group's coordinates; `--compare name:x,y,z` measures each group against a known pin, so a
@@ -62,8 +64,12 @@ git:
 - **A marker is a placeholder, not scenery.** Code that places what a marker marks consumes it: the milestone
   replaces it, the keeper or the steed stands where it stood (`Sites.marker`). A finished world must not keep a
   scout's ammolite standing in it, because the next reader cannot tell it from a player's leftover.
-- A walked marker is pinned in `Pins.SOURCE` under the key it serves, so every world after it gets the same spot.
-  A marker given in chat becomes a `Map.entry` there rather than a one-off number inside code.
+- **A marker only ever exists in the world it was walked in.** Nothing in normal play lays one and no world the
+  pack generates contains one, so the ammolite is a scouting aid rather than part of a build - the coordinates are
+  the part that travels, through `Pins.SOURCE`. Code that consumes a marker while scouting is scouting-only code.
+- A walked marker is pinned in `Pins.SOURCE` under the key it serves, so every world after it gets the same spot:
+  `<building>.keeper` and `<building>.body` for a body's feet, `<building>.end` for the road half of a pair, and a
+  place key for a name. A marker given in chat becomes a `Map.entry` there rather than a one-off number in code.
 
 
 # Project Core Guidelines & Agent Directives

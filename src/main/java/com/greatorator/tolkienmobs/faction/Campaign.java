@@ -1353,7 +1353,10 @@ public final class Campaign extends SavedData {
         // recognised rather than toward an open field with one monster standing in it. A player already
         // walking to a site of their own keeps it, because the page in their hand sent them there.
         if (page.target().equals(MATUNA) && Sites.siteOf(player) == null) {
-            Sites.plan(player, caveFor(player), false);
+            // A lair of his own rather than one of the stone's three: the stone's page sends the player into each
+            // of those in turn, and a wood-troll waiting in a hill that page has already emptied is the wrong
+            // ground twice over.
+            Sites.plan(player, Sites.TROLL_CAVE_4, false);
         }
         // Chapter two opens at a camp the pack does not otherwise ship, so it is pitched when Elrond's page
         // is handed over rather than found: the walk north then ends at a fire that is standing by the time

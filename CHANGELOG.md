@@ -1229,6 +1229,19 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   the stone at Rivendell is the city's own and cannot be laid twice.
 
 ### Removed
+- **The door-and-road pair is written down as the marker convention.** Two ammolite blocks side by side are a
+  doorway and the last block of the road that reaches it; a third and any after it are a body's feet. `AGENTS.md`
+  and the pinning notes say so, with the keys a walked marker is pinned under (`<building>.end` included), and that
+  a marker only exists in the world it was walked in - the coordinates are what travels.
+- **Matuna keeps a lair of his own.** A fourth crag, `troll_cave_4`, cut by the same generator with its own seed,
+  so the wood-troll's page no longer sends a player back into one of the three hills the stone's page has already
+  emptied. It is raised by the page that names him, not by the world.
+- **Barachen is at his fire.** The man minding Barachen's camp was one of the mod's folk wearing a drawn name; the
+  camp named after a man now stands his body there, at the spot the scout marked.
+- **The wood ruin's door faces north.** The scout's marker sits under the ruin's spruce door at 4787, 78, -3057
+  with the road end one block outside it, so the gap opens north; the doorway table had taken the direction the
+  road reached the wall by, which was west.
+
 - **`Stones.nameLaid` is gone.** It named the stones a template had already laid, and nothing called it: no
   template the pack ships contains a milestone block, so there was never anything for it to name. A place's stone
   is the one `Sites` stands beside its door, or the valley's, which is pinned.

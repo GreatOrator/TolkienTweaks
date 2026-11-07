@@ -69,6 +69,7 @@ public final class PinCommands {
         BUILDINGS.put("cave1", Sites.TROLL_CAVE);
         BUILDINGS.put("cave2", Sites.TROLL_CAVE_2);
         BUILDINGS.put("cave3", Sites.TROLL_CAVE_3);
+        BUILDINGS.put("cave4", Sites.TROLL_CAVE_4);
         BUILDINGS.put("gloincamp", Sites.GLOIN_CAMP);
         BUILDINGS.put("gundabad", Sites.GUNDABAD);
         BUILDINGS.put("keep", Sites.GUNDABAD);

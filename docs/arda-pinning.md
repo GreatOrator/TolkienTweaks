@@ -19,7 +19,7 @@ placement, so an overworld coordinate would mean nothing.
 | `/tmpin place <id>` | Pins a catalogue **name** at the caller's feet: `rivendell`, `thorenhad`, `barachen`, `ford`, `keystone`, `carndum`, or any of the sixteen place ids. |
 | `/tmpin build <name>` | Pins a **building** at the caller's feet: `camp` / `elledancamp`, `tent`, `ruin`, `cave` / `cave1`, `cave2`, `cave3`, `gloincamp`, `gundabad` / `keep`, `weathertop`, `castle`, `arena`, or a full template id. |
 | `/tmpin list`, or no argument | What this world has pinned, and what the build pins for every world. |
-| `/tmpin checklist` | The fifteen locations the two chapters ask for, each marked `this world`, `every world` or `not pinned`, with a count at the top. Places nothing. |
+| `/tmpin checklist` | The sixteen locations the two chapters ask for, each marked `this world`, `every world` or `not pinned`, with a count at the top. Places nothing. |
 | `/tmpin remove <name>` | Forgets this world's pin for that name. A pin written into the build is in the jar, not the world, and this does not touch it. |
 
 `place` and `build` are separate branches because one word can be both: Weathertop is a name announced on
@@ -48,9 +48,10 @@ arrival and a hilltop template raised for a page, and so are Gundabad and Gloin'
 ## Markers on the ground
 
 A location is scouted by standing on the block it belongs on and placing a `tolkienmobs:block_ammolite` there -
-one marker per thing, called simply "a marker" in conversation. A doorway is marked on the block under the door
-itself, a road end on the last block of the road, a body's place on the floor it should stand on, and a build's
-corners when a cut is being taken.
+called simply "a marker" in conversation. Two markers side by side are a doorway and its road end: the first is
+the block the door itself stands over, the second is the last block of the road that reaches it - so one visit
+gives a build its door and the route from the previous place. A third marker, and any after it, is a **body's
+feet**: ground level, where an NPC stands at that build. A cut's corners are marked when a build is captured.
 
 The markers are read back out of the save rather than transcribed:
 
@@ -65,6 +66,9 @@ or a cut's corners - and prints every group with its own coordinates; `--compare
 a known pin, which is how a marker is read against the ground it is supposed to mark without going back into the
 game. Only `block_ammolite` counts: `pane_ammolite` and `ore_ammolite` are reported and left alone, since the ore
 is generated ground and a marker is something a person put down.
+
+A marker only exists in the world it was walked in. Nothing in normal play lays one, no generated world contains
+one, and no cleanup is owed - the coordinates are the part that travels, through `Pins.SOURCE`.
 
 A marker is a placeholder rather than scenery. Code that places what the marker marks consumes it - the stone
 replaces it, the keeper or the steed stands where it stood (`<building>.keeper`, `<building>.body`) - so a
@@ -176,7 +180,7 @@ written into the build.
 | 6 | the ford the beryl is carried to | `place ford` | **water the road can cross** - the drawn cell has neither water nor the road |
 | 9 | Bandrith's, Hoklond's and Sholdroth's | `build cave`, `cave2`, `cave3` | three hillsides; each crag is cut rock and seats nine to ten blocks into the ground |
 | 10, 11 | Barachen's fire | `place barachen` | level ground south of the road |
-| 14 | Matuna's lair | *(covered by the caves)* | the page reuses a crag, so it needs no pin of its own |
+| 14 | Matuna's lair | `build cave4` | a crag of its own, `troll_cave_4`, cut like the three the stone asks in; a marker at the hillside pins it |
 
 ### Chapter two - the Misty Mountains and Angmar
 
@@ -204,7 +208,7 @@ The rest of the catalogue - `greenway`, `barrows`, `hobbiton`, `bree`, `weathert
 
 ## Checking progress
 
-`/tmpin checklist` prints the fifteen - the six names first, then the nine buildings - with the ones still
+`/tmpin checklist` prints the sixteen - the six names first, then the ten buildings - with the ones still
 leaning on the drawing marked `not pinned`, and a count at the top. Its keys come from the `Sites`
 constants, so a checklist line and a placement can never disagree about what counts as pinned.
 

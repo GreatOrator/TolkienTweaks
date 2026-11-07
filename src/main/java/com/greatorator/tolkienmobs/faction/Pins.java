@@ -87,7 +87,14 @@ public final class Pins extends SavedData {
             // Where the ruin's animal lies and where Barachen's keeper stands, marked after both builds had already
             // been raised: a building is dressed every visit now, so these are read rather than only laid once.
             Map.entry(Sites.WOOD_RUIN + ".body", new BlockPos(4787, 79, -3052)),
-            Map.entry(Sites.BARACHENS_CAMP + ".keeper", new BlockPos(4822, 77, -2875))
+            Map.entry(Sites.BARACHENS_CAMP + ".keeper", new BlockPos(4822, 77, -2875)),
+            // The road half of each doorway pair, recorded where a route can read it: the second marker of a pair
+            // is the last block of the road that reaches that door, and the ruin's and Barachen's were both walked.
+            Map.entry(Sites.WOOD_RUIN + ".end", new BlockPos(4787, 78, -3058)),
+            Map.entry(Sites.BARACHENS_CAMP + ".end", new BlockPos(4820, 76, -2886)),
+            // Where the road out of the valley's crossing ends and the next one begins: the marker at 4972 is both,
+            // so the road south to Thorenhad starts here rather than at the water.
+            Map.entry("ford.road", new BlockPos(4972, 86, -3075))
             // Chapter one is all of it. What is left is chapter two's four and the last act's two.
     ));
 
@@ -219,6 +226,7 @@ public final class Pins extends SavedData {
             new Need(Sites.TROLL_CAVE, "Bandrith's cave"),
             new Need(Sites.TROLL_CAVE_2, "Hoklond's cave"),
             new Need(Sites.TROLL_CAVE_3, "Sholdroth's cave"),
+            new Need(Sites.TROLL_CAVE_4, "Matuna's lair"),
             new Need(Sites.GLOIN_CAMP, "Gloin's camp at the pass mouth"),
             new Need(Sites.GUNDABAD, "Gundabad"),
             new Need(Sites.BOSS_CASTLE, "the Witch-king's castle"),
