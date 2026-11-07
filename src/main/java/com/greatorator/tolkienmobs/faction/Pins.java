@@ -61,10 +61,19 @@ public final class Pins extends SavedData {
             // Rivendell, scouted on the ground the city was cut for and since raised there: the block its
             // low corner goes on, at the surface the scout stood on. /tmcity plants the corner here, so
             // the city covers x 5200..5753 by z -3370..-2859, with the crown at 318.
-            Map.entry("rivendell", new BlockPos(5200, 75, -3370))
-            // The shape a line takes, for the next one: a comma and the slashes gone.
-            // Map.entry("thorenhad", new BlockPos(4864, 157, -3328)),
-            // Map.entry("tolkienmobs:key_structures/barachans_camp", new BlockPos(4864, 157, -3340))
+            Map.entry("rivendell", new BlockPos(5200, 75, -3370)),
+            // Chapter one, walked in the scouting world: the names on the ground their pages are spoken on, and
+            // the camp and the three crags on the hillsides they were found on. The y is where the scout stood;
+            // the laying measures the ground under a footprint and seats it, so the block is a target and not a
+            // measurement. Keys go through the Sites constants, so a checklist line and a placement cannot drift.
+            Map.entry("thorenhad", new BlockPos(4691, 87, -3273)),
+            Map.entry("barachen", new BlockPos(4812, 77, -2885)),
+            Map.entry("ford", new BlockPos(5061, 75, -3136)),
+            Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4634, 93, -3314)),
+            Map.entry(Sites.TROLL_CAVE, new BlockPos(4460, 125, -2477)),
+            Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4568, 112, -2511)),
+            Map.entry(Sites.TROLL_CAVE_3, new BlockPos(4508, 124, -2429))
+            // The wood ruin, key_structures/ttmruin_large_2, is the one chapter-one build still to scout.
     ));
 
     /**

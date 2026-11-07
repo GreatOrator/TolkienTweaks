@@ -1,10 +1,21 @@
 # Quest locations to scout
 
-Every location the campaign's pages walk to, **except Rivendell** - already pinned at `5200, 75, -3370`,
-the city's own low corner, so nothing more is wanted for it.
+Every location the campaign's pages walk to. **Chapter one is scouted** - Rivendell and the seven below are
+pinned, and the pins are in `Pins.SOURCE`, so every world has them.
 
-Fourteen left: nine in the Trollshaws - the chapter-one cluster and the key-stone's vault - one at the mouth
-of the High Pass, one in the Misty Mountains, and three in Angmar, two of them the last act's.
+| location | pin as | pinned at |
+| --- | --- | --- |
+| Rivendell | `place rivendell` | `5200, 75, -3370` |
+| Thorenhad | `place thorenhad` | `4691, 87, -3273` |
+| Elladan's camp | `build camp` | `4634, 93, -3314` |
+| Barachen's fire | `place barachen` | `4812, 77, -2885` |
+| the ford | `place ford` | `5061, 75, -3136` |
+| Bandrith's cave | `build cave` | `4460, 125, -2477` |
+| Hoklond's cave | `build cave2` | `4568, 112, -2511` |
+| Sholdroth's cave | `build cave3` | `4508, 124, -2429` |
+
+Seven left: the wood ruin in the Trollshaws, the key-stone's vault, Glóin's camp at the mouth of the High
+Pass, Gundabad in the range, and Carn Dûm, the witch-king's castle and the arena in Angmar.
 
 ## While you are out there
 

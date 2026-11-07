@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Chapter one's ground is kept for every world.** The scouting world's pins are in `Pins.SOURCE` now -
+  Thorenhad, Barachen's fire, the ford, Elladan's camp and the three crags - so a world nobody has walked raises
+  them where the scout stood instead of surveying the drawing for a hillside. The keys are the `Sites`
+  constants, so a checklist line and a placement cannot drift apart. The wood ruin is the one chapter-one
+  build still to scout.
 - **The wild tent's chests draw from the tent's own table.** The canvas the world generator scatters carries two
   chests, and the template brought them across bare - no loot table, no contents - so `tolkienmobs:chests/wild_tent`
   was registered and rolled by nothing, and every tent met on the road opened two empty boxes. Both are pointed at
