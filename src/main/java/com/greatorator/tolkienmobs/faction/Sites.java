@@ -659,7 +659,7 @@ public final class Sites extends SavedData {
         underpin(level, corner, size.getX(), size.getZ(),
                 Math.min(UNDERPIN_MAX, Math.max(UNDERPIN_DEPTH, found.relief() + 2)));
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
-        if (site.keeper()) standKeeper(level, corner, size);
+        if (site.keeper()) standKeeper(level, corner, size, seatFor(site.structure()));
         SITES.put(site.player(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
         instance(level).setDirty();
     }
@@ -1168,11 +1168,21 @@ public final class Sites extends SavedData {
      * a camp is a place a player is sent to, and the man minding it is what makes it one rather than
      * what makes it another bench to take work from.
      */
-    private static void standKeeper(ServerLevel level, BlockPos corner, Vec3i size) {
+    private static void standKeeper(ServerLevel level, BlockPos corner, Vec3i size, Seat seat) {
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob keeper)) return;
-        BlockPos stand = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                corner.offset(size.getX() / 2, 0, size.getZ() + 2));
+        // The building's own door decides where the man stands: two blocks outside it, on the ground the
+        // road arrives on, rather than on the far side of the walls - which was the answer for a fair-weather
+        // tent and put the keeper of Elladan's camp behind it. A building with no door in the table keeps it.
+        BlockPos outside = corner.offset(size.getX() / 2, 0, size.getZ() + 2);
+        if (seat.doorway()) {
+            int stepX = seat.doorX() == 0 ? -1 : seat.doorX() == size.getX() - 1 ? 1 : 0;
+            int stepZ = seat.doorZ() == 0 ? -1 : seat.doorZ() == size.getZ() - 1 ? 1 : 0;
+            if (stepX != 0 || stepZ != 0) {
+                outside = corner.offset(seat.doorX() + stepX * 2, 0, seat.doorZ() + stepZ * 2);
+            }
+        }
+        BlockPos stand = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, outside);
         // One keeper per fire, whichever player raised the camp. A site belongs to the player who took
         // the page, but the ground it names is the same for everybody, so two players arriving at the
         // same camp both run the build - and without this each of them would put a second man at it.

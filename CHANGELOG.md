@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A camp's keeper stands at its door.** The body the world puts at a camp was placed beyond the far edge of the
+  footprint, which is where a fair-weather tent's front was and is behind Elladan's camp; with the doorway known,
+  he now stands two blocks outside it on the ground the road arrives on.
 - **On-surface buildings are seated by their doorway.** The wood ruin, the tents, the castle and the arena - and
   Elladan's camp, which was the same case fixed for one building - now measure the ground at the column their own
   doorway opens onto and lay the sill level with it, so a player walks into the floor rather than up onto it. A

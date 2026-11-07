@@ -59,8 +59,11 @@ loaded, which is the same rule a page's own site is held to. Nothing here builds
 
 Elladan's camp is raised only this way: the worldgen anchor it used to have at `4864, 0, -3328` is retired, so
 the camp a world holds is the one at the pin and never a second at a cell middle. A camp also stands with one of
-the mod's folk at its fire - the keeper - while the crags and the ruin are raised empty, since what is at those
-belongs to the page that sends you there.
+the mod's folk at its fire - the keeper, who stands two blocks outside the door the build is seated by - while
+the crags and the ruin are raised empty, since what is at those belongs to the page that sends you there.
+
+A crag's pin is a sighting point, not a doorway: it marks ground close enough to see the hill from, and the way
+in is the player's to find. Nothing here records which side a cave mouth opens on, and nothing needs to.
 
 ## A pin in the world's own generation
 
