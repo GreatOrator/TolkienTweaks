@@ -1229,6 +1229,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   the stone at Rivendell is the city's own and cannot be laid twice.
 
 ### Removed
+- **A road can be written down so every world generates it.** `RoadPaint` holds a line per road - block waypoints and
+  a half-width - and `ArdaChunkGenerator` paints it over the drawn top as chunks are made, after the surface rules.
+  It is a pure function of the column like the drawn rivers, so no chunk border splits it and no command has to be run
+  in any world; water is skipped, since a crossing is a bridge's or a ford's business. The table starts empty: a
+  section becomes a line once its markers are walked and its ground settled, and the two chapter roads already laid
+  keep the pass until then, because a painted line cannot cut a shelf into a hillside.
 - **The door-and-road pair is written down as the marker convention.** Two ammolite blocks side by side are a
   doorway and the last block of the road that reaches it; a third and any after it are a body's feet. `AGENTS.md`
   and the pinning notes say so, with the keys a walked marker is pinned under (`<building>.end` included), and that

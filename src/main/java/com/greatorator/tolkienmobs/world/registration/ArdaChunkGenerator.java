@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.world.registration;
 
+import com.greatorator.tolkienmobs.faction.RoadPaint;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -140,6 +141,43 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 chunk,
                 noiseChunk,
                 TolkienSurfaceRules.ardaSurface());
+        // The roads last, over ground the rules have just dressed: a road that stands in every world is a pure
+        // function of the column, so it needs no search and no height of its own - it paints the top the map drew.
+        paintRoads(chunk, randomState);
+    }
+
+    /**
+     * Paints the campaign's generated roads into the dressed ground.
+     * <p>
+     * A road that stands in every world cannot search for its alignment, because it has to answer for a chunk whose
+     * neighbours do not exist yet - so it is read from {@link RoadPaint}, which is a pure function of the column. The
+     * drawn top is known here, so a road column simply gets the block the road wants instead of the biome's surface.
+     * <p>
+     * Water is left alone. A road that crosses a river is a bridge's or a ford's business, and a strip painted over
+     * the water would be a crossing nobody built; a column the map floods is skipped for the same reason, since its
+     * top is under the waterline rather than on it.
+     */
+    private static void paintRoads(ChunkAccess chunk, RandomState randomState) {
+        BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
+        int minX = chunk.getPos().getMinBlockX();
+        int minZ = chunk.getPos().getMinBlockZ();
+        int maxY = chunk.getMaxY() - 1;
+        ArdaMap.liftTo(maxY);
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                int blockX = minX + x;
+                int blockZ = minZ + z;
+                BlockState surface = RoadPaint.at(blockX, blockZ);
+                if (surface == null) continue;
+                ArdaMap.Sample sample = ArdaMap.sample(blockX, blockZ,
+                        randomState.sampler().weirdness(), randomState.sampler().erosion());
+                int top = Math.min(maxY, sample.height());
+                if (top < sample.water()) continue;
+                BlockState ground = chunk.getBlockState(at.set(blockX, top, blockZ));
+                if (ground.isAir() || !ground.getFluidState().isEmpty()) continue;
+                chunk.setBlockState(at, surface);
+            }
+        }
     }
 
     /** The water and lava a column is made of, built the way the vanilla generator builds it. */

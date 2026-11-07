@@ -177,6 +177,25 @@ a wild road's gravel falls if the ground under it is ever removed - a note, not 
 - Whether the campaign's own road (chapter two speaks of the road east of Mirkwood) is built first, since no
   ground under it exists yet and a page already sends players along it.
 
+## Roads the world generates
+
+A road that stands in every world cannot search for its alignment: worldgen answers for a chunk whose neighbours do not
+exist yet, so the road has to be a pure function of x and z, exactly the way the drawn rivers are. That is
+`RoadPaint`: a table of lines, each a list of block waypoints and a half-width, painted over the drawn top in
+`ArdaChunkGenerator.buildSurface` after the surface rules have dressed the ground. Nothing is cut, filled or bridged,
+and water is skipped, so a generated road never crosses a river that nobody built a crossing for.
+
+Writing a road down is one `Line` in `RoadPaint.LINES`, with the markers as its waypoints and the width that stretch
+asks for. The legs between waypoints are straight, so a road that bends is given a waypoint at the bend; the surface
+is the per-column hash mix settled below, and the last twenty-four blocks before either end are paved. Nothing else in
+the mod changes when a line is added, and no command has to be run in any world: the road is in the next world that
+generates.
+
+The pass below is still the shape a road with ground under it is laid by. A generated line paints; it cannot cut a
+shelf into a hillside or stand a bridge, so the roads the scouted world walked - the valley's approach and the two
+between the chapter's camps - keep being laid by the pass, and a section of those is promoted to a generated line only
+once its ground is settled enough to be described without searching it.
+
 ## The first road, as built
 
 The Rivendell approach is the first road with ground under it, and its shape is settled. It is laid with
