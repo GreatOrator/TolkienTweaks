@@ -31,9 +31,12 @@ what is still open, so the next session does not have to rebuild that from the c
 
 ## The city
 
-- Hand-built `Rivendell_Imladris`, raised by `/tmcity` on the pin, standing on the cut's low corner
-  **5200, 75, -3370**: 584 pieces, 554 x 512 blocks (x 5200..5753, z -3370..-2859), bands from **y 75** to a
-  crown of **318**.
+- Hand-built `Rivendell_Imladris`, raised from the pin on the cut's low corner **5200, 75, -3370**: 584
+  pieces, 554 x 512 blocks (x 5200..5753, z -3370..-2859), bands from **y 75** to a crown of **318**.
+- **A player coming within 160 blocks of the pin raises the city.** The corner is planted on the pin and the cut is
+  laid a piece every four ticks - a piece is a 48-cube, so no tick carries more than one - and the marker is the same
+  one `/tmcity` writes, so the dressing pass, the road and the city's people find the city with no command typed. A
+  city the world generated for itself, or one planted by hand, is left alone rather than laid twice.
 - The build carries its **own water** - 763 `minecraft:water` blocks across 306 of its 584 pieces, not the
   none an earlier note claimed - which is the pool and channel inside the city. The ground round it is the
   generator's, so the two meet at the build's own mouth and the map does not get to choose where the city's
