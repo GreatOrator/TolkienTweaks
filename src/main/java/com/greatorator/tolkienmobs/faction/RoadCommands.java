@@ -109,7 +109,7 @@ public final class RoadCommands {
     /** How many passes of the smoothing filter the profile takes, each reaching one more station either way. */
     private static final int PROFILE_PASSES = 8;
     /** The deepest cut or tallest fill one column may take before the road is held back to the ground. */
-    private static final int CUT_FILL = 12;
+    private static final int CUT_FILL = 4;
     /** The most one station's surface may rise or fall above the one before it, in blocks. */
     private static final double MAX_STEP = 1.0D;
     /** How many times the two step sweeps are alternated after the last pass, so both ends agree. */
@@ -316,6 +316,19 @@ public final class RoadCommands {
             }
         }
 
+        /**
+         * Where the pass has got to, as the block it is working on: the station it is laying, and the route's own
+         * entry point before a grade is settled.
+         * <p>
+         * A road used to be stepped only while its building was in reach, which lays the first few hundred blocks
+         * and then stops: the player walking the road took its budget away with them. Measured from this block, the
+         * pass keeps up with whoever is walking it and waits at the block it had reached for the next visit.
+         */
+        int[] head() {
+            if (graded != null) return graded.head();
+            return new int[]{route.pathX(), route.pathZ()};
+        }
+
         /** One step of whichever stage the pass is in; false once the road is down. */
         private boolean stage(ServerLevel level) throws IOException {
             switch (stage) {
@@ -493,8 +506,8 @@ public final class RoadCommands {
             approach = hairpins(level, route, simplify(line));
             exit = new ArrayList<>();
             for (int x = span.westBankX() - 1; x >= span.westBankX() - span.exitReach(); x--) exit.add(new int[]{x, span.bridgeZ()});
-            int startY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, route.pathX(), route.pathZ()) - 1;
-            int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, span.westBankX() - span.exitReach(), span.bridgeZ()) - 1;
+            int startY = endGround(level, route.pathX(), route.pathZ());
+            int endY = endGround(level, span.westBankX() - span.exitReach(), span.bridgeZ());
             graded = new Graded(level, route, approach, startY, span.deckY());
             far = new Graded(level, route, exit, span.deckY(), endY);
             stage = Stage.GRADE;
@@ -514,8 +527,8 @@ public final class RoadCommands {
             if (!searched) found = straight(route, dry.farX(), dry.farZ());
             approach = hairpins(level, route, simplify(found));
             exit = List.of();
-            int startY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, route.pathX(), route.pathZ()) - 1;
-            int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, dry.farX(), dry.farZ()) - 1;
+            int startY = endGround(level, route.pathX(), route.pathZ());
+            int endY = endGround(level, dry.farX(), dry.farZ());
             graded = new Graded(level, route, approach, startY, endY);
             far = null;
             stage = Stage.GRADE;
@@ -899,6 +912,13 @@ public final class RoadCommands {
                     height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
                 }
             }
+            // The ground has the last word: whatever the sweeps preferred, no station stands more than the road's own
+            // budget above the ground or under it. A hill is walked over, not bored through, and a profile that was
+            // free to cut a station fifteen blocks under a ridge is held to what a path would actually take off.
+            for (int i = 1; i < n - 1; i++) {
+                if (ground[i] == WATER) continue;
+                height[i] = Mth.clamp(height[i], ground[i] - CUT_FILL, ground[i] + CUT_FILL);
+            }
         }
 
         /** A road with no grade yet: the shape a restored one fills its carried heights into. */
@@ -1024,6 +1044,12 @@ public final class RoadCommands {
             return order;
         }
 
+        /** The station this road has got to, clamped to its own line so a finished road still answers where it ends. */
+        int[] head() {
+            if (n < 2) return new int[]{route.pathX(), route.pathZ()};
+            return line.get(Math.clamp(at, 0, n - 1));
+        }
+
         private int[] summary() {
             return new int[]{laid, cut, filled, open, steepest, cleared};
         }
@@ -1071,10 +1097,12 @@ public final class RoadCommands {
                         continue;
                     }
                     int step = target - groundAt;
-                    // Ground this far off the grade is not cut or filled: the band loses that column and goes
-                    // on, except the column the alignment itself runs through, so the road narrows against a
-                    // rock face rather than breaking.
-                    if (Math.abs(step) > CUT_FILL && (dx != 0 || dz != 0)) {
+                    // Ground this far off the grade is not cut or filled: the band loses that column and goes on.
+                    // The alignment's own column used to be exempt, which is what put a staircase of stone in the air
+                    // over a tree and a shaft far underground under a ridge - a column the grade cannot reach is a
+                    // column the grade was wrong about. With the profile held to the ground this only narrows the
+                    // road against a bank.
+                    if (Math.abs(step) > CUT_FILL) {
                         open++;
                         continue;
                     }
@@ -1318,6 +1346,20 @@ public final class RoadCommands {
         }
         if (!state.getFluidState().isEmpty()) return WATER;
         return y;
+    }
+
+    /**
+     * The ground at one of a road's own ends.
+     * <p>
+     * The ends used to be read from the plain heightmap, which counts a tree's leaves. A road that began under a
+     * canopy therefore began at the top of the wood, and its grade spent the first thirty stations coming down out
+     * of a tree: a staircase of stone standing in the air with the path laid along its top, ending at nothing. Every
+     * other column of the same road is measured by {@link #surfaceAt}, which walks down past the wood, so the ends
+     * are measured the same way and the grade is the ground's from its first block.
+     */
+    private static int endGround(ServerLevel level, int x, int z) {
+        int ground = surfaceAt(level, x, z);
+        return ground == WATER ? level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1 : ground;
     }
 
     /**

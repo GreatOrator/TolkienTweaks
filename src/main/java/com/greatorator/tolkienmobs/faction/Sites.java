@@ -305,6 +305,15 @@ public final class Sites extends SavedData {
     /** How close the player has to be before anything is built, in blocks: four chunks. */
     private static final int BUILD_REACH = 64;
     /**
+     * How close a player has to be to the block a road pass has reached for the pass to be stepped, in blocks.
+     * <p>
+     * A road is not the building's business once it leaves the door. Measured from the building, the pass stopped
+     * being stepped the moment a player walked along the road away from it, which is a road that stops in the middle
+     * of a country. Measured from its own head, it keeps up with whoever is walking it - and a player who walks away
+     * leaves it waiting at the block it had reached.
+     */
+    private static final int ROAD_REACH = 96;
+    /**
      * How far from the page-taker a site is pitched at the nearest, in blocks. A page is a walk: a
      * landmark that rises where the page was taken is a landmark nobody had to go and find.
      */
@@ -699,20 +708,46 @@ public final class Sites extends SavedData {
         // A build nobody has walked a road for gets none: a road laid to another build's numbers is worse than ground
         // with no way down it. Nothing is written down for that, so the day a route is walked the world can lay it.
         if (route == null) return;
-        RoadCommands.RoadJob job = ROADS.get(key);
-        try {
-            if (job == null) {
-                job = RoadCommands.plan(route);
-                ROADS.put(key, job);
+        if (!ROADS.containsKey(key)) ROADS.put(key, RoadCommands.plan(route));
+    }
+
+    /**
+     * Steps every road this world is laying while its own head is near the player.
+     * <p>
+     * This is the pass a section is actually laid by. It is measured from the block the pass has reached rather than
+     * from the build, so a player walking the road carries it along - which is what a road filling in as its section
+     * is walked has to mean for a road four hundred blocks long. A player who leaves stops the work where it stands;
+     * the record of it is written to the world every few steps, so coming back resumes the same grade rather than
+     * laying a second one.
+     */
+    private static void roads(ServerPlayer player) {
+        if (ROADS.isEmpty()) return;
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
+        for (UUID key : new ArrayList<>(ROADS.keySet())) {
+            RoadCommands.RoadJob job = ROADS.get(key);
+            Site site = SITES.get(key);
+            if (job == null || site == null) {
+                ROADS.remove(key);
+                continue;
             }
-            if (job.step(level)) return;
-        } catch (IOException unreadable) {
-            // A pass that cannot run is not retried on every approach; the record says the road is the ground's now.
+            int[] head = job.head();
+            double dx = player.getX() - head[0];
+            double dz = player.getZ() - head[1];
+            if (Math.sqrt(dx * dx + dz * dz) > ROAD_REACH) continue;
+            boolean more;
+            try {
+                more = job.step(level);
+            } catch (IOException unreadable) {
+                // A pass that cannot run is not retried on every step; the record says the road is the ground's now.
+                more = false;
+            }
+            if (more) continue;
+            ROADS.remove(key);
+            // The record as it stands now, not as this step found it: dressing may have moved the build's centre since.
+            SITES.put(key, SITES.getOrDefault(key, site).roaded());
+            instance(level).setDirty();
         }
-        ROADS.remove(key);
-        // The record as it stands now, not as this step found it: dressing may have moved the build's centre since.
-        SITES.put(key, SITES.getOrDefault(key, site).roaded());
-        instance(level).setDirty();
     }
 
     /**
@@ -857,6 +892,7 @@ public final class Sites extends SavedData {
         // sent to them, so a world is the world the notes describe rather than empty hills until a page names
         // something.
         scenery(player);
+        roads(player);
         Site site = siteOf(player);
         if (site == null) return;
         if (!player.level().dimension().equals(site.dimension())) return;
@@ -966,7 +1002,14 @@ public final class Sites extends SavedData {
         // does, and waits at the site until the player is close enough for all of it.
         if (!chunksLoaded(level, site.centre(), size)) return;
         Seat seat = seatFor(site.structure());
-        Plane found = locate(level, site.centre(), size.getX(), size.getZ(), seat);
+        // A pinned building stands at its pin. The search for ground that will take a footprint is what a scout
+        // already did by walking the spot with the building on it, and searching anyway moved a camp up to eight
+        // rings away from its own door - while the road still leaves from the door's block, so the camp and its
+        // road ended up in different places. The pin is measured, not trusted blindly: the seat still reads the
+        // ground under the footprint, and a pin the world will not take falls back to the search.
+        BlockPos pinned = Pins.at(level, site.structure());
+        Plane found = pinned == null ? null : plane(level, pinned, size.getX(), size.getZ(), seat);
+        if (found == null) found = locate(level, site.centre(), size.getX(), size.getZ(), seat);
         if (found == null) {
             // Ground the drawing would take and the world would not: worth saying, because the
             // player standing on the spot sees only that nothing happened. Once per site, since

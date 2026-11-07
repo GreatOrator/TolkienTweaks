@@ -31,18 +31,15 @@ public final class Roads {
             // at 76 - the numbers the scouted valley was walked to, 584 pieces of city above the path's end.
             new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5006, -3075, 4,
                     74, 75, 76, 16, 32, "bridge_end", "bridge_middle"),
-            // The wood ruin to Barachen's fire, the first road with no water on it: from the block beside the
-            // ruin's door to the block beside the fire, both marked in the scouting world - 4782, 78, -3057 and
-            // 4820, 76, -2886, a hundred and seventy-five blocks apart and never over water. The footprint box is
-            // the ruin's own, so its surface is chosen by how close a column stands to the walls the road leaves
-            // from, and the far end is ground rather than a deck.
-            new Route.Riverless(Sites.WOOD_RUIN, 4782, 4795, -3058, -3046, 4782, -3057, 4820, -2886),
-            // Thorenhad's camp to the valley road's own end: the block beside the camp's door at 4648, 90, -3314,
-            // to the block the Rivendell road ends on at 5006, -3075, which is the pair a scout leaves at the two
-            // ends of a section - a doorway and a road end. The footprint is the sixteen by sixteen the world raised
-            // at 4640, -3313 rather than the box the first pin guessed at, so the road leaves from the ground
-            // outside the door that is actually there.
-            new Route.Riverless(Sites.ELLADAN_CAMP, 4640, 4655, -3313, -3298, 4648, -3314, 5006, -3075)
+            // Thorenhad's camp to the ford's own road end, and no further: the block beside the camp's door at
+            // 4648, 90, -3314 to the marker at 4972, 86, -3075, where the crossing's exit road stops. The road over
+            // the water and this dry one are the two sections of the same road, so this one ends where that one ends
+            // rather than at the far bank. A section that ran past the meeting point would grade the same country a
+            // second time, from the other side, and the two passes would fight over the blocks between them.
+            //
+            // Only these two are walked for now. The ruin's road to Barachen's fire is not laid at all: a third
+            // section nobody has scouted is a road the world would build twice over once the two are joined.
+            new Route.Riverless(Sites.ELLADAN_CAMP, 4640, 4655, -3313, -3298, 4648, -3314, 4972, -3075)
             // A road with no water on it is the other kind, and is the whole of what a dry road needs: the build's
             // footprint and its entry point, and the block the road ends at. Nothing is swept, bridged or pillared;
             // the same search finds the way and the same grade lays it, arriving on the ground at the far end:

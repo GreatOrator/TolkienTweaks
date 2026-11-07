@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Only the two scouted road sections are walked.** Rivendell across the ford is the crossing, and Thorenhad's camp
+  to the ford's road end is the plain riverless one; they meet at the marker at 4972, -3075 instead of the camp road
+  running on to the far bank and grading the same country from the other side. The ruin's road to Barachen's fire is
+  not laid at all.
+- **A road is laid as it is walked.** The pass was stepped only while its building was within reach, so a road stopped
+  after the first few chunks the moment a player walked along it. It is stepped from the block the pass has reached
+  now, so it keeps up with whoever is walking it and waits there for the next visit.
+- **A road's ends are read from the ground rather than the treetops.** The ends came from a heightmap that counts
+  leaves, so a road leaving a camp under a canopy began at the top of a tree and laid a staircase of stone into the
+  air with the path on top of it. The ends are measured the way every other column of the road is.
+- **A road follows the ground instead of boring through it.** The grade was free to stand twelve blocks off the
+  ground and the alignment's own column was exempt from that limit, which cut shafts under ridges and stood stone
+  towers over dips. The window is four blocks and no column is exempt: the ground has the last word on a station.
+- **A pinned building stands at its pin.** The ground search could walk a camp up to eight rings away from the pin
+  while its road still left from the door's block, so the camp and its road ended in different places. A pin is
+  measured and used now, with the search kept for a pin the world will not take.
+- **The valley's raise measures its reach from the city's box.** The pin is the city's own low corner, so a player at
+  the far end of a five-hundred-block city, or on the road up to it, was never near enough to start it.
 - **Rivendell raises itself from its pin.** The city only ever appeared if worldgen happened to start it or an
   operator ran the city command, so a world that generated the valley without the cut stayed empty. A player coming
   within a hundred and sixty blocks of the pin now plants the corner there and lays the cut a piece every four ticks,

@@ -360,7 +360,9 @@ public final class CityCommands {
             forgetRaise();
             return;
         }
-        if (!near(level, pin)) return;
+        // A player in the Shire is not worth reading the cut for; the box test comes after the read, and this is the
+        // cheap question that keeps that read from happening anywhere in the world at all.
+        if (!within(level, pin, COARSE_REACH)) return;
         Path folder = folder();
         try {
             if (CUT_PARTS == null) {
@@ -376,8 +378,12 @@ public final class CityCommands {
                 forgetRaise();
                 return;
             }
+            BlockPos corner = mark == null ? atPin(parts, pin) : mark.origin();
+            // The pin is the city's own low corner and the city is five hundred blocks across, so a player at its far
+            // end - or on the road up to it - is a long way from that corner by the pin's own measure. The cut's box
+            // is what "in the valley" means, and it is the box the dressing pass already works from.
+            if (!near(level, Box.of(parts, corner))) return;
             if (mark == null) {
-                BlockPos corner = atPin(parts, pin);
                 Campaign.setValleyOrigin(corner);
                 write(folder, new Mark(corner, 0, false, level.dimension().identifier().toString()));
                 forgetRaise();
@@ -430,11 +436,33 @@ public final class CityCommands {
     }
 
     /** Whether a player is near enough to the pin for the city's ground to be the game's to write in. */
-    private static boolean near(ServerLevel level, BlockPos pin) {
+    /**
+     * Whether anyone is within the raise's reach of the city, measured from its footprint rather than its corner.
+     * <p>
+     * The pin is the cut's own low corner, and the city covers five hundred-odd blocks either way from it: a player
+     * standing at the far end of the valley, or on the road climbing into it, is more than a hundred and sixty blocks
+     * from that corner and would stand in an empty valley for ever. Measured from the box, anyone in the valley - or
+     * on the road up to it - is near enough for the work to start, and the raise keeps going as they walk the streets
+     * the pieces have already stood.
+     */
+    private static boolean near(ServerLevel level, Box box) {
         for (ServerPlayer player : level.players()) {
-            int dx = player.getBlockX() - pin.getX();
-            int dz = player.getBlockZ() - pin.getZ();
+            int dx = Math.max(0, Math.max(box.lowX() - player.getBlockX(), player.getBlockX() - box.highX()));
+            int dz = Math.max(0, Math.max(box.lowZ() - player.getBlockZ(), player.getBlockZ() - box.highZ()));
             if (Math.hypot(dx, dz) <= ROUSE_REACH) return true;
+        }
+        return false;
+    }
+
+    /** How far from the pin anybody has to be before the cut is not read at all, in blocks: the whole city, and a walk. */
+    private static final int COARSE_REACH = 900;
+
+    /** Whether anyone is within a radius of one block, across the ground: the question asked before a cut is read. */
+    private static boolean within(ServerLevel level, BlockPos at, int reach) {
+        for (ServerPlayer player : level.players()) {
+            int dx = player.getBlockX() - at.getX();
+            int dz = player.getBlockZ() - at.getZ();
+            if (Math.hypot(dx, dz) <= reach) return true;
         }
         return false;
     }

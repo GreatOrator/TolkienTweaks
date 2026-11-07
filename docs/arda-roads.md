@@ -51,6 +51,13 @@ none - which is every road between two builds on the same bank - it is a `Route.
 and entry point, and the far end a surveyor marked. Two ends and the distance between them is the whole route; the
 search finds the way, the grade lays it, and there is nothing to bridge.
 
+Two sections are walked for now, and they meet: `rivendell` is the `Crossing` over the ford, and Thorenhad's camp is
+the `Riverless` road from the block beside its door at 4648, 90, -3314 to the marker at 4972, 86, -3075 where that
+crossing's exit stops. A section ends where the next one begins rather than at the far bank, so neither pass grades
+country the other has already laid. A road is also stepped from the block its pass has reached rather than from the
+building it leaves, which is what lets a section fill in as it is walked; and its grade is held within four blocks of
+the ground, so a hill is walked over instead of bored through.
+
 The far end is ground rather than a deck, which is why a dry road needs no water numbers at all: the grade arrives
 on whatever the ground there is, so nothing has to be levelled onto a span.
 
