@@ -1235,6 +1235,10 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   in any world; water is skipped, since a crossing is a bridge's or a ford's business. The table starts empty: a
   section becomes a line once its markers are walked and its ground settled, and the two chapter roads already laid
   keep the pass until then, because a painted line cannot cut a shelf into a hillside.
+- **A new pin moves a building that has not been raised yet.** A scenery site planted before its pin was walked kept the
+  drawing's guess forever, so a scout who re-pinned Elladan's camp found nothing at the pin and a camp - or nothing -
+  at the old spot. A pin now outranks a recorded spot: an unbuilt site whose centre is not the pin is re-seated from
+  it. Ground already built is left where it stands, so a camp cannot be doubled.
 - **A building the world says is standing is checked against the ground.** A site is written down once and trusted
   afterwards, which is right only while the world keeps its chunks: a save that keeps the site file and loses the
   region files loses the camp, and the world went on dressing a building that was not there instead of raising it.

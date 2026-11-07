@@ -638,6 +638,19 @@ public final class Sites extends SavedData {
             }
             UUID key = sceneryId(structure);
             Site site = SITES.get(key);
+            // A pin outranks a spot already written down. A building planted before its pin was walked is holding the
+            // drawing's guess, and a scout who re-pins it expects the world to raise it at the pin - the rule a page's
+            // own landmark already follows. Only ground that is not built yet is re-seated: a camp already standing
+            // stays where it stands rather than being doubled at the new pin.
+            if (site != null && !site.built() && level.dimension().equals(site.dimension())) {
+                BlockPos pinned = Pins.at(level, structure);
+                if (pinned != null
+                        && (site.centre().getX() != pinned.getX() || site.centre().getZ() != pinned.getZ())) {
+                    SITES.remove(key);
+                    site = null;
+                    instance(level).setDirty();
+                }
+            }
             if (site == null || !level.dimension().equals(site.dimension())) {
                 ArdaSurvey.Ground ground = survey(level, player, structure);
                 if (ground == null) continue;

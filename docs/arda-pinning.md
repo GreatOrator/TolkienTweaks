@@ -90,6 +90,11 @@ with the ground already standing rather than a second copy.
 The planting is cheap - a pin lookup and a template's own size - and nothing is raised until the chunks are
 loaded, which is the same rule a page's own site is held to. Nothing here builds at a distance.
 
+A pin also outranks a spot that was already written down. A building planted before its pin was walked is holding
+the drawing's guess, so re-pinning it in the world re-seats the site at the pin the next time a player comes near -
+which is what makes a newly walked pin the place a building rises from then on. Ground that is already built is not
+moved: a camp standing at an old pin stays standing, and a second one is not raised beside it.
+
 A site recorded as standing is checked against the ground before it is dressed, once a session. A world can keep the
 record and lose the building - a save copied without the region files that held it is the case this was found on -
 and a world that trusted the record forever dressed a camp that was not there and never raised it again. A sample of
