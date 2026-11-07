@@ -7,7 +7,7 @@ pinned, and the pins are in `Pins.SOURCE`, so every world has them.
 | --- | --- | --- |
 | Rivendell | `place rivendell` | `5200, 75, -3370` |
 | Thorenhad | `place thorenhad` | `4691, 87, -3273` |
-| Elladan's camp | `build camp` | `4634, 93, -3314` |
+| Elladan's camp | `build camp` | `4634, 92, -3314` (its doorway is the middle of its south face, at `4642, 91, -3314`) |
 | the wood ruin | `build ruin` | `4782, 79, -3058` |
 | Barachen's fire | `place barachen` | `4812, 77, -2885` |
 | the ford | `place ford` | `5061, 75, -3136` |

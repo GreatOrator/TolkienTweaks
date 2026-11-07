@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Elladan's camp sits where its door is, and level with it.** The camp's doorway was marked in the scouting
+  world at 4642, 91, -3314 - the middle of the template's south face, eight blocks in from the corner it is cut
+  from - so its pin moves to 4634, 92, -3314. The build's floor is also cut two blocks above its own base, which
+  left the entrance two blocks up out of the ground it stands on; the camp is now set two blocks into its ground,
+  so the floor meets the ground the road arrives on.
+- **The camp's road to the wood ruin.** From the block beside Elladan's door (4642, 91, -3315) to the ruin's road
+  end (4782, 78, -3057): the second road on settled ground with no water on it, and the first that starts at a
+  camp rather than at a build's own wall.
 - **Chapter one's buildings are raised by the world.** Elladan's camp, the wood ruin and the three crags are cut
   ground rather than generated ground, so they appeared only once a page named them and a player walked close. The
   world now plants each one at the pin the scout walked and stands it when a player comes within four chunks,

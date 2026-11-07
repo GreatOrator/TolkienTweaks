@@ -295,6 +295,15 @@ public final class Sites extends SavedData {
     private static final Seat SUNK_CRAG = new Seat(9, 10);
     /** A building that stands on its ground rather than in it: hall, tent, house, arena. */
     private static final Seat ON_SURFACE = new Seat(0, SEAT_SINK);
+    /**
+     * Seats for the builds that ask for one of their own, by structure.
+     * <p>
+     * Elladan's camp is cut with its floor two blocks above its own base, so seated the way every other
+     * building is seated its doorway stands two above the ground a player walks up to it over - which is what
+     * the scouted camp showed, and what the doorway marked level with the ground beside it did not. It is sunk by
+     * that step instead, which puts the floor's own surface at the surface of the ground it stands on.
+     */
+    private static final Map<String, Seat> SEATS = Map.of(ELLADAN_CAMP, new Seat(2, SEAT_SINK));
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
@@ -699,6 +708,8 @@ public final class Sites extends SavedData {
     }
 
     private static Seat seatFor(String structure) {
+        Seat told = SEATS.get(structure);
+        if (told != null) return told;
         return isCave(structure) ? SUNK_CRAG : ON_SURFACE;
     }
 

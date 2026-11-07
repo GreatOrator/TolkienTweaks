@@ -69,7 +69,10 @@ public final class Pins extends SavedData {
             Map.entry("thorenhad", new BlockPos(4691, 87, -3273)),
             Map.entry("barachen", new BlockPos(4812, 77, -2885)),
             Map.entry("ford", new BlockPos(5061, 75, -3136)),
-            Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4634, 93, -3314)),
+            // Elladan's camp, re-pinned from the doorway the scout marked at 4642, 91, -3314: that block is the
+            // middle of the template's south face, so the corner it is cut from is eight west of it and the
+            // build is seated level with the ground the road arrives on.
+            Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4634, 92, -3314)),
             Map.entry(Sites.WOOD_RUIN, new BlockPos(4782, 79, -3058)),
             Map.entry(Sites.TROLL_CAVE, new BlockPos(4460, 125, -2477)),
             Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4568, 112, -2511)),
