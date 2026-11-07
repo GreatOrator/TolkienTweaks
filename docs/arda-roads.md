@@ -197,6 +197,11 @@ above the road's own surface, and the road's block written back where a trunk ha
 has no single place to answer for the trees of a neighbour, and the finished chunk is the first moment the road and
 everything planted over it are both there. It only answers in Arda, and running it again costs nothing.
 
+The corridor is the pavement plus two blocks of verge either side. The verge is cleared but not paved: a trunk standing
+one block off the edge would otherwise be cut back to bare legs wherever its crown overhung the road, and a pole beside
+the pavement reads worse than a road with a hem. Two blocks takes the trees that would stand on the verge and leaves
+the wood behind it.
+
 The pass below is still the shape a road with ground under it is laid by. A generated line paints; it cannot cut a
 shelf into a hillside or stand a bridge, so the roads the scouted world walked - the valley's approach and the two
 between the chapter's camps - keep being laid by the pass, and a section of those is promoted to a generated line only

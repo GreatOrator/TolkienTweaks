@@ -29,6 +29,15 @@ public final class RoadPaint {
     /** How many blocks before a road's end the paving starts, where a road enters a place rather than open country. */
     private static final int APPROACH = 24;
 
+    /**
+     * How far past the pavement a road's verge is cleared.
+     * <p>
+     * A tree one block off the edge would otherwise keep its trunk and be cut back to bare legs wherever its crown
+     * overhung the road, which reads as a pole beside the pavement rather than a road through wood. Two blocks is
+     * enough to take the trunks that would stand on the verge without felling the trees behind it.
+     */
+    private static final int VERGE = 2;
+
     private RoadPaint() {
     }
 
@@ -73,11 +82,24 @@ public final class RoadPaint {
 
     /** The road running through a column, or null where none does. The nearest line wins where two overlap. */
     public static Line lineAt(int x, int z) {
+        return nearest(x, z, 0);
+    }
+
+    /**
+     * The road whose corridor takes a column in: the pavement and the verge either side of it, which is what is kept
+     * clear and not what is paved.
+     */
+    private static Line clearingAt(int x, int z) {
+        return nearest(x, z, VERGE);
+    }
+
+    /** The nearest line within {@code slack} blocks of a column, or null when none is that close. */
+    private static Line nearest(int x, int z, int slack) {
         Line best = null;
         double nearest = Double.MAX_VALUE;
         for (Line line : LINES) {
             double away = distance(line, x, z);
-            if (away > line.half() || away >= nearest) continue;
+            if (away > line.half() + slack || away >= nearest) continue;
             nearest = away;
             best = line;
         }
@@ -160,7 +182,7 @@ public final class RoadPaint {
             for (int z = 0; z < 16; z++) {
                 int blockX = minX + x;
                 int blockZ = minZ + z;
-                if (lineAt(blockX, blockZ) == null) continue;
+                if (clearingAt(blockX, blockZ) == null) continue;
 
                 int ground = minY - 1;
                 for (int y = maxY; y >= minY; y--) {

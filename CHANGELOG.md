@@ -1235,6 +1235,9 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   in any world; water is skipped, since a crossing is a bridge's or a ford's business. The table starts empty: a
   section becomes a line once its markers are walked and its ground settled, and the two chapter roads already laid
   keep the pass until then, because a painted line cannot cut a shelf into a hillside.
+- **A generated road's corridor is cleared with two blocks of verge either side.** A trunk one block off the pavement
+  was keeping its trunk and losing only the crown that overhung the road, which left a bare pole at the verge; the
+  cleared corridor is now the road's width plus two, and the verge is cleared without being paved.
 - **A generated road keeps its corridor clear.** The road is painted before trees and grass are placed, so
   `RoadCorridor` clears it when a chunk holding road loads: leaves, logs, vines and replaceable plants above the road's
   own surface, with the road's block written back where a trunk took it. Chunk generation has no one place to answer
