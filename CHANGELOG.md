@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- **A road can be written as places, and grades itself from the ground.** A line's waypoints now take `0` where a
+- **A build's road is laid once the build is standing.** Each build's two ends were already a route and the pass
+  that laid the valley's road was already written, but only the city's own dressing ever started it - so no camp's road
+  was ever laid by anybody. The world now plans a build's pass the first time a player is near enough for the build's
+  ground to be loaded and steps it on each approach after that, and Elladan's camp's route ends where the valley road
+  ends, at 5006, -3075, rather than at the ruin's road end.
   walked height would be, and the road reads the drawn ground at each point along it and eight blocks either side,
   averaged, so it follows the contours of whichever world raises it instead of the contours of the world it was scouted
-  in. Elladan's camp's road is the first: it runs from the camp's road end to the block the Rivendell road ends on,
-  along the contours the scouted ground allowed, with no height written down anywhere in it.
+  in. A line is for a road with no build behind it at either end; a build's own road is a route and is laid by the pass.
 - **A road's grade curves through its bends instead of kinking at each waypoint.** The height between two waypoints
   was the straight line between the heights walked at them, so a road that changed direction while it was falling had
   a corner in its profile, which a walker meets as a step. The grade is now a cubic through the waypoints, its slope at

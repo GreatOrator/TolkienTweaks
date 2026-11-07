@@ -103,22 +103,12 @@ public final class RoadPaint {
      * is the width that stretch asks for (three of wild road, two where it enters a settlement, one for a spur).
      */
     public static final List<Line> LINES = List.of(
-            // Elladan's camp's road end to the block the valley road ends on, walked along the contours of
-            // the scouted ground rather than over them. Every waypoint is a place rather than a height, so each
-            // world grades the road from its own ground.
-            new Line("Elladan's camp to the valley road", 3,
-                    List.of(new int[]{4648, 0, -3314}, new int[]{4654, 0, -3308}, new int[]{4654, 0, -3293},
-                            new int[]{4666, 0, -3294}, new int[]{4682, 0, -3288}, new int[]{4698, 0, -3289},
-                            new int[]{4711, 0, -3276}, new int[]{4723, 0, -3264}, new int[]{4736, 0, -3263},
-                            new int[]{4751, 0, -3271}, new int[]{4762, 0, -3266}, new int[]{4769, 0, -3251},
-                            new int[]{4785, 0, -3246}, new int[]{4795, 0, -3236}, new int[]{4809, 0, -3223},
-                            new int[]{4821, 0, -3211}, new int[]{4833, 0, -3198}, new int[]{4849, 0, -3193},
-                            new int[]{4864, 0, -3184}, new int[]{4867, 0, -3168}, new int[]{4879, 0, -3156},
-                            new int[]{4895, 0, -3150}, new int[]{4899, 0, -3132}, new int[]{4899, 0, -3112},
-                            new int[]{4903, 0, -3093}, new int[]{4911, 0, -3076}, new int[]{4911, 0, -3075},
-                            new int[]{5006, 0, -3075}))
-            // A road is written as its markers, each one's own height included:
+            // A road is written as its markers, each one's own height included, for a road that has no build behind it
+            // at either end - two markers in open country and nothing else:
             // new Line("camp to the ruin", 3, List.of(new int[]{4642, 96, -3315}, new int[]{4787, 79, -3058}))
+            //
+            // A build's own road is not written here. It is a `Route` in `Roads`, and the pass lays it when the build
+            // is standing, because a road that has to find its way down a hillside needs the hillside to exist.
     );
 
     /**

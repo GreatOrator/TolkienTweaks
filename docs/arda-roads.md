@@ -208,6 +208,11 @@ blocks either side of it, averaged, so the road follows the contours of whicheve
 contours of the one it was scouted in. That is the form a road baked between two markers takes - a marker says where
 the road goes, and says nothing about a height that has to survive a change of terrain code or a different seed.
 
+A line is for a road with no build behind it at either end. A build's own road is a route: `Roads` holds one per build,
+`RoadCommands` searches and grades it, and the world runs that pass for whichever build a route has been walked for as
+soon as the build is standing - the same builder that laid the valley's road, so a road between two buildings never
+needs a height written down for it.
+
 What it still cannot do is cross water: a road whose grade would stand at or under the waterline is left to the map,
 since a crossing is a ford's or a bridge's business. And a line's grade is only as good as the waypoints written on
 it - two markers six hundred blocks apart give a ramp the ground may not agree with, so a section is written down as

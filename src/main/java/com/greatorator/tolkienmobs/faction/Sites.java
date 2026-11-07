@@ -421,6 +421,10 @@ public final class Sites extends SavedData {
     private static final int KEEPER_REACH = 32;
 
     private static final Map<UUID, Site> SITES = new HashMap<>();
+    /** The road passes being laid for the world's own builds, by the key of the site that owns each. */
+    private static final Map<UUID, RoadCommands.RoadJob> ROADS = new HashMap<>();
+    /** Sites whose road is down or was not walked for them, so a finished pass is not started again this session. */
+    private static final Set<UUID> ROADED = new HashSet<>();
     /** Players whose site has already been complained about, so a refusal is said once, not every tick. */
     private static final Set<UUID> UNBUILDABLE = new HashSet<>();
     /** The world's own buildings already checked against the ground this session, so a proof is walked once. */
@@ -664,6 +668,43 @@ public final class Sites extends SavedData {
     }
 
     /**
+     * Lays a build's road, once the build is standing.
+     * <p>
+     * A road is the map's own work rather than a page's: each build's two ends are a {@link Route} in {@link Roads},
+     * and the pass that laid the valley's road is the one that lays these - the same search for a way round a hillside
+     * rather than down it, and the same grade cut and filled into the ground, so no height is ever written down for a
+     * road. The pass is planned the first time a player is near enough for the build's ground to be loaded, and stepped
+     * a little on each approach after that, because a road four hundred blocks long is not one tick's work.
+     */
+    private static void road(ServerLevel level, Site site) {
+        UUID key = site.player();
+        if (ROADED.contains(key)) return;
+        Vec3i size = footprint(level, site.structure());
+        if (size == null) return;
+        BlockPos corner = site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
+        Route route = Roads.forGround(corner.getX(), corner.getZ(),
+                corner.getX() + size.getX() - 1, corner.getZ() + size.getZ() - 1);
+        if (route == null) {
+            // A build nobody has walked a road for gets none: a road laid to another build's numbers is worse than
+            // ground with no way down it.
+            ROADED.add(key);
+            return;
+        }
+        RoadCommands.RoadJob job = ROADS.get(key);
+        try {
+            if (job == null) {
+                job = RoadCommands.plan(route);
+                ROADS.put(key, job);
+            }
+            if (job.step(level)) return;
+        } catch (IOException unreadable) {
+            // A road that could not be laid is the ground's business; it is not tried again this session.
+        }
+        ROADS.remove(key);
+        ROADED.add(key);
+    }
+
+    /**
      * Plants the chapter's own buildings, and stands them as players come near.
      * <p>
      * A building the world raises is not one player's: it stands where the scout pinned it, and every player finds
@@ -720,8 +761,10 @@ public final class Sites extends SavedData {
             // A building raised before the man, the animal or the stone existed keeps its walls and nothing else:
             // the site is recorded as built, so the laying never runs again. Asking again on every approach is
             // cheap and each of the three refuses to be placed twice, which is what lets an old world catch up.
-            if (site.built()) dress(level, site, player);
-            else build(level, site, player);
+            if (site.built()) {
+                dress(level, site, player);
+                road(level, site);
+            } else build(level, site, player);
         }
         for (Stand stand : STANDING) {
             if (STOOD.contains(stand.pin())) continue;
