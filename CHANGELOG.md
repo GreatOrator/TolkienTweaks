@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The valley's stone is a place, not a page.** `Sites` keeps a table of stones that stand with no build of ours
+  under them - ground another hand raised - each pinned under its own key and stood when a player comes near;
+  Rivendell's is waiting on the marker that will be its spot.
+- **The ruin's steed lies on its side.** The model gains one root bone over the seven it had, and a `fallen`
+  animation rolls the whole animal a quarter turn about its own body; the steed the world leaves at the ruin wears
+  a synched flag that plays it, so it is found down rather than standing.
 - **Every building carries its stone.** A milestone now stands at each build's door when the building is laid -
   two blocks out from the entrance and one block to the side, the same spot in every world - instead of being
   planted by each page that sent a player there, which is what left a second stone at a camp that two pages

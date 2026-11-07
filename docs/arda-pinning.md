@@ -69,6 +69,12 @@ planted by each page that sent a player to the place, which is what put a second
 page named it; ground that carries its own stone is stoned once, in the same spot in every world. The hall a
 page is handed over in keeps the stone at its giver.
 
+One stone stands on ground that has no build of ours under it: the valley's. `Sites` keeps a small table of them
+(`STANDING`), each pinned under its own key, and stands the stone the first time a player comes near the spot - so
+Rivendell's milestone lives at the city rather than wherever a page's giver happens to be standing. Its key is
+`rivendell.stone`, and its pin is the one spot of chapter one still to be walked: the marker goes down once the city
+has generated, and the page-time hall stone is retired in favour of it then.
+
 The doorway table is also where a build's facing comes from. Each entry records the column on the footprint's
 edge that is the doorway, the layer its sill sits on and the direction the gap opens onto the outside, so the
 seat, the keeper and the stone are all measured from numbers the cut already supplies and nothing has to be told

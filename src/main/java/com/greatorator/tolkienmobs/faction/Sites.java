@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.entity.passive.NazgulSteedEntity;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
@@ -367,6 +368,23 @@ public final class Sites extends SavedData {
             Map.entry(BOSS_CASTLE, "Carn Dum"),
             Map.entry(BOSS_ARENA, "the arena under Carn Dum"));
 
+    /**
+     * Stones that stand in every world with no building of the campaign's own underneath them: ground another hand
+     * raised, where there is no template for {@link #DOORWAYS} to read a door out of. Each is a pin like any other,
+     * and the stone is stood the first time a player comes near enough for the spot's chunk to be loaded.
+     * <p>
+     * The valley is the case this exists for. Its milestone belongs at the city rather than wherever a page's giver
+     * happens to be standing, and the spot is one a scout marks on the ground once the city is standing - so the pin
+     * is written here when that marker is walked, and every world after it gets the stone in the same place.
+     */
+    private record Stand(String pin, String name) {
+    }
+
+    private static final List<Stand> STANDING = List.of(
+            new Stand("rivendell.stone", "Rivendell"));
+    /** Which of the standing stones this world has already set, so the clock does not walk their ground again. */
+    private static final Set<String> STOOD = new HashSet<>();
+
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
     /** The tag the animal left at the ruin wears, so a second visit does not leave a second one. */
@@ -420,7 +438,10 @@ public final class Sites extends SavedData {
     /** A stand-in for a level with no server behind it, which neither reads nor clears anything. */
     private Sites(boolean fresh) {
         super();
-        if (fresh) SITES.clear();
+        if (fresh) {
+            SITES.clear();
+            STOOD.clear();
+        }
     }
 
     // ---- choosing the ground ----
@@ -557,6 +578,15 @@ public final class Sites extends SavedData {
                 instance(level).setDirty();
             }
             if (!site.built() && away(player, site) <= BUILD_REACH) build(level, site, player);
+        }
+        for (Stand stand : STANDING) {
+            if (STOOD.contains(stand.pin())) continue;
+            BlockPos pinned = Pins.at(level, stand.pin());
+            if (pinned == null || away(player, pinned) > BUILD_REACH) continue;
+            if (!level.hasChunkAt(pinned)) continue;
+            STOOD.add(stand.pin());
+            Stones.stone(level, level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pinned),
+                    stand.name(), player);
         }
     }
 
@@ -1301,8 +1331,10 @@ public final class Sites extends SavedData {
             return;
         }
         Entity entity = TolkienEntities.ENTITY_TTM_NAZGULSTEED.get().create(level, EntitySpawnReason.EVENT);
-        if (!(entity instanceof Mob steed)) return;
+        if (!(entity instanceof NazgulSteedEntity steed)) return;
         steed.snapTo(spot.getX() + 0.5D, spot.getY(), spot.getZ() + 0.5D, 0.0F, 0.0F);
+        // The one part of it the world cannot see from where the blocks went: the animal is down, not standing.
+        steed.setFallen(true);
         steed.setPersistenceRequired();
         steed.setNoAi(true);
         steed.setSilent(true);
@@ -1337,6 +1369,13 @@ public final class Sites extends SavedData {
         var found = player.level().getEntities(player, player.getBoundingBox().inflate(BUILD_REACH),
                 entity -> entity.entityTags().contains(KEEPER_TAG));
         return found.isEmpty() ? Component.empty() : found.getFirst().getName();
+    }
+
+    /** How far a player is from a block, across the ground. */
+    private static double away(ServerPlayer player, BlockPos at) {
+        double dx = player.getX() - (at.getX() + 0.5D);
+        double dz = player.getZ() - (at.getZ() + 0.5D);
+        return Math.sqrt(dx * dx + dz * dz);
     }
 
     /**

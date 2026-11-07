@@ -19,6 +19,11 @@ pinned, and the pins are in `Pins.SOURCE`, so every world has them.
 Six left: the key-stone's vault, Glóin's camp at the mouth of the High
 Pass, Gundabad in the range, and Carn Dûm, the witch-king's castle and the arena in Angmar.
 
+One spot is still to mark: **Rivendell's milestone**. The city is raised by `/tmcity` rather than by `Sites`, so
+its stone has no doorway to be measured from - a marker where the stone should stand is the pin that is missing, and
+it goes into `Sites` under the key `rivendell.stone`. Until then a page taken at the valley plants its stone where
+the giver stands, which is the copy that pin retires.
+
 ## While you are out there
 
 | command | pins | key |

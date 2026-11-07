@@ -40,6 +40,12 @@ import com.geckolib.util.GeckoLibUtil;
 
 public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity, CommonTraits {
     private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(NazgulSteedEntity.class, EntityDataSerializers.BOOLEAN);
+    /**
+     * Whether this is one of the animals the world leaves down - the body at the ruin - rather than a steed on its
+     * feet. It is synched because the pose is drawn on the client from the model's own root bone, and a client that
+     * does not know the animal is down draws it standing.
+     */
+    private static final EntityDataAccessor<Boolean> DATA_ID_FALLEN = SynchedEntityData.defineId(NazgulSteedEntity.class, EntityDataSerializers.BOOLEAN);
 
     /**
      * Where a rider's feet go: the seat of the saddle the model carries, whose top cubes sit 1.375
@@ -90,6 +96,15 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
         this.entityData.set(DATA_ID_CHEST, chested);
     }
 
+    /** Whether this animal is lying where it fell rather than standing. */
+    public boolean isFallen() {
+        return (Boolean) this.entityData.get(DATA_ID_FALLEN);
+    }
+
+    public void setFallen(boolean fallen) {
+        this.entityData.set(DATA_ID_FALLEN, fallen);
+    }
+
     @Override
     public boolean causeFallDamage(double pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
@@ -115,12 +130,14 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_ID_CHEST, false);
+        builder.define(DATA_ID_FALLEN, false);
     }
 
     @Override
     public void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.putBoolean("ChestedGoat", this.hasChest());
+        output.putBoolean("Fallen", this.isFallen());
         if (this.hasChest()) {
             ValueOutput.ValueOutputList list = output.childrenList("Items");
 
@@ -139,6 +156,7 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
     public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
         this.setChest(input.getBooleanOr("ChestedGoat", false));
+        this.setFallen(input.getBooleanOr("Fallen", false));
         this.createInventory();
         if (this.hasChest()) {
             for (ValueInput entry : input.childrenListOrEmpty("Items")) {
@@ -206,6 +224,13 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        // The body the world leaves at the ruin: the whole animal rolled onto its side by its model's own root bone,
+        // so it is found down where it fell instead of standing as though it were still waiting for a rider.
+        controllers.add(new AnimationController<NazgulSteedEntity>("Fallen", 1, (event) -> {
+            if (!this.isFallen()) return PlayState.STOP;
+            event.controller().setAnimation(RawAnimation.begin().thenLoop("fallen"));
+            return PlayState.CONTINUE;
+        }));
         controllers.add(new AnimationController<NazgulSteedEntity>("Idle", 1, (event) -> {
             if (!event.isMoving() && this.isEating()) {
                 event.controller().setAnimation(RawAnimation.begin().thenPlay("eat").thenLoop("chewing"));
