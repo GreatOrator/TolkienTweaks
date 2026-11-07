@@ -1,7 +1,11 @@
 package com.greatorator.tolkienmobs.faction;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 import java.util.List;
 
@@ -129,6 +133,66 @@ public final class RoadPaint {
         if (roll < 65) return Blocks.COARSE_DIRT.defaultBlockState();
         if (roll < 85) return Blocks.GRASS_BLOCK.defaultBlockState();
         return Blocks.DIRT_PATH.defaultBlockState();
+    }
+
+    /**
+     * Clears a generated road of what the passes after the ground stood in it: trunks, leaves, vines and the plants
+     * that grew between the pavers.
+     * <p>
+     * The road is painted before the features run - trees and grass are placed after the surface is dressed - so a
+     * strip through wood would otherwise be a line of road blocks with a forest growing out of them. Nothing here
+     * knows about trees: a road column is walked from the top down, every leaf, log, vine and replaceable plant is
+     * cover rather than ground, and the first block that is not cover is the surface the road is laid on. The cover is
+     * then taken away and the road's own block written back where a trunk had taken its place.
+     * <p>
+     * It is run over the whole column rather than a corridor of sixteen blocks, because a trunk cut off at that height
+     * leaves its crown hanging over the road with nothing holding it up. Water is left alone: a column the map floods
+     * has no road in it, and its own cover is the river's business.
+     */
+    public static int clear(LevelAccessor level, ChunkAccess chunk) {
+        int cleared = 0;
+        BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
+        int minX = chunk.getPos().getMinBlockX();
+        int minZ = chunk.getPos().getMinBlockZ();
+        int minY = level.getMinY();
+        int maxY = level.getMaxY() - 1;
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                int blockX = minX + x;
+                int blockZ = minZ + z;
+                if (lineAt(blockX, blockZ) == null) continue;
+
+                int ground = minY - 1;
+                for (int y = maxY; y >= minY; y--) {
+                    BlockState state = level.getBlockState(at.set(blockX, y, blockZ));
+                    // Sky is not ground either: a column that is nothing but air has no road in it, and reading the
+                    // topmost air block as the surface would leave the road's own cover standing over nothing.
+                    if (state.isAir() || cover(state)) continue;
+                    ground = y;
+                    break;
+                }
+                if (ground < minY) continue;
+                if (!level.getFluidState(at.set(blockX, ground, blockZ)).isEmpty()) continue;
+
+                for (int y = ground + 1; y <= maxY; y++) {
+                    if (!cover(level.getBlockState(at.set(blockX, y, blockZ)))) continue;
+                    level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                    cleared++;
+                }
+
+                BlockState surface = at(blockX, blockZ);
+                if (surface == null || level.getBlockState(at.set(blockX, ground, blockZ)).is(surface.getBlock())) continue;
+                level.setBlock(at, surface, 2);
+            }
+        }
+        return cleared;
+    }
+
+    /** What a road's corridor takes away: what a tree or a patch of ground cover put there, never the ground. */
+    private static boolean cover(BlockState state) {
+        return state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)
+                || state.is(BlockTags.REPLACEABLE_BY_TREES) || state.is(Blocks.VINE)
+                || state.is(Blocks.SNOW);
     }
 
     /** A stable hash of one column, so a block's surface does not depend on which chunk or which run asked. */

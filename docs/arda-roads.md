@@ -191,6 +191,12 @@ is the per-column hash mix settled below, and the last twenty-four blocks before
 the mod changes when a line is added, and no command has to be run in any world: the road is in the next world that
 generates.
 
+A painted road is painted before the features run, so a strip through wood would arrive with a forest growing out of
+it. `RoadCorridor` clears the corridor when a chunk holding a road loads - leaves, logs, vines and replaceable plants
+above the road's own surface, and the road's block written back where a trunk had taken it - because chunk generation
+has no single place to answer for the trees of a neighbour, and the finished chunk is the first moment the road and
+everything planted over it are both there. It only answers in Arda, and running it again costs nothing.
+
 The pass below is still the shape a road with ground under it is laid by. A generated line paints; it cannot cut a
 shelf into a hillside or stand a bridge, so the roads the scouted world walked - the valley's approach and the two
 between the chapter's camps - keep being laid by the pass, and a section of those is promoted to a generated line only

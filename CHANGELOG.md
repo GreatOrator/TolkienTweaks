@@ -1235,6 +1235,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   in any world; water is skipped, since a crossing is a bridge's or a ford's business. The table starts empty: a
   section becomes a line once its markers are walked and its ground settled, and the two chapter roads already laid
   keep the pass until then, because a painted line cannot cut a shelf into a hillside.
+- **A generated road keeps its corridor clear.** The road is painted before trees and grass are placed, so
+  `RoadCorridor` clears it when a chunk holding road loads: leaves, logs, vines and replaceable plants above the road's
+  own surface, with the road's block written back where a trunk took it. Chunk generation has no one place to answer
+  for a neighbour's trees, and a finished chunk is the first moment the road and its cover both exist. Arda only, and
+  safe to run again.
 - **The door-and-road pair is written down as the marker convention.** Two ammolite blocks side by side are a
   doorway and the last block of the road that reaches it; a third and any after it are a body's feet. `AGENTS.md`
   and the pinning notes say so, with the keys a walked marker is pinned under (`<building>.end` included), and that
