@@ -87,6 +87,17 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
   blocks higher, before the pin moved down); clipping stops new ones, but the old records stay until those chunks are
   remade.
 
+- **The test world's above-sky records are gone.** `Scouting World` carried 1,436 chunk sections at section Y 20
+  (y 320-335, 442 of them holding blocks) and 4 block entities at y 320-326, all from a city laid before the cut was
+  clipped to the sky. `build/tmp/ceiling_entities.py` (scan|strip, untracked, rebuilt on demand) reads the Anvil region
+  and POI files directly and drops `block_entities` with y >= 320 and `sections`/POI `Sections` with Y >= 20, backing up
+  the files first. Run over `run/saves/Scouting World/dimensions/tolkienmobs/arda`: 5 regions rewritten, 4,800 chunks
+  compared against the backup with `clean(original) == live` holding for every one, so nothing but those records moved.
+  Backups at `build/tmp/arda-region-backup/20261107-190006` and `.../20261107-190141`. A section's `Y` is an absolute
+  section coordinate (-4..19 here), stored as a **signed byte**: read unsigned, -4..-1 look like 252..255 and a filter
+  on "Y >= 20" deletes the bottom four sections of every chunk. That mistake was made and restored from the first
+  backup before the strip above.
+
 ## What the player is likely to ask next
 
 Trees back in some form; the seam between old and new chunks; whether the two crags stood; whether the camp road
