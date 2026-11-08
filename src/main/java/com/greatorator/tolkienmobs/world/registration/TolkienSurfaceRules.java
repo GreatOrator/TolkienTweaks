@@ -81,12 +81,14 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN), nurnSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.UMBAR), umbarSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), angmarSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.IMLADRIS), imladrisSurface()),
                                 ironHillsSurface(), hithaeglirSurface(), whiteMountainsFloor(), makeTolkienWorldRules())),
                         SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.UMBAR), SANDSTONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), COARSE_DIRT),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
                         blueMountainsFloor(),
@@ -289,6 +291,21 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
         return SurfaceRules.sequence(
 				SurfaceRules.ifTrue(desertType, desertSoil)
 		);
+	}
+
+	/**
+	 * Umbar's coast is dry ground rather than Gondor's field. Sand runs from the shoreline up to the foot
+	 * of the hills - the low cells of a country drawn at 70 - and the grass above that is the biome's own
+	 * olive (#99991e), which is what makes the high ground read as a hot hillside rather than as meadow.
+	 * Sandstone lies under the sand the way it does under the Haradwaith's dunes. The mod's ground cover is
+	 * short grass, which sand refuses, so the low coast stays bare and only the hills come up green.
+	 */
+	private static final int UMBAR_SHORE_HEIGHT = 68;
+
+	private static SurfaceRules.RuleSource umbarSurface() {
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.yStartCheck(VerticalAnchor.absolute(UMBAR_SHORE_HEIGHT), 0), GRASS_BLOCK),
+				SAND);
 	}
 
 	@NotNull

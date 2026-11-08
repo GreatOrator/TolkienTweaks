@@ -381,3 +381,9 @@ prints the countries with no cells as well as the landlocked holes, so a new cou
 a `fill`, and checked there.
 
 A country's tags and the lists it inherits are read together. `UMBAR` was registered `hostile` but took `gondorSpawning()`, so the corsairs' country had no monster in it at all; it takes `haradwaithSpawning()` now. `MINHIRIATH` is `density/sparse` but sat in `#tolkienmobs:arda_broadleaf`, so culumalda and lebethron grew over an empty coast: it is out of that tag, and its tints are grey-green (`#82996a` grass, `#6e8060` leaves) instead of blue. `CARDOLAN` and `ENEDWAITH` keep Eriador's and Dunland's ground and spawns, and `DORWINION` keeps the Gladden's peaceful list - all three match their tags. No surface rule names any of the five, so they wear `overworldLikeFloor()`'s grass over dirt: right for the four temperate ones, but Umbar is hot and rainless beside Harad's sand, so if it should read as a desert coast it needs a `SAND`/`SANDSTONE` rule of its own.`runData` after touching any of these writes just the biome files (`written: 2` here).
+
+Umbar's floor is its own rule now (`TolkienSurfaceRules.umbarSurface`): sand below y 68, the biome's olive grass
+above it, and sandstone under the sand. The fallback gave it grass over dirt in a rainless country beside Harad's
+dunes. `arda_cover`'s short grass will not stand on sand, so the low coast is bare and the hills are the only green
+- and only chunks generated after the rule show it. Surface rules are code, not JSON: no `runData` is needed for
+this, unlike a changed configured or placed feature.

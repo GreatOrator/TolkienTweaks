@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Umbar has its own coast.** The corsairs' country wore the fallback floor every biome gets - grass over dirt - in a
+  land that takes no rain, beside the Haradwaith's sand. It lays sand from the shoreline up to `UMBAR_SHORE_HEIGHT`
+  (68) now, keeps the olive grass its own tint makes of the higher cells, and puts sandstone under the sand. The
+  ground cover is short grass, which sand refuses, so the low coast stays bare; chunks already generated keep theirs.
 - **The new countries now carry their own people and their own ground.** Umbar was registered hostile but spawned Gondor's list - a friendly people, farm animals, not one monster - so it spawns the Haradwaith's now: Haradrim after dark, mumakil, a rare southron trader and crebain. Minhiriath is tagged sparse and described as the grey, empty coast, yet it sat in `#tolkienmobs:arda_broadleaf`, so culumalda and lebethron grew over it; it is out of that tag and keeps only the grass cover the other sparse countries keep. Its leaf and grass tints were a light blue (`#6c85a2`, `#8abce1`) and are now the grey-greens of its own description (`#6e8060`, `#82996a`). Cardolan, Enedwaith and Dorwinion were checked and left as they were: Eriador's and Dunland's ground suit the first two, and Dorwinion is peaceful and carries the Gladden's people, which is what its tags say.
 - **The countries the poster names now have ground.** Five registered countries had a biome, a height, a name and
   not one cell of the world: Cardolan, Minhiriath, Enedwaith, Dorwinion and Umbar. Cardolan takes the hills between
