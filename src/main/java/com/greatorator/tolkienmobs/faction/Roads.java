@@ -72,24 +72,53 @@ public final class Roads {
         return BENDS.getOrDefault(route.id(), List.of());
     }
 
-    /**
-     * The kind of road a route is laid as where it is one kind from end to end, by route, as a half-width: one for a
-     * wild track three blocks wide, two for the transition's five, three for a settlement's own seven.
-     * <p>
-     * A route's own bands are the ordinary rule, and they are the right one for a road that carries a town's traffic:
-     * seven at the gate, five where the paving starts, three out in the country. A track that only has to be walked -
-     * off a camp's door and out to a mark - is a wild track the whole way, and saying so here keeps it three wide at
-     * the door, where the bands would have widened it to a road. What a column is made of is still read from the bands,
-     * so the track still arrives as the camp's own stone and leaves as the country's gravel; only the width is the
-     * route's. A route with no entry here is laid exactly as every road was before there was one.
-     */
-    private static final Map<String, Integer> HALVES = Map.of(
-            // Barachen's fire's track out to the mark where the Thorenhad road runs past it: wild, three wide.
-            Sites.BARACHENS_CAMP, 1);
+    /** The three kinds of road there are, and the width each is laid at. */
+    public enum Kind {
+        /** A track through open country: three blocks wide. */
+        WILD(3),
+        /** The approach to a settlement, where the paving starts: five blocks. */
+        TRANSITION(5),
+        /** A settlement's own street, and the main roads that are made to the same width: seven blocks. */
+        URBAN(7);
 
-    /** The half-width a road is laid at, or -1 where the country's own rule decides it. */
-    public static int half(Route route) {
-        return HALVES.getOrDefault(route.id(), -1);
+        private final int blocks;
+
+        Kind(int blocks) {
+            this.blocks = blocks;
+        }
+
+        /** How many blocks across the road is. */
+        public int blocks() {
+            return blocks;
+        }
+
+        /** The blocks either side of the road's own line, which is what the pass is laid from. */
+        public int half() {
+            return (blocks - 1) / 2;
+        }
+    }
+
+    /**
+     * The kind a road is, by route, where it is one kind from end to end rather than the kind of the bands it crosses.
+     * <p>
+     * The bands are the ordinary rule, and they are the right one for a road that is there because a settlement is:
+     * seven at the gate, five where the paving starts, three out in the country. But which road a road is does not
+     * follow from where it runs - a main road is a main road across a moor as much as through a town, and a track out
+     * to a camp is a track at the camp's own door - so a route may be given its kind, and is then laid at it the whole
+     * way. A route with no entry here is laid by the bands, exactly as every road was before there was a way to name
+     * one.
+     * <p>
+     * What a column is made of is still read from the bands either way: naming a kind settles the width and not the
+     * surface, so a main road through the wilds is seven wide of the country's own gravel until it reaches a town.
+     */
+    private static final Map<String, Kind> KINDS = Map.of(
+            // Barachen's fire's track out to the mark where the Thorenhad road runs past it: a wild path, three wide
+            // the whole way, the camp's own door included.
+            Sites.BARACHENS_CAMP, Kind.WILD);
+
+    /** The kind a road is laid the whole way, or null where the bands decide it column by column. */
+    public static Kind kind(Route route) {
+        return KINDS.get(route.id());
     }
 
     /**

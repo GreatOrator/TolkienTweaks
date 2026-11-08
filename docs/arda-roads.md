@@ -135,11 +135,15 @@ kinds, named for where each belongs:
 | `transition` | 5 | 2 | 64 down to 16 blocks of a settlement, where the paving starts |
 | `urban` | 7 | 3 | inside 16 blocks of a settlement: its own street |
 
-The band decides the kind, so a road widens as it comes in from the country to a gate. A hairpin's apron is one kind
-wider than the run it turns - five through a switchback on a wild track. The wild width's edge is ragged - one
-column in three of it left as the country has it, which is what the reference surface shows; the wider two keep a
-clean edge. A route that is one kind from end to end names it in `Roads.HALVES` and is laid at that width exactly,
-which is how a track out to a camp stays three wide at the camp's own door.
+The band decides the kind of a road that does not say otherwise, so an ordinary road widens as it comes in from the
+country to a gate. A hairpin's apron is one kind wider than the run it turns - five through a switchback on a wild
+track. The wild width's edge is ragged - one column in three of it left as the country has it, which is what the
+reference surface shows; the wider two keep a clean edge.
+
+**A road may name its kind instead**, in `Roads.KINDS`, and is then laid at it from end to end: a main road is
+`URBAN` and seven blocks wide across a moor as much as through a gate, and a track out to a camp is `WILD` and three
+wide at the camp's own door. Width follows from what the road is, not from where it runs - the surface is still the
+bands', so a named road takes the country's own mix of blocks wherever it stands away from a settlement.
 
 **Three bands, by distance from the nearest location**, in blocks, measured at generation time to a
 *pinned* cell centre (`ArdaMap.centreOf`, the way `Places.CANON_CELL` pins Rivendell). It has to be a

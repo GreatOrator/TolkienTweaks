@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road's kind is the road's, not its address.** Which of the three kinds a road was came from how far its
+  columns stood from the walls, so a main road through open country could only be a track: the width followed from
+  where the road ran rather than from what the road was. A route may now be given its kind in `Roads.KINDS` - `URBAN`
+  for a main road, seven blocks across a moor as much as through a gate; `WILD` for a track that stays three wide at a
+  camp's own door - and is laid at it from end to end. A route that names none is laid by the bands exactly as before,
+  and what a column is made of is always the bands': a main road through the wilds is seven wide of the country's
+  gravel until it reaches a town. Barachen's fire's track now names `WILD` instead of carrying a half-width number,
+  and the Thorenhad road names nothing yet, so it still widens at the camp and narrows in the country.
 - **A road is one of three kinds, and the kind is its width.** The bands decided what a column is made of but not
   how wide the road is, so every road outside the transition band was laid a wild seven and no wild stretch was ever
   three blocks wide. Three kinds now, named for the band that belongs to them: a wild track three blocks wide, the
