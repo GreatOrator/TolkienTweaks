@@ -1050,11 +1050,39 @@ public abstract class BiomeHelper {
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
 	}
 
-	/** The water's own plants: lily pads on the still sheets, and grass on what of the bank is not drowned. */
+	/**
+	 * The water's own furnish: the bed it is laid on, what grows in it, and what stands at its edge.
+	 * <p>
+	 * One list serves all ten water biomes, because the differences the eye expects are decided in the water
+	 * rather than by the biome: every plant here is placed on the ocean floor and refuses a column whose water is
+	 * too shallow, so grass takes the shallows a stream is made of and keeps out of the deep, kelp takes the deep
+	 * and will not grow in a stream, and a lake between the two keeps both. That is the depth banding a painted
+	 * map would have carved by hand, read back out of the world the drawing already made.
+	 * <p>
+	 * These are the mod's own placed features rather than vanilla's, which matters: Arda's biomes keep only
+	 * features named in the mod's namespace, so the vanilla lily and grass that used to be listed here were
+	 * stripped out of the biome data and the lakes and rivers came out with no furnish at all.
+	 */
 	public static BiomeGenerationSettings.Builder waterGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
-		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_WATERLILY);
-		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_TALL_GRASS);
+
+		// The bed first, because it is the ground everything else stands on. Clay, gravel and sand in the floor,
+		// at the step vanilla lays its own soft disks on, and stones among them where the water runs over rock.
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_RIVERBED_CLAY);
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_RIVERBED_GRAVEL);
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SHORE_SAND);
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_RIVERBED_ROCKS);
+
+		// Then what grows in it, from the floor up: the beds of grass, the tall stands among them, the kelp in
+		// the deep, and the pickles on the floor of the salt water.
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_SEAGRASS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_TALL_SEAGRASS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_KELP);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_SEA_PICKLE);
+
+		// And the edge: pads on the still sheets, reeds where the bank meets the water.
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_WATERLILY);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_SHORE_REEDS);
 		return biome;
 	}
 

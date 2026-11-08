@@ -6,6 +6,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.features.MiscOverworldFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.resources.ResourceKey;
@@ -112,8 +113,34 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> PLACED_DEAD_BODIES = registerKey("dead_bodies");
     public static final ResourceKey<PlacedFeature> PLACED_MARSH_POOLS = registerKey("marsh_pools");
 
+    public static final ResourceKey<PlacedFeature> PLACED_RIVERBED_CLAY = registerKey("riverbed_clay");
+    public static final ResourceKey<PlacedFeature> PLACED_RIVERBED_GRAVEL = registerKey("riverbed_gravel");
+    public static final ResourceKey<PlacedFeature> PLACED_SHORE_SAND = registerKey("shore_sand");
+    public static final ResourceKey<PlacedFeature> PLACED_RIVERBED_ROCKS = registerKey("riverbed_rocks");
+    public static final ResourceKey<PlacedFeature> PLACED_SEAGRASS = registerKey("seagrass");
+    public static final ResourceKey<PlacedFeature> PLACED_TALL_SEAGRASS = registerKey("tall_seagrass");
+    public static final ResourceKey<PlacedFeature> PLACED_KELP = registerKey("kelp");
+    public static final ResourceKey<PlacedFeature> PLACED_SEA_PICKLE = registerKey("sea_pickle");
+    public static final ResourceKey<PlacedFeature> PLACED_WATERLILY = registerKey("waterlily");
+    public static final ResourceKey<PlacedFeature> PLACED_SHORE_REEDS = registerKey("shore_reeds");
+
     private static ResourceKey<PlacedFeature> registerKey(String name) {
         return ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(MODID, name));
+    }
+
+    /**
+     * One of vanilla's configured features, asked for by its own name.
+     * <p>
+     * The plants that grow in water are vanilla's own work and worth borrowing: seagrass, kelp and the pickle each
+     * know how deep they will grow and how they spread, and none of it cares whose biome they are in. Seagrass comes
+     * in three heights named for their length rather than by species - {@code seagrass_short}, {@code _mid} and
+     * {@code _tall} - so the short one is the bed and the tall one the stands above it.
+     * <p>
+     * What may not be borrowed is the <em>placed</em> feature, because Arda keeps only features named in the mod's
+     * namespace: the configured feature is asked for here and given a placement of the mod's own.
+     */
+    private static ResourceKey<ConfiguredFeature<?, ?>> configured(String path) {
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, Identifier.withDefaultNamespace(path));
     }
 
     private static ImmutableList.Builder<PlacementModifier> tolkienFeatureCheckArea(AvoidLandmarkModifier filter, int rarity, PlacementModifier... extra) {
@@ -272,6 +299,56 @@ public class TolkienPlacedFeatures {
         // Two pools a chunk, dug into the ground the marsh stands on. A pool is water the bodies laid later
         // in the same chunk can be found in, which is why neither the drawing nor the mask had to be cut.
         context.register(PLACED_MARSH_POOLS, new PlacedFeature(features.getOrThrow(MARSH_POOL_KEY), List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome())));
+
+        // The water's own furnish, registered here because Arda grows nothing that is not the mod's own: a
+        // placed feature borrowed from vanilla's lists is stripped out of the biome data by
+        // TolkienBiomeGenerationSettings, which is what left every lake and river bare after the water's
+        // vanilla lists were taken out of them. The configured feature under each of these is still vanilla's -
+        // it is the *placement* that has to carry the mod's name, and the placement is where the differences
+        // between a stream and a sea are decided.
+        //
+        // The bed is laid first, because it is the ground the rest stands on: a disk of clay, gravel or sand in
+        // the floor of the water, which is the reference's riverbed layer done as a feature rather than as a
+        // painted surface. Vanilla's own soft disks are placed at this step in the overworld, so they are placed
+        // here too, and a column whose bed is neither soil nor rock simply refuses the disk and keeps its ground.
+        context.register(PLACED_RIVERBED_CLAY, new PlacedFeature(features.getOrThrow(MiscOverworldFeatures.DISK_CLAY),
+                List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+        context.register(PLACED_RIVERBED_GRAVEL, new PlacedFeature(features.getOrThrow(MiscOverworldFeatures.DISK_GRAVEL),
+                List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+        // Sand is the third bed and the first shore: an ocean floor of sand is a shore where the water runs
+        // shallow, and the same feature on a bank that is one block under the surface is the beach the
+        // reference's spray can was for.
+        context.register(PLACED_SHORE_SAND, new PlacedFeature(features.getOrThrow(MiscOverworldFeatures.DISK_SAND),
+                List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+        // Pebbles and boulders on the bed, the reference's underwater rocks: the same pile the crags are
+        // strewn with, laid on the floor of the water rather than on the world's surface, and rare enough that
+        // a river is a river between them.
+        context.register(PLACED_RIVERBED_ROCKS, new PlacedFeature(features.getOrThrow(ROCK_PILE),
+                List.of(RarityFilter.onAverageOnceEvery(6), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+
+        // What grows in the water. Every one of these is placed on the ocean floor and refuses the column if
+        // the water over it is too shallow, so the depth bands the reference carved by hand - a stream two or
+        // three deep, a river four or five, a sea six to eight - need no band here: the feature reads the
+        // depth it is actually in. That is why one set serves all ten water biomes.
+        context.register(PLACED_SEAGRASS, new PlacedFeature(features.getOrThrow(configured("seagrass_short")),
+                List.of(CountPlacement.of(24), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+        context.register(PLACED_TALL_SEAGRASS, new PlacedFeature(features.getOrThrow(configured("seagrass_tall")),
+                List.of(CountPlacement.of(6), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+        // Kelp is the deep water's own: it will not take where the bed is nearer than a few blocks of the
+        // surface, so a stream keeps none and a sea is a forest.
+        context.register(PLACED_KELP, new PlacedFeature(features.getOrThrow(configured("kelp")),
+                List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+        context.register(PLACED_SEA_PICKLE, new PlacedFeature(features.getOrThrow(configured("sea_pickle")),
+                List.of(RarityFilter.onAverageOnceEvery(4), CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+
+        // And what floats or stands at the edge. A lily pad is placed on the surface rather than the floor,
+        // which is what HEIGHTMAP reads once the water is there; reeds are placed on the land, and the cane
+        // feature itself refuses any column without water beside it, so the highest count still only reeds
+        // the water's edge.
+        context.register(PLACED_WATERLILY, new PlacedFeature(features.getOrThrow(configured("waterlily")),
+                List.of(CountPlacement.of(4), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome())));
+        context.register(PLACED_SHORE_REEDS, new PlacedFeature(features.getOrThrow(configured("sugar_cane")),
+                List.of(CountPlacement.of(12), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
     }
 
     /**

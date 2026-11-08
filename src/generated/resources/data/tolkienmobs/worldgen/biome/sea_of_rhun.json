@@ -13,7 +13,30 @@
   "effects": {
     "water_color": "#1f5c74"
   },
-  "features": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "tolkienmobs:riverbed_clay",
+      "tolkienmobs:riverbed_gravel",
+      "tolkienmobs:riverbed_rocks",
+      "tolkienmobs:shore_sand"
+    ],
+    [],
+    [],
+    [
+      "tolkienmobs:kelp",
+      "tolkienmobs:sea_pickle",
+      "tolkienmobs:seagrass",
+      "tolkienmobs:shore_reeds",
+      "tolkienmobs:tall_seagrass",
+      "tolkienmobs:waterlily"
+    ]
+  ],
   "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {

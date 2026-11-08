@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Arda's rivers, lakes and seas are furnished again.** The ten water biomes were left with nothing in them: their
+  only furnish was vanilla's lily pads and grass, and the rule that Arda grows nothing but the mod's own places took
+  those away. They now have ten features of their own - clay, gravel and sand in the bed, stones among them, seagrass
+  and tall seagrass, kelp, sea pickles, lily pads and reeds at the edge - all of them placed on the water's own floor
+  and refused where the water is too shallow, so one list gives a stream its grass, a sea its kelp forest and a lake
+  both, without a depth being written down anywhere.
 - **Other worlds' lakes, monster rooms and ores stay out of Arda.** The rule that Arda grows nothing but the mod's
   own places was only asked of features handed to a biome as holders, and vanilla's own default lists name theirs
   instead: the builder looks the key up itself and adds it without passing the rule. So the filter held, regeneration
