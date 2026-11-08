@@ -744,7 +744,14 @@ public final class RoadCommands {
      * switchback, which is the road alternative to a hole in the grade or an embankment forty blocks tall. Water is refused
      * outright - the river is the bridge's - and so is the city's own footprint.
      * <p>
-     * A road may run further than the country is wide, but not by any amount. The grade penalty alone will pay any
+     * The price of a step is not only what it does to the height, but where it leaves the road against the grade it has
+     * to finish on. A walk that priced only the change would climb a hill beside the valley that led to its own end,
+     * because a gentle climb is cheap and a steep descent is not - and then it has to come down in switchbacks at the
+     * last, doubling back over ground it has already crossed. Every candidate therefore pays a little for standing off
+     * the straight grade between the two ends, up to {@link #PROFILE_OFF} blocks, which is enough to send the road
+     * down the valley without forbidding the hill where the hill is the only way over.
+     * <p>
+     * A road may also run further than the country is wide, but not by any amount. The grade penalty alone will pay any
      * length to keep off one steep step, and the bench of a meadow between two hills has room for a great many long
      * ways round: a walk given no budget came back with three thousand eight hundred stations for a four-hundred-block
      * road, doubling back across the same ground until it had paved a plaza. So the walk carries how far it has run
@@ -765,6 +772,9 @@ public final class RoadCommands {
         private static final double DETOUR = 2.5D;
         /** What a diagonal step costs over a straight one: one and the root of two less, which is the eight-way guess. */
         private static final double DIAGONAL = Math.sqrt(2.0D) - 1.0D;
+        /** What a step pays for standing a block off the grade between the ends, and how far off it stops counting. */
+        private static final double PROFILE_PENALTY = 0.5D;
+        private static final double PROFILE_OFF = 24.0D;
         /** How much further a second attempt may run, once the first found no way inside its budget at all. */
         private static final double WIDER = 3.0D;
         private final Route route;
@@ -795,6 +805,16 @@ public final class RoadCommands {
         private double room;
         /** How many times the search has been restarted with a longer road allowed. */
         private int tries;
+        /** The two ends in the world, the line between them, and the ground at each once the search has read it. */
+        private final int startX;
+        private final int startZ;
+        private final int goalX;
+        private final int goalZ;
+        private final int lineX;
+        private final int lineZ;
+        private final double lineSq;
+        private double startGround = Double.NaN;
+        private double goalGround = Double.NaN;
         private int looked;
         private boolean done;
 
@@ -829,6 +849,13 @@ public final class RoadCommands {
                 this.settled = new boolean[0];
                 this.travelled = new float[0];
                 this.straight = 0.0D;
+                this.startX = 0;
+                this.startZ = 0;
+                this.goalX = 0;
+                this.goalZ = 0;
+                this.lineX = 0;
+                this.lineZ = 0;
+                this.lineSq = 1.0D;
                 this.start = -1;
                 this.goal = -1;
                 return;
@@ -853,6 +880,13 @@ public final class RoadCommands {
             int deepApart = Math.abs(goalZ - startZ);
             this.straight = Math.max(wide, deepApart) + DIAGONAL * Math.min(wide, deepApart);
             this.room = Math.max(32.0D, straight * DETOUR);
+            this.startX = startX;
+            this.startZ = startZ;
+            this.goalX = goalX;
+            this.goalZ = goalZ;
+            this.lineX = goalX - startX;
+            this.lineZ = goalZ - startZ;
+            this.lineSq = Math.max(1.0D, (double) lineX * lineX + (double) lineZ * lineZ);
             Arrays.fill(ground, Integer.MIN_VALUE);
             Arrays.fill(best, Double.MAX_VALUE);
             Arrays.fill(from, -1);
@@ -887,6 +921,10 @@ public final class RoadCommands {
         /** Settles up to {@code polls} candidates; false once there is nothing more to settle. */
         private boolean step(ServerLevel level, int polls) {
             if (!fits || done) return false;
+            if (Double.isNaN(startGround)) {
+                startGround = solid(surfaceAt(level, startX, startZ));
+                goalGround = solid(surfaceAt(level, goalX, goalZ));
+            }
             for (int poll = 0; poll < polls; poll++) {
                 if (open.isEmpty() || looked >= limit) {
                     // What stopped it may have been the budget rather than the country: a road up a fell needs more
@@ -926,6 +964,13 @@ public final class RoadCommands {
                         double over = Math.max(0.0D, change - TARGET_GRADE * length);
                         double cost = best[node] + length + GRADE_PENALTY * over * over;
                         if (heading[node] != -1 && heading[node] != dir) cost += TURN_COST;
+                        if (!Double.isNaN(startGround) && !Double.isNaN(goalGround)) {
+                            double along = ((nx - startX) * lineX + (nz - startZ) * lineZ) / lineSq;
+                            along = Math.max(0.0D, Math.min(1.0D, along));
+                            double expect = startGround + (goalGround - startGround) * along;
+                            cost += PROFILE_PENALTY
+                                    * Math.min(Math.abs(ground[at] - expect), PROFILE_OFF);
+                        }
                         float ran = travelled[node] + (float) length;
                         if (ran > room) continue;
                         if (cost >= best[at]) continue;
@@ -944,6 +989,11 @@ public final class RoadCommands {
                 }
             }
             return !done;
+        }
+
+        /** A height a grade can be read from, or nothing at all when that ground is water or has not been made. */
+        private static double solid(int ground) {
+            return ground == WATER || ground == VOID ? Double.NaN : ground;
         }
 
         /**

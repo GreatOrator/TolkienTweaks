@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road keeps to the grade between its two ends.** The walk priced what a step did to the height and nothing else,
+  so where a valley ran straight to the ford and a hill stood beside it, it climbed the hill - a gentle climb is cheap,
+  a steep descent is not - and then had to come down in switchbacks at the last, doubling back over ground it had
+  already crossed. Every candidate now pays a little for standing off the straight grade between the ends, up to a
+  limit, so the road takes the valley that leads where it is going and saves the switchbacks for country that offers
+  nothing better.
 - **A road no longer wanders to keep off a hill.** The way is chosen by cost, and cost alone will pay any length to
   keep off one steep step: the first walk in a fresh world came back with three thousand eight hundred stations for a
   four-hundred-block road, doubling back across the same meadow until it had paved a plaza. The walk now carries how
