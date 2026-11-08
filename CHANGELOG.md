@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Every build has the ground around it carried to its roofline.** The valley has been dressed column by column to
+  the cut's own outline since it was first laid, and a building placed from a template had nothing of the kind: a camp
+  seated in a hillside kept the hill leaning over its roof and a wood's crown through its hall. Each placement now
+  sweeps its own footprint clear above its top and cuts the ring outside to the same height, easing back to the ground
+  twelve blocks out, with water left in its channel and a crag untouched. A build already standing has the same pass
+  run once a session when somebody walks up to it.
 - **A footprint is measured past what grows on it.** The surface read took the top of a flower as the top of the
   ground, so a column with a tuft on it was read as a cliff and the footprint was refused; a crag is wide enough that
   some column of any meadow has one, which is what stopped two of the three crags being raised at their pins. Ground
