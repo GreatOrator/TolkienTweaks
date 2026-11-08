@@ -458,9 +458,62 @@ public final class RoadCommands {
             this.stage = span == null ? Stage.SEARCH : Stage.SWEEP;
             this.swept = span == null ? 0 : span.westBankX() - 1;
             this.pillarX = span == null ? 0 : span.westBankX();
-            this.outward = span == null && route instanceof Route.Riverless dry
-                    && Math.hypot(x - dry.farX(), z - dry.farZ())
-                    < Math.hypot(x - route.pathX(), z - route.pathZ());
+            // Which end the ask came from is read along the road's own line rather than as the crow flies: a road
+            // bent round a shoulder of hill has its ends nearer each other through the hill than along the road, so
+            // a player standing on the bend is placed by the bend they are beside and not by the rock between.
+            double met = 0.0D;
+            double whole = 0.0D;
+            if (span == null && route instanceof Route.Riverless) {
+                double[] line = byLine(route, x, z);
+                met = line[0];
+                whole = line[1];
+            }
+            this.outward = whole > 0.0D && whole - met < met;
+        }
+
+        /**
+         * Where a point stands on a route's own line, as the distance walked from the build's end, and how long that
+         * line is.
+         * <p>
+         * The line is the road as it is written down - the build's door, the bends in the order the road meets them,
+         * the far end - because that is the road a player is looking at when they come on it. Measured to the ends as
+         * the crow flies, a bend-heavy road reads as one straight line through whatever the bends were walked to
+         * avoid: standing on the Thorenhad road's own bend, a dozen blocks from the far end's side of the hill, the
+         * two ends come out near enough the same distance away and the road sets off from whichever it preferred.
+         * <p>
+         * The point's place on each leg is the foot of it, held to the leg's own ends: past a bend a point belongs to
+         * the leg it is nearest, and past the far end to the far end. A route with no bends is the one straight leg it
+         * always was, so a road that was never bent picks its end exactly as it did before.
+         */
+        private static double[] byLine(Route route, int x, int z) {
+            List<int[]> corners = new ArrayList<>();
+            corners.add(new int[]{route.pathX(), route.pathZ()});
+            for (BlockPos bend : Roads.bends(route)) corners.add(new int[]{bend.getX(), bend.getZ()});
+            if (route instanceof Route.Riverless dry) corners.add(new int[]{dry.farX(), dry.farZ()});
+            double walked = 0.0D;
+            double best = Double.MAX_VALUE;
+            double met = 0.0D;
+            for (int i = 1; i < corners.size(); i++) {
+                int[] from = corners.get(i - 1);
+                int[] to = corners.get(i);
+                double dx = to[0] - from[0];
+                double dz = to[1] - from[1];
+                double length = Math.hypot(dx, dz);
+                double reach = 0.0D;
+                double along = 0.0D;
+                if (length > 0.0D) {
+                    double t = ((x - from[0]) * dx + (z - from[1]) * dz) / (length * length);
+                    along = Math.max(0.0D, Math.min(1.0D, t));
+                    reach = along * length;
+                }
+                double off = Math.hypot(x - (from[0] + dx * along), z - (from[1] + dz * along));
+                if (off < best) {
+                    best = off;
+                    met = walked + reach;
+                }
+                walked += length;
+            }
+            return new double[]{met, walked};
         }
 
         /** One step; false when the road is down and {@link #summary} has the answer. */

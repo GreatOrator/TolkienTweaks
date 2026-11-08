@@ -83,7 +83,9 @@ Roads are begun by ground now, not by a build being found: a pass is the world's
 chunk a dry road passes through starts that road from whichever end the player meets it - stepping while the
 ground under its head is loaded, waiting when it is not, so a road survives a walk away or a logout. The end
 it is met at is the end it lays from: `RoadJob.outward` is set at planning time from the point that asked
-(the chunk's centre, a build's middle), and a dry road met at its far end has its stations turned round and
+(the chunk's centre, a build's middle) and measured along the road's own line - its door, the bends in the
+order the road walks them, its far end - rather than through the hill between them, so a player on a bend is
+placed by the bend they are beside. A dry road met at its far end has its stations turned round and
 its two ends' ground swapped before the grade is laid, so the player facing the road sees it come towards them
 rather than fill in behind a hill three hundred blocks away. The note keeps the alignment in laying order, so
 a pass carried over a restart resumes the same way. A crossing is still begun by its city's dressing, because

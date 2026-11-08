@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road is met along its bends, not through the hill.** Which end a pass set off from was read as the straight-line
+  distance to the route's two ends, so a player standing on a bend could be nearer the far end through the rock than
+  along the road and have the road laid from the other end. The meet point is now measured on the road itself - the
+  door, the recorded bends in the order the road walks them, the far end - so the end a pass lays from is the end the
+  player is nearest to on the ground they are standing on. A route with no bends is the one straight leg it always
+  was, and picks its end as before.
 - **A road is laid from the end it is met at.** The pass walked its stations from the route's own start, so a player
   who came on the main road at the ford watched it fill in from the camp three hundred blocks away - and only while
   that far end's ground was loaded. A pass now starts from the end nearer the ground that asked for it: met at the far
