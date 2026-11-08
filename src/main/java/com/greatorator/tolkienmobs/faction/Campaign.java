@@ -1619,7 +1619,8 @@ public final class Campaign extends SavedData {
         if (site == null || !Sites.isCave(site.structure()) || !site.built()) return;
         if (!level.dimension().equals(site.dimension())) return;
         if (site.centre().distToCenterSqr(player.position()) > CAVE_TROLL_WAY * CAVE_TROLL_WAY) return;
-        if (caveTrollNear(player)) return;
+        String mine = CAVE_TROLL_TAG + "_" + player.getUUID();
+        if (caveTrollNear(level, player)) return;
         BlockPos stand = caveFloor(level, site.centre());
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_TROLL.get().create(level, EntitySpawnReason.EVENT);
@@ -1632,6 +1633,7 @@ public final class Campaign extends SavedData {
         troll.addTag(CAVE_TROLL_TAG);
         troll.addTag(CAVE_TROLL_TAG + "_" + player.getUUID());
         if (!level.addFreshEntity(troll)) return;
+        Keepers.remember(level, mine, troll);
         player.sendSystemMessage(Component.translatable(CAVE_TROLL_GUARD).withStyle(ChatFormatting.DARK_GREEN));
     }
 
@@ -1674,10 +1676,19 @@ public final class Campaign extends SavedData {
         return null;
     }
 
-    /** Whether the crag's keeper is already standing in it, tagged rather than counted. */
-    private static boolean caveTrollNear(ServerPlayer player) {
-        return !player.level().getEntities(player, player.getBoundingBox().inflate(CAVE_TROLL_WAY * 2),
-                found -> found.entityTags().contains(CAVE_TROLL_TAG)).isEmpty();
+    /**
+     * Whether the crag's keeper is already standing in it: the body this player's page stood, found by its note even
+     * when the chamber is not in memory, and by its tag in the chamber as the second look.
+     */
+    private static boolean caveTrollNear(ServerLevel level, ServerPlayer player) {
+        String mine = CAVE_TROLL_TAG + "_" + player.getUUID();
+        if (Keepers.keeper(level, mine) != null) return true;
+        List<Entity> found = level.getEntities(player, player.getBoundingBox().inflate(CAVE_TROLL_WAY * 2),
+                seen -> seen.entityTags().contains(CAVE_TROLL_TAG));
+        if (found.isEmpty()) return false;
+        // A troll stood before the line wrote bodies down is written down now.
+        Keepers.remember(level, mine, found.get(0));
+        return true;
     }
 
     /** What the stone says in a cave: picked by the cave rather than by the player, so it says it again next time. */
@@ -3007,6 +3018,7 @@ public final class Campaign extends SavedData {
         king.addTag(WITCHKING_TAG);
         shadeBlind(king);
         level.addFreshEntity(king);
+        Keepers.remember(level, WITCHKING_TAG, king);
         standGuards(level, stand);
         player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.rising")
                 .withStyle(ChatFormatting.DARK_PURPLE));
@@ -3176,8 +3188,9 @@ public final class Campaign extends SavedData {
      * a reload, and what keeps a keeper apart from any Nazgul a player meets on the road.
      */
     private static void standGuards(ServerLevel level, BlockPos middle) {
+        int standing = Keepers.count(level, GUARD_TAG);
         RandomSource random = level.getRandom();
-        for (int guard = 0; guard < GUARD_COUNT; guard++) {
+        for (int guard = standing; guard < GUARD_COUNT; guard++) {
             double angle = Math.PI * 2.0D * guard / GUARD_COUNT;
             int x = middle.getX() + (int) Math.round(Math.cos(angle) * GUARD_RING);
             int z = middle.getZ() + (int) Math.round(Math.sin(angle) * GUARD_RING);
@@ -3191,6 +3204,7 @@ public final class Campaign extends SavedData {
             keeper.addTag(GUARD_TAG);
             shadeBlind(keeper);
             level.addFreshEntity(keeper);
+            Keepers.remember(level, GUARD_TAG, keeper);
         }
     }
 
@@ -3274,8 +3288,12 @@ public final class Campaign extends SavedData {
     }
 
     private static boolean witchKingLiving(ServerLevel level, BlockPos centre) {
-        return !level.getEntities((Entity) null, new AABB(centre).inflate(WITCHKING_SEARCH),
-                found -> found.entityTags().contains(WITCHKING_TAG)).isEmpty();
+        if (Keepers.keeper(level, WITCHKING_TAG) != null) return true;
+        List<Entity> found = level.getEntities((Entity) null, new AABB(centre).inflate(WITCHKING_SEARCH),
+                seen -> seen.entityTags().contains(WITCHKING_TAG));
+        if (found.isEmpty()) return false;
+        Keepers.remember(level, WITCHKING_TAG, found.get(0));
+        return true;
     }
 
     /**

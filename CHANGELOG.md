@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The cave's troll and the crown's ring are written down too.** The record the Elves keep now carries the crag's
+  keeper, the Witch-king and the three keepers of his ring, each by tag, UUID and the ground it was left on. A page
+  carried into a chamber the world has not read, or an arena walked back into after a reload, finds the body it stood
+  instead of standing a second one; the ring is stood only for the slots its own count leaves empty, so a keeper that
+  fell is still missed and a keeper merely out of sight is not replaced.
 - **A keeper is remembered, not only looked for.** A tag only reaches as far as the chunks a world has in
   memory, so a keeper left in an unloaded chunk was invisible and the line stood another beside the one it could not
   see - the other half of the forty-five Glorfindels. Every body the line stands is now written down in the save

@@ -46,7 +46,7 @@ public final class Keepers extends SavedData {
     public static final SavedDataType<Keepers> TYPE = new SavedDataType<>(
             Identifier.fromNamespaceAndPath("tolkienmobs", SAVE_DATA_NAME), Keepers::new, CODEC);
 
-    private static final Map<String, Post> POSTS = new HashMap<>();
+    private static final Map<String, List<Post>> POSTS = new HashMap<>();
     private static final Keepers NO_SERVER = new Keepers(false);
 
     /**
@@ -65,12 +65,16 @@ public final class Keepers extends SavedData {
 
     private static Keepers fromPosts(List<Post> posts) {
         POSTS.clear();
-        for (Post post : posts) POSTS.put(key(post.dim(), post.tag()), post);
+        for (Post post : posts) {
+            POSTS.computeIfAbsent(key(post.dim(), post.tag()), ignored -> new ArrayList<>()).add(post);
+        }
         return new Keepers(false);
     }
 
     private static List<Post> toPosts(Keepers keepers) {
-        return new ArrayList<>(POSTS.values());
+        List<Post> posts = new ArrayList<>();
+        for (List<Post> group : POSTS.values()) posts.addAll(group);
+        return posts;
     }
 
     private static String key(String dim, String tag) {
@@ -99,18 +103,55 @@ public final class Keepers extends SavedData {
     static Entity keeper(ServerLevel level, String tag) {
         Keepers data = instance(level);
         String key = key(dimension(level), tag);
-        Post post = POSTS.get(key);
-        if (post == null) return null;
+        List<Post> posts = POSTS.get(key);
+        if (posts == null || posts.isEmpty()) return null;
+        List<Post> gone = new ArrayList<>();
+        for (Post post : posts) {
+            Entity body = read(level, post, true);
+            if (body != null) return body;
+            gone.add(post);
+        }
+        data.forget(key, gone);
+        return null;
+    }
+
+    /**
+     * How many of these bodies the world still has, read only as far as the chunks in memory allow. A note whose
+     * chunk is not loaded counts as a body still there: a guard at a hall nobody is standing in is not a guard who
+     * fell, and reading every hall in a country to count three of them is not a price a tick can pay.
+     */
+    static int count(ServerLevel level, String tag) {
+        Keepers data = instance(level);
+        String key = key(dimension(level), tag);
+        List<Post> posts = POSTS.get(key);
+        if (posts == null || posts.isEmpty()) return 0;
+        List<Post> gone = new ArrayList<>();
+        int alive = 0;
+        for (Post post : posts) {
+            BlockPos at = post.at();
+            if (read(level, post, false) != null || !level.hasChunk(at.getX() >> 4, at.getZ() >> 4)) {
+                alive++;
+            } else {
+                gone.add(post);
+            }
+        }
+        data.forget(key, gone);
+        return alive;
+    }
+
+    /**
+     * The body a note names: itself while its chunk is in memory, and otherwise the chunk it was left in is read,
+     * when the caller can afford it. Null means the chunk was read and the body is not in it.
+     */
+    @Nullable
+    private static Entity read(ServerLevel level, Post post, boolean load) {
         Entity body = level.getEntity(post.id());
         if (body != null && !body.isRemoved()) return body;
         BlockPos at = post.at();
-        if (!level.hasChunk(at.getX() >> 4, at.getZ() >> 4)) {
-            level.getChunk(at.getX() >> 4, at.getZ() >> 4);
-            body = level.getEntity(post.id());
-            if (body != null && !body.isRemoved()) return body;
-        }
-        data.forget(key);
-        return null;
+        if (level.hasChunk(at.getX() >> 4, at.getZ() >> 4) || !load) return null;
+        level.getChunk(at.getX() >> 4, at.getZ() >> 4);
+        body = level.getEntity(post.id());
+        return body != null && !body.isRemoved() ? body : null;
     }
 
     /** Writes a body down, or moves the note he already has to the ground he is on now. */
@@ -119,11 +160,24 @@ public final class Keepers extends SavedData {
     }
 
     private void record(String dim, String tag, UUID id, BlockPos at) {
-        if (new Post(tag, id, dim, at).equals(POSTS.put(key(dim, tag), new Post(tag, id, dim, at)))) return;
+        String key = key(dim, tag);
+        List<Post> posts = POSTS.computeIfAbsent(key, ignored -> new ArrayList<>());
+        Post post = new Post(tag, id, dim, at);
+        for (int i = 0; i < posts.size(); i++) {
+            if (!posts.get(i).id().equals(id)) continue;
+            if (posts.get(i).equals(post)) return;
+            posts.set(i, post);
+            setDirty();
+            return;
+        }
+        posts.add(post);
         setDirty();
     }
 
-    private void forget(String key) {
-        if (POSTS.remove(key) != null) setDirty();
+    private void forget(String key, List<Post> gone) {
+        List<Post> posts = POSTS.get(key);
+        if (posts == null) return;
+        if (posts.removeAll(gone)) setDirty();
+        if (posts.isEmpty()) POSTS.remove(key);
     }
 }

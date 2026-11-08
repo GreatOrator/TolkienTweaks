@@ -45,7 +45,9 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
 
 A keeper is now asked of the world by its tag rather than found in a box round his post, a body left outside his reach
 of the post is walked back to it, and every stood body is written down in the save (`tolkienmobs:keepers`) so he is
-found in an unloaded chunk rather than stood again: compiled, not yet seen in a world.
+found in an unloaded chunk rather than stood again. The crag's troll, the Witch-king and the three of his ring keep the
+same note (a tag may own several bodies, and the ring is stood only for the slots its count leaves empty): compiled, not
+yet seen in a world.
 
 ## Open
 
