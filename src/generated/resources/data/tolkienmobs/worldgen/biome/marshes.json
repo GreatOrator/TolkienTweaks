@@ -49,7 +49,8 @@
     [
       "tolkienmobs:flower_swamp_milkweed_placed",
       "tolkienmobs:mud_splatter",
-      "tolkienmobs:shore_reeds"
+      "tolkienmobs:shore_reeds",
+      "tolkienmobs:swamp_trees"
     ]
   ],
   "has_precipitation": true,

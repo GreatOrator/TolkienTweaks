@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The fens have their trees.** The marsh asked for vanilla's `trees_swamp`, which every Arda biome strips out
+  because Arda keeps only the features it names itself - so both fens were generated treeless. A mod's own
+  `swamp_trees` now carries vanilla's placement unchanged: a weighted two or three a chunk, in square, on the
+  ocean floor through no more than two blocks of water, and only where an oak sapling itself would stand, so a
+  tree keeps out of the pools, off the reeds and off another tree's trunk. The Dead Marshes are left as they
+  were.
 - **Shore cane can no longer stand in the water.** Two things grew sugar cane: the mod's `shore_reeds`, which refused
   a water column but never asked whether the cane could stand where it was being put, and the marsh, which named
   vanilla's `patch_sugar_cane_swamp` with no filter on it at all. The shore feature now also carries the cane's own

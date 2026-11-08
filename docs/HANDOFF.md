@@ -52,7 +52,15 @@ Sugar cane is placed only by `TolkienPlacedFeatures.PLACED_SHORE_REEDS`: `not(wa
 `would_survive` for the cane itself, because either one alone leaves a case - the refusal lets a position above a
 channel through, and survival alone accepts a bed with water round it. The marsh names that feature too. Note
 that `runData` cannot run while the client is open (it rewrites `build/moddev/artifacts/minecraft-patched-*.jar`
-and Windows locks it); the placed-feature and biome JSONs were hand-written in its shape for this change.
+and Windows locks it); the placed-feature and biome JSONs for that change were hand-written in its shape,
+and the first `runData` after the client was closed confirmed them (three files written, no differences).
+
+The fen's trees are `TolkienPlacedFeatures.PLACED_SWAMP_TREES`, vanilla's `swamp_oak` planted exactly as
+vanilla plants it (weighted 2/3 a chunk, in square, `surface_water_depth_filter(2)`, `HEIGHTMAP_OCEAN_FLOOR`,
+`would_survive` an oak sapling). Vanilla's own `trees_swamp` could not be used: the generator keeps only the
+mod's features, so the marsh's data listed no trees at all. The Dead Marshes still name vanilla's and still
+have none, which is their look; note that every other vanilla list in both fens is stripped the same way -
+the marsh's grass, flowers, dead bush, mushrooms, pumpkin and lily are all vanilla and all absent.
 
 ## Where it stood on 8 November 2026
 

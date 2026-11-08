@@ -12,7 +12,11 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.util.valueproviders.WeightedListInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
@@ -125,6 +129,7 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> PLACED_SEA_PICKLE = registerKey("sea_pickle");
     public static final ResourceKey<PlacedFeature> PLACED_WATERLILY = registerKey("waterlily");
     public static final ResourceKey<PlacedFeature> PLACED_SHORE_REEDS = registerKey("shore_reeds");
+    public static final ResourceKey<PlacedFeature> PLACED_SWAMP_TREES = registerKey("swamp_trees");
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {
         return ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(MODID, name));
@@ -356,6 +361,19 @@ public class TolkienPlacedFeatures {
         // it and grows up through the water. A river came out standing full of reeds, which is a marsh's look and
         // not a river's. The filter tests the block it is about to stand in: air on a bank, water in the middle of
         // the channel, and only the first is reeded.
+        // The fen's trees, which are vanilla's swamp oak planted exactly the way vanilla plants it: a weighted
+        // two or three a chunk, in square, on the ocean floor through no more than two blocks of water, and only
+        // where an oak sapling itself would stand - which is what keeps a tree out of a pool, off the reeds and off
+        // another tree's trunk. Only the feature's name had to change. Vanilla's `trees_swamp` is another world's
+        // list, and Arda keeps only the features it names itself, so the marsh asking for vanilla's left both fens
+        // with no trees in their data at all.
+        context.register(PLACED_SWAMP_TREES, new PlacedFeature(features.getOrThrow(configured("swamp_oak")),
+                List.of(CountPlacement.of(new WeightedListInt(WeightedList.<IntProvider>builder()
+                                .add(ConstantInt.of(2), 9).add(ConstantInt.of(3), 1).build())),
+                        InSquarePlacement.spread(), SurfaceWaterDepthFilter.forMaxDepth(2),
+                        PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome(),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(
+                                Blocks.OAK_SAPLING.defaultBlockState(), BlockPos.ZERO)))));
         context.register(PLACED_WATERLILY, new PlacedFeature(features.getOrThrow(configured("waterlily")),
                 List.of(CountPlacement.of(4), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome())));
         // And the cane has to be able to stand where it is put, which is a different question from what the column
