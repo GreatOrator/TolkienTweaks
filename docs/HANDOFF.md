@@ -41,6 +41,13 @@ method on purpose: the reading and the corridor clearing must agree, or the clea
 standing on and leaves it in the air. Roads 7 had road blocks sitting on oak leaves at the junction above
 Barachen's camp, and seventy-eight columns of the camp's road left hanging when the canopy went.
 
+The city raises itself in `CityCommands.rouse`: one piece at a time while a player is within 160 blocks of its box,
+nearest piece first, and only into chunks already made - `lay(..., false)` never generates ground for a piece, so
+the city fills in as it is walked. `lay(..., true)` is the hand's own path (`/tmcity band`) and still makes its
+ground. The cadence follows `MinecraftServer.getCurrentSmoothedTickTime()` between four ticks and twenty. Two
+consequences: a city nobody walks does not finish, and therefore the road that waits on it does not plan; and a
+band can sit half-laid until the player's view reaches its far pieces.
+
 ## Where it stood on 8 November 2026
 
 Done and seen in a world by the player: the camp, Barachen's camp, the wood tower and one crag place at their pins; the

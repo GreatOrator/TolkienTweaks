@@ -40,9 +40,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -187,10 +190,26 @@ public final class CityCommands {
      * with nothing but a piece ever carried.
      */
     private static final int PIECE_TICKS = 4;
+    /**
+     * The slowest cadence the raise drops to when the world is behind, in ticks: a piece a second.
+     * <p>
+     * Four ticks a piece is the shape the raise is meant to keep. It is not a promise to keep it while the server is
+     * over budget: a piece is a hundred thousand writes, and one added to a tick that is already late is what turns a
+     * raise into a freeze. So the cadence walks between the two on the tick's own health, and comes back down again
+     * when the world does.
+     */
+    private static final int SLOWEST_PIECE_TICKS = 20;
+    /** The average tick the raise will not add to, in milliseconds. Past it the next piece waits for a calmer tick. */
+    private static final double BUSY_TICK = 45.0D;
+    /** The cadence in flight, walked between the two by {@link #paceFor}. */
+    private static int pace = PIECE_TICKS;
     /** The raise in flight: the corner it is laying, the band it is on, and how many pieces of that band are down. */
     private static BlockPos RAISING;
     private static int raisingBand = -1;
-    private static int raisingPiece;
+    /** The band's pieces in the order they come down, nearest the player first. */
+    private static List<Part> raisingOrder = List.of();
+    /** Which of that order are down, so a piece left waiting for its ground is not counted twice. */
+    private static final Set<Integer> raisingDone = new HashSet<>();
     /** The cut's pieces, read once: the raise is asked every few ticks and the table is five hundred lines. */
     private static List<Part> CUT_PARTS;
     /** Where the raise says what went down, on the channel the hand prints to. */
@@ -365,7 +384,8 @@ public final class CityCommands {
      */
     static void rouse(ServerLevel level) {
         if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
-        if (level.getGameTime() % PIECE_TICKS != 0) return;
+        pace = paceFor(level);
+        if (level.getGameTime() % pace != 0) return;
         BlockPos pin = Pins.at(level, Campaign.SUMMON_PLACE);
         if (pin == null) {
             forgetRaise();
@@ -415,29 +435,40 @@ public final class CityCommands {
         if (RAISING == null || !RAISING.equals(mark.origin()) || raisingBand != mark.band()) {
             RAISING = mark.origin();
             raisingBand = mark.band();
-            raisingPiece = 0;
+            raisingDone.clear();
+            raisingOrder = nearest(parts, bands.get(mark.band()), mark.origin(), level);
         }
-        int height = bands.get(mark.band());
-        int seen = 0;
-        for (Part part : parts) {
-            if (part.dy() != height) continue;
-            if (seen++ < raisingPiece) continue;
+        for (int index = 0; index < raisingOrder.size(); index++) {
+            if (raisingDone.contains(index)) continue;
+            Part part = raisingOrder.get(index);
             BlockPos at = mark.origin().offset(part.dx(), part.dy(), part.dz());
             // A piece that would stand above the sky is not laid at all: the world drops those blocks without a word,
             // and asking for them again next tick would drop them again. The sky is the block above the last one that
             // can be stood on, so a piece whose top is the sky itself is one block too tall.
-            if (at.getY() + part.tall() - 1 < level.getMaxY() && at.getY() >= level.getMinY()) {
-                lay(level, folder, part, mark.origin());
-                // The lowest band is the city's floor, so it is the one that needs ground under it.
-                if (mark.band() == 0) Sites.underpin(level, at, part.wide(), part.deep(), UNDERPIN);
+            if (at.getY() + part.tall() - 1 >= level.getMaxY() || at.getY() < level.getMinY()) {
+                raisingDone.add(index);
+                continue;
             }
-            raisingPiece = seen;
+            // A piece waits for ground the world already has rather than making it. Nine chunk columns of generation
+            // inside a tick, for a piece the player may be four hundred blocks from, was the raise's own worst cost:
+            // the chunks come with the player's own view, so the city fills in as it is walked.
+            if (!made(level, at, part.wide(), part.deep())) continue;
+            lay(level, folder, part, mark.origin(), false);
+            // The lowest band is the city's floor, so it is the one that needs ground under it.
+            if (mark.band() == 0) Sites.underpin(level, at, part.wide(), part.deep(), UNDERPIN);
+            raisingDone.add(index);
+            return;
+        }
+        if (raisingDone.size() < raisingOrder.size()) {
+            // Nothing left in reach is standing on made ground: the player has not walked that far yet. Nothing is
+            // forced for it - the band waits where it is, and its pieces come down as their chunks do.
             return;
         }
         Mark next = new Mark(mark.origin(), mark.band() + 1, mark.apron(), mark.dimension());
         write(folder, next);
-        raisingPiece = 0;
         raisingBand = next.band();
+        raisingOrder = List.of();
+        raisingDone.clear();
         if (next.band() < bands.size()) {
             LOGGER.info("Rivendell: band {} of {} is down", next.band(), bands.size());
         } else {
@@ -445,6 +476,53 @@ public final class CityCommands {
                     Box.of(parts, mark.origin()).spoken());
             forgetRaise();
         }
+    }
+
+    /**
+     * A band's pieces in the order they come down: nearest the player first.
+     * <p>
+     * A band is a whole horizontal slice of the city - a hundred and thirty-two pieces at its widest - so the cut's own
+     * order puts its pieces down in a sweep that starts wherever the table starts, often four hundred blocks from
+     * whoever is standing in the valley. Ordered by distance the raise works where it is being watched, and the rest of
+     * the band follows the player as they walk the streets already standing.
+     */
+    private static List<Part> nearest(List<Part> parts, int height, BlockPos origin, ServerLevel level) {
+        List<Part> band = new ArrayList<>();
+        for (Part part : parts) {
+            if (part.dy() == height) band.add(part);
+        }
+        List<ServerPlayer> players = level.players();
+        if (players.isEmpty() || band.size() < 2) return band;
+        band.sort(Comparator.comparingDouble(part -> {
+            double x = origin.getX() + part.dx() + part.wide() / 2.0D;
+            double z = origin.getZ() + part.dz() + part.deep() / 2.0D;
+            double closest = Double.MAX_VALUE;
+            for (ServerPlayer player : players) {
+                closest = Math.min(closest, Math.hypot(player.getX() - x, player.getZ() - z));
+            }
+            return closest;
+        }));
+        return band;
+    }
+
+    /**
+     * Whether every chunk a piece stands in is already made.
+     * <p>
+     * The raise lays into the world as the player has it, and a chunk that is not loaded is a chunk the world would
+     * have to generate for it - which is the cost the raise must not pay a piece at a time. A piece whose ground the
+     * world has not made yet is left for a later pass: the chunks arrive with the player's own view, so the city comes
+     * down as it is walked rather than all at once from wherever it was first seen.
+     */
+    private static boolean made(ServerLevel level, BlockPos at, int wide, int deep) {
+        for (int dx = 0; dx < wide; dx += 16) {
+            for (int dz = 0; dz < deep; dz += 16) {
+                if (level.getChunkSource().getChunk((at.getX() + dx) >> 4, (at.getZ() + dz) >> 4,
+                        ChunkStatus.FULL, false) == null) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /** Whether a player is near enough to the pin for the city's ground to be the game's to write in. */
@@ -479,11 +557,27 @@ public final class CityCommands {
         return false;
     }
 
+    /**
+     * The cadence this tick's piece is laid on.
+     * <p>
+     * Four ticks a piece is a city in about two minutes, and that is the shape the raise keeps while the world keeps up
+     * with itself. A piece is a hundred thousand writes, though, and adding them to a tick that is already over its
+     * budget is how a raise becomes a freeze: past {@link #BUSY_TICK} the cadence walks up to
+     * {@link #SLOWEST_PIECE_TICKS}, a piece a second, and back down again as the world recovers.
+     */
+    private static int paceFor(ServerLevel level) {
+        float spent = level.getServer().getCurrentSmoothedTickTime();
+        if (spent > BUSY_TICK) return Math.min(SLOWEST_PIECE_TICKS, pace + 1);
+        if (spent < BUSY_TICK / 2.0F) return Math.max(PIECE_TICKS, pace - 1);
+        return pace;
+    }
+
     /** Drops what the raise remembers of a city that is standing, or of a pin that is no longer there. */
     private static void forgetRaise() {
         RAISING = null;
         raisingBand = -1;
-        raisingPiece = 0;
+        raisingOrder = List.of();
+        raisingDone.clear();
     }
 
     /**
@@ -969,13 +1063,27 @@ public final class CityCommands {
                 + " - run /tmcity origin here to plant this country's own.";
     }
 
-    /** One piece, with its chunks loaded first: a chunk that is not loaded cannot take blocks. */
+    /** One piece, with its chunks made first: a chunk that is not loaded cannot take blocks. */
     private static void lay(ServerLevel level, Path folder, Part part, BlockPos origin) throws IOException {
+        lay(level, folder, part, origin, true);
+    }
+
+    /**
+     * One piece. {@code make} says whether the ground under it may be made for it.
+     * <p>
+     * The hand's own bands say yes: an operator asked for the band with a command and is waiting for the answer, and
+     * making the ground is the price of answering. The raise says no - it stands pieces on ground the player's own view
+     * has already brought in, and leaves the rest for a later pass.
+     */
+    private static void lay(ServerLevel level, Path folder, Part part, BlockPos origin, boolean make)
+            throws IOException {
         StructureTemplate template = template(level, folder, part.name());
         BlockPos at = origin.offset(part.dx(), part.dy(), part.dz());
-        for (int dx = 0; dx < part.wide(); dx += 16) {
-            for (int dz = 0; dz < part.deep(); dz += 16) {
-                level.getChunk((at.getX() + dx) >> 4, (at.getZ() + dz) >> 4);
+        if (make) {
+            for (int dx = 0; dx < part.wide(); dx += 16) {
+                for (int dz = 0; dz < part.deep(); dz += 16) {
+                    level.getChunk((at.getX() + dx) >> 4, (at.getZ() + dz) >> 4);
+                }
             }
         }
         // The piece is clipped to the sky it stands under rather than trusted to fit it. A cut made where the sky is

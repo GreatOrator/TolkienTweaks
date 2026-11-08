@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Rivendell's raise works on ground the world has, nearest first, at the world's own pace.** `lay` made every chunk
+  under a piece before standing it - nine chunk columns of generation, inside a tick, for a piece that may be four
+  hundred blocks from the player. The raise now lays only into chunks that are already made, so the city fills in as
+  the player walks it and nothing is generated to build it; `/tmcity band` still makes its ground, because an
+  operator asked for the whole band and is waiting on the answer. A band's pieces are ordered nearest the player
+  rather than by the cut's table - the widest band is a hundred and thirty-two pieces, laid in a sweep that could
+  start four hundred blocks away - so the work arrives where it is being watched. And the cadence walks between one
+  piece every four ticks and one a second on `MinecraftServer.getCurrentSmoothedTickTime()`: past 45 ms a tick the
+  raise gives the next tick to the world, so a server over budget gets a slower city rather than a freeze, and gets
+  its two minutes back when the world recovers. A piece left for its ground comes down on a later pass; a city nobody
+  walks is a city that is not finished, so the road off it waits for the walk.
 - **A road is only ever laid on the ground.** `RoadCommands.surfaceAt` walks a column down from the no-leaves heightmap
   to the soil the tree is growing on, and it was skipping air and logs only: a column whose topmost log had leaves
   beneath it stopped at the leaves and was read as that height, so the road went on the crown. Measured in Roads 7:
