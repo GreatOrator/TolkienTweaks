@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A camp's keeper is the man the camp is named after.** The world raises Thorenhad and Barachen's fire from their
+  pins, and it stood a stranger named out of the giver pool at each of them while the campaign stood Elladan and
+  Barachen separately once their pages came up - so a player who walked to Thorenhad before taking one found a
+  nameless ranger at the fire and no Elladan, and a player who came later found two men. The world now stands the man
+  the camp is named after, wearing the campaign's giver tags and written into the keeper record under the tag the
+  line knows him by, so the line finds that body rather than standing a second one beside it; a nameless keeper left
+  at a named camp is taken away instead of kept. The campaign also lays each camp's own cut rather than Elladan's
+  camp at both, and never lays a camp the world has already raised at its pin.
+
 - **A walk is given the whole window, and says when it gives up.** The search stopped after settling half the
   candidates it could see, so a fresh world's road came back as a two-station stub with nothing in the log to explain
   it. It may settle its whole window now - still a few seconds of ticks - and writes down the candidates it settled,

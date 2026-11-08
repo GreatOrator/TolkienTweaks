@@ -49,6 +49,12 @@ found in an unloaded chunk rather than stood again. The crag's troll, the Witch-
 same note (a tag may own several bodies, and the ring is stood only for the slots its count leaves empty): compiled, not
 yet seen in a world.
 
+The camps stand their own men now. `Sites.CAMP_OWNERS` gives Thorenhad Elladan and Barachen's fire Barachen, wearing
+the campaign's giver tags and written into `tolkienmobs:keepers` under the tag `Campaign.keeperWith` asks for, so the
+line finds the body the world stood instead of standing a second one; a nameless keeper already at a named camp is
+taken away. A camp the world raised from its pin is not laid again at its place's middle (`Sites.raisedAt` guards
+`standTent`), and Barachen's fire gets Barachen's cut rather than Elladan's. Compiled, not yet seen in a world.
+
 ## Open
 
 - **Two crags** were refused by `plane`/`ground()`; the fix reads ground past plants and a refusal now names the column

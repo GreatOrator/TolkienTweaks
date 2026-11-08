@@ -422,11 +422,22 @@ public final class Sites extends SavedData {
     private static final Set<String> STOOD = new HashSet<>();
 
     /**
-     * The name a camp's keeper answers to, by building. A camp the campaign names after a man is his fire, so the
-     * body minding it is that man rather than one of the mod's folk wearing a borrowed name; a camp with no line
-     * here keeps the drawn name.
+     * The man a camp is named after, by building: the body minding that fire is him rather than one of the mod's
+     * folk wearing a borrowed name. A camp with no line here keeps the drawn name, which is the wild tent's
+     * errand - a fire by the road has a stranger at it, and that is what it is.
+     * <p>
+     * The tag is the one the campaign knows the man by, so the world and the line agree on which body he is: he is
+     * written into {@link Keepers} under it, which is what lets the campaign's own keeper check find the body the
+     * camp stood instead of standing a second one beside it. Without that the world put a nameless stranger at
+     * Thorenhad and the line put Elladan a few blocks away when his first page came up, and a player who walked to
+     * the camp before taking one found the stranger and nobody else.
      */
-    private static final Map<String, String> KEEPER_NAMES = Map.of(BARACHENS_CAMP, "Barachen");
+    private record Owner(String name, String tag, Alliance alliance) {
+    }
+
+    private static final Map<String, Owner> CAMP_OWNERS = Map.of(
+            ELLADAN_CAMP, new Owner(Campaign.ELLADAN, Campaign.ELLADAN_TAG, Alliance.WEST),
+            BARACHENS_CAMP, new Owner(Campaign.BARACHEN, Campaign.BARACHEN_TAG, Alliance.WEST));
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
@@ -684,6 +695,19 @@ public final class Sites extends SavedData {
     public static String countryOf(ServerPlayer player) {
         Site site = siteOf(player);
         return site == null ? "" : site.country();
+    }
+
+    /**
+     * Where a building of the world's own is standing in this world, or null when it is not.
+     * <p>
+     * The campaign keeps its camps as named places as well as pinned ground, and a camp raised by both hands is a
+     * camp in two places. This is how the campaign asks whether the world already has the building, and where,
+     * rather than laying a second one at the place's own middle and standing its man at the copy.
+     */
+    @Nullable
+    public static BlockPos raisedAt(ServerLevel level, String structure) {
+        Site site = standing(level, structure);
+        return site == null ? null : site.centre();
     }
 
     /** Whether the player is standing in the structure they were sent to find. */
@@ -1803,9 +1827,14 @@ public final class Sites extends SavedData {
     }
 
     /**
-     * Puts somebody at the fire. He is an ordinary body of his folk with a name and a tag, not a giver:
-     * a camp is a place a player is sent to, and the man minding it is what makes it one rather than
-     * what makes it another bench to take work from.
+     * Puts somebody at the fire.
+     * <p>
+     * At a camp the campaign names after a man, that man is who is there: Elladan at Thorenhad and Barachen at his
+     * own fire, wearing the campaign's giver tags so the pages they hand and take are theirs, and written into
+     * {@link Keepers} under the tag the line knows them by - so the line finds the body the world stood rather
+     * than standing a second one beside it. At any other camp the keeper is an ordinary body of the mod's folk
+     * with a drawn name: a fire by the road is a place a player is sent to, and the man minding it is what makes
+     * it one rather than what makes it another bench to take work from.
      */
     private static void standKeeper(ServerLevel level, BlockPos corner, Vec3i size, Seat seat, String structure) {
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
@@ -1819,19 +1848,41 @@ public final class Sites extends SavedData {
         // A third marker in a row is an NPC's spot, so the ammolite it was written with is not left at the man's
         // feet: the body is what belongs there.
         if (level.getBlockState(stand).is(TolkienBlocks.BLOCK_AMMOLITE.get())) level.removeBlock(stand, false);
-        // One keeper per fire, whichever player raised the camp. A site belongs to the player who took
-        // the page, but the ground it names is the same for everybody, so two players arriving at the
-        // same camp both run the build - and without this each of them would put a second man at it.
-        if (!level.getEntitiesOfClass(Mob.class, new AABB(stand).inflate(KEEPER_REACH),
-                found -> found.entityTags().contains(KEEPER_TAG)).isEmpty()) {
-            return;
+        // One keeper per fire, whichever player raised the camp. A site belongs to the player who took the page,
+        // but the ground it names is the same for everybody, so two players arriving at the same camp both run the
+        // build - and without this each of them would put a second man at it. A camp with a man's name on it wants
+        // that man and no other: a nameless body stood there before he was drawn is a keeper to take away, not a
+        // second one to keep standing beside him.
+        Owner owner = CAMP_OWNERS.get(structure);
+        List<Mob> minding = level.getEntitiesOfClass(Mob.class, new AABB(stand).inflate(KEEPER_REACH),
+                found -> found.entityTags().contains(KEEPER_TAG)
+                        || (owner != null && found.entityTags().contains(owner.tag())));
+        if (!minding.isEmpty()) {
+            if (owner == null) return;
+            if (minding.stream().anyMatch(found -> found.entityTags().contains(owner.tag()))) return;
+            for (Mob stranger : minding) stranger.discard();
         }
         keeper.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
                 level.getRandom().nextFloat() * 360.0F, 0.0F);
         keeper.setPersistenceRequired();
         keeper.addTag(KEEPER_TAG);
-        String named = KEEPER_NAMES.get(structure);
-        keeper.setCustomName(named != null ? Component.literal(named) : QuestPool.giverName(level.getRandom()));
+        if (owner != null) {
+            // The man the camp is named after, wearing what the line reads a campaign giver by. The keeper tag stays
+            // on him as well, so a camp's own name over the fire is still the name the arrival message reads out.
+            keeper.addTag(QuestGivers.GIVER_TAG);
+            keeper.addTag(QuestGivers.CAMPAIGN_TAG);
+            keeper.addTag(QuestGivers.CAMPAIGN_GIVER_TAG);
+            keeper.addTag(owner.alliance().giverTag());
+            keeper.addTag(owner.tag());
+            keeper.setCustomName(Component.literal(owner.name()).withStyle(ChatFormatting.GOLD));
+            keeper.setCustomNameVisible(true);
+            level.addFreshEntity(keeper);
+            // Written down once he is in the world, so the line finds him again wherever he is left - and so it
+            // finds him at all in a world whose camp was raised before this was written.
+            Keepers.remember(level, owner.tag(), keeper);
+            return;
+        }
+        keeper.setCustomName(QuestPool.giverName(level.getRandom()));
         keeper.setCustomNameVisible(true);
         level.addFreshEntity(keeper);
     }

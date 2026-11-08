@@ -145,18 +145,12 @@ public final class Campaign extends SavedData {
      * himself once the three caves have been asked, and it is he who sends the player on to the next lead.
      * He stands while the cave page is the step in hand, which is the page his camp is the end of.
      */
-    private static final String ELLADAN = "Elladan";
+    public static final String ELLADAN = "Elladan";
     private static final String THORENHAD_PLACE = "thorenhad";
-    private static final String ELLADAN_TAG = "tolkienmobs:elladan";
+    public static final String ELLADAN_TAG = "tolkienmobs:elladan";
     private static final double ELLADAN_REACH = 128.0D;
     /** How wide a circle Elladan's camp is, in blocks: enough to walk into from any side of it. */
     private static final int CAMP_RADIUS = 48;
-    /**
-     * The camp itself: Elladan's own cut, laid down at Thorenhad by {@link #standTent}. The Rangers'
-     * tent it replaces is still the camp errand's and still the world generator's; this is the one
-     * the chapter stands, and the one whose door the page is spoken at.
-     */
-    private static final String CAMP_TENT = Sites.ELLADAN_CAMP;
     /**
      * Barachen, and the camp of his the notes send the player to once the caves have answered nothing.
      * He is the West's scout rather than an Elf, and his word is what turns the line from a search of
@@ -165,9 +159,9 @@ public final class Campaign extends SavedData {
      * have to raise - and it is canon to the Trollshaws so it lands south of the road the notes name
      * rather than wherever the page happened to be taken.
      */
-    private static final String BARACHEN = "Barachen";
+    public static final String BARACHEN = "Barachen";
     private static final String BARACHEN_PLACE = "barachen";
-    private static final String BARACHEN_TAG = "tolkienmobs:barachen";
+    public static final String BARACHEN_TAG = "tolkienmobs:barachen";
     /** How near his fire a player has to be for him to be standing at it, in blocks. */
     private static final double BARACHEN_REACH = 128.0D;
     /**
@@ -1874,8 +1868,11 @@ public final class Campaign extends SavedData {
         if (camp.centre().distToCenterSqr(player.position()) > ELLADAN_REACH * ELLADAN_REACH) return;
         // The camp is a camp before it is a man: the tent goes down first, and he is stood at it in the
         // same look, so there is never an Elf in a field waiting for a tent that never comes.
-        if (!standTent(level, camp)) return;
-        BlockPos post = floorNear(level, camp.centre());
+        if (!standTent(level, camp, Sites.ELLADAN_CAMP)) return;
+        // The camp the world raised stands at its pin rather than at the place's own middle, so he is stood at the
+        // camp that is there. A world with no camp standing falls back to the ground the place was surveyed on.
+        BlockPos raised = Sites.raisedAt(level, Sites.ELLADAN_CAMP);
+        BlockPos post = floorNear(level, raised != null ? raised : camp.centre());
         Entity keeper = keeperWith(level, ELLADAN_TAG);
         if (keeper != null) {
             if (post != null) recallKeeper(level, keeper, post, ELLADAN_REACH, ELLADAN_TAG);
@@ -1921,8 +1918,9 @@ public final class Campaign extends SavedData {
         if (fire.centre().distToCenterSqr(player.position()) > BARACHEN_REACH * BARACHEN_REACH) return;
         // The camp is a camp before it is a man: the tent goes down first, so there is never a scout in a
         // field waiting for a tent that never comes.
-        if (!standTent(level, fire)) return;
-        BlockPos post = floorNear(level, fire.centre());
+        if (!standTent(level, fire, Sites.BARACHENS_CAMP)) return;
+        BlockPos raised = Sites.raisedAt(level, Sites.BARACHENS_CAMP);
+        BlockPos post = floorNear(level, raised != null ? raised : fire.centre());
         Entity keeper = keeperWith(level, BARACHEN_TAG);
         if (keeper != null) {
             if (post != null) recallKeeper(level, keeper, post, BARACHEN_REACH, BARACHEN_TAG);
@@ -1966,7 +1964,7 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * Puts the camp's tent down on the ground Thorenhad is named for, and answers whether it is standing.
+     * Puts a camp's own cut down on the ground its place is named for, and answers whether it is standing.
      * <p>
      * Thorenhad is a place rather than a site - one camp in the Trollshaws for everybody in the world,
      * not ground raised per player - so the tent is laid straight from the template instead of through
@@ -1979,8 +1977,12 @@ public final class Campaign extends SavedData {
      * that sees it. Laying it twice is laying the same blocks in the same place, which is why a camp
      * whose Elladan has been killed rather than merely mislaid simply puts him back.
      */
-    private static boolean standTent(ServerLevel level, Places.Place camp) {
-        Identifier id = Identifier.tryParse(CAMP_TENT);
+    private static boolean standTent(ServerLevel level, Places.Place camp, String structure) {
+        // A camp the world raises from its own pin is already standing there. Laying it again at the place's
+        // middle is a second camp a few dozen blocks from the first, which is the two-camps problem the pins
+        // exist to settle - and the man would be stood at whichever copy this look happened to find.
+        if (Sites.raisedAt(level, structure) != null) return true;
+        Identifier id = Identifier.tryParse(structure);
         if (id == null) return true;
         StructureTemplate template = level.getStructureManager().get(id).orElse(null);
         if (template == null) return true;
