@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#tolkienmobs:arda_broadleaf",
+  "features": [
+    "tolkienmobs:culumalda_placed",
+    "tolkienmobs:lebethron_placed"
+  ],
+  "step": "vegetal_decoration"
+}

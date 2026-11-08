@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The mod grows its own woods and ground cover.** With vanilla's features out of the biomes, the country had
+  nothing left to grow. The mod's own tree features are handed to it by biome modifier: culumalda and lebethron over the
+  broadleaf country, mirkwood over the wild woodland, mallorn over Imladris, and a new ground cover of grass scattered
+  over every land biome through the `arda_cover` tag. Densities and sapling checks are the ones the mod already grew
+  with, so nothing new is asked of the world - only that it grows what belongs to it.
 - **A crag is buried six blocks deeper.** Seated by its grass line the crag stood with its grass exactly at grade,
   which left the whole rock skirt and the bare shell showing - stone and deepslate, a hill set down on a field rather than
   one the ground had taken back. The seat goes from nine blocks in to fifteen, so the grass line lies six under the

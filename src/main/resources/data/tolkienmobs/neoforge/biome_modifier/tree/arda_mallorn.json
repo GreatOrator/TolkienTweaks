@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#tolkienmobs:arda_mallorn",
+  "features": "tolkienmobs:mallorn_placed",
+  "step": "vegetal_decoration"
+}

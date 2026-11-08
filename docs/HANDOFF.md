@@ -55,9 +55,10 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
 - **Vanilla structures** still reach the four vanilla biomes the dimension borrows (`deep_ocean`, `warm_ocean`,
   `frozen_ocean`/`deep_frozen_ocean`, `river`, `beach`): shipwrecks, ocean ruins, buried treasure. Mod biomes are in no
   vanilla structure tag, so nothing vanilla places on land.
-- **Arda is bare now.** No vanilla features means no trees, grass, flowers, ores or snow in new chunks; only the mod's own
-  rubble, stumps, mallorn, flowers and legacy ores. Chunks made before the change keep what they have, so a seam is
-  expected. A mod-owned tree pass is the open piece of that.
+- **Arda's ground grows only what is ours.** No vanilla features at all, so the country is furnished by the mod's own
+  tree features through `neoforge/biome_modifier/tree/arda_*.json` (broadleaf, woodland, Imladris) and by
+  `plants/arda_cover.json`, which lays the new ground cover over every land biome in the `arda_cover` tag. Chunks made
+  before the change keep what they have, so a seam is expected at the old edge.
 - A build already standing in an older world keeps its old seat; the sweep does not re-seat it.
 
 ## What the player is likely to ask next
