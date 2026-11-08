@@ -102,11 +102,17 @@ public final class RoadCommands {
     private static final int MIDDLE_PIECE = 1;
 
     /** How close the ground has to be to the walls to count as the settlement's own ground, in blocks. */
-    private static final int TOWN_BAND = 16;
+    private static final int URBAN_BAND = 16;
     private static final int TRANSITION_BAND = 64;
-    /** Half-widths: seven of wild road, five of paved. */
-    private static final int WILD_HALF = 3;
-    private static final int PAVED_HALF = 2;
+    /**
+     * The three kinds of road, as half-widths: a wild track three blocks wide, the transition's five, the settlement's
+     * own seven. The kind is the width - a road does not narrow to a track and widen again without becoming another
+     * road - so the band a column stands in decides which of the three it is made to, and a route that is one kind
+     * from end to end names it instead ({@link Roads#half}).
+     */
+    private static final int WILD_HALF = 1;
+    private static final int TRANSITION_HALF = 2;
+    private static final int URBAN_HALF = 3;
 
     /** How many passes of the smoothing filter the profile takes, each reaching one more station either way. */
     private static final int PROFILE_PASSES = 8;
@@ -1534,9 +1540,14 @@ public final class RoadCommands {
             }
             int target = Mth.floor(height[i]);
             if (i > 0) steepest = Math.max(steepest, Math.abs(target - Mth.floor(height[i - 1])));
-            int half = fromWalls(route, x, z) <= TRANSITION_BAND ? PAVED_HALF : WILD_HALF;
-            // A hairpin is wider than a run: the apron gives the turn somewhere to be walked around.
-            if (turning(line, i)) half += 2;
+            // A route that is one kind from end to end is laid at it the whole way; every other takes the kind of
+            // the band the station stands in, so it widens as it comes in from the country to the gate.
+            int fixed = Roads.half(route);
+            int half = fixed >= 0 ? fixed : width(fromWalls(route, x, z));
+            // A hairpin is wider than a run, by one kind: the apron gives the turn somewhere to be walked around, and
+            // a road that widens two kinds at every switchback is three kinds wide where it turns. A route held to its
+            // own width keeps it through a turn too - the apron is a band's habit, not a track's.
+            if (fixed < 0 && turning(line, i)) half += 1;
             for (int dx = -half; dx <= half; dx++) {
                 for (int dz = -half; dz <= half; dz++) {
                     counted++;
@@ -1550,8 +1561,12 @@ public final class RoadCommands {
                             && into >= route.cityZ0() && into <= route.cityZ1()) {
                         continue;
                     }
-                    if (half == WILD_HALF && (Math.abs(dx) == WILD_HALF || Math.abs(dz) == WILD_HALF)
-                            && jitter(at, into) % 3 != 0) {
+                    // A wild track's edge is worn rather than ruled: one column in three of it is left as the
+                    // country has it, which is the reference surface's ragged strip. A route that names its own kind
+                    // keeps that width exactly, so a path laid three wide is three wide the whole way.
+                    if (fixed < 0 && half == WILD_HALF
+                            && (Math.abs(dx) == WILD_HALF || Math.abs(dz) == WILD_HALF)
+                            && jitter(at, into) % 3 == 0) {
                         continue;
                     }
                     // The column is read as the world has it, and the world has to have it: a chunk nobody has made
@@ -1862,7 +1877,7 @@ public final class RoadCommands {
     private static BlockState surface(Route route, int x, int z) {
         int near = fromWalls(route, x, z);
         int roll = jitter(x, z) % 100;
-        if (near <= TOWN_BAND) {
+        if (near <= URBAN_BAND) {
             if (roll < 50) return TolkienBlocks.STONE_PATH.get().defaultBlockState();
             if (roll < 77) return Blocks.DIRT_PATH.defaultBlockState();
             if (roll < 87) return Blocks.STONE_BRICKS.defaultBlockState();
@@ -1880,6 +1895,17 @@ public final class RoadCommands {
         if (roll < 65) return Blocks.COARSE_DIRT.defaultBlockState();
         if (roll < 85) return Blocks.GRASS_BLOCK.defaultBlockState();
         return Blocks.DIRT_PATH.defaultBlockState();
+    }
+
+    /**
+     * The kind of road a column standing this far outside the walls belongs to, as its half-width: the settlement's
+     * own seven inside the town band, the transition's five out to the edge of the approach, the wild track's three
+     * beyond it.
+     */
+    private static int width(int near) {
+        if (near <= URBAN_BAND) return URBAN_HALF;
+        if (near <= TRANSITION_BAND) return TRANSITION_HALF;
+        return WILD_HALF;
     }
 
     /** How far outside the city's footprint a column stands, in blocks. */

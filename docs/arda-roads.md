@@ -125,18 +125,21 @@ places, so a route can be seen against the ground before anything is built.
 
 ## The surface, as decided
 
-**Width is set per stretch, not per route**, because which road is a highway and which is a track to a
-cave is decided by what it serves - that is, as the builds are placed. Three widths, named for where each
-belongs:
+**Width is set by the band a column stands in, and a route may name its own instead**, because which road is a
+highway and which is a track to a cave is decided by what it serves - that is, as the builds are placed. Three
+kinds, named for where each belongs:
 
-| width | blocks | half-width | where |
+| kind | blocks | half-width | where |
 | --- | --- | --- | --- |
-| `wild` | 7 | 3 | the default: open country, the roads between towns |
-| `urban` | 5 | 2 | the last stretch into a settlement |
-| `rural` | 3 | 1 | a spur: the track out to a cave or a camp |
+| `wild` | 3 | 1 | open country: the track between places, out to a camp or a cave |
+| `transition` | 5 | 2 | 64 down to 16 blocks of a settlement, where the paving starts |
+| `urban` | 7 | 3 | inside 16 blocks of a settlement: its own street |
 
-The wild width's edge is ragged - a block of hash jitter on the half-width - because that is what the
-reference surface shows; the narrower two keep a clean edge.
+The band decides the kind, so a road widens as it comes in from the country to a gate. A hairpin's apron is one kind
+wider than the run it turns - five through a switchback on a wild track. The wild width's edge is ragged - one
+column in three of it left as the country has it, which is what the reference surface shows; the wider two keep a
+clean edge. A route that is one kind from end to end names it in `Roads.HALVES` and is laid at that width exactly,
+which is how a track out to a camp stays three wide at the camp's own door.
 
 **Three bands, by distance from the nearest location**, in blocks, measured at generation time to a
 *pinned* cell centre (`ArdaMap.centreOf`, the way `Places.CANON_CELL` pins Rivendell). It has to be a

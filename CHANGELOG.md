@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road is one of three kinds, and the kind is its width.** The bands decided what a column is made of but not
+  how wide the road is, so every road outside the transition band was laid a wild seven and no wild stretch was ever
+  three blocks wide. Three kinds now, named for the band that belongs to them: a wild track three blocks wide, the
+  transition's five, a settlement's own seven - so a road widens as it comes in from the country to a gate instead of
+  being one width from end to end. A hairpin's apron is one kind wider than the run it turns, rather than two
+  half-widths, and the wild edge is worn by one column in three rather than left with one in three. A route that is
+  one kind the whole way says so in `Roads.HALVES` and is laid at that width exactly, apron and ragged edge both.
+- **Barachen's fire has a track of its own: a wild path, three wide the whole way.** It leaves the camp's south door
+  at 4820, 76, -2886 and ends at the mark at 4892, 74, -3097 where the Thorenhad road runs past, so the two roads meet
+  at the mark rather than each grading the country the other has already laid. The camp is read as sixteen by sixteen
+  from its corner pin at 4812, 77, -2885, and the route is recorded as wild so the track stays three wide even at the
+  door, where the bands would have widened it to the transition's five and then the settlement's seven. What a column
+  is made of is still the bands' own: the camp's stone at the door, the country's gravel and dirt past it.
 - **The Thorenhad road is bent through three scouted marks.** The walk between Elladan's camp and the ford's
   road end is now forced through 4875, 74, -3179, then 4885, 74, -3133, then 4903, 74, -3102 - the marks
   the scout walked in Roads 3 - so the line keeps off the hill above the crossing instead of taking the

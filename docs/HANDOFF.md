@@ -27,7 +27,7 @@ with no commands typed. A player walks the chapter and the world has already bui
 | `faction/Pins.java` | The scouted spots: `SOURCE`, crag pins, the ford marker. "The pin wins, the marker only informs facing." |
 | `faction/Keepers.java` | The bodies the line has stood, by tag, UUID and last ground, so a keeper is found in an unloaded chunk. |
 | `faction/Sites.java` | Seats a build at its pin with no drift, underpins it, sweeps the ground to its roofline, and plans a road for it. |
-| `faction/Roads.java` | `ROUTES`: one `Route.Crossing` (Rivendell) and one `Route.Riverless` (Elledan's camp to the ford). |
+| `faction/Roads.java` | `ROUTES`: one `Route.Crossing` (Rivendell) and two `Route.Riverless` (Elledan's camp to the ford, Barachen's fire to the mark); `BENDS` and `HALVES` by route. |
 | `faction/RoadCommands.java` | The road pass: sweep, bridge, pillars, search, grade, lips, and `Progress` (the road's own record). |
 | `faction/Dressing.java` | The city's own drape and the check that plans a road when one is not down. |
 | `faction/RoadPaint.java` | Roads painted at world generation, as a pure function of the column. |
@@ -63,6 +63,15 @@ and back to the far end, which is why it went through the ford.
 Compiled, not yet seen in a world.
 A road already in progress keeps its saved alignment, so `/tmroad forget` at the build clears the note and
 the site's road flag, and the next tick walks it again with whatever bends are recorded for it.
+
+A road is one of three kinds now, and the kind is its width: a wild track three blocks wide, the transition's five, a
+settlement's own seven, chosen per column by how far it stands outside the walls - so a road widens as it comes in to
+a gate instead of being one width end to end. A hairpin's apron is one kind wider than the run it turns, and a wild
+edge is worn by one column in three. `Roads.HALVES` records a route that is one kind the whole way, which is laid at
+that width exactly.
+
+Barachen's fire has its track: from the camp's south door at 4820, 76, -2886 to the mark at 4892, 74, -3097 where the
+Thorenhad road runs past, wild and three wide the whole way. Compiled, not yet seen in a world.
 
 ## Open
 

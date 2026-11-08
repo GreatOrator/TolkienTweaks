@@ -38,9 +38,12 @@ public final class Roads {
             // rather than at the far bank. A section that ran past the meeting point would grade the same country a
             // second time, from the other side, and the two passes would fight over the blocks between them.
             //
-            // Only these two are walked for now. The ruin's road to Barachen's fire is not laid at all: a third
-            // section nobody has scouted is a road the world would build twice over once the two are joined.
-            new Route.Riverless(Sites.ELLADAN_CAMP, 4640, 4655, -3313, -3298, 4648, -3314, 4972, -3075)
+            new Route.Riverless(Sites.ELLADAN_CAMP, 4640, 4655, -3313, -3298, 4648, -3314, 4972, -3075),
+            // Barachen's fire to the mark at 4892, 74, -3097, where the Thorenhad road runs past: the road leaves the
+            // camp's own door at 4820, 76, -2886 and ends at the mark, so the two roads meet there instead of each
+            // grading the country the other has already laid. The camp is sixteen by sixteen from its corner pin at
+            // 4812, 77, -2885, and the track is a wild path three blocks wide the whole way - see HALVES.
+            new Route.Riverless(Sites.BARACHENS_CAMP, 4812, 4827, -2885, -2870, 4820, -2886, 4892, -3097)
             // A road with no water on it is the other kind, and is the whole of what a dry road needs: the build's
             // footprint and its entry point, and the block the road ends at. Nothing is swept, bridged or pillared;
             // the same search finds the way and the same grade lays it, arriving on the ground at the far end:
@@ -67,6 +70,26 @@ public final class Roads {
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
     public static List<BlockPos> bends(Route route) {
         return BENDS.getOrDefault(route.id(), List.of());
+    }
+
+    /**
+     * The kind of road a route is laid as where it is one kind from end to end, by route, as a half-width: one for a
+     * wild track three blocks wide, two for the transition's five, three for a settlement's own seven.
+     * <p>
+     * A route's own bands are the ordinary rule, and they are the right one for a road that carries a town's traffic:
+     * seven at the gate, five where the paving starts, three out in the country. A track that only has to be walked -
+     * off a camp's door and out to a mark - is a wild track the whole way, and saying so here keeps it three wide at
+     * the door, where the bands would have widened it to a road. What a column is made of is still read from the bands,
+     * so the track still arrives as the camp's own stone and leaves as the country's gravel; only the width is the
+     * route's. A route with no entry here is laid exactly as every road was before there was one.
+     */
+    private static final Map<String, Integer> HALVES = Map.of(
+            // Barachen's fire's track out to the mark where the Thorenhad road runs past it: wild, three wide.
+            Sites.BARACHENS_CAMP, 1);
+
+    /** The half-width a road is laid at, or -1 where the country's own rule decides it. */
+    public static int half(Route route) {
+        return HALVES.getOrDefault(route.id(), -1);
     }
 
     /**

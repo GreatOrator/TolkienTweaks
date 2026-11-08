@@ -100,7 +100,8 @@ public final class RoadPaint {
      * which is where Arda stood before any of these were walked.
      * <p>
      * A line is added here once its ground is settled: the waypoints are the markers a scout put down, and the half
-     * is the width that stretch asks for (three of wild road, two where it enters a settlement, one for a spur).
+     * is the width that stretch asks for (one for a wild track, two for the transition, three for a settlement's
+     * own road).
      */
     public static final List<Line> LINES = List.of(
             // A road is written as its markers, each one's own height included, for a road that has no build behind it
