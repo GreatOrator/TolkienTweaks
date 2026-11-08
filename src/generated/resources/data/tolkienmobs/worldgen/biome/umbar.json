@@ -38,47 +38,15 @@
   ],
   "has_precipitation": false,
   "spawn_costs": {
-    "minecraft:chicken": {
+    "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "minecraft:cow": {
+    "tolkienmobs:entityttmharadrim": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "minecraft:donkey": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "minecraft:horse": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "minecraft:pig": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "minecraft:sheep": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "tolkienmobs:entityttmauroch": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "tolkienmobs:entityttmfrog": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "tolkienmobs:entityttmhuman": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "tolkienmobs:entityttmsquirrel": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "tolkienmobs:entityttmthrush": {
+    "tolkienmobs:entityttmmumakil": {
       "charge": 0.6,
       "energy_budget": 0.15
     }
@@ -86,77 +54,36 @@
   "spawners": {
     "ambient": [
       {
-        "type": "tolkienmobs:entityttmthrush",
-        "maxCount": 2,
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 1,
         "minCount": 1,
-        "weight": 10
-      },
-      {
-        "type": "tolkienmobs:entityttmsquirrel",
-        "maxCount": 2,
-        "minCount": 1,
-        "weight": 10
-      },
-      {
-        "type": "tolkienmobs:entityttmfrog",
-        "maxCount": 2,
-        "minCount": 1,
-        "weight": 10
+        "weight": 15
       }
     ],
     "axolotls": [],
     "creature": [
       {
-        "type": "tolkienmobs:entityttmhuman",
-        "maxCount": 5,
+        "type": "tolkienmobs:entityttmmumakil",
+        "maxCount": 2,
         "minCount": 1,
-        "weight": 45
+        "weight": 25
       },
       {
-        "type": "minecraft:horse",
-        "maxCount": 4,
+        "type": "tolkienmobs:entityttmsouthron",
+        "maxCount": 2,
         "minCount": 1,
-        "weight": 15
-      },
-      {
-        "type": "minecraft:sheep",
-        "maxCount": 4,
-        "minCount": 1,
-        "weight": 10
-      },
-      {
-        "type": "minecraft:pig",
-        "maxCount": 4,
-        "minCount": 1,
-        "weight": 10
-      },
-      {
-        "type": "minecraft:chicken",
-        "maxCount": 4,
-        "minCount": 1,
-        "weight": 10
-      },
-      {
-        "type": "minecraft:cow",
-        "maxCount": 4,
-        "minCount": 1,
-        "weight": 10
-      },
-      {
-        "type": "minecraft:donkey",
-        "maxCount": 4,
-        "minCount": 1,
-        "weight": 10
-      },
-      {
-        "type": "tolkienmobs:entityttmauroch",
-        "maxCount": 4,
-        "minCount": 1,
-        "weight": 10
+        "weight": 5
       }
     ],
     "misc": [],
-    "monster": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmharadrim",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 45
+      }
+    ],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []

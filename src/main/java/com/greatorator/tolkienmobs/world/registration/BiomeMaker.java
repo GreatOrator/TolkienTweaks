@@ -421,7 +421,8 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
-    /** Umbar: the corsairs' haven and its dry brown hills, on the warm coast below Belfalas. */
+    /** Umbar: the corsairs' haven and its dry brown hills, on the warm coast below Belfalas, held by the
+     * Haradwaith's own people rather than Gondor's. */
     public static Biome makeBiomeUmbar(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
@@ -435,7 +436,7 @@ public class BiomeMaker extends BiomeHelper{
                         .foliageColorOverride(7377486)
                         .grassColorOverride(10066206)
                         .build())
-                .mobSpawnSettings(gondorSpawning().build())
+                .mobSpawnSettings(haradwaithSpawning().build())
                 .generationSettings(gondorGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
@@ -489,8 +490,8 @@ public class BiomeMaker extends BiomeHelper{
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
                 .specialEffects(new BiomeSpecialEffects.Builder()
                         .waterColor(4159204)
-                        .foliageColorOverride(7112098)
-                        .grassColorOverride(9092321)
+                        .foliageColorOverride(7241824)
+                        .grassColorOverride(8558954)
                         .build())
                 .mobSpawnSettings(eriadorSpawning().build())
                 .generationSettings(eriadorGen(placedFeatureGetter, carverGetter).build())
