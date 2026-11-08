@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-- **The highlands and the woods are greened back.** The high broken countries had stone on almost a third of their
-  ground and the woods had leaf mould over more of the floor than grass did, so both read bald. The highlands keep
-  stone only on the highest surface noise (0.72-1.0 rather than 0.45-1.0) and coarse dirt in the band below it
-  (0.45-0.72), and the woods keep grass as the common floor: coarse dirt now takes only the top of the noise
-  (0.6-1.0) and podzol one narrow band (-0.3-0.05) instead of a quarter of the ground each. Cliffs still show rock.
+- **The highland rock and woodland leaf mould are measured, not guessed.** The game's own `minecraft:surface`
+  noise, sampled over Dunland's and Mirkwood's drawn cells, is near-normal about zero with a standard deviation of
+  0.31, so the first bands were off in both directions: stone on 8% of the highlands and, because a band 0.35 wide
+  holds 39% of this noise, leaf mould on 39% of the woods. Both floors now hit measured targets: highlands rock
+  0.6-1.0 (3.0% of columns) over scuffed coarse dirt 0.4-0.6 (7.9%), grass the other 89%; woods coarse dirt 0.6-1.0
+  (2.6%) and podzol -0.1-0.1 (24.9%), grass the other 72%. Steep ground is still rock, which the shares do not count.
 - **Every country now stands on ground its canon asks for.** The countries that still wore the shared grass floor are
   given their own: sand and gravel beds under all ten rivers, lakes and inland seas; snow, packed ice and stone over
   Forochel, its slopes and Ered Mithrin; mountain stone through Moria; rock showing through grass on the high broken

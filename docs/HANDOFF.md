@@ -416,11 +416,13 @@ belfalas, dale, dorwinion, eriador, gondor, ithilien, lindon, minhiriath, rhun, 
 dirt is the ground they want and a rule would only duplicate it. `MUD` was missing from the class's block constants
 (`TolkienSurfaceRuleData` has its own), which the first compile caught.
 
-
-The two floors added in the canon pass were tuned down before a player saw them: `highlandFloor()` had `STONE` from
-surface noise 0.45 and `COARSE_DIRT` from 0.10, which left little grass, and `woodlandFloor()` had coarse dirt from
-0.25 and podzol across -0.15..0.25, so leaf mould covered more of a wood than grass did. The highlands now take stone
-at 0.72-1.0 and coarse dirt at 0.45-0.72; the woods take coarse dirt at 0.6-1.0 and podzol at -0.3..0.05, with grass
-under everything else. Steep ground is still stone. The exact share of each block is not measured - it depends on the
-SURFACE noise distribution, which is roughly normal around zero - so the bands are deliberately conservative.
+The two floors are now measured rather than estimated. A throwaway datagen provider built the overworld's own
+`RandomState` (`RandomState.create(settings, noiseParams, 0L)`) and sampled `Noises.SURFACE` over every column of the
+drawn Dunland cells (columns 12-23, rows 22-26) and Mirkwood cells (columns 27-33, rows 5-18), walking y across each
+country's drawn height band (`Country.height()` plus or minus `relief()`), 552,960 and 903,168 samples. The noise is
+near-normal about zero with a standard deviation of 0.31 and a range near -1.5..1.45, which is why the first bands
+were off in both directions: stone at 0.45+ was 8.3% of the highlands, and podzol over -0.15..0.25 was 46.9% of the
+woods. The bands in the code measure 3.0% rock, 7.9% coarse dirt and 89.0% grass on Dunland, and 2.6% coarse dirt,
+24.9% podzol and 72.4% grass on Mirkwood. `steep()` is not counted, so cliffs add stone on top of those shares. The
+probe and its datagen registration are deleted; these numbers are the record.
 
