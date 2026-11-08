@@ -6,6 +6,8 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -217,7 +219,7 @@ public final class RoadCommands {
     }
 
     /** What a pass that finds its road already down answers with: nothing laid, because nothing was owed. */
-    private static final Road ALREADY_DOWN = new Road(0, 0, 0, 0, false, new int[6], new int[2]);
+    private static final Road ALREADY_DOWN = new Road(0, 0, 0, 0, false, new int[6], new int[3]);
 
     /**
      * Whether this world already has this road down, from the note its own pass leaves when it finishes.
@@ -228,7 +230,26 @@ public final class RoadCommands {
      */
     static boolean down(ServerLevel level, Route route) {
         CompoundTag carried = Progress.of(level, route.id());
-        return carried != null && carried.getBooleanOr("down", false);
+        return carried != null && standing(level, carried);
+    }
+
+    /**
+     * Whether the ground still holds the road a note says was laid there.
+     * <p>
+     * A finished pass writes where its road met the build and what block stood under that point, and the note is only
+     * believed while that block is still the block. Without the check a note outlived the ground it was written
+     * about: a crossing laid before the valley was cut, or before the city it belongs to was raised, went on saying
+     * the road was down for ever, and no pass was ever planned over it again - the world had a road on paper and none
+     * underfoot. A note too old to carry the block is not trusted either, since nothing can say what it was written
+     * about.
+     */
+    private static boolean standing(ServerLevel level, CompoundTag note) {
+        if (!note.getBooleanOr("down", false)) return false;
+        int[] at = note.getIntArray("at").orElse(new int[0]);
+        String block = note.getStringOr("block", "");
+        if (at.length < 3 || block.isEmpty()) return false;
+        BlockPos probe = new BlockPos(at[0], at[1], at[2]);
+        return block.equals(BuiltInRegistries.BLOCK.getKey(level.getBlockState(probe).getBlock()).toString());
     }
 
     /** How many columns of the sweep and the pillars one step may take. */
@@ -326,7 +347,7 @@ public final class RoadCommands {
             if (!looked) {
                 looked = true;
                 CompoundTag carried = Progress.of(level, route.id());
-                if (carried != null) restore(carried);
+                if (carried != null) restore(carried, level);
                 // A pass planned over a road the world already has down owes nothing; it says so at once rather than
                 // grading the same country a second time.
                 if (done != null) return false;
@@ -480,8 +501,8 @@ public final class RoadCommands {
          * thousand candidate blocks, so a world stopped inside it starts that stage again rather than carrying it. A
          * pass that cannot be carried is still a pass; the ground it would have laid is the ground it lays.
          */
-        private void restore(CompoundTag tag) {
-            if (tag.getBooleanOr("down", false)) {
+        private void restore(CompoundTag tag, ServerLevel level) {
+            if (standing(level, tag)) {
                 // The note a finished pass leaves. This road is down, so this pass is done before it begins.
                 done = ALREADY_DOWN;
                 return;
@@ -1560,6 +1581,13 @@ public final class RoadCommands {
                 // laid when it was not, and no pass was ever planned over it again.
                 tag = new CompoundTag();
                 tag.putBoolean("down", true);
+                // Where the road met the build, and what the ground under it was, so the note can be checked rather
+                // than believed: see standing.
+                BlockPos entry = new BlockPos(job.route.pathX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                        job.route.pathX(), job.route.pathZ()) - 1, job.route.pathZ());
+                tag.putIntArray("at", new int[]{entry.getX(), entry.getY(), entry.getZ()});
+                tag.putString("block", BuiltInRegistries.BLOCK.getKey(
+                        level.getBlockState(entry).getBlock()).toString());
             }
             ROADS.put(job.route.id(), tag);
             instance(level).setDirty();

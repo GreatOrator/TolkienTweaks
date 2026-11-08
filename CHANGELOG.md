@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A road is down when the road is there.** A finished pass left a note saying the crossing was laid, and the
+  note was believed for ever: a road laid before the valley was cut, or before the city it belongs to was raised, kept
+  the dressing from ever planning a pass over it, so a fresh world reached the place where its road should start and
+  found nothing. The note now carries the block under the point where the road met the build, and is believed only
+  while that block is still there; one too old to carry it is not trusted at all, and the pass runs again.
+- **A road already down says so instead of throwing.** A pass that found its own note answered with a summary whose
+  far side held two numbers rather than three, and the crossing's report read the third: `/tmroad build` ended in
+  `Index 2 out of bounds for length 2` with the road's own answer lost behind it.
+- **A tree is not ground.** The drape read a column's surface from the motion-blocking top, which on a wooded column
+  is its leaves, and laid that block back down as the cap - so dressing the ring round the valley floored it with the
+  leaf blocks it had just cut through. The skin now comes from under the crown, and the tree above it is cleared with
+  the column.
+- **Mallorns grow in Lórien, not in Rivendell's valley.** The mallorn tag named Imladris, which is the valley the
+  city stands in, so the city's own biome was carpeted in golden crowns from end to end - trees no cut can clear,
+  because a cut lays its own pieces and leaves the country beside them alone. The tag names Lórien now, and the valley
+  is left to the city.
 - **What a world writes down lives in the world.** The city's markers (`_laid.txt`, `_dressed.txt`) and any
   re-cut of the cut were written to a folder beside the game directory, which is one folder for every world and belongs
   to none of them: two worlds shared one answer, a save copied to another machine lost the record of what was dressed,

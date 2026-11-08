@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
@@ -374,6 +375,15 @@ public final class Dressing {
             if (top <= level.getMinY()) return;
             int surface = top;
             BlockState skin = level.getBlockState(new BlockPos(x, top, z));
+            // A tree is not ground. The motion-blocking top of a wooded column is its leaves, and a cap laid from that
+            // block is a mat of leaves where the ring's floor belongs - so the skin comes from under the crown, and
+            // what the tree stood on the ground is taken with it.
+            while (top > level.getMinY() && (skin.is(BlockTags.LEAVES) || skin.is(BlockTags.LOGS))) {
+                skin = level.getBlockState(new BlockPos(x, --top, z));
+            }
+            for (int y = surface; y > top; y--) {
+                level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+            }
             if (!skin.getFluidState().isEmpty()) {
                 // Water out in the ring is a pool lying on the drawn ground, so the pass works down to the ground
                 // under it rather than leaving a pillar of ground standing wherever a puddle reached the top.

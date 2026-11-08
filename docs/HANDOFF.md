@@ -64,6 +64,21 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
   before the change keep what they have, so a seam is expected at the old edge.
 - A build already standing in an older world keeps its old seat; the sweep does not re-seat it.
 
+- **A road's note is checked, not believed.** `Progress` writes `at` (where the road met the build) and `block`
+  (what stood there) with `down`, and `RoadCommands.standing` only takes the note while that block is still the block;
+  `down()` and `RoadJob.restore` both go through it. This is why the crossing never started in the Scouting World:
+  `.../overworld/data/tolkienmobs/roads.dat` held `rivendell -> down` with no probe, `Dressing.start` therefore saw
+  `roadDown`, the ring was dressed, `_dressed.txt` was written `1 1`, and no pass was ever planned. The old note is now
+  stale by construction and the crossing is planned on the next load. `/tmroad build` answered
+  `Index 2 out of bounds for length 2` because `ALREADY_DOWN` carried a two-number far side; it carries three now.
+- **Mallorns no longer grow in Imladris.** The valley is `tolkienmobs:imladris`, so `#tolkienmobs:arda_mallorn` (that
+  biome, and only it) carpeted the city's own floor in golden crowns the cut cannot clear: a cut lays its pieces and
+  leaves the country beside them. The tag names `tolkienmobs:lorinand` now. Chunks already generated keep their trees,
+  so the current world's valley stays wooded until those chunks are remade.
+- **The drape no longer floors the ring with leaves.** Its skin was the motion-blocking top of the column - a leaf
+  block on a wooded column - and it laid that back down at the cap. The skin now comes from under the crown and the
+  tree above it is cleared with the column.
+
 ## What the player is likely to ask next
 
 Trees back in some form; the seam between old and new chunks; whether the two crags stood; whether the camp road
