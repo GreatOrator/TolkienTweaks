@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Where each build's road leaves from, and how it crosses the water on the way down.
@@ -112,13 +113,33 @@ public final class Roads {
      * surface, so a main road through the wilds is seven wide of the country's own gravel until it reaches a town.
      */
     private static final Map<String, Kind> KINDS = Map.of(
-            // Barachen's fire's track out to the mark where the Thorenhad road runs past it: a wild path, three wide
-            // the whole way, the camp's own door included.
-            Sites.BARACHENS_CAMP, Kind.WILD);
+            // None yet: a road that is one kind from end to end whatever its build is, which is how a main road is
+            // made between two wild places - the width and the mix both follow the kind named here.
+            // Sites.ELLADAN_CAMP, Kind.URBAN);
+            );
 
-    /** The kind a road is laid the whole way, or null where the bands decide it column by column. */
+    /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {
         return KINDS.get(route.id());
+    }
+
+    /**
+     * The builds that are cities, so the roads leaving them are city roads.
+     * <p>
+     * A build that is not a city - a camp, a ruin, a cave mouth, which is nearly every build the chapter finalises -
+     * has a wild track leaving it: three blocks wide, of the country's own gravel and dirt, from its own door out.
+     * Only a city has a gate to leave by, so only a city's road is laid seven blocks of its own street inside the
+     * wall's band, five where the paving starts, then the wild track beyond.
+     * <p>
+     * The cities are named rather than the wild builds, so a build added later is a wild one until somebody says
+     * otherwise: a city is scouted and furnished as one and its road follows, where a camp is a clearing with a fire in
+     * it and a track walked out of it.
+     */
+    private static final Set<String> CITIES = Set.of("rivendell");
+
+    /** Whether the build a road belongs to is a city, and its road therefore a city's road. */
+    public static boolean city(Route route) {
+        return CITIES.contains(route.id());
     }
 
     /**

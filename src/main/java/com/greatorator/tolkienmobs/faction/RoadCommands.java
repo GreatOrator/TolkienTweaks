@@ -1532,10 +1532,10 @@ public final class RoadCommands {
             int target = Mth.floor(height[i]);
             if (i > 0) steepest = Math.max(steepest, Math.abs(target - Mth.floor(height[i - 1])));
             // A road that names its kind is laid at it the whole way - a main road stays seven wide across open
-            // country rather than narrowing to a track between places. Every other takes the kind of the band the
-            // station stands in, so it widens as it comes in from the country to the gate.
+            // country rather than narrowing to a track between places. Every other takes its build's kind: a city's
+            // road widens as it comes in to the gate, a camp's is a wild track from its own door.
             Roads.Kind named = Roads.kind(route);
-            Roads.Kind kind = named != null ? named : kindAt(fromWalls(route, x, z));
+            Roads.Kind kind = roadKind(route, x, z);
             int half = kind.half();
             // A hairpin is wider than a run, by one kind: the apron gives the turn somewhere to be walked around, and
             // a road that widens two kinds at every switchback is three kinds wide where it turns. A road held to its
@@ -1864,20 +1864,22 @@ public final class RoadCommands {
     }
 
     /**
-     * The surface of one block: the three bands of `docs/arda-roads.md`, chosen per block from a hash of x
-     * and z so that a chunk border never shows, and so the same column takes the same block whenever asked.
+     * The surface of one block: the mix of the kind of road the column is, chosen per block from a hash of x and z so
+     * that a chunk border never shows, and so the same column takes the same block whenever asked. The kind is the
+     * route's own where it names one, a city's bands where the build is a city, and the wild track's everywhere else -
+     * so a camp's track is gravel and dirt at its own door, and only a city's road is paved.
      */
     private static BlockState surface(Route route, int x, int z) {
-        int near = fromWalls(route, x, z);
+        Roads.Kind kind = roadKind(route, x, z);
         int roll = jitter(x, z) % 100;
-        if (near <= URBAN_BAND) {
+        if (kind == Roads.Kind.URBAN) {
             if (roll < 50) return TolkienBlocks.STONE_PATH.get().defaultBlockState();
             if (roll < 77) return Blocks.DIRT_PATH.defaultBlockState();
             if (roll < 87) return Blocks.STONE_BRICKS.defaultBlockState();
             if (roll < 95) return Blocks.MOSSY_STONE_BRICKS.defaultBlockState();
             return Blocks.MOSSY_COBBLESTONE.defaultBlockState();
         }
-        if (near <= TRANSITION_BAND) {
+        if (kind == Roads.Kind.TRANSITION) {
             if (roll < 50) return Blocks.COBBLESTONE.defaultBlockState();
             if (roll < 77) return Blocks.DIRT_PATH.defaultBlockState();
             if (roll < 87) return Blocks.COARSE_DIRT.defaultBlockState();
@@ -1891,9 +1893,20 @@ public final class RoadCommands {
     }
 
     /**
+     * The kind of road a column of a route is: the kind the route names, or - where it names none - the bands if the
+     * build is a city, and a wild track if it is not. A camp's door is not a gate, so nothing a wild build walks out
+     * of is paved or five wide.
+     */
+    private static Roads.Kind roadKind(Route route, int x, int z) {
+        Roads.Kind named = Roads.kind(route);
+        if (named != null) return named;
+        return Roads.city(route) ? kindAt(fromWalls(route, x, z)) : Roads.Kind.WILD;
+    }
+
+    /**
      * The kind of road a column standing this far outside the walls belongs to: the settlement's own inside the town
-     * band, the transition out to the edge of the approach, the wild track beyond it. This is the rule for a road that
-     * names no kind of its own - a named road is its kind the whole way, wherever it runs.
+     * band, the transition out to the edge of the approach, the wild track beyond it. This is a city's rule, and the
+     * rule for a road that names no kind of its own.
      */
     private static Roads.Kind kindAt(int near) {
         if (near <= URBAN_BAND) return Roads.Kind.URBAN;

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A build is a city or a wild place, and its road is laid to match.** The three kinds were read off the ground
+  the road crossed, so a camp's own track left the camp as a paved street five blocks wide, and the camps - nearly
+  every build the chapter finalises - were given a gate they do not have. `Roads.CITIES` now names the cities
+  (Rivendell, so far); every other build is a wild place, and its road is a wild track from its own door out: three
+  blocks wide, of the country's own gravel and dirt, with no paving anywhere on it. A city's road keeps the three
+  bands, its street inside the wall's band and the paving where the approach starts. A route that names a kind in
+  `Roads.KINDS` still overrides both, which is what a main road between two wild places will be.
 - **A road's kind is the road's, not its address.** Which of the three kinds a road was came from how far its
   columns stood from the walls, so a main road through open country could only be a track: the width followed from
   where the road ran rather than from what the road was. A route may now be given its kind in `Roads.KINDS` - `URBAN`

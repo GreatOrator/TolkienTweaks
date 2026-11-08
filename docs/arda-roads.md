@@ -140,10 +140,15 @@ country to a gate. A hairpin's apron is one kind wider than the run it turns - f
 track. The wild width's edge is ragged - one column in three of it left as the country has it, which is what the
 reference surface shows; the wider two keep a clean edge.
 
+**A build is a city or a wild place.** The bands are a city's, because a city has a gate: its own street inside the
+wall's band, the paving where the approach starts, the track beyond. Every other build - a camp, a ruin, a cave
+mouth, which is nearly every build in the chapter - is a wild place, and its road is a wild track from its own door:
+three blocks wide, the country's own gravel and dirt, no paving at all. `Roads.CITIES` names the cities, so a build
+added later is wild until somebody says otherwise.
+
 **A road may name its kind instead**, in `Roads.KINDS`, and is then laid at it from end to end: a main road is
-`URBAN` and seven blocks wide across a moor as much as through a gate, and a track out to a camp is `WILD` and three
-wide at the camp's own door. Width follows from what the road is, not from where it runs - the surface is still the
-bands', so a named road takes the country's own mix of blocks wherever it stands away from a settlement.
+`URBAN` and seven blocks wide across a moor as much as through a gate. A named kind overrides the build's own, which
+is how a main road between two wild places is made, and the surface follows the kind too.
 
 **Three bands, by distance from the nearest location**, in blocks, measured at generation time to a
 *pinned* cell centre (`ArdaMap.centreOf`, the way `Places.CANON_CELL` pins Rivendell). It has to be a

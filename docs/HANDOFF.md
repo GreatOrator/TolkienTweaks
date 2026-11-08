@@ -65,11 +65,15 @@ A road already in progress keeps its saved alignment, so `/tmroad forget` at the
 the site's road flag, and the next tick walks it again with whatever bends are recorded for it.
 
 A road is one of three kinds now, and the kind is its width: a wild track three blocks wide, the transition's five, a
-settlement's own seven. A route that names no kind is laid by the bands, per column, so it widens as it comes in to a
-gate; a route that names one in `Roads.KINDS` is laid at it from end to end, which is how a main road (`URBAN`, seven
-blocks) stays seven across open country instead of narrowing between places. A hairpin's apron is one kind wider than
-the run it turns, and a wild edge is worn by one column in three. Barachen's fire names `WILD`; the Thorenhad route
-names nothing yet, so it still widens at the camp and narrows in the country.
+city's own seven. A build is a city or a wild place - `Roads.CITIES` names the cities, Rivendell only so far - and a
+wild place's road is wild from its own door out, width and surface both: three wide of gravel and dirt, no paving.
+A city's road takes the bands per column, so it widens as it comes in to the gate. A route naming a kind in
+`Roads.KINDS` overrides both (none named yet - that is how a main road is made). A hairpin's apron is one kind wider
+than the run it turns, and a wild edge is worn by one column in three. So the Thorenhad road from Elladan's camp is a
+wild track end to end, and only Rivendell's crossing paves.
+
+A road already laid keeps the width and the surface it was laid with: `/tmroad forget` at the build then a re-walk
+lays the new kind over it, but columns the old road paved or widened are not taken back.
 
 Barachen's fire has its track: from the camp's south door at 4820, 76, -2886 to the mark at 4892, 74, -3097 where the
 Thorenhad road runs past, wild and three wide the whole way. Compiled, not yet seen in a world.
