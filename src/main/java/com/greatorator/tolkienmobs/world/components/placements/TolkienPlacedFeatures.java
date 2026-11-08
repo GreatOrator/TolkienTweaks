@@ -25,6 +25,9 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> MALLORN_PLACED_KEY = registerKey("mallorn_placed");
     public static final ResourceKey<PlacedFeature> MIRKWOOD_PLACED_KEY = registerKey("mirkwood_placed");
     public static final ResourceKey<PlacedFeature> HARDENED_MIRKWOOD_PLACED_KEY = registerKey("hardened_mirkwood_placed");
+    public static final ResourceKey<PlacedFeature> NATURAL_TREE_1_PLACED_KEY = registerKey("natural_tree_1_placed");
+    public static final ResourceKey<PlacedFeature> NATURAL_TREE_2_PLACED_KEY = registerKey("natural_tree_2_placed");
+    public static final ResourceKey<PlacedFeature> NATURAL_TREE_3_PLACED_KEY = registerKey("natural_tree_3_placed");
     public static final ResourceKey<PlacedFeature> CULUMALDA_PLACED_KEY = registerKey("culumalda_placed");
     public static final ResourceKey<PlacedFeature> LEBETHRON_PLACED_KEY = registerKey("lebethron_placed");
     public static final ResourceKey<PlacedFeature> FANGORNOAK_PLACED_KEY = registerKey("fangornoak_placed");
@@ -163,6 +166,16 @@ public class TolkienPlacedFeatures {
         context.register(OLDFORESTOAK_PLACED_KEY, new PlacedFeature(features.getOrThrow(OLDFORESTOAK_KEY),
                 VegetationPlacements.treePlacement(PlacementUtils.countExtra(35, 0.1f, 2),
                         Blocks.DARK_OAK_SAPLING)));
+
+        // The default trees, weighted the way a wood's own trees are: the first is what the wood is mostly made of,
+        // the second is a tree in every few, and the third is the one worth walking to. None of them is tested against
+        // a sapling - the feature itself judges the ground - and none needs one to grow.
+        context.register(NATURAL_TREE_1_PLACED_KEY, new PlacedFeature(features.getOrThrow(NATURAL_TREE_1_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(60, 0.1f, 2))));
+        context.register(NATURAL_TREE_2_PLACED_KEY, new PlacedFeature(features.getOrThrow(NATURAL_TREE_2_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(8, 0.1f, 2))));
+        context.register(NATURAL_TREE_3_PLACED_KEY, new PlacedFeature(features.getOrThrow(NATURAL_TREE_3_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(2, 0.1f, 2))));
 
         context.register(MITHRIL_ORE_PLACED_KEY, new PlacedFeature(features.getOrThrow(OVERWORLD_ORE_MITHRIL_KEY),
                 TolkienOrePlacement.commonOrePlacement(25, HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(16)))));

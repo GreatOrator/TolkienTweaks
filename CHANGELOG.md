@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The woods plant the chapter's own trees.** A wood with no tree of its own - Eryn Vorn, Gladden and the
+  Trollshaws, the three woodland biomes - was planted with the Mirkwood tree, which is a wood's answer only where
+  Mirkwood was asked for. The three trees built by hand in `structure/natural` are now the default: each is a feature
+  of its own (`natural_tree_1..3`), laid down as a structure rather than grown, and the woodland modifier plants all
+  three at different weights - sixty attempts a chunk for the first, eight for the second, two for the third - so a
+  wood is mostly the first tree with the other two rare in it. The feature judges the ground itself, soil below and
+  six blocks of air above, rather than testing against a sapling: these are not one species' trees.
 - **The wood beside the road is trimmed, not sheared.** Canopy clearing ran down the road's own columns only, to
   their full height right at the edge, so the leaves still standing beyond it made a sheer face along the lane: a
   corridor with walls. The columns beside the road are now trimmed too, a step shallower for each one out - three

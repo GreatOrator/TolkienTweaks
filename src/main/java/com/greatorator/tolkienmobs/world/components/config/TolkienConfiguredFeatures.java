@@ -55,6 +55,10 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> HARDENED_CULUMALDA_FIRIEN_KEY = registerKey("tree/hardened_culumalda_firien");
     public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_FIRIEN_KEY = registerKey("tree/lebethron_firien");
     public static final ResourceKey<ConfiguredFeature<?, ?>> HARDENED_LEBETHRON_FIRIEN_KEY = registerKey("tree/hardened_lebethron_firien");
+    // The default trees, built by hand and laid down as structures: the trees of a wood that has no tree of its own.
+    public static final ResourceKey<ConfiguredFeature<?, ?>> NATURAL_TREE_1_KEY = registerKey("tree/natural_tree_1");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> NATURAL_TREE_2_KEY = registerKey("tree/natural_tree_2");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> NATURAL_TREE_3_KEY = registerKey("tree/natural_tree_3");
     public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_KEY = registerKey("tree/deadwood");
     public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_MAPLE_KEY = registerKey("tree/dwarven_maple");
     public static final ResourceKey<ConfiguredFeature<?, ?>> HARDENED_DWARVEN_MAPLE_KEY = registerKey("tree/hardened_dwarven_maple");
@@ -248,6 +252,12 @@ public class TolkienConfiguredFeatures {
                 .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .decorators(ImmutableList.of(TolkienDecorators.WALL_BLOOM, TolkienDecorators.LIVING_ROOTS))
                 .build()));
+        context.register(NATURAL_TREE_1_KEY, new ConfiguredFeature<>(TolkienFeatures.NATURAL_TREE_1.get(),
+                NoneFeatureConfiguration.INSTANCE));
+        context.register(NATURAL_TREE_2_KEY, new ConfiguredFeature<>(TolkienFeatures.NATURAL_TREE_2.get(),
+                NoneFeatureConfiguration.INSTANCE));
+        context.register(NATURAL_TREE_3_KEY, new ConfiguredFeature<>(TolkienFeatures.NATURAL_TREE_3.get(),
+                NoneFeatureConfiguration.INSTANCE));
         context.register(FANGORNOAK_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_FANGORNOAK.get()),
                 new BranchingLargeTrunkPlacer(6, 6, 6, 5, new BranchesConfig(BlockStateProvider.simple(TolkienBlocks.WOOD_FANGORNOAK.get()), 4, 0, 10, 4, 0.3, 0.2), false),
