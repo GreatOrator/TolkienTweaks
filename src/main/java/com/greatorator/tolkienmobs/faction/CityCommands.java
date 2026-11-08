@@ -27,7 +27,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLPaths;
+import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import java.io.BufferedReader;
@@ -95,8 +95,18 @@ public final class CityCommands {
                 || Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source);
     };
 
-    /** The folder a re-cut is worked out in, beside the game directory. */
-    private static final String FOLDER = "rivendell_art";
+    /**
+     * Where a world keeps its own re-cut of the city, and the marker that says how far it was laid: in the save,
+     * not beside it.
+     * <p>
+     * Both used to live in a folder beside the game directory, which is one folder for every world at once and
+     * belongs to none of them: two worlds shared one answer about what had been dressed, a save copied to another
+     * machine carried its city and not the record of it, and a release left the mod's own working files lying around
+     * the player's home. A save is the thing that travels and the thing that is self-contained, so what a world has
+     * done is kept in the world. The cut itself is read from the jar; a world's folder only ever holds a re-cut and
+     * the markers, which is what a world's business is.
+     */
+    private static final String FOLDER = "rivendell";
     /** Where the cut ships: the pieces and the two tables that place them, in the jar. */
     private static final String JAR_CUT = "/data/tolkienmobs/structure/rivendell/";
     private static final String PARTS = "rivendell.parts";
@@ -264,7 +274,7 @@ public final class CityCommands {
     private static int folk(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             Mark mark = mark(level, folder);
             if (mark == null) {
@@ -363,7 +373,7 @@ public final class CityCommands {
         // A player in the Shire is not worth reading the cut for; the box test comes after the read, and this is the
         // cheap question that keeps that read from happening anywhere in the world at all.
         if (!within(level, pin, COARSE_REACH)) return;
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             if (CUT_PARTS == null) {
                 CUT_PARTS = parts(folder);
@@ -521,7 +531,7 @@ public final class CityCommands {
     static BlockPos stoodCity(ServerLevel level) {
         BlockPos corner = plantedCorner(level);
         if (corner == null) return null;
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             Mark mark = read(folder);
             if (mark == null) return corner;
@@ -554,7 +564,7 @@ public final class CityCommands {
         ASK_AGAIN = now + RECHECK_TICKS;
         PLANTED_IN = here;
         try {
-            Mark mark = read(folder());
+            Mark mark = read(folder(level));
             boolean mine = mark != null && (mark.dimension() == null || mark.dimension().equals(here));
             BlockPos corner = mine ? mark.origin() : null;
             if (corner == null) {
@@ -583,7 +593,7 @@ public final class CityCommands {
         WOULD_BUILD_IN = here;
         WOULD_BUILD = null;
         try {
-            WOULD_BUILD = generatedCorner(level, parts(folder()));
+            WOULD_BUILD = generatedCorner(level, parts(folder(level)));
         } catch (IOException unreadable) {
             WOULD_BUILD = null;
         }
@@ -591,9 +601,9 @@ public final class CityCommands {
     }
 
     /** The city's people as the build's own table gives them, for a visit that dresses a planted city. */
-    static List<Campaign.FolkSpot> plantedFolk() {
+    static List<Campaign.FolkSpot> plantedFolk(ServerLevel level) {
         try {
-            return folkSpots(folder());
+            return folkSpots(folder(level));
         } catch (IOException unreadable) {
             return List.of();
         }
@@ -625,7 +635,7 @@ public final class CityCommands {
     /** Plants the corner and writes the marker, saying why not when it cannot. */
     private static boolean plant(CommandSourceStack source) {
         ServerLevel level = source.getLevel();
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             List<Part> parts = parts(folder);
             if (parts.isEmpty()) {
@@ -709,7 +719,7 @@ public final class CityCommands {
     private static int band(CommandContext<CommandSourceStack> context, int count) {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             Mark mark = mark(level, folder);
             if (mark == null) {
@@ -810,7 +820,7 @@ public final class CityCommands {
     private static int relay(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             Mark mark = mark(level, folder);
             if (mark == null) {
@@ -847,7 +857,7 @@ public final class CityCommands {
     private static int apron(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             Mark mark = mark(level, folder);
             if (mark == null) {
@@ -880,7 +890,7 @@ public final class CityCommands {
     private static int visit(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             Mark mark = mark(level, folder);
             if (mark == null) {
@@ -917,7 +927,7 @@ public final class CityCommands {
     private static int status(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             Mark planted = read(folder);
             Mark mark = planted != null ? planted : mark(level, folder);
@@ -1001,7 +1011,7 @@ public final class CityCommands {
     private static int drape(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
-        Path folder = folder();
+        Path folder = folder(level);
         try {
             Mark mark = mark(level, folder);
             if (mark == null) {
@@ -1179,7 +1189,8 @@ public final class CityCommands {
         PLANTED_IN = null;
     }
 
-    static Path folder() {
-        return FMLPaths.GAMEDIR.get().resolve(FOLDER);
+    /** This world's own folder for the city: the save's, with dimension and corner keyed in the marker itself. */
+    static Path folder(ServerLevel level) {
+        return level.getServer().getWorldPath(LevelResource.ROOT).resolve(MODID).resolve(FOLDER);
     }
 }

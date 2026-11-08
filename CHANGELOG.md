@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **What a world writes down lives in the world.** The city's markers (`_laid.txt`, `_dressed.txt`) and any
+  re-cut of the cut were written to a folder beside the game directory, which is one folder for every world and belongs
+  to none of them: two worlds shared one answer, a save copied to another machine lost the record of what was dressed,
+  and a release left working files in the player's home. Both now live under the save, in `tolkienmobs/rivendell`, while
+  the cut itself is read from the jar. A world whose marker was in the old folder dresses its ring once more, which is
+  idempotent, and a road already down stays down.
 - **The mod grows its own woods and ground cover.** With vanilla's features out of the biomes, the country had
   nothing left to grow. The mod's own tree features are handed to it by biome modifier: culumalda and lebethron over the
   broadleaf country, mirkwood over the wild woodland, mallorn over Imladris, and a new ground cover of grass scattered

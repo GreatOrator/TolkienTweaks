@@ -1996,7 +1996,7 @@ public final class Campaign extends SavedData {
         if (valley.centre().distToCenterSqr(player.position()) > VALLEY_REACH * VALLEY_REACH) return;
         BlockPos city = CityCommands.plantedCorner(level);
         if (city != null) {
-            standCityFolk(level, city, CityCommands.plantedFolk());
+            standCityFolk(level, city, CityCommands.plantedFolk(level));
             return;
         }
         standValleyElves(level, valley);

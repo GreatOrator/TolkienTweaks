@@ -46,6 +46,9 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
 
 - **Two crags** were refused by `plane`/`ground()`; the fix reads ground past plants and a refusal now names the column
   and the block. If one is still refused the log says why — water is still a refusal, and that means a re-pin.
+- **Runtime files are per world.** `CityCommands.folder(level)` resolves `<save>/tolkienmobs/rivendell`, and the
+  jar cut is the source of pieces (`cut()` tries the jar first, then that folder). Nothing in the mod writes beside the
+  game directory any more; a world that used the old folder re-dresses once.
 - **Crags are seated fifteen blocks in** (nine before), so the rock skirt and the bare shell are underground and only
   the mouth and the crown's rock show. A crag already standing keeps the seat it was placed with; the new seat applies
   to a crag built after the change.

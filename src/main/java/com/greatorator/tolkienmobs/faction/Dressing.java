@@ -132,7 +132,7 @@ public final class Dressing {
         if (corner == null) return null;
         String key = level.dimension().identifier() + "@" + corner.toShortString();
         if (key.equals(finished)) return null;
-        Path folder = CityCommands.folder();
+        Path folder = CityCommands.folder(level);
         try {
             List<CityCommands.Part> parts = CityCommands.parts(folder);
             if (parts.isEmpty()) return null;
