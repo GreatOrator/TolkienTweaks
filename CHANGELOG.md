@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road begins wherever its ground loads, not where its build was found.** A road was planned only when a
+  build's site was dressed and stepped only while a player was within ninety-six blocks of its head, so the crossing
+  out of Rivendell led away across the ford and stopped: the road existed up to the first build that had been found
+  and no further, and the rest began only when somebody walked to the other end. The passes are the world's now,
+  held by road rather than by player - one pass per road, asked for by any caller - and a chunk that a road passes
+  through begins it, from whichever end the player meets it. The tick carries the pass on while the ground under its
+  head is loaded and waits when it is not, which is what resumes a road across a logout or a walk away and back. A
+  crossing is not begun this way: a bridge needs its city's span and abutments, so it stays the dressing's.
 - **The main road follows the bands, and Elladan's camp leaves by a wild branch of its own.** The road was to be
   laid seven wide end to end, which turns a road that runs from a camp to a crossing into a street the whole way. It
   keeps its own name and record and is banded instead - seven where it leaves the camp's ground, five as the paving

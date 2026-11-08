@@ -450,7 +450,6 @@ public final class Sites extends SavedData {
 
     private static final Map<UUID, Site> SITES = new HashMap<>();
     /** The road passes being laid for the world's own builds, by the key of the site that owns each. */
-    private static final Map<UUID, RoadCommands.RoadJob> ROADS = new HashMap<>();
     /** Players whose site has already been complained about, so a refusal is said once, not every tick. */
     private static final Set<UUID> UNBUILDABLE = new HashSet<>();
     /** The world's own buildings already checked against the ground this session, so a proof is walked once. */
@@ -726,10 +725,7 @@ public final class Sites extends SavedData {
                     site.built(), site.found(), site.country(), false));
             changed = true;
         }
-        ROADS.keySet().removeIf(key -> {
-            Site site = SITES.get(key);
-            return site != null && site.structure().equals(structure);
-        });
+        RoadCommands.stop(structure);
         if (changed) instance(level).setDirty();
     }
 
@@ -767,48 +763,10 @@ public final class Sites extends SavedData {
             instance(level).setDirty();
             return;
         }
-        if (!ROADS.containsKey(key)) ROADS.put(key, RoadCommands.plan(route));
+        // The road starts here as well as from any chunk it passes through, and both ask for the same pass, so a
+        // build whose chunk loads first begins its road and a road met in the open begins on ground alone.
+        RoadCommands.pass(level, route);
     }
-
-    /**
-     * Steps every road this world is laying while its own head is near the player.
-     * <p>
-     * This is the pass a section is actually laid by. It is measured from the block the pass has reached rather than
-     * from the build, so a player walking the road carries it along - which is what a road filling in as its section
-     * is walked has to mean for a road four hundred blocks long. A player who leaves stops the work where it stands;
-     * the record of it is written to the world every few steps, so coming back resumes the same grade rather than
-     * laying a second one.
-     */
-    private static void roads(ServerPlayer player) {
-        if (ROADS.isEmpty()) return;
-        if (!(player.level() instanceof ServerLevel level)) return;
-        if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
-        for (UUID key : new ArrayList<>(ROADS.keySet())) {
-            RoadCommands.RoadJob job = ROADS.get(key);
-            Site site = SITES.get(key);
-            if (job == null || site == null) {
-                ROADS.remove(key);
-                continue;
-            }
-            int[] head = job.head();
-            double dx = player.getX() - head[0];
-            double dz = player.getZ() - head[1];
-            if (Math.sqrt(dx * dx + dz * dz) > ROAD_REACH) continue;
-            boolean more;
-            try {
-                more = job.step(level);
-            } catch (IOException unreadable) {
-                // A pass that cannot run is not retried on every step; the record says the road is the ground's now.
-                more = false;
-            }
-            if (more) continue;
-            ROADS.remove(key);
-            // The record as it stands now, not as this step found it: dressing may have moved the build's centre since.
-            SITES.put(key, SITES.getOrDefault(key, site).roaded());
-            instance(level).setDirty();
-        }
-    }
-
     /**
      * Plants the chapter's own buildings, and stands them as players come near.
      * <p>
@@ -951,7 +909,6 @@ public final class Sites extends SavedData {
         // sent to them, so a world is the world the notes describe rather than empty hills until a page names
         // something.
         scenery(player);
-        roads(player);
         Site site = siteOf(player);
         if (site == null) return;
         if (!player.level().dimension().equals(site.dimension())) return;

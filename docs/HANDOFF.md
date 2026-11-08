@@ -79,6 +79,13 @@ dressed first, so the branch is the road its own approach plans; the main road i
 running `/tmroad build`. The camp's old main-road note is under `tolkienmobs:key_structures/elledancamp`, which no
 route uses now, so it is ignored rather than resumed.
 
+Roads are begun by ground now, not by a build being found: a pass is the world's, held by road, and any
+chunk a dry road passes through starts that road from whichever end the player meets it - stepping while the
+ground under its head is loaded, waiting when it is not, so a road survives a walk away or a logout. A
+crossing is still begun by its city's dressing, because a bridge needs its span and abutments first.
+`RoadCommands.PASSES` is the one store, so a build's approach and a road met in the open cannot plan two passes
+over the same stretch.
+
 A road already laid keeps the width and the surface it was laid with: `/tmroad forget` at the build then a re-walk
 lays the new kind over it, but columns the old road paved or widened are not taken back.
 

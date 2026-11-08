@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -236,6 +237,7 @@ public final class RoadCommands {
             return 0;
         }
         Progress.forget(source.getLevel(), route.id());
+        stop(route);
         Sites.forgetRoad(source.getLevel(), Roads.build(route));
         source.sendSuccess(() -> Component.literal("Forgot the road at " + route.id()
                 + " - the next pass walks it again."), true);
@@ -249,6 +251,54 @@ public final class RoadCommands {
             // The hand asked for the road, not for the schedule of it.
         }
         return job.summary();
+    }
+
+    /**
+     * The passes this world has in hand, by route, so a road has one pass whichever hand asked for it.
+     * <p>
+     * A road used to be stepped only while a player was within reach of the ground its head stood on, and only once
+     * the build it left from had been found and dressed - so a road existed in two halves, and the second began when
+     * somebody finally walked to the other end. The pass is kept by route instead: a road has one pass, any loaded
+     * chunk of that road may ask for it, and it belongs to the world rather than to whoever happened to be walking.
+     */
+    private static final Map<String, RoadJob> PASSES = new HashMap<>();
+
+    /**
+     * The pass for one route, planned if the world has none for it yet.
+     * <p>
+     * Two callers can ask for the same road - the chunk it passes through and the build it leaves from - and they must
+     * get the same pass rather than two that each lay half of it. A road already down owes nothing and gets none.
+     */
+    static RoadJob pass(ServerLevel level, Route route) {
+        // A bridge is not begun from the ground under it: it needs the city's span and abutments first, so the
+        // crossing stays with the dressing and asks for its pass there.
+        if (route instanceof Route.Crossing) return null;
+        RoadJob existing = PASSES.get(route.id());
+        if (existing != null) return existing;
+        if (down(level, route)) return null;
+        RoadJob made = new RoadJob(route);
+        PASSES.put(route.id(), made);
+        return made;
+    }
+
+    /** The passes in hand, for the tick that steps them and a command that wants to say what is being laid. */
+    static Collection<RoadJob> passes() {
+        return PASSES.values();
+    }
+
+    /** Drops a pass: the road gave up, or the world was asked to forget it. */
+    static void stop(RoadJob job) {
+        PASSES.remove(job.route().id(), job);
+    }
+
+    /** Drops the pass for one road, if the world has one in hand. */
+    static void stop(Route route) {
+        PASSES.remove(route.id());
+    }
+
+    /** Drops every pass for a build's roads, however the road is named. */
+    static void stop(String build) {
+        PASSES.values().removeIf(job -> build.equals(Roads.build(job.route())));
     }
 
     /** A road pass waiting to be stepped, for a caller that has ticks rather than a command to answer. */
@@ -376,6 +426,11 @@ public final class RoadCommands {
         private int leg;
         private int fromX;
         private int fromZ;
+
+        /** The road this pass lays, so a caller holding the pass knows which road it is for. */
+        Route route() {
+            return route;
+        }
 
         private RoadJob(Route route) {
             this.route = route;
