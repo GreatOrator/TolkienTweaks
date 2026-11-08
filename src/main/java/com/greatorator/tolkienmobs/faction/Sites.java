@@ -594,6 +594,24 @@ public final class Sites extends SavedData {
         return true;
     }
 
+    /**
+     * Writes down a building another hand laid, so the world treats its ground as standing.
+     * <p>
+     * The campaign's fallback for a camp whose own site never rose lays the cut straight from {@link Campaign}, and
+     * nothing recorded it: the next look found no site, laid the cut again, and seated the copy on the roof of the one
+     * before it. Recording it here is what makes the second look see the first, what points a page that names the
+     * camp at the ground already there, and what stops a second man being stood beside the one at the fire.
+     */
+    public static void laid(ServerLevel level, String structure, BlockPos corner, boolean keeper) {
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
+        Vec3i size = footprint(level, structure);
+        if (size == null) return;
+        UUID key = sceneryId(structure);
+        SITES.put(key, new Site(key, level.dimension(), corner.offset(size.getX() / 2, 0, size.getZ() / 2),
+                structure, keeper, true, false, "", false));
+        instance(level).setDirty();
+    }
+
     /** A site of this structure that is already standing in this world, or null when none is. */
     @Nullable
     private static Site standing(ServerLevel level, String structure) {
@@ -1065,14 +1083,19 @@ public final class Sites extends SavedData {
         // The ground it was laid into is carried to its own roofline, the way the valley's is dressed to the cut's:
         // without this a build seated in a bank kept the bank standing over it, which is a camp nobody can find.
         sweep(level, corner, size, site.structure());
+        // The record goes down before the dressing does. A building is seated on the highest ground under its
+        // footprint, and once its walls are standing that ground is its own roof: a site left unwritten because the
+        // man, the animal or the stone failed after the walls went down was built again on the next look, and the copy
+        // was seated on the copy - one camp stacked on the last until the world's ceiling. Walls, then the record,
+        // then what stands at it.
+        SITES.put(site.player(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
+        instance(level).setDirty();
         // What the place carries once it stands: the man at a camp, the animal the rider came off at the ruin,
         // and the stone every building has so the travel list can bring a player back to it.
         Body body = site.keeper() ? Body.KEEPER : bodyFor(site.structure());
         if (body == Body.KEEPER) standKeeper(level, corner, size, seat, site.structure());
         if (body == Body.STEED) standSteed(level, corner, size, seat, site.structure());
         stoneAt(level, corner, size, seat, site.structure(), player);
-        SITES.put(site.player(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
-        instance(level).setDirty();
     }
 
     /**

@@ -426,3 +426,14 @@ woods. The bands in the code measure 3.0% rock, 7.9% coarse dirt and 89.0% grass
 24.9% podzol and 72.4% grass on Mirkwood. `steep()` is not counted, so cliffs add stone on top of those shares. The
 probe and its datagen registration are deleted; these numbers are the record.
 
+Elladan's camp at Thorenhad came out as a tower of camps, one every tick, up to build height, with Elladan
+standing on the ground at the bottom of it. Two placements were each laying themselves on their own output.
+`Campaign.standTent` is the fallback for a camp whose own pinned site never rose: it seated the cut on the highest
+column under its footprint and laid it again on every look while `Sites.raisedAt` answered null, and once one copy
+stood the heightmap answered with that copy's roof, so every look was one camp higher - its own note claimed laying it
+twice was laying the same blocks, which stopped being true the moment the ground was the camp. `Sites.build` had the
+same shape in a narrower window: the site's `built` record was written after the keeper, animal and stone were dressed,
+so a throw at the door left the walls standing and unrecorded, and the next tick seated the next copy on the roof.
+`standTent` now seats on the place's own y - the ground the name was walked on, which cannot move - and records the
+camp through the new `Sites.laid`; `Sites.build` writes its record straight after the sweep and before the dressing.
+Worlds that took the tower keep it: it is blocks, not data, and it has to be cleared where it stands.

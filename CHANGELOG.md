@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Elladan's camp stopped stacking itself to the sky.** The campaign's fallback that lays a camp straight from its
+  template re-read the ground under the footprint on every look, and a camp already standing is ground of its own: the
+  heightmap answered with its roof, so each look put the next copy eight blocks higher until the world's ceiling. It is
+  now seated on the ground the place was named on, and written down as standing the moment it is down, so the next look
+  finds it. A building the world's own pass raises is recorded before its keeper, animal and stone are dressed, so a
+  failure at the door can no longer leave walls standing that the next tick builds again.
 - **The highland rock and woodland leaf mould are measured, not guessed.** The game's own `minecraft:surface`
   noise, sampled over Dunland's and Mirkwood's drawn cells, is near-normal about zero with a standard deviation of
   0.31, so the first bands were off in both directions: stone on 8% of the highlands and, because a band 0.35 wide

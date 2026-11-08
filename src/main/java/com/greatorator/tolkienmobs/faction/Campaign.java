@@ -1991,18 +1991,17 @@ public final class Campaign extends SavedData {
         if (wide <= 0 || deep <= 0) return true;
         BlockPos corner = camp.centre().offset(-wide / 2, 0, -deep / 2);
         if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(wide, 0, deep))) return false;
-        // The highest column under the tent is the tent's floor, so the ground comes up to it rather than
-        // through it, whichever side of the camp is the uphill one.
-        int floor = Integer.MIN_VALUE;
-        for (int dx = 0; dx <= wide; dx += Math.max(1, wide / 4)) {
-            for (int dz = 0; dz <= deep; dz += Math.max(1, deep / 4)) {
-                floor = Math.max(floor, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                        corner.getX() + dx, corner.getZ() + dz));
-            }
-        }
-        corner = new BlockPos(corner.getX(), floor, corner.getZ());
+        // The floor is the ground the place was named on, not the highest column under the footprint. A camp that is
+        // already standing is ground of its own - the heightmap answers with its roof - so a floor read off the map
+        // went one camp higher on every look, and the look after that higher again. A chapter's first camp was found
+        // this way: forty of them stacked to the world's ceiling, the Elf at the bottom of the shaft. The place's own
+        // y cannot move, so laying it twice is laying the same blocks in the same place, which is what the note above
+        // has always claimed. The slope is what the underpinning is for.
+        corner = new BlockPos(corner.getX(), camp.centre().getY(), corner.getZ());
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
         underpin(level, corner, wide, deep);
+        // Written down as standing, so the next look finds it and neither lays it again nor stands a second man at it.
+        Sites.laid(level, structure, corner, true);
         return true;
     }
 
