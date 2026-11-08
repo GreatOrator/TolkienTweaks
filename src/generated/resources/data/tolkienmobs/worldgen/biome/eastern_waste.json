@@ -35,8 +35,7 @@
       "tolkienmobs:random_rubble",
       "tolkienmobs:rockpile",
       "tolkienmobs:stumps"
-    ],
-    []
+    ]
   ],
   "has_precipitation": false,
   "spawn_costs": {
@@ -68,45 +67,45 @@
   "spawners": {
     "ambient": [
       {
+        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmcrebain",
         "weight": 15
       }
     ],
     "axolotls": [],
     "creature": [
       {
+        "type": "minecraft:wolf",
         "maxCount": 3,
         "minCount": 1,
-        "type": "minecraft:wolf",
         "weight": 10
       }
     ],
     "misc": [],
     "monster": [
       {
+        "type": "tolkienmobs:entityttmmordororc",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmmordororc",
         "weight": 35
       },
       {
+        "type": "tolkienmobs:entityttmurukhai",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmurukhai",
         "weight": 25
       },
       {
+        "type": "tolkienmobs:entityttmwarg",
         "maxCount": 3,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmwarg",
         "weight": 20
       },
       {
+        "type": "tolkienmobs:entityttmbrigand",
         "maxCount": 3,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmbrigand",
         "weight": 15
       }
     ],

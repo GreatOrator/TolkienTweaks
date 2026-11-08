@@ -26,10 +26,7 @@
       "tolkienmobs:legacy_iron_ore",
       "tolkienmobs:legacy_lapis_ore",
       "tolkienmobs:legacy_redstone_ore"
-    ],
-    [],
-    [],
-    []
+    ]
   ],
   "has_precipitation": false,
   "spawn_costs": {
@@ -49,33 +46,33 @@
   "spawners": {
     "ambient": [
       {
+        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 1,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmcrebain",
         "weight": 15
       }
     ],
     "axolotls": [],
     "creature": [
       {
+        "type": "tolkienmobs:entityttmmumakil",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmmumakil",
         "weight": 25
       },
       {
+        "type": "tolkienmobs:entityttmsouthron",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmsouthron",
         "weight": 5
       }
     ],
     "misc": [],
     "monster": [
       {
+        "type": "tolkienmobs:entityttmharadrim",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmharadrim",
         "weight": 45
       }
     ],

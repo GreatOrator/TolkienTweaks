@@ -45,6 +45,21 @@ public class TolkienBiomeGenerationSettings extends BiomeGenerationSettings.Buil
     }
 
     /**
+     * The same rule for a feature asked for by name, which is how vanilla's own lists ask.
+     * <p>
+     * {@code BiomeDefaultFeatures} does not hand the builder a holder: it hands it a {@link ResourceKey} and lets the
+     * builder look the feature up itself. That lookup adds to the step's list without passing through the override
+     * above, so every lake, monster room and ore vein vanilla's lists carry walked straight past the filter and into
+     * the biome data - which is why regenerating the data put them back after they had been taken out. The rule was
+     * right and simply never asked.
+     */
+    @Override
+    public BiomeGenerationSettings.Builder addFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> feature) {
+        if (!own(Optional.of(feature.identifier()))) return this;
+        return super.addFeature(step, feature);
+    }
+
+    /**
      * And nothing carves it either.
      * <p>
      * A carver is the same answer from the same other world, and the one that has cost the map most: it cuts where the

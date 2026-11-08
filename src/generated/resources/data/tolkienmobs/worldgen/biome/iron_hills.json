@@ -65,24 +65,24 @@
   "spawners": {
     "ambient": [
       {
+        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmcrebain",
         "weight": 15
       }
     ],
     "axolotls": [],
     "creature": [
       {
+        "type": "tolkienmobs:entityttmdwarf",
         "maxCount": 3,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmdwarf",
         "weight": 45
       },
       {
+        "type": "tolkienmobs:entityttmgoat",
         "maxCount": 3,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmgoat",
         "weight": 25
       }
     ],

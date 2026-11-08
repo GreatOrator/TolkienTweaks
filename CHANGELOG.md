@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Other worlds' lakes, monster rooms and ores stay out of Arda.** The rule that Arda grows nothing but the mod's
+  own places was only asked of features handed to a biome as holders, and vanilla's own default lists name theirs
+  instead: the builder looks the key up itself and adds it without passing the rule. So the filter held, regeneration
+  after regeneration, and then filled the data back in with lava lakes, monster rooms and every ore vein the first
+  time the biome data was generated again. A named feature now answers to the same rule as a held one, so regenerating
+  Arda's biome data leaves it exactly as it was. Those files also settle back to the shape the codec writes - key
+  order, and no trailing empty generation steps - which an earlier hand edit had reshaped; nothing in them changes,
+  and running the data generator again now rewrites nothing at all.
 - **The woods plant the chapter's own trees.** A wood with no tree of its own - Eryn Vorn, Gladden and the
   Trollshaws, the three woodland biomes - was planted with the Mirkwood tree, which is a wood's answer only where
   Mirkwood was asked for. The three trees built by hand in `structure/natural` are now the default: each is a feature

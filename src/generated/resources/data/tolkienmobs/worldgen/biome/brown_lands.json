@@ -63,9 +63,9 @@
   "spawners": {
     "ambient": [
       {
+        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmcrebain",
         "weight": 25
       }
     ],
@@ -74,33 +74,33 @@
     "misc": [],
     "monster": [
       {
+        "type": "tolkienmobs:entityttmbrigand",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmbrigand",
         "weight": 35
       },
       {
+        "type": "tolkienmobs:entityttmwarg",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmwarg",
         "weight": 25
       },
       {
+        "type": "tolkienmobs:entityttmmordororc",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmmordororc",
         "weight": 35
       },
       {
+        "type": "tolkienmobs:entityttmurukhai",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmurukhai",
         "weight": 25
       },
       {
+        "type": "tolkienmobs:entityttmswarm",
         "maxCount": 1,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmswarm",
         "weight": 15
       }
     ],

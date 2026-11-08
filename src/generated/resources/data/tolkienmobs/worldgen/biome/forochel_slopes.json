@@ -28,11 +28,7 @@
       "tolkienmobs:legacy_iron_ore",
       "tolkienmobs:legacy_lapis_ore",
       "tolkienmobs:legacy_redstone_ore"
-    ],
-    [],
-    [],
-    [],
-    []
+    ]
   ],
   "has_precipitation": true,
   "spawn_costs": {
@@ -58,30 +54,30 @@
     "axolotls": [],
     "creature": [
       {
+        "type": "minecraft:polar_bear",
         "maxCount": 2,
         "minCount": 1,
-        "type": "minecraft:polar_bear",
         "weight": 20
       },
       {
+        "type": "minecraft:goat",
         "maxCount": 3,
         "minCount": 1,
-        "type": "minecraft:goat",
         "weight": 15
       }
     ],
     "misc": [],
     "monster": [
       {
+        "type": "tolkienmobs:entityttmtroll",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmtroll",
         "weight": 35
       },
       {
+        "type": "tolkienmobs:entityttmgoblin",
         "maxCount": 5,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmgoblin",
         "weight": 45
       }
     ],

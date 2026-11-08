@@ -94,57 +94,57 @@
   "spawners": {
     "ambient": [
       {
+        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmcrebain",
         "weight": 10
       }
     ],
     "axolotls": [],
     "creature": [
       {
-        "maxCount": 3,
-        "minCount": 1,
         "type": "minecraft:sheep",
-        "weight": 8
-      },
-      {
         "maxCount": 3,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmauroch",
         "weight": 8
       },
       {
+        "type": "tolkienmobs:entityttmauroch",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 8
+      },
+      {
+        "type": "tolkienmobs:entityttmorc_trader",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmorc_trader",
         "weight": 2
       }
     ],
     "misc": [],
     "monster": [
       {
+        "type": "tolkienmobs:entityttmgoblin",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmgoblin",
         "weight": 20
       },
       {
+        "type": "tolkienmobs:entityttmwarg",
         "maxCount": 3,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmwarg",
         "weight": 20
       },
       {
+        "type": "tolkienmobs:entityttmmordororc",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmmordororc",
         "weight": 25
       },
       {
+        "type": "tolkienmobs:entityttmurukhai",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmurukhai",
         "weight": 35
       }
     ],

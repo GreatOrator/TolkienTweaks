@@ -13,18 +13,7 @@
   "effects": {
     "water_color": "#3f76e4"
   },
-  "features": [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-  ],
+  "features": [],
   "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {
@@ -37,21 +26,21 @@
     "water_ambient": [],
     "water_creature": [
       {
+        "type": "minecraft:cod",
         "maxCount": 6,
         "minCount": 3,
-        "type": "minecraft:cod",
         "weight": 20
       },
       {
+        "type": "minecraft:salmon",
         "maxCount": 5,
         "minCount": 1,
-        "type": "minecraft:salmon",
         "weight": 10
       },
       {
+        "type": "minecraft:squid",
         "maxCount": 4,
         "minCount": 1,
-        "type": "minecraft:squid",
         "weight": 10
       }
     ]
