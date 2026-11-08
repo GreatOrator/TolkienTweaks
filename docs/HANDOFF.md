@@ -42,6 +42,9 @@ camp-to-ford road lays; the Rivendell crossing lays in full (`laid in 53 steps, 
 Done and only compiled (not seen): two refused crags re-attempting, the ground past plants, the sweep that carries the
 ground around every build to its roofline, no vanilla world generation in Arda, and roads spanning a hole.
 
+A keeper is now asked of the world by its tag rather than found in a box round its post, and a body left outside its
+own reach of the post is walked back to it: compiled, not yet seen in a world.
+
 ## Open
 
 - **Two crags** were refused by `plane`/`ground()`; the fix reads ground past plants and a refusal now names the column

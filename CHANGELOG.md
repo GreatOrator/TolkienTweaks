@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A keeper is found by his tag, not by his post.** The guard that decides whether a named Elf is already
+  standing looked at a box around the valley, and a keeper whose step had no ground under it was stood beside the
+  player instead: once the place's own middle moved, the box held none of them, so every visit stood another, and
+  `Scouting World` reached forty-five Glorfindels and forty-three Elronds stacked on two blocks. The body is now asked
+  of the world by its tag - one tag, one body - and a keeper left outside its own reach of the step is walked back to
+  it instead of a second one being stood. The same guard is rewritten for Glóin, Gimli, Elladan and Barachen, whose
+  camps can come back at a new pin the way the valley's middle did.
 - **The valley keeps a crowd, not a flood.** The tick that keeps the city lived in stood its people again on every
   pass, and counted only the bodies it had just put down: once every mark was answered it stood the whole remainder of
   the crowd over again, every second, for as long as a player was within sight of the valley. `Scouting World` reached

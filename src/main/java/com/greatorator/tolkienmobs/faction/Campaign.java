@@ -1711,10 +1711,15 @@ public final class Campaign extends SavedData {
         Places.Place valley = Places.place(level, SUMMON_PLACE);
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
         if (valley.centre().distToCenterSqr(player.position()) > GLORFINDEL_REACH * GLORFINDEL_REACH) return;
-        if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(GLORFINDEL_REACH),
-                seen -> seen.entityTags().contains(GLORFINDEL_TAG)).isEmpty()) return;
         int[] spot = VALLEY_STANDS.get(GLORFINDEL_TAG);
-        BlockPos stand = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]), player);
+        BlockPos post = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]));
+        Entity keeper = keeperWith(level, GLORFINDEL_TAG);
+        if (keeper != null) {
+            if (post != null) recallKeeper(level, keeper, post, GLORFINDEL_REACH);
+            return;
+        }
+        BlockPos stand = post != null ? post
+                : floorNear(level, valley.centre().offset(spot[0], 0, spot[1]), player);
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
@@ -1751,9 +1756,14 @@ public final class Campaign extends SavedData {
         if (!site.dimension().equals(level.dimension())) return;
         BlockPos middle = site.centre();
         if (middle.distToCenterSqr(player.position()) > GLOIN_REACH * GLOIN_REACH) return;
-        if (!level.getEntities((Entity) null, new AABB(middle).inflate(GLOIN_REACH),
-                seen -> seen.entityTags().contains(GLOIN_TAG)).isEmpty()) return;
-        BlockPos stand = floorNear(level, middle.offset(GLOIN_STAND[0], 0, GLOIN_STAND[1]), player);
+        BlockPos post = floorNear(level, middle.offset(GLOIN_STAND[0], 0, GLOIN_STAND[1]));
+        Entity keeper = keeperWith(level, GLOIN_TAG);
+        if (keeper != null) {
+            if (post != null) recallKeeper(level, keeper, post, GLOIN_REACH);
+            return;
+        }
+        BlockPos stand = post != null ? post
+                : floorNear(level, middle.offset(GLOIN_STAND[0], 0, GLOIN_STAND[1]), player);
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob dwarf)) return;
@@ -1795,9 +1805,14 @@ public final class Campaign extends SavedData {
         // the hall was out of it and nobody keeping the hold was ever stood. The reach grows with it.
         double reach = Math.max(GIMLI_REACH, Sites.span(level, site) + 24.0D);
         if (middle.distToCenterSqr(player.position()) > reach * reach) return;
-        if (!level.getEntities((Entity) null, new AABB(middle).inflate(reach),
-                seen -> seen.entityTags().contains(GIMLI_TAG)).isEmpty()) return;
-        BlockPos stand = floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]), player);
+        BlockPos post = floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]));
+        Entity keeper = keeperWith(level, GIMLI_TAG);
+        if (keeper != null) {
+            if (post != null) recallKeeper(level, keeper, post, reach);
+            return;
+        }
+        BlockPos stand = post != null ? post
+                : floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]), player);
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob dwarf)) return;
@@ -1843,12 +1858,16 @@ public final class Campaign extends SavedData {
         Places.Place camp = Places.ensure(player, THORENHAD_PLACE, CAMP_RADIUS);
         if (camp == null || !camp.dimension().equals(level.dimension())) return;
         if (camp.centre().distToCenterSqr(player.position()) > ELLADAN_REACH * ELLADAN_REACH) return;
-        if (!level.getEntities((Entity) null, new AABB(camp.centre()).inflate(ELLADAN_REACH),
-                seen -> seen.entityTags().contains(ELLADAN_TAG)).isEmpty()) return;
         // The camp is a camp before it is a man: the tent goes down first, and he is stood at it in the
         // same look, so there is never an Elf in a field waiting for a tent that never comes.
         if (!standTent(level, camp)) return;
-        BlockPos stand = floorNear(level, camp.centre());
+        BlockPos post = floorNear(level, camp.centre());
+        Entity keeper = keeperWith(level, ELLADAN_TAG);
+        if (keeper != null) {
+            if (post != null) recallKeeper(level, keeper, post, ELLADAN_REACH);
+            return;
+        }
+        BlockPos stand = post;
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
@@ -1885,12 +1904,16 @@ public final class Campaign extends SavedData {
         Places.Place fire = Places.ensure(player, BARACHEN_PLACE, CAMP_RADIUS);
         if (fire == null || !fire.dimension().equals(level.dimension())) return;
         if (fire.centre().distToCenterSqr(player.position()) > BARACHEN_REACH * BARACHEN_REACH) return;
-        if (!level.getEntities((Entity) null, new AABB(fire.centre()).inflate(BARACHEN_REACH),
-                seen -> seen.entityTags().contains(BARACHEN_TAG)).isEmpty()) return;
         // The camp is a camp before it is a man: the tent goes down first, so there is never a scout in a
         // field waiting for a tent that never comes.
         if (!standTent(level, fire)) return;
-        BlockPos stand = floorNear(level, fire.centre());
+        BlockPos post = floorNear(level, fire.centre());
+        Entity keeper = keeperWith(level, BARACHEN_TAG);
+        if (keeper != null) {
+            if (post != null) recallKeeper(level, keeper, post, BARACHEN_REACH);
+            return;
+        }
+        BlockPos stand = post;
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob scout)) return;
@@ -2284,10 +2307,15 @@ public final class Campaign extends SavedData {
         Places.Place valley = Places.ensure(player, SUMMON_PLACE, CAMP_RADIUS);
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
         if (valley.centre().distToCenterSqr(player.position()) > VALLEY_REACH * VALLEY_REACH) return;
-        if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(VALLEY_REACH),
-                seen -> seen.entityTags().contains(tag)).isEmpty()) return;
         int[] spot = VALLEY_STANDS.getOrDefault(tag, VALLEY_STANDS.get(ELROND_TAG));
-        BlockPos stand = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]), player);
+        BlockPos post = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]));
+        Entity keeper = keeperWith(level, tag);
+        if (keeper != null) {
+            if (post != null) recallKeeper(level, keeper, post, VALLEY_REACH);
+            return;
+        }
+        BlockPos stand = post != null ? post
+                : floorNear(level, valley.centre().offset(spot[0], 0, spot[1]), player);
         if (stand == null) return;
         stoodNamed(level, stand, name, tag);
     }
@@ -3309,6 +3337,36 @@ public final class Campaign extends SavedData {
         LOGGER.info("No ground for a keeper at {}; standing beside {} at {} instead", around,
                 player.getName().getString(), stand);
         return stand;
+    }
+
+    /**
+     * The body the line knows by this tag, anywhere in the world, or null when there is none.
+     * <p>
+     * A keeper is put on its own step, and a step is ground only where the valley or the camp really is. Where
+     * it is not, {@link #floorNear(ServerLevel, BlockPos, ServerPlayer)} stands the body beside the player
+     * instead - a tower, a field, another country - and a guard that looks only around the step finds nobody
+     * there next visit and stands another. One world reached forty-five Glorfindels that way. Asked of the world
+     * by its tag, one tag keeps one body.
+     */
+    @Nullable
+    private static Entity keeperWith(ServerLevel level, String tag) {
+        for (Entity seen : level.getAllEntities()) {
+            if (!seen.isRemoved() && seen.entityTags().contains(tag)) return seen;
+        }
+        return null;
+    }
+
+    /**
+     * Walks a keeper found away from its step back onto it. Only a body outside its own reach of the step is
+     * moved: one stood a pace off, or beside the player for want of ground, is where the line last put it, and
+     * dragging it six blocks is a worse answer than a step. A step in an unloaded chunk is left alone too,
+     * since a body moved into one is a body the world drops.
+     */
+    private static void recallKeeper(ServerLevel level, Entity keeper, BlockPos post, double reach) {
+        if (keeper.blockPosition().distToCenterSqr(post.getX() + 0.5D, post.getY(), post.getZ() + 0.5D)
+                <= reach * reach) return;
+        if (!level.hasChunkAt(post)) return;
+        keeper.snapTo(post.getX() + 0.5D, post.getY(), post.getZ() + 0.5D, keeper.getYRot(), keeper.getXRot());
     }
 
     /** The campaign's own page if the player is carrying it and has not finished it yet. */
