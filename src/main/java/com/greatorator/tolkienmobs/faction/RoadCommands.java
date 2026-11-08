@@ -1244,6 +1244,15 @@ public final class RoadCommands {
             // into a road climbing the bank in front of it.
             level.getChunk(x >> 4, z >> 4);
             int under = surfaceAt(level, x, z);
+            // A grade saved by a pass that read its ground off chunks nobody had made can carry a height that is not a
+            // height in this world - the floor of it - and believing that would lay the rest of the road under the
+            // surface it never reaches. A station holding one takes the ground under it instead.
+            if (Mth.floor(height[i]) < level.getMinY() || Mth.floor(height[i]) > level.getMaxY()) {
+                int before = i > 0 ? Mth.floor(height[i - 1]) : under;
+                boolean known = before >= level.getMinY() && before <= level.getMaxY();
+                int here = under != VOID && under != WATER ? under : before;
+                retarget(i, known ? Math.min(here, before + (int) MAX_STEP) : here);
+            }
             if (under != VOID && under != WATER && Mth.floor(height[i]) < under - CUT_FILL) {
                 int before = i > 0 ? Mth.floor(height[i - 1]) : under - CUT_FILL;
                 int lifted = Math.min(under - CUT_FILL, before + (int) MAX_STEP);

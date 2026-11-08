@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A saved grade is believed only where it is a height.** The pass stopped in the middle of the Thorenhad road had
+  already written a profile built on the floor of the world into the world's own note, and resuming it would have laid
+  the rest of the road under the ground. A station whose saved height is not inside the world takes the ground under
+  it, so a road caught by that bug carries on instead of resuming the dive.
 - **A road grades from ground the world has actually made.** The Thorenhad road in the redux world ended in a trench
   because a height read off a chunk nobody had made yet came back as the floor of the world: the grade fell from 78 to
   -65 in one station, every column after it was left open, and the road stopped at the lip of its own cutting. A column
