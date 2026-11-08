@@ -140,15 +140,18 @@ country to a gate. A hairpin's apron is one kind wider than the run it turns - f
 track. The wild width's edge is ragged - one column in three of it left as the country has it, which is what the
 reference surface shows; the wider two keep a clean edge.
 
-**A build is a city or a wild place.** The bands are a city's, because a city has a gate: its own street inside the
-wall's band, the paving where the approach starts, the track beyond. Every other build - a camp, a ruin, a cave
-mouth, which is nearly every build in the chapter - is a wild place, and its road is a wild track from its own door:
-three blocks wide, the country's own gravel and dirt, no paving at all. `Roads.CITIES` names the cities, so a build
-added later is wild until somebody says otherwise.
+**The bands are for roads, not for every build.** A settlement's own road is banded: seven blocks of its street
+inside the wall's band, five where the paving starts, three out in the country, so it widens as it comes in to the
+gate. A road that is a road rather than a build's way out is banded too - the valley's main road runs from a camp to a
+crossing and belongs to neither, so it is a road at the ends it serves and a track between. `Roads.BANDED` names them.
 
-**A road may name its kind instead**, in `Roads.KINDS`, and is then laid at it from end to end: a main road is
-`URBAN` and seven blocks wide across a moor as much as through a gate. A named kind overrides the build's own, which
-is how a main road between two wild places is made, and the surface follows the kind too.
+**Every other build is a wild place**, a camp or a ruin or a cave mouth - nearly every build in the chapter - and its
+own way out is a wild track from its own door: three blocks wide, the country's own gravel and dirt, no paving at all.
+Naming the banded roads rather than the wild tracks means a build added later is wild until somebody says otherwise.
+
+**A road may name its kind instead**, in `Roads.KINDS`, and is then laid at it from end to end: a road kept seven
+blocks wide across a moor as much as through a gate, with that kind's mix all the way. A named kind overrides the
+bands, and it is how a road that is deliberately one width is made - none is named yet.
 
 **Three bands, by distance from the nearest location**, in blocks, measured at generation time to a
 *pinned* cell centre (`ArdaMap.centreOf`, the way `Places.CANON_CELL` pins Rivendell). It has to be a

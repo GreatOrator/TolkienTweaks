@@ -27,7 +27,7 @@ with no commands typed. A player walks the chapter and the world has already bui
 | `faction/Pins.java` | The scouted spots: `SOURCE`, crag pins, the ford marker. "The pin wins, the marker only informs facing." |
 | `faction/Keepers.java` | The bodies the line has stood, by tag, UUID and last ground, so a keeper is found in an unloaded chunk. |
 | `faction/Sites.java` | Seats a build at its pin with no drift, underpins it, sweeps the ground to its roofline, and plans a road for it. |
-| `faction/Roads.java` | `ROUTES`: Rivendell's crossing, the Thorenhad main road (`THORENHAD_ROAD`, `URBAN` seven wide, camp to ford), Barachen's fire's track; `BENDS` and `KINDS` by route. |
+| `faction/Roads.java` | `ROUTES`: Rivendell's crossing, Elladan's camp's branch (`ELLADAN_BRANCH`, wild), the Thorenhad main road (`THORENHAD_ROAD`, banded, 4633,-3331 to the ford), Barachen's fire's track; `BENDS`, `KINDS`, `BANDED`, `BUILDS` by route. |
 | `faction/RoadCommands.java` | The road pass: sweep, bridge, pillars, search, grade, lips, and `Progress` (the road's own record). |
 | `faction/Dressing.java` | The city's own drape and the check that plans a road when one is not down. |
 | `faction/RoadPaint.java` | Roads painted at world generation, as a pure function of the column. |
@@ -64,17 +64,20 @@ Compiled, not yet seen in a world.
 A road already in progress keeps its saved alignment, so `/tmroad forget` at the build clears the note and
 the site's road flag, and the next tick walks it again with whatever bends are recorded for it.
 
-A road is one of three kinds now, and the kind is its width: a wild track three blocks wide, the transition's five, a
-city's own seven. A build is a city or a wild place - `Roads.CITIES` names the cities, Rivendell only so far - and a
-wild place's road is wild from its own door out, width and surface both: three wide of gravel and dirt, no paving.
-A city's road takes the bands per column, so it widens as it comes in to the gate. A route naming a kind in
-`Roads.KINDS` overrides both - the Thorenhad road names `URBAN` there, which is how a main road is made. A hairpin's apron is one kind wider
-than the run it turns, and a wild edge is worn by one column in three. So the Thorenhad road is seven wide from the camp down to the ford, and
-Rivendell's crossing paves at its own gate.
+A road is one of three kinds, and the kind is its width: a wild track three blocks wide, the transition's five, a
+city's own seven. `Roads.BANDED` names the roads the bands decide - Rivendell's crossing and the Thorenhad main road -
+so those are a road where they meet a build and a track in between; every other route is a wild build's own way out
+and is laid wild from its door, width and surface both. A route naming a kind in `Roads.KINDS` overrides both (none
+named yet). A hairpin's apron is one kind wider than the run it turns, and a wild edge is worn by one column in three.
+`Roads.BUILDS` says which build a road leaves from where the road has a name of its own, so forgetting the road at a
+camp still clears the camp's flag.
 
-The Thorenhad road wants its camp branch as a separate wild track: a marker where the branch leaves the main road
-(and, if the main road is to stop short of the camp's door, a second at that end) will let the main road start at the
-junction and a `Sites.ELLADAN_CAMP` route run the camp's door out to it, three wide.
+The Thorenhad road's camp branch is recorded: Elladan's camp walks out of its door at 4648, 90, -3314 to the mark
+at 4648, 89, -3325 as a wild track three wide (`ELLADAN_BRANCH`), and the main road ends at the mark 4633, 91, -3331 -
+the ford being its other end - from which it runs banded down to the ford's road end at 4972, 86, -3075. The camp is
+dressed first, so the branch is the road its own approach plans; the main road is planned by standing near its end and
+running `/tmroad build`. The camp's old main-road note is under `tolkienmobs:key_structures/elledancamp`, which no
+route uses now, so it is ignored rather than resumed.
 
 A road already laid keeps the width and the surface it was laid with: `/tmroad forget` at the build then a re-walk
 lays the new kind over it, but columns the old road paved or widened are not taken back.

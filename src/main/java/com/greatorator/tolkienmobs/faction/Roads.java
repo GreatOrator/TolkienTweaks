@@ -35,19 +35,32 @@ public final class Roads {
      */
     public static final String THORENHAD_ROAD = "tolkienmobs:roads/thorenhad";
 
+    /**
+     * Elladan's camp's own way out to that road: a wild track from the block beside the camp's door. It has a name of
+     * its own as well, because the camp's name in the save still holds the note of the main road that used to be
+     * walked from the camp's door, and a road that resumed another road's note would lay the wrong country - four
+     * hundred blocks of it, three wide, from a camp that wanted eleven.
+     */
+    public static final String ELLADAN_BRANCH = "tolkienmobs:roads/elledan_branch";
+
     /** Every build that has a road walked for it. A build missing here gets none. */
     public static final List<Route> ROUTES = List.of(
             // Rivendell: the path's last block at 5200, 134, -3034, the banks at 5055 and 5006 on z -3075, the deck
             // at 76 - the numbers the scouted valley was walked to, 584 pieces of city above the path's end.
             new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5006, -3075, 4,
                     74, 75, 76, 16, 32, "bridge_end", "bridge_middle"),
-            // The Thorenhad road, the valley's main road: Elladan's camp at 4648, 90, -3314 down to the ford's own
-            // road end at 4972, 86, -3075, where the crossing's exit road stops - and no further, since the road over
-            // the water and this dry one are the two sections of the same road and one that ran past the meeting point
-            // would grade the same country a second time from the other side. It is not the camp's own way out - the
-            // camp's branch off it is a separate wild track, pinned where it leaves the main road - so it carries its
-            // own name rather than the camp's, and `KINDS` lays it URBAN, seven wide, the whole way down.
-            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4648, -3314, 4972, -3075),
+            // Elladan's camp's own way out, and the only road the camp is given: the block beside its door at 4648, 90,
+            // -3314 to the mark at 4648, 89, -3325, where the camp's path meets the main road. The camp is a wild
+            // build, so its own track is wild - three blocks wide - however near the seven-wide road it ends.
+            new Route.Riverless(ELLADAN_BRANCH, 4640, 4655, -3313, -3298, 4648, -3314, 4648, -3325),
+            // The Thorenhad road, the valley's main road: its end at the mark 4633, 91, -3331 - the ford being the
+            // other end, so the road is walked towards the ford - down to the ford's own road end at 4972, 86, -3075,
+            // where the crossing's exit road stops, and no further: the road over the water and this dry one are the
+            // two sections of the same road, and one that ran past the meeting point would grade the same country a
+            // second time from the other side. It is a road rather than a build's way out, so it carries its own name
+            // and is laid by the bands - read from the camp it serves, seven at its ground, five where the paving
+            // starts, three for the country between - which is what `BANDED` says of it.
+            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4633, -3331, 4972, -3075),
             // Barachen's fire to the mark at 4892, 74, -3097, where the Thorenhad road runs past: the road leaves the
             // camp's own door at 4820, 76, -2886 and ends at the mark, so the two roads meet there instead of each
             // grading the country the other has already laid. The camp is sixteen by sixteen from its corner pin at
@@ -121,9 +134,9 @@ public final class Roads {
      * surface, so a main road through the wilds is seven wide of the country's own gravel until it reaches a town.
      */
     private static final Map<String, Kind> KINDS = Map.of(
-            // The valley's main road: seven blocks of the settlement's own mix from Elladan's camp to the ford, so a
-            // road that carries every traveller in the chapter is a road and not the track a wild build walks out of.
-            THORENHAD_ROAD, Kind.URBAN);
+            // None yet: a road laid one kind from end to end whatever it crosses and whichever end of the chapter it
+            // runs to - a main road kept seven wide across a moor is written here - and its width and mix both follow.
+            );
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {
@@ -131,22 +144,39 @@ public final class Roads {
     }
 
     /**
-     * The builds that are cities, so the roads leaving them are city roads.
+     * The roads the bands decide, column by column, rather than one kind being laid the whole of them.
      * <p>
-     * A build that is not a city - a camp, a ruin, a cave mouth, which is nearly every build the chapter finalises -
-     * has a wild track leaving it: three blocks wide, of the country's own gravel and dirt, from its own door out.
-     * Only a city has a gate to leave by, so only a city's road is laid seven blocks of its own street inside the
-     * wall's band, five where the paving starts, then the wild track beyond.
+     * A settlement's own road is the first: seven blocks of its street inside the wall's band, five where the paving
+     * starts, three out in the country, so it widens as it comes in to the gate. A road that is a road rather than a
+     * build's way out is the second - the valley's main road runs from a camp to a crossing and belongs to neither -
+     * and it takes the same bands, read from the build it serves, so it is a road where it meets that build and a
+     * track between.
      * <p>
-     * The cities are named rather than the wild builds, so a build added later is a wild one until somebody says
-     * otherwise: a city is scouted and furnished as one and its road follows, where a camp is a clearing with a fire in
-     * it and a track walked out of it.
+     * Every other route is a wild build's own way out - a camp, a ruin, a cave mouth, which is nearly every build the
+     * chapter finalises - and is laid wild from its own door: three blocks wide, of the country's own gravel and dirt.
+     * The banded roads are named rather than the wild tracks, so a build added later is a wild one until somebody
+     * says otherwise: a city is scouted and furnished as one, where a camp is a clearing with a fire in it.
      */
-    private static final Set<String> CITIES = Set.of("rivendell");
+    private static final Set<String> BANDED = Set.of("rivendell", THORENHAD_ROAD);
 
-    /** Whether the build a road belongs to is a city, and its road therefore a city's road. */
-    public static boolean city(Route route) {
-        return CITIES.contains(route.id());
+    /** Whether the bands decide a road, column by column, rather than one kind being laid the whole of it. */
+    public static boolean banded(Route route) {
+        return BANDED.contains(route.id());
+    }
+
+    /**
+     * The build a road leaves from, where the road has a name of its own.
+     * <p>
+     * A road of a build's own is named for the build, and that name is what the save's note of the road is written
+     * under and what the build's own road flag is cleared by. The camp's branch and the main road are named for
+     * themselves, so they say here which build they leave from: the camp finds its branch by its footprint, but
+     * forgetting the road at the camp has to reach the camp's flag, which is filed under the build and not the road.
+     */
+    private static final Map<String, String> BUILDS = Map.of(ELLADAN_BRANCH, Sites.ELLADAN_CAMP);
+
+    /** The build a road leaves from: its own name where it is that build's road, the build it serves otherwise. */
+    public static String build(Route route) {
+        return BUILDS.getOrDefault(route.id(), route.id());
     }
 
     /**

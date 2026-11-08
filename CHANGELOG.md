@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The main road follows the bands, and Elladan's camp leaves by a wild branch of its own.** The road was to be
+  laid seven wide end to end, which turns a road that runs from a camp to a crossing into a street the whole way. It
+  keeps its own name and record and is banded instead - seven where it leaves the camp's ground, five as the paving
+  starts, three for the country between - so the width still says where the road is rather than what it is for.
+  `Roads.BANDED` names the roads the bands decide (Rivendell's crossing and this one) and every other route stays a
+  wild build's track. The road now ends at the mark at 4633, 91, -3331 with the ford as its other end, and Elladan's
+  camp walks out of its door at 4648, 90, -3314 to the mark at 4648, 89, -3325 on a branch of its own, three wide and
+  wild, recorded under `ELLADAN_BRANCH` so it cannot inherit the note the main road left under the camp's name.
 - **The Thorenhad road is a main road, seven blocks wide its whole length.** It was recorded as Elladan's camp's
   own road, which made it the camp's way out: a wild build's track, three wide, whatever it carried. It is a road in
   its own right now - `Roads.THORENHAD_ROAD`, so it has a record of its own in the save - and `Roads.KINDS` lays it

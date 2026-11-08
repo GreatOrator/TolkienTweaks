@@ -236,7 +236,7 @@ public final class RoadCommands {
             return 0;
         }
         Progress.forget(source.getLevel(), route.id());
-        Sites.forgetRoad(source.getLevel(), route.id());
+        Sites.forgetRoad(source.getLevel(), Roads.build(route));
         source.sendSuccess(() -> Component.literal("Forgot the road at " + route.id()
                 + " - the next pass walks it again."), true);
         return 1;
@@ -1894,13 +1894,13 @@ public final class RoadCommands {
 
     /**
      * The kind of road a column of a route is: the kind the route names, or - where it names none - the bands if the
-     * build is a city, and a wild track if it is not. A camp's door is not a gate, so nothing a wild build walks out
-     * of is paved or five wide.
+     * road is one of the banded ones, and a wild track if it is a wild build's own. A camp's door is not a gate, so
+     * nothing a wild build walks out of is paved or five wide; a main road between two places is a road at its ends.
      */
     private static Roads.Kind roadKind(Route route, int x, int z) {
         Roads.Kind named = Roads.kind(route);
         if (named != null) return named;
-        return Roads.city(route) ? kindAt(fromWalls(route, x, z)) : Roads.Kind.WILD;
+        return Roads.banded(route) ? kindAt(fromWalls(route, x, z)) : Roads.Kind.WILD;
     }
 
     /**
