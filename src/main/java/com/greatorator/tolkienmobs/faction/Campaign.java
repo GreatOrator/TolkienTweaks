@@ -2123,6 +2123,7 @@ public final class Campaign extends SavedData {
         if (origin == null) return 0;
         VALLEY_ORIGIN = origin;
         int stood = 0;
+        int kept = 0;
         for (int i = 0; i < spots.size(); i++) {
             FolkSpot body = spots.get(i);
             BlockPos spot = floorOf(level, origin.offset(body.dx(), body.dy(), body.dz()));
@@ -2130,7 +2131,11 @@ public final class Campaign extends SavedData {
             String tag = tagOfName(body.name());
             boolean named = tag != null;
             if (!named) tag = valleyFolkTag(i);
-            if (!nearby(level, spot, tag).isEmpty()) continue;
+            if (!nearby(level, spot, tag).isEmpty()) {
+                // A mark that is already answered is one of the number, not one owed to it.
+                kept++;
+                continue;
+            }
             if (named) {
                 stoodNamed(level, spot, capitalised(body.name()), tag);
             } else {
@@ -2138,7 +2143,7 @@ public final class Campaign extends SavedData {
             }
             stood++;
         }
-        return stood + crowd(level, origin, stood);
+        return stood + crowd(level, origin, kept + stood);
     }
 
     /**
@@ -2153,20 +2158,39 @@ public final class Campaign extends SavedData {
         return standCityFolk(level, origin, spots);
     }
 
-    /** The rest of the number, put wherever the city has ground under it rather than on its marks. */
-    private static int crowd(ServerLevel level, BlockPos origin, int stood) {
+    /**
+     * The rest of the number, put wherever the city has ground under it rather than on its marks.
+     * <p>
+     * The crowd is read before it is stood, because the tick asks for it whenever a player is near the valley:
+     * counting only the bodies put down on this pass stood the whole remainder over again every second, and a
+     * valley of twenty-four people became thousands while the server fell seconds behind a tick trying to walk
+     * them. A walker counts toward the number while it wears the tag and holds no mark's own slot, wherever inside
+     * the city's ground it has wandered to.
+     */
+    private static int crowd(ServerLevel level, BlockPos origin, int standing) {
         BlockPos middle = origin.offset(277, 60, 256);
-        int loose = 0;
-        for (int i = stood; i < VALLEY_FOLK; i++) {
+        int loose = looseFolk(level, middle);
+        int stood = 0;
+        for (int i = standing + loose; i < VALLEY_FOLK; i++) {
             for (int attempt = 0; attempt < 16; attempt++) {
                 BlockPos spot = floorOf(level, middle.offset(
                         level.getRandom().nextInt(-VALLEY_CITY, VALLEY_CITY + 1), 0,
                         level.getRandom().nextInt(-VALLEY_CITY, VALLEY_CITY + 1)));
                 if (spot == null) continue;
                 standFolk(level, spot, VALLEY_FOLK_TAG);
-                loose++;
+                stood++;
                 break;
             }
+        }
+        return stood;
+    }
+
+    /** The city's loose walkers already out there: the tag, and no mark's slot of their own. */
+    private static int looseFolk(ServerLevel level, BlockPos middle) {
+        int loose = 0;
+        for (Entity found : level.getEntities((Entity) null, new AABB(middle).inflate(VALLEY_CITY),
+                body -> body.entityTags().contains(VALLEY_FOLK_TAG))) {
+            if (valleyFolkSlot(found) < 0) loose++;
         }
         return loose;
     }
@@ -2186,9 +2210,13 @@ public final class Campaign extends SavedData {
                 : name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
 
-    /** Bodies carrying a tag within a few paces of a spot, so the same mark is never stood twice. */
+    /**
+     * Bodies carrying a tag within the distance that body is allowed to wander, so the same mark is never stood
+     * twice. The reach is the home radius rather than a few paces: a walker that has strolled to the far end of its
+     * own home is still the body its mark owns, and reading only the paces around the mark made one body into two.
+     */
     private static List<Entity> nearby(ServerLevel level, BlockPos spot, String tag) {
-        return level.getEntities((Entity) null, new AABB(spot).inflate(6.0D),
+        return level.getEntities((Entity) null, new AABB(spot).inflate(VALLEY_FOLK_HOME),
                 found -> found.entityTags().contains(tag));
     }
 

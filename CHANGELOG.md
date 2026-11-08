@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The valley keeps a crowd, not a flood.** The tick that keeps the city lived in stood its people again on every
+  pass, and counted only the bodies it had just put down: once every mark was answered it stood the whole remainder of
+  the crowd over again, every second, for as long as a player was within sight of the valley. `Scouting World` reached
+  2,570 walkers and three and a half thousand Elves, and the server fell eight seconds behind a tick walking them. The
+  crowd is now read before it is stood - a body counts while it wears the tag and no mark's own slot - so only the
+  shortfall is put down, and a mark's body is found across the whole home it was given rather than the few paces round
+  the mark, so one that has wandered is not stood a second time either.
 ## [Unreleased]
 ### Added
 - **The city stops at the sky.** The cut's guards read the sky as the highest block a piece might stand on, when it

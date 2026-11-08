@@ -98,6 +98,14 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
   on "Y >= 20" deletes the bottom four sections of every chunk. That mistake was made and restored from the first
   backup before the strip above.
 
+- **The valley's crowd is counted, not re-stood.** `Campaign.crowd` stood `VALLEY_FOLK - stood` bodies on every pass
+  while `stood` counted only the marks answered that pass, so a full city (all marks taken, `stood` 0) stood 24 new
+  elves every second: the 19:39 session's files hold 3,439 Elves, 2,570 of them `valley_folk`, and 5,211 items, with
+  `Can't keep up` climbing from 2s to 8.4s. It now counts the loose walkers first (`looseFolk`), and `nearby` searches
+  the home radius rather than 6 blocks so a wanderer is not doubled. The bodies the old loop made are still in the
+  world's `entities` files and will keep the test world slow until they are stripped; the ceiling stripper's approach
+  works on `entities` region files too.
+
 ## What the player is likely to ask next
 
 Trees back in some form; the seam between old and new chunks; whether the two crags stood; whether the camp road
