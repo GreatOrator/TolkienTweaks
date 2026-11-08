@@ -79,6 +79,14 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
   block on a wooded column - and it laid that back down at the cap. The skin now comes from under the crown and the
   tree above it is cleared with the column.
 
+- **Arda's sky is y 320, not 319.** `arda_type` is `min_y -64, height 384`, so `level.getMaxY()` is 320 and the last
+  standable block is 319. The city cut's guards compared a piece's top against `getMaxY()` as if it were standable, so
+  tops at exactly 320 were laid; `lay()` now clips every piece with a `BoundingBox` whose top is `getMaxY() - 1`, and
+  both guards refuse `>= getMaxY()`. The `sectionPos out of bounds` errors in the 18:17 log came from those writes. The
+  `DUMMY block entity` warnings at y 320-326 in `Scouting World` are already in those chunks (from a city raised six
+  blocks higher, before the pin moved down); clipping stops new ones, but the old records stay until those chunks are
+  remade.
+
 ## What the player is likely to ask next
 
 Trees back in some form; the seam between old and new chunks; whether the two crags stood; whether the camp road

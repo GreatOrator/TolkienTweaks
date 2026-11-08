@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The city stops at the sky.** The cut's guards read the sky as the highest block a piece might stand on, when it
+  is the first block above it, so a piece whose top reached the sky was laid - and a block written there is dropped by
+  the world without a word while its block entity is still written down. A loading chunk then finds a dummy at a
+  position no section holds, and the point-of-interest update for it throws `sectionPos out of bounds`. Pieces are laid
+  only wholly under the sky now, and each is clipped to it as it goes in, so a template carrying block entities above
+  this world's ceiling puts nothing up there at all - neither block nor block entity.
 - **A road is down when the road is there.** A finished pass left a note saying the crossing was laid, and the
   note was believed for ever: a road laid before the valley was cut, or before the city it belongs to was raised, kept
   the dressing from ever planning a pass over it, so a fresh world reached the place where its road should start and

@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -423,8 +424,9 @@ public final class CityCommands {
             if (seen++ < raisingPiece) continue;
             BlockPos at = mark.origin().offset(part.dx(), part.dy(), part.dz());
             // A piece that would stand above the sky is not laid at all: the world drops those blocks without a word,
-            // and asking for them again next tick would drop them again.
-            if (at.getY() + part.tall() - 1 <= level.getMaxY() && at.getY() >= level.getMinY()) {
+            // and asking for them again next tick would drop them again. The sky is the block above the last one that
+            // can be stood on, so a piece whose top is the sky itself is one block too tall.
+            if (at.getY() + part.tall() - 1 < level.getMaxY() && at.getY() >= level.getMinY()) {
                 lay(level, folder, part, mark.origin());
                 // The lowest band is the city's floor, so it is the one that needs ground under it.
                 if (mark.band() == 0) Sites.underpin(level, at, part.wide(), part.deep(), UNDERPIN);
@@ -701,9 +703,9 @@ public final class CityCommands {
             // not refuse blocks above its ceiling out loud - it drops them. Said here rather than after
             // the laying, when the only sign of it is a build with the tops of its towers missing.
             int tall = box.highY() - box.lowY() + 1;
-            if (box.highY() > level.getMaxY()) {
-                int overflow = box.highY() - level.getMaxY();
-                int fits = level.getMaxY() - tall + 1;
+            if (box.highY() >= level.getMaxY()) {
+                int overflow = box.highY() - level.getMaxY() + 1;
+                int fits = level.getMaxY() - tall;
                 source.sendFailure(Component.literal("That is " + tall + " blocks tall, so " + overflow
                         + " of it stand above the sky and cannot be laid. Plant the corner at y " + fits
                         + " or lower to stand the whole city."));
@@ -747,7 +749,7 @@ public final class CityCommands {
                     // A piece that would stand above the sky is not laid at all, and is counted rather
                     // than reported as laid: the world drops a block above its own ceiling without a
                     // word, so the old count said "laid" for pieces that put nothing anywhere.
-                    if (at.getY() + part.tall() - 1 > level.getMaxY() || at.getY() < level.getMinY()) {
+                    if (at.getY() + part.tall() - 1 >= level.getMaxY() || at.getY() < level.getMinY()) {
                         over++;
                         continue;
                     }
@@ -976,7 +978,17 @@ public final class CityCommands {
                 level.getChunk((at.getX() + dx) >> 4, (at.getZ() + dz) >> 4);
             }
         }
-        template.placeInWorld(level, at, at, new StructurePlaceSettings(), level.getRandom(), 2);
+        // The piece is clipped to the sky it stands under rather than trusted to fit it. A cut made where the sky is
+        // taller carries block entities above this one's ceiling; the world drops a block written up there without a
+        // word, while its block entity is still written down, so a loading chunk finds a dummy at a position no
+        // section holds and the point-of-interest update for it throws sectionPos out of bounds. Clipped, nothing
+        // above the last block that can be stood on is placed at all - neither the block nor the block entity.
+        if (at.getY() >= level.getMaxY()) return;
+        StructurePlaceSettings settings = new StructurePlaceSettings();
+        settings.setBoundingBox(new BoundingBox(at.getX(), Math.max(at.getY(), level.getMinY()), at.getZ(),
+                at.getX() + part.wide() - 1, Math.min(at.getY() + part.tall() - 1, level.getMaxY() - 1),
+                at.getZ() + part.deep() - 1));
+        template.placeInWorld(level, at, at, settings, level.getRandom(), 2);
     }
 
     /** The water line of the whole city: the same box the shoulder is measured on. */
