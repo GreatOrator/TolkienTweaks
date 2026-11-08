@@ -347,11 +347,15 @@ public final class Sites extends SavedData {
      * The crag's own seat. It is cut in two halves - bare rock from its foot to y 8, grass from y 9 to
      * its crown, with the mouth's sill at y 6 - so seating it like a house leaves the rock skirt
      * standing above the ground and the grass a good six blocks higher than the terrain it was dropped
-     * on. Seated by its grass line instead: nine blocks in puts the grass at the ground it is placed
-     * on, and ten is as deep as it is ever set, which is the one-block error the shape of the ground
-     * under a footprint this size is allowed to leave.
+     * on. Seated by its grass line instead, nine blocks in, the grass stood exactly at the ground it was
+     * placed on - which is a crag that has been set down on a field rather than one the ground has taken
+     * back: every block of its skirt and its shell showed, stone and deepslate, and the hill it was
+     * dropped on had to be believed rather than seen. Fifteen blocks in buries the grass line six deep,
+     * which is the skirt and the bare shell with it and only the mouth and the crown's own rock left
+     * showing; sixteen is as deep as it is ever set, the one-block error the shape of the ground under
+     * a footprint this size is allowed to leave, spent on both counts.
      */
-    private static final Seat SUNK_CRAG = new Seat(9, 10, 0, 0, -1, Direction.NORTH);
+    private static final Seat SUNK_CRAG = new Seat(15, 16, 0, 0, -1, Direction.NORTH);
     /** A building that stands on its ground rather than in it: hall, tent, house, arena. */
     private static final Seat ON_SURFACE = new Seat(0, SEAT_SINK, 0, 0, -1, Direction.NORTH);
     /**

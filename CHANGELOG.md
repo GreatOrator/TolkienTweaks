@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A crag is buried six blocks deeper.** Seated by its grass line the crag stood with its grass exactly at grade,
+  which left the whole rock skirt and the bare shell showing - stone and deepslate, a hill set down on a field rather than
+  one the ground had taken back. The seat goes from nine blocks in to fifteen, so the grass line lies six under the
+  ground and only the mouth and the crown's own rock show. Crags already standing in a world keep the seat they were
+  placed with.
 - **Arda grows nothing that was not drawn into it.** Every biome listed vanilla's trees, grass, flowers, ores, lava
   lakes and monster rooms as features and vanilla's cave, canyon and ravine as carvers, so a world the map had drawn and
   this mod places was furnished and undermined by another world's answers. The biome generator now keeps only the mod's

@@ -46,6 +46,9 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
 
 - **Two crags** were refused by `plane`/`ground()`; the fix reads ground past plants and a refusal now names the column
   and the block. If one is still refused the log says why — water is still a refusal, and that means a re-pin.
+- **Crags are seated fifteen blocks in** (nine before), so the rock skirt and the bare shell are underground and only
+  the mouth and the crown's rock show. A crag already standing keeps the seat it was placed with; the new seat applies
+  to a crag built after the change.
 - **The camp road** stopped mid-grade in the last session: `SEARCH done` with no `GRADE done` after it. A pass steps
   only while a player is within `ROAD_REACH` (96) of the block it has reached, so a road that looks stopped may just be
   waiting. Check for `laid in` before calling it a failure.
