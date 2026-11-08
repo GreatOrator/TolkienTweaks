@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Thorenhad road is bent through three scouted marks.** The walk between Elladan's camp and the ford's
+  road end is now forced through 4875, 74, -3179, then 4885, 74, -3133, then 4903, 74, -3102 - the marks
+  the scout walked in Roads 3 - so the line keeps off the hill above the crossing instead of taking the
+  long way round the ford. They are recorded in the build, not pinned in a world, so every world walks
+  the same line.
 - **A road can be bent where the country needs it.** The walk between a build and its far end was one line chosen by
   cost, so where the country offered only one way round a hill it took that way even when it meant crossing at the
   ford and coming back to its own end - a road 1016 stations long for a 423-block run, turning back on itself

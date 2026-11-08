@@ -59,8 +59,10 @@ public final class Roads {
      * The list is in the order the road meets the marks, since the legs are walked in that order.
      */
     private static final Map<String, List<BlockPos>> BENDS = Map.of(
-            // Sites.ELLADAN_CAMP, List.of(new BlockPos(4652, 90, -3290), new BlockPos(4700, 88, -3170))
-    );
+            // The Thorenhad road's own line, walked in Roads 3: three marks between the camp and the ford that keep
+            // the road off the hill and out of the crossing, in the order the road meets them.
+            Sites.ELLADAN_CAMP, List.of(new BlockPos(4875, 74, -3179),
+                    new BlockPos(4885, 74, -3133), new BlockPos(4903, 74, -3102)));
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
     public static List<BlockPos> bends(Route route) {
