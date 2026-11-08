@@ -115,6 +115,16 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
   `.../033640`. A mark's tag is `tolkienmobs:valley_folk:N`, **not** the base tag: a first pass that matched the base tag
   kept 620 slot duplicates, was restored byte-for-byte from the backup, and was re-run with the slot rule.
 
+- **One body for each Elf of the line.** Arda held 45 Glorfindels (all stacked at 5614,250,-3210), 43 Elronds and 29
+  Legolases: a keeper the campaign could not find within its reach was stood again wherever the player happened to be.
+  One body per name tag is kept - the one nearest the stand `VALLEY_STANDS` writes for it around `rivendell`'s centre,
+  5206,136,-3033 from `places.dat` - and 114 were dropped (all `entityttmhuman`, the keepers' own body type; the 270
+  Elves are untouched). Kept: Elrond at 5183,132,-3027 (inside the valley), Glorfindel at 5614,250,-3210 and Legolas at
+  5400,158,-3218 (both still outside the 128-block reach, so a visit will stand the valley's own beside them). Nothing
+  points at these bodies by UUID - `quest_ledger.dat`'s givers name none of them - so the stand is the whole of the
+  choice. Verified by rebuilding all 2,823 chunks from the pre-cleanup backup (10,353 entities) with both rules
+  applied, and matching the live bytes chunk for chunk; only items, surplus folk and the 114 humans changed.
+
 ## What the player is likely to ask next
 
 Trees back in some form; the seam between old and new chunks; whether the two crags stood; whether the camp road
