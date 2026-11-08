@@ -13,7 +13,10 @@ All notable changes to this project will be documented in this file.
   `SpheroidFoliagePlacer` crowns each limb end at the measured radius, so the crown stays the leaf placer's business.
   `NaturalTreeFeature` and its three feature registrations are gone; the woodland modifier still plants the same three
   placed features at the same weights, so the woods change in shape rather than in number. The templates stay in
-  `structure/natural` as the reference the shape was read from.
+  `structure/natural` as the reference the shape was read from. Arda reads its worldgen from the pack's generated
+  JSON rather than from the code registration, so the three configured features were written out again with
+  `runData`: until that ran, the pack still named the retired `tolkienmobs:natural_tree_*` feature types and the
+  world refused to load at all, reported as unbound `tolkienmobs:tree/natural_tree_1..3` in the registry log.
 - **The wood ruin's road ends on Barachen's own road.** Its line ran from the ruin at 4787, -3058 down through the
   bend at 4786, -3082 to the shared crag pin at 4741, -3092, which left it ending in open country once the crags'
   roads took that pin between them. Two marks walked in Roads 7 settle it: 4787, 78, -3082 below the ruin, and

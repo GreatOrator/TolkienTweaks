@@ -253,6 +253,11 @@ the three bends are written in `Roads` - the four crags, the ruin's connector an
   foot 0/2/3, limbs 5/6/10 with one or two more, crown radius 5/11/19, templates 13/24/46 tall. Unseen in a world -
   check a Trollshaws or Eryn Vorn wood for the foot reading as roots, for a crown that still reads as a rounded dome,
   and for a limb ever ending inside a neighbouring tree's trunk.
+  **Arda's worldgen is read from the pack's JSON**, not from the code bootstrap: `TolkienConfiguredFeatures` and
+  `TolkienPlacedFeatures` only feed the data generator, and `./gradlew runData` has to follow any change to a
+  configured or placed feature. Missing that is what stopped Roads 7 loading - the generated JSON still named the
+  retired `tolkienmobs:natural_tree_1..3` features, and the registry refused it as unbound. `runData` rewrote just
+  those three files (`written: 3`), so the rest of the pack is unchanged.
 - A build already standing in an older world keeps its old seat; the sweep does not re-seat it.
 
 - **A road's note is checked, not believed.** `Progress` writes `at` (where the road met the build) and `block`
