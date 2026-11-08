@@ -42,6 +42,10 @@
     "tolkienmobs:entityttmmumakil": {
       "charge": 0.6,
       "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmsouthron": {
+      "charge": 0.6,
+      "energy_budget": 0.15
     }
   },
   "spawners": {

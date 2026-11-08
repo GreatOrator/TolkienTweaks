@@ -314,7 +314,8 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
-    /** Ered Mithrin: the grey, cold range north of Mirkwood and above the Long Lake. */
+    /** Ered Mithrin: the grey, cold range north of Mirkwood and above the Long Lake. It is tagged hostile, so it
+     * carries the Misty Mountains' list - trolls, goblins, duergar - rather than the Iron Hills' peaceful one. */
     public static Biome makeBiomeEredMithrin(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(true)
@@ -328,7 +329,7 @@ public class BiomeMaker extends BiomeHelper{
                         .foliageColorOverride(6974058)
                         .grassColorOverride(10987431)
                         .build())
-                .mobSpawnSettings(ironHillsSpawning().build())
+                .mobSpawnSettings(hithaeglirSpawning().build())
                 .generationSettings(ironHillsGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
@@ -531,7 +532,7 @@ public class BiomeMaker extends BiomeHelper{
                         .foliageColorOverride(4351321)
                         .grassColorOverride(6985776)
                         .build())
-                .mobSpawnSettings(firienSpawning().build())
+                .mobSpawnSettings(eregionSpawning().build())
                 .generationSettings(firienGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }

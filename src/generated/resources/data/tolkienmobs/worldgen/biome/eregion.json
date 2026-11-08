@@ -82,10 +82,6 @@
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "tolkienmobs:entityttmhuron": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
     "tolkienmobs:entityttmsquirrel": {
       "charge": 0.6,
       "energy_budget": 0.15
@@ -180,14 +176,7 @@
       }
     ],
     "misc": [],
-    "monster": [
-      {
-        "type": "tolkienmobs:entityttmhuron",
-        "maxCount": 5,
-        "minCount": 1,
-        "weight": 45
-      }
-    ],
+    "monster": [],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []

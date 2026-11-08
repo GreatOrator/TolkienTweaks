@@ -80,14 +80,15 @@ public class TolkienSurfaceRules {
                         SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN), nurnSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
-                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH, TolkienBiomes.KHAND), SAND),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.UMBAR), umbarSurface()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BROWN_LANDS, TolkienBiomes.EASTERN_WASTE), wastelandFloor()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), angmarSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.IMLADRIS), imladrisSurface()),
                                 ironHillsSurface(), hithaeglirSurface(), whiteMountainsFloor(), makeTolkienWorldRules())),
                         SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
-                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH, TolkienBiomes.KHAND), SANDSTONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.UMBAR), SANDSTONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), COARSE_DIRT),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
@@ -306,6 +307,18 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 		return SurfaceRules.sequence(
 				SurfaceRules.ifTrue(SurfaceRules.yStartCheck(VerticalAnchor.absolute(UMBAR_SHORE_HEIGHT), 0), GRASS_BLOCK),
 				SAND);
+	}
+
+	/**
+	 * The wasteland countries - the Brown Lands between Mirkwood and Anduin, and the empty east beyond Rhun -
+	 * take no rain, so grass is not their floor. Coarse dirt carries the ground, gravel shows through where the
+	 * surface noise is at its highest, and grass holds only within reach of a river or a pool.
+	 */
+	private static SurfaceRules.RuleSource wastelandFloor() {
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), GRASS_BLOCK),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.25D, 1.0D), GRAVEL),
+				COARSE_DIRT);
 	}
 
 	@NotNull

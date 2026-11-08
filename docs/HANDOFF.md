@@ -387,3 +387,15 @@ above it, and sandstone under the sand. The fallback gave it grass over dirt in 
 dunes. `arda_cover`'s short grass will not stand on sand, so the low coast is bare and the hills are the only green
 - and only chunks generated after the rule show it. Surface rules are code, not JSON: no `runData` is needed for
 this, unlike a changed configured or placed feature.
+
+The tag-versus-list check now covers the older countries, and the rule is: a country's registered tags, its spawn
+list, its surface rule and its `arda_*` memberships are read together. Ered Mithrin (`hostile`) had no monster and
+takes `hithaeglirSpawning()`; Eregion (`peaceful`) had Firien's Hurons and has `eregionSpawning()`, Firien's list
+without them; Brown Lands and Emyn Muil (`density/sparse`) are out of `#tolkienmobs:arda_broadleaf`; Khand
+(`desert`) shares Harad's sand rule now; Brown Lands and Eastern Waste (`wasteland`, `dry`) get `wastelandFloor()` -
+coarse dirt, gravel outcrops, grass only by water. `SOUTHRON` and `ORC_TRADER` were the only land spawns without a
+charge, added where they spawn (`haradwaithSpawning`, `mordorSpawning`, `nurnSpawning`), which rewrote the spawn
+costs of haradwaith, khand, umbar, mordor, ash_mountains and nurn. Dagorlad is tagged plains and temperate, so it
+keeps the grass floor. The ten water biomes give their fish no spawn charge either - vanilla's river and ocean do
+the same, so that is not a defect.
+

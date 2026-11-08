@@ -156,6 +156,7 @@ public abstract class BiomeHelper {
 				.addSpawn(MobCategory.MONSTER, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HARADRIM.get(), 1, 4))
 				.addSpawn(MobCategory.CREATURE, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), 1, 2))
 				.addSpawn(MobCategory.CREATURE, 5, npc(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), 0.6, 0.15)
 				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 1))
 				.addMobCharge(TolkienEntities.ENTITY_TTM_HARADRIM.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), 0.6, 0.15)
@@ -177,6 +178,41 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
+	/**
+	 * Eregion is a peaceful country - Hollin after the rings were made, empty of everything but the
+	 * Elves who pass through it - so its list is Firien's without the wild Hurons that walk that
+	 * country's hills. Its tag and its list say the same thing now.
+	 */
+	public static MobSpawnSettings.Builder eregionSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.CREATURE, 35, npc(TolkienEntities.ENTITY_TTM_ELVES.get(), 1, 2))
+				.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.COW, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.HORSE, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.DONKEY, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 4))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_ELVES.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.WOLF, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_THRUSH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_FROG.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+				.addMobCharge(EntityType.PIG, 0.6, 0.15)
+				.addMobCharge(EntityType.CHICKEN, 0.6, 0.15)
+				.addMobCharge(EntityType.COW, 0.6, 0.15)
+				.addMobCharge(EntityType.HORSE, 0.6, 0.15)
+				.addMobCharge(EntityType.DONKEY, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15);
+	}
 	public static MobSpawnSettings.Builder firienSpawning() {
 
 		return new MobSpawnSettings.Builder()
@@ -336,6 +372,7 @@ public abstract class BiomeHelper {
         return new MobSpawnSettings.Builder()
 				.creatureGenerationProbability(0.01F)
 				.addSpawn(MobCategory.CREATURE, 1, npc(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), 0.6, 0.15)
 				.addSpawn(MobCategory.MONSTER, 20, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 1, 5))
 				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_WARG.get(), 1, 3))
 				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 1, 4))
@@ -360,6 +397,7 @@ public abstract class BiomeHelper {
                 .addSpawn(MobCategory.CREATURE, 8, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 3))
                 .addSpawn(MobCategory.CREATURE, 8, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 3))
                 .addSpawn(MobCategory.CREATURE, 2, npc(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), 1, 2))
+                .addMobCharge(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)

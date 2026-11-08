@@ -38,15 +38,23 @@
   ],
   "has_precipitation": true,
   "spawn_costs": {
+    "minecraft:goat": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
     "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "tolkienmobs:entityttmdwarf": {
+    "tolkienmobs:entityttmduergar": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "tolkienmobs:entityttmgoat": {
+    "tolkienmobs:entityttmgoblin": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmtroll": {
       "charge": 0.6,
       "energy_budget": 0.15
     }
@@ -57,26 +65,39 @@
         "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 2,
         "minCount": 1,
-        "weight": 15
+        "weight": 10
       }
     ],
     "axolotls": [],
     "creature": [
       {
-        "type": "tolkienmobs:entityttmdwarf",
+        "type": "minecraft:goat",
         "maxCount": 3,
+        "minCount": 1,
+        "weight": 15
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmtroll",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 35
+      },
+      {
+        "type": "tolkienmobs:entityttmgoblin",
+        "maxCount": 5,
         "minCount": 1,
         "weight": 45
       },
       {
-        "type": "tolkienmobs:entityttmgoat",
-        "maxCount": 3,
+        "type": "tolkienmobs:entityttmduergar",
+        "maxCount": 2,
         "minCount": 1,
-        "weight": 25
+        "weight": 20
       }
     ],
-    "misc": [],
-    "monster": [],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []

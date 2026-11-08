@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The older countries are checked against their own tags.** Ered Mithrin was tagged hostile but carried the Iron
+  Hills' peaceful list - dwarves, goats, crebain, no monster - so it takes the Misty Mountains': trolls, goblins,
+  duergar. Eregion was tagged peaceful but shared Firien's list, Hurons and all, and has its own now, Firien's without
+  them. Brown Lands and Emyn Muil were tagged sparse yet sat in `#tolkienmobs:arda_broadleaf`, so broadleaf trees grew
+  over the barren land and the crags; both are out of that tag. Khand is tagged desert and draws the desert's
+  generation, but had a grass floor - it lays the Haradwaith's sand and sandstone now. The Brown Lands and the Eastern
+  Waste are dry wastelands growing green grass everywhere, so their floor is coarse dirt with gravel outcrops and
+  grass only within reach of water. The southron trader and the orc trader were the only land spawns in the pack with
+  no spawn charge: they now cost what every other spawn costs.
 - **Umbar has its own coast.** The corsairs' country wore the fallback floor every biome gets - grass over dirt - in a
   land that takes no rain, beside the Haradwaith's sand. It lays sand from the shoreline up to `UMBAR_SHORE_HEIGHT`
   (68) now, keeps the olive grass its own tint makes of the higher cells, and puts sandstone under the sand. The
