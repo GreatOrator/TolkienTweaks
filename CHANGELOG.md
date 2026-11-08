@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The four crags' road ends are recorded.** The redux walk left an ammolite marker on each crag's footprint edge -
+  Matuna's lair among them - and the four are in the pack's pin table now, so a road to any of the stone's three or to
+  the wood-troll's own hill has an end to grade to rather than the survey's guess. The ford's marker reads one block
+  west of where it was written, and is recorded as it reads.
 - **Matuna's lair is set into its hill like the stone's three crags.** The fourth crag was not in the list of crags,
   so it was seated on its ground the way a hall is: its rock skirt stood above the hill and its grass line six blocks
   higher than the ground it had been dropped on. It is a crag like the others now, buried to its grass line with only

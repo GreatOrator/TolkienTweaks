@@ -107,7 +107,19 @@ public final class Pins extends SavedData {
             Map.entry(Sites.ELLADAN_CAMP + ".keeper", new BlockPos(4645, 90, -3308)),
             // Where the road out of the valley's crossing ends and the next one begins: the marker at 4972 is both,
             // so the road south to Thorenhad starts here rather than at the water.
-            Map.entry("ford.road", new BlockPos(4972, 86, -3075))
+            // The ford's marker as the redux world reads it: one block west of where it was first written down, and
+            // two lower, which is the ground beside the road's last block rather than on it.
+            Map.entry("ford.road", new BlockPos(4971, 84, -3075)),
+            // The four crags' road ends, read off the ammolite markers set down in the redux world once the crags were
+            // standing. Each sits on its crag's footprint edge, twenty-seven or twenty-eight blocks out from the
+            // middle of it, which is the ground a road arriving at a crag has to meet. Recorded so that a road to any
+            // of the stone's three, or to Matuna's lair, has an end to grade to instead of the survey's guess. The
+            // chapter's other road ends were written down earlier: the ruin's, Barachen's fire's, Thorenhad's door
+            // and the valley's two banks.
+            Map.entry(Sites.TROLL_CAVE + ".end", new BlockPos(4515, 121, -2446)),
+            Map.entry(Sites.TROLL_CAVE_2 + ".end", new BlockPos(4624, 107, -2479)),
+            Map.entry(Sites.TROLL_CAVE_3 + ".end", new BlockPos(4562, 120, -2398)),
+            Map.entry(Sites.TROLL_CAVE_4 + ".end", new BlockPos(4689, 86, -3050))
             // Chapter one is all of it. What is left is chapter two's four and the last act's two.
     ));
 
