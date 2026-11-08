@@ -775,6 +775,8 @@ public final class RoadCommands {
         private static final int MARGIN = 96;
         /** The most candidates one search may hold: past it the window narrows, then the line goes straight. */
         private static final long WINDOW = 600_000L;
+        /** The least of them a walk may settle before it gives up, so a narrow window is never cut short by its size. */
+        private static final int SETTLE_AT_LEAST = 240_000;
         /**
          * How far a road may run for the distance it has to cover: two and a half times as far as the crow flies, so a
          * road that switchbacks up a fell is still a road and one that wanders a meadow is not one the walk will find.
@@ -783,7 +785,7 @@ public final class RoadCommands {
         /** What a diagonal step costs over a straight one: one and the root of two less, which is the eight-way guess. */
         private static final double DIAGONAL = Math.sqrt(2.0D) - 1.0D;
         /** What a step pays for standing a block off the grade between the ends, and how far off it stops counting. */
-        private static final double PROFILE_PENALTY = 0.5D;
+        private static final double PROFILE_PENALTY = 0.2D;
         private static final double PROFILE_OFF = 24.0D;
         /**
          * How many stations a road runs straight out of its build before the country may turn it.
@@ -897,7 +899,12 @@ public final class RoadCommands {
             this.deep = bounds[3] - bounds[2] + 1;
             int nodes = (bounds[1] - bounds[0] + 1) * deep;
             this.fits = true;
-            this.limit = Math.max(120_000, nodes / 2);
+            // The whole window at the most, not half of it. The price of standing off the grade flattens the cost of
+            // the ground around the road, so a walk may have to settle a great deal of what it can see before the far
+            // end comes off the queue at all; a limit of half the window stopped it with its way half walked and no
+            // word said about it. A step is four thousand candidates, so the whole of even the widest window is a few
+            // seconds of ticks rather than a stall.
+            this.limit = Math.max(SETTLE_AT_LEAST, nodes);
             this.ground = new int[nodes];
             this.best = new double[nodes];
             this.from = new int[nodes];
@@ -962,6 +969,15 @@ public final class RoadCommands {
                     if (tries == 0 && from[goal] == -1) {
                         widen();
                         continue;
+                    }
+                    if (from[goal] == -1) {
+                        // Said out loud, because the pass then lays a straight line through the country and whoever
+                        // reads the log should know the road underfoot is not a walked one, nor why there is none.
+                        LOGGER.info("Road {}: the walk gave up {} blocks short of {}, {} - {} candidates settled, {} "
+                                        + "attempts, {}",
+                                route.id(), Math.round(Math.hypot(goalX - startX, goalZ - startZ)), goalX, goalZ,
+                                looked, tries + 1,
+                                open.isEmpty() ? "nothing left to settle" : "the window's budget spent");
                     }
                     done = true;
                     break;

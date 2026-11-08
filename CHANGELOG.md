@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A walk is given the whole window, and says when it gives up.** The search stopped after settling half the
+  candidates it could see, so a fresh world's road came back as a two-station stub with nothing in the log to explain
+  it. It may settle its whole window now - still a few seconds of ticks - and writes down the candidates it settled,
+  the attempts it made and how far short of its far end it stopped, so a road laid straight through the country is a
+  thing the log admits rather than one the player has to discover. The price of standing off the grade is also a fifth
+  of what it was, since at a fifth the distance between the ends still counts for something when the country is flat.
 - **A road with no bends is still a road.** A walk that found no way fell back to the straight line between the ends,
   and the simplifier then dropped every station of it - a straight line has no bends to keep - leaving two stations four
   hundred blocks apart and a grade that built a stub at each end and called the road laid. Stations are kept no more
