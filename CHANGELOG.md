@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A keeper is remembered, not only looked for.** A tag only reaches as far as the chunks a world has in
+  memory, so a keeper left in an unloaded chunk was invisible and the line stood another beside the one it could not
+  see - the other half of the forty-five Glorfindels. Every body the line stands is now written down in the save
+  (`tolkienmobs:keepers`) with its tag, its UUID, its world and the ground it was last on: the body is found by its
+  identity after a reload, and the chunk it was left in is read once so it is back before the line decides it is short
+  one. A record whose body has been killed is forgotten, so a keeper can still be stood again.
 - **A keeper is found by his tag, not by his post.** The guard that decides whether a named Elf is already
   standing looked at a box around the valley, and a keeper whose step had no ground under it was stood beside the
   player instead: once the place's own middle moved, the box held none of them, so every visit stood another, and

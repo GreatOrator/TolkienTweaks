@@ -25,6 +25,7 @@ with no commands typed. A player walks the chapter and the world has already bui
 | File | What it does |
 | --- | --- |
 | `faction/Pins.java` | The scouted spots: `SOURCE`, crag pins, the ford marker. "The pin wins, the marker only informs facing." |
+| `faction/Keepers.java` | The bodies the line has stood, by tag, UUID and last ground, so a keeper is found in an unloaded chunk. |
 | `faction/Sites.java` | Seats a build at its pin with no drift, underpins it, sweeps the ground to its roofline, and plans a road for it. |
 | `faction/Roads.java` | `ROUTES`: one `Route.Crossing` (Rivendell) and one `Route.Riverless` (Elledan's camp to the ford). |
 | `faction/RoadCommands.java` | The road pass: sweep, bridge, pillars, search, grade, lips, and `Progress` (the road's own record). |
@@ -42,8 +43,9 @@ camp-to-ford road lays; the Rivendell crossing lays in full (`laid in 53 steps, 
 Done and only compiled (not seen): two refused crags re-attempting, the ground past plants, the sweep that carries the
 ground around every build to its roofline, no vanilla world generation in Arda, and roads spanning a hole.
 
-A keeper is now asked of the world by its tag rather than found in a box round its post, and a body left outside its
-own reach of the post is walked back to it: compiled, not yet seen in a world.
+A keeper is now asked of the world by its tag rather than found in a box round his post, a body left outside his reach
+of the post is walked back to it, and every stood body is written down in the save (`tolkienmobs:keepers`) so he is
+found in an unloaded chunk rather than stood again: compiled, not yet seen in a world.
 
 ## Open
 

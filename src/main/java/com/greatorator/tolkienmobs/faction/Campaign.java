@@ -1715,7 +1715,7 @@ public final class Campaign extends SavedData {
         BlockPos post = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]));
         Entity keeper = keeperWith(level, GLORFINDEL_TAG);
         if (keeper != null) {
-            if (post != null) recallKeeper(level, keeper, post, GLORFINDEL_REACH);
+            if (post != null) recallKeeper(level, keeper, post, GLORFINDEL_REACH, GLORFINDEL_TAG);
             return;
         }
         BlockPos stand = post != null ? post
@@ -1736,6 +1736,7 @@ public final class Campaign extends SavedData {
         elf.setCustomName(Component.literal(GLORFINDEL).withStyle(ChatFormatting.GOLD));
         elf.setCustomNameVisible(true);
         level.addFreshEntity(elf);
+        Keepers.remember(level, GLORFINDEL_TAG, elf);
     }
 
     /**
@@ -1759,7 +1760,7 @@ public final class Campaign extends SavedData {
         BlockPos post = floorNear(level, middle.offset(GLOIN_STAND[0], 0, GLOIN_STAND[1]));
         Entity keeper = keeperWith(level, GLOIN_TAG);
         if (keeper != null) {
-            if (post != null) recallKeeper(level, keeper, post, GLOIN_REACH);
+            if (post != null) recallKeeper(level, keeper, post, GLOIN_REACH, GLOIN_TAG);
             return;
         }
         BlockPos stand = post != null ? post
@@ -1782,6 +1783,7 @@ public final class Campaign extends SavedData {
         AttributeInstance height = dwarf.getAttribute(Attributes.SCALE);
         if (height != null) height.setBaseValue(GLOIN_HEIGHT);
         level.addFreshEntity(dwarf);
+        Keepers.remember(level, GLOIN_TAG, dwarf);
     }
 
     /**
@@ -1808,7 +1810,7 @@ public final class Campaign extends SavedData {
         BlockPos post = floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]));
         Entity keeper = keeperWith(level, GIMLI_TAG);
         if (keeper != null) {
-            if (post != null) recallKeeper(level, keeper, post, reach);
+            if (post != null) recallKeeper(level, keeper, post, reach, GIMLI_TAG);
             return;
         }
         BlockPos stand = post != null ? post
@@ -1831,6 +1833,7 @@ public final class Campaign extends SavedData {
         AttributeInstance height = dwarf.getAttribute(Attributes.SCALE);
         if (height != null) height.setBaseValue(GIMLI_HEIGHT);
         level.addFreshEntity(dwarf);
+        Keepers.remember(level, GIMLI_TAG, dwarf);
     }
 
     /**
@@ -1864,7 +1867,7 @@ public final class Campaign extends SavedData {
         BlockPos post = floorNear(level, camp.centre());
         Entity keeper = keeperWith(level, ELLADAN_TAG);
         if (keeper != null) {
-            if (post != null) recallKeeper(level, keeper, post, ELLADAN_REACH);
+            if (post != null) recallKeeper(level, keeper, post, ELLADAN_REACH, ELLADAN_TAG);
             return;
         }
         BlockPos stand = post;
@@ -1882,6 +1885,7 @@ public final class Campaign extends SavedData {
         elf.setCustomName(Component.literal(ELLADAN).withStyle(ChatFormatting.GOLD));
         elf.setCustomNameVisible(true);
         level.addFreshEntity(elf);
+        Keepers.remember(level, ELLADAN_TAG, elf);
     }
 
     /**
@@ -1910,7 +1914,7 @@ public final class Campaign extends SavedData {
         BlockPos post = floorNear(level, fire.centre());
         Entity keeper = keeperWith(level, BARACHEN_TAG);
         if (keeper != null) {
-            if (post != null) recallKeeper(level, keeper, post, BARACHEN_REACH);
+            if (post != null) recallKeeper(level, keeper, post, BARACHEN_REACH, BARACHEN_TAG);
             return;
         }
         BlockPos stand = post;
@@ -1928,6 +1932,7 @@ public final class Campaign extends SavedData {
         scout.setCustomName(Component.literal(BARACHEN).withStyle(ChatFormatting.GOLD));
         scout.setCustomNameVisible(true);
         level.addFreshEntity(scout);
+        Keepers.remember(level, BARACHEN_TAG, scout);
     }
 
     /** The slot a page of this shape holds in the West's line, or -1 when the line has none of them. */
@@ -2311,7 +2316,7 @@ public final class Campaign extends SavedData {
         BlockPos post = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]));
         Entity keeper = keeperWith(level, tag);
         if (keeper != null) {
-            if (post != null) recallKeeper(level, keeper, post, VALLEY_REACH);
+            if (post != null) recallKeeper(level, keeper, post, VALLEY_REACH, tag);
             return;
         }
         BlockPos stand = post != null ? post
@@ -2335,6 +2340,7 @@ public final class Campaign extends SavedData {
         elf.setCustomName(Component.literal(name).withStyle(ChatFormatting.GOLD));
         elf.setCustomNameVisible(true);
         level.addFreshEntity(elf);
+        Keepers.remember(level, tag, elf);
     }
 
     /**
@@ -3346,12 +3352,23 @@ public final class Campaign extends SavedData {
      * it is not, {@link #floorNear(ServerLevel, BlockPos, ServerPlayer)} stands the body beside the player
      * instead - a tower, a field, another country - and a guard that looks only around the step finds nobody
      * there next visit and stands another. One world reached forty-five Glorfindels that way. Asked of the world
-     * by its tag, one tag keeps one body.
+     * by its tag and of the save by its UUID, one tag keeps one body - and a body the world has not read yet is
+     * read back by the ground {@link Keepers} wrote down for him.
      */
     @Nullable
     private static Entity keeperWith(ServerLevel level, String tag) {
+        Entity known = Keepers.keeper(level, tag);
+        if (known != null) {
+            // The note is the ground the body is on, so it is kept true for as long as the body is in memory.
+            Keepers.remember(level, tag, known);
+            return known;
+        }
         for (Entity seen : level.getAllEntities()) {
-            if (!seen.isRemoved() && seen.entityTags().contains(tag)) return seen;
+            if (!seen.isRemoved() && seen.entityTags().contains(tag)) {
+                // A body stood before the line wrote bodies down is written down now.
+                Keepers.remember(level, tag, seen);
+                return seen;
+            }
         }
         return null;
     }
@@ -3362,11 +3379,12 @@ public final class Campaign extends SavedData {
      * dragging it six blocks is a worse answer than a step. A step in an unloaded chunk is left alone too,
      * since a body moved into one is a body the world drops.
      */
-    private static void recallKeeper(ServerLevel level, Entity keeper, BlockPos post, double reach) {
+    private static void recallKeeper(ServerLevel level, Entity keeper, BlockPos post, double reach, String tag) {
         if (keeper.blockPosition().distToCenterSqr(post.getX() + 0.5D, post.getY(), post.getZ() + 0.5D)
                 <= reach * reach) return;
         if (!level.hasChunkAt(post)) return;
         keeper.snapTo(post.getX() + 0.5D, post.getY(), post.getZ() + 0.5D, keeper.getYRot(), keeper.getXRot());
+        Keepers.remember(level, tag, keeper);
     }
 
     /** The campaign's own page if the player is carrying it and has not finished it yet. */
