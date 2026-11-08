@@ -1806,6 +1806,25 @@ public final class RoadCommands {
             return overworld.getDataStorage().computeIfAbsent(TYPE);
         }
 
+        /** One alignment as the note carries it: the stations' x and z, in the order they were laid. */
+        private static int[] flatten(List<int[]> line) {
+            if (line == null) return new int[0];
+            int[] out = new int[line.size() * 2];
+            for (int i = 0; i < line.size(); i++) {
+                out[i * 2] = line.get(i)[0];
+                out[i * 2 + 1] = line.get(i)[1];
+            }
+            return out;
+        }
+
+        /** A grade's heights as the note carries them, so the shape of the road can be read back as numbers. */
+        private static long[] bits(double[] height) {
+            if (height == null) return new long[0];
+            long[] out = new long[height.length];
+            for (int i = 0; i < height.length; i++) out[i] = Double.doubleToLongBits(height[i]);
+            return out;
+        }
+
         /** Where a pass on this route had got to, or null when nobody has begun one. */
         private static CompoundTag of(ServerLevel level, String route) {
             instance(level);
@@ -1824,11 +1843,23 @@ public final class RoadCommands {
                 tag.putBoolean("down", true);
                 // Where the road met the build, and what the ground under it was, so the note can be checked rather
                 // than believed: see standing.
+                // The chunk is made before its ground is asked for. A height read off a chunk nobody has made is the
+                // floor of the world, and the note written from one said the road met its build at y -65 - a block of
+                // nothing in a place nobody would look, and a block that the check below would go on comparing.
+                level.getChunk(job.route.pathX() >> 4, job.route.pathZ() >> 4);
                 BlockPos entry = new BlockPos(job.route.pathX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                         job.route.pathX(), job.route.pathZ()) - 1, job.route.pathZ());
                 tag.putIntArray("at", new int[]{entry.getX(), entry.getY(), entry.getZ()});
                 tag.putString("block", BuiltInRegistries.BLOCK.getKey(
                         level.getBlockState(entry).getBlock()).toString());
+                // And the way the road took to get there. The note used to keep where the road met the build and
+                // nothing of the road itself, so a pass that finished took its alignment with it and a laid road was a
+                // road nobody could read: no station count, no way to say where it doubled back or how high it had
+                // climbed. The record is a few kilobytes against a road of hundreds of blocks, and it is the only
+                // account a finished road leaves.
+                tag.putIntArray("approach", flatten(job.approach));
+                if (job.graded != null) tag.putLongArray("height", bits(job.graded.height));
+                if (job.done != null) tag.putInt("stations", job.done.along());
             }
             ROADS.put(job.route.id(), tag);
             instance(level).setDirty();

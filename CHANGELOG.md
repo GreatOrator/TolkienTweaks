@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A finished road keeps the alignment it was laid along.** The note a pass leaves when it finishes carried where the
+  road met the build and the block under it, and nothing of the way it took - so every road became unreadable the
+  moment it was done, and the first worlds whose passes completed had five-word records and no way to say how many
+  stations the road had run, where it doubled back, or how high it had climbed. The note carries the alignment and the
+  grade now, which is the only account a laid road leaves. The ground the note probes is read after its chunk is
+  made, too: a note written off a column nobody had loaded said the road met its build at y -65, the floor of the world.
 - **A road keeps to the grade between its two ends.** The walk priced what a step did to the height and nothing else,
   so where a valley ran straight to the ford and a hill stood beside it, it climbed the hill - a gentle climb is cheap,
   a steep descent is not - and then had to come down in switchbacks at the last, doubling back over ground it had
