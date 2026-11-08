@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The default trees grow instead of being laid down.** The three trees built by hand in `structure/natural` were
+  planted as structures, so every wood repeated the same three trees block for block and a stand of them read as
+  copies. Their shape is measured into code now. The templates stand thirteen, twenty-four and forty-six blocks tall
+  on boles of ten, thirteen and forty; their feet reach nought, two and three blocks out; five to six, six to eight
+  and ten to thirteen limbs leave the bole's upper half in a spiral; and their crowns reach five, eleven and nineteen
+  blocks from the trunk. `OpenGrownTrunkPlacer` grows that shape - a foot of roots that closes to a single block
+  within six, a bare bole, then limbs leaving one by one round the trunk and breaking upward at the end - with its
+  limb settings in a `LimbsConfig`, the way the branching placers keep theirs in a `BranchesConfig`. The existing
+  `SpheroidFoliagePlacer` crowns each limb end at the measured radius, so the crown stays the leaf placer's business.
+  `NaturalTreeFeature` and its three feature registrations are gone; the woodland modifier still plants the same three
+  placed features at the same weights, so the woods change in shape rather than in number. The templates stay in
+  `structure/natural` as the reference the shape was read from.
 - **The wood ruin's road ends on Barachen's own road.** Its line ran from the ruin at 4787, -3058 down through the
   bend at 4786, -3082 to the shared crag pin at 4741, -3092, which left it ending in open country once the crags'
   roads took that pin between them. Two marks walked in Roads 7 settle it: 4787, 78, -3082 below the ruin, and

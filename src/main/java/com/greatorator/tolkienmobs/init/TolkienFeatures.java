@@ -40,12 +40,4 @@ public class TolkienFeatures {
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> NURN_LAKE = FEATURES.register("nurn_lake", () -> new NurnLakeFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> DEAD_BODIES = FEATURES.register("dead_bodies", () -> new DeadBodiesFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> MARSH_POOL = FEATURES.register("marsh_pool", () -> new MarshPoolFeature(NoneFeatureConfiguration.CODEC));
-    // The chapter's default trees: what a wood grows where nothing else has been decided for it. Each is its own
-    // feature because each is its own template, and a tree is placed by laying the template down.
-    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> NATURAL_TREE_1 = FEATURES.register("natural_tree_1",
-            () -> new NaturalTreeFeature(NoneFeatureConfiguration.CODEC, Identifier.fromNamespaceAndPath(MODID, "natural/natural_tree_1")));
-    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> NATURAL_TREE_2 = FEATURES.register("natural_tree_2",
-            () -> new NaturalTreeFeature(NoneFeatureConfiguration.CODEC, Identifier.fromNamespaceAndPath(MODID, "natural/natural_tree_2")));
-    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> NATURAL_TREE_3 = FEATURES.register("natural_tree_3",
-            () -> new NaturalTreeFeature(NoneFeatureConfiguration.CODEC, Identifier.fromNamespaceAndPath(MODID, "natural/natural_tree_3")));
 }

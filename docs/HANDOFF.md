@@ -247,6 +247,12 @@ the three bends are written in `Roads` - the four crags, the ruin's connector an
   tree features through `neoforge/biome_modifier/tree/arda_*.json` (broadleaf, woodland, Imladris) and by
   `plants/arda_cover.json`, which lays the new ground cover over every land biome in the `arda_cover` tag. Chunks made
   before the change keep what they have, so a seam is expected at the old edge.
+- **The default trees are grown, not laid.** `natural_tree_1..3` are `Feature.TREE` configurations now, shaped by
+  `OpenGrownTrunkPlacer` (limb settings in `LimbsConfig`) from the three templates kept in `structure/natural`;
+  `NaturalTreeFeature` and its feature registrations are gone. The measurements they were built from: bole 10/13/40,
+  foot 0/2/3, limbs 5/6/10 with one or two more, crown radius 5/11/19, templates 13/24/46 tall. Unseen in a world -
+  check a Trollshaws or Eryn Vorn wood for the foot reading as roots, for a crown that still reads as a rounded dome,
+  and for a limb ever ending inside a neighbouring tree's trunk.
 - A build already standing in an older world keeps its old seat; the sweep does not re-seat it.
 
 - **A road's note is checked, not believed.** `Progress` writes `at` (where the road met the build) and `block`

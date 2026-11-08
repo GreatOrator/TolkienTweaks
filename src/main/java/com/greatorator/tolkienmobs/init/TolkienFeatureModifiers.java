@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.init;
 import com.greatorator.tolkienmobs.world.components.feature.tree.components.SpheroidFoliagePlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingLargeTrunkPlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingTrunkPlacer;
+import com.greatorator.tolkienmobs.world.components.feature.tree.placers.OpenGrownTrunkPlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.GroundCoverDecorator;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TreeRootsDecorator;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TrunkSideDecorator;
@@ -34,6 +35,7 @@ public class TolkienFeatureModifiers {
 
     public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<BranchingTrunkPlacer>> TRUNK_BRANCHING = TRUNK_PLACERS.register("branching_trunk_placer", () -> new TrunkPlacerType<>(BranchingTrunkPlacer.CODEC));
     public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<BranchingLargeTrunkPlacer>> TRUNK_LARGE_BRANCHING = TRUNK_PLACERS.register("branching_large_trunk_placer", () -> new TrunkPlacerType<>(BranchingLargeTrunkPlacer.CODEC));
+    public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<OpenGrownTrunkPlacer>> TRUNK_OPEN_GROWN = TRUNK_PLACERS.register("open_grown_trunk_placer", () -> new TrunkPlacerType<>(OpenGrownTrunkPlacer.CODEC));
 
     public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<AvoidLandmarkModifier>> NO_STRUCTURE = registerPlacer("no_structure", () -> () -> AvoidLandmarkModifier.CODEC);
 

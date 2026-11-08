@@ -11,6 +11,8 @@ import com.greatorator.tolkienmobs.world.components.feature.tree.components.Sphe
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchesConfig;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingLargeTrunkPlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingTrunkPlacer;
+import com.greatorator.tolkienmobs.world.components.feature.tree.placers.LimbsConfig;
+import com.greatorator.tolkienmobs.world.components.feature.tree.placers.OpenGrownTrunkPlacer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -55,7 +57,8 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> HARDENED_CULUMALDA_FIRIEN_KEY = registerKey("tree/hardened_culumalda_firien");
     public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_FIRIEN_KEY = registerKey("tree/lebethron_firien");
     public static final ResourceKey<ConfiguredFeature<?, ?>> HARDENED_LEBETHRON_FIRIEN_KEY = registerKey("tree/hardened_lebethron_firien");
-    // The default trees, built by hand and laid down as structures: the trees of a wood that has no tree of its own.
+    // The default trees, grown to the shape of the three built by hand in `structure/natural`: the trees of a wood
+    // that has no tree of its own.
     public static final ResourceKey<ConfiguredFeature<?, ?>> NATURAL_TREE_1_KEY = registerKey("tree/natural_tree_1");
     public static final ResourceKey<ConfiguredFeature<?, ?>> NATURAL_TREE_2_KEY = registerKey("tree/natural_tree_2");
     public static final ResourceKey<ConfiguredFeature<?, ?>> NATURAL_TREE_3_KEY = registerKey("tree/natural_tree_3");
@@ -252,12 +255,33 @@ public class TolkienConfiguredFeatures {
                 .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .decorators(ImmutableList.of(TolkienDecorators.WALL_BLOOM, TolkienDecorators.LIVING_ROOTS))
                 .build()));
-        context.register(NATURAL_TREE_1_KEY, new ConfiguredFeature<>(TolkienFeatures.NATURAL_TREE_1.get(),
-                NoneFeatureConfiguration.INSTANCE));
-        context.register(NATURAL_TREE_2_KEY, new ConfiguredFeature<>(TolkienFeatures.NATURAL_TREE_2.get(),
-                NoneFeatureConfiguration.INSTANCE));
-        context.register(NATURAL_TREE_3_KEY, new ConfiguredFeature<>(TolkienFeatures.NATURAL_TREE_3.get(),
-                NoneFeatureConfiguration.INSTANCE));
+        // Ten blocks of bole with five limbs in its upper half and a crown five out from it: the small tree.
+        context.register(NATURAL_TREE_1_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(Blocks.OAK_WOOD),
+                new OpenGrownTrunkPlacer(8, 2, 2, 0, new LimbsConfig(BlockStateProvider.simple(Blocks.OAK_WOOD), 5, 1, 0.45D, 3.0D, 1.5D, 0.3D)),
+                BlockStateProvider.simple(Blocks.OAK_LEAVES),
+                new SpheroidFoliagePlacer(3.2F, 2.6F, ConstantInt.of(0), 0, 0, 0.35F, 18),
+                new TwoLayersFeatureSize(1, 0, 1))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.DIRT))
+                .build()));
+        // Thirteen blocks of bole standing on a foot two blocks out, eight limbs, a crown eleven from the trunk.
+        context.register(NATURAL_TREE_2_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(Blocks.OAK_WOOD),
+                new OpenGrownTrunkPlacer(10, 3, 3, 2, new LimbsConfig(BlockStateProvider.simple(Blocks.OAK_WOOD), 6, 2, 0.5D, 5.0D, 2.0D, 0.32D)),
+                BlockStateProvider.simple(Blocks.OAK_LEAVES),
+                new SpheroidFoliagePlacer(5.0F, 3.6F, ConstantInt.of(0), 1, 0, 0.4F, 24),
+                new TwoLayersFeatureSize(2, 1, 1))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.DIRT))
+                .build()));
+        // Forty blocks of bole on a foot three blocks out, ten limbs and more, a crown nineteen from the trunk.
+        context.register(NATURAL_TREE_3_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(Blocks.OAK_WOOD),
+                new OpenGrownTrunkPlacer(32, 6, 6, 3, new LimbsConfig(BlockStateProvider.simple(Blocks.OAK_WOOD), 10, 3, 0.45D, 8.0D, 3.0D, 0.3D)),
+                BlockStateProvider.simple(Blocks.OAK_LEAVES),
+                new SpheroidFoliagePlacer(7.0F, 4.5F, ConstantInt.of(0), 1, 0, 0.4F, 30),
+                new ThreeLayersFeatureSize(3, 1, 2, 2, 3, OptionalInt.empty()))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.DIRT))
+                .build()));
         context.register(FANGORNOAK_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_FANGORNOAK.get()),
                 new BranchingLargeTrunkPlacer(6, 6, 6, 5, new BranchesConfig(BlockStateProvider.simple(TolkienBlocks.WOOD_FANGORNOAK.get()), 4, 0, 10, 4, 0.3, 0.2), false),
