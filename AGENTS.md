@@ -366,3 +366,7 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   so a declared point lands exactly. Measured on the Nazgûl steed, whose seat is
   `(0.3, 1.375, 0.25)`: the rider stands at `(0.30, 1.375, 0.25)` at yaw 0, `(-0.25, 1.375, 0.30)`
   at 90, and the mirrors of those at 180 and 270.
+
+Before starting work, read `docs/HANDOFF.md`: it is the durable state of this project, kept up to date at the
+end of every session, and it is what survives a compacted conversation. Update it when the work moves on.
+
