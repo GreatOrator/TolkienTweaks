@@ -19,6 +19,7 @@ public class TolkienSurfaceRules {
 	private static final SurfaceRules.RuleSource DIRT = makeStateRule(Blocks.DIRT);
 	private static final SurfaceRules.RuleSource PODZOL = makeStateRule(Blocks.PODZOL);
 	private static final SurfaceRules.RuleSource COARSE_DIRT = makeStateRule(Blocks.COARSE_DIRT);
+	private static final SurfaceRules.RuleSource MUD = makeStateRule(Blocks.MUD);
 	private static final SurfaceRules.RuleSource SAND = makeStateRule(Blocks.SAND);
 	private static final SurfaceRules.RuleSource SANDSTONE = makeStateRule(Blocks.SANDSTONE);
 	private static final SurfaceRules.RuleSource SNOW_BLOCK = makeStateRule(Blocks.SNOW_BLOCK);
@@ -82,7 +83,13 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH, TolkienBiomes.KHAND), SAND),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.UMBAR), umbarSurface()),
-                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BROWN_LANDS, TolkienBiomes.EASTERN_WASTE), wastelandFloor()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BROWN_LANDS, TolkienBiomes.EASTERN_WASTE, TolkienBiomes.DAGORLAD), wastelandFloor()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.RIVER, TolkienBiomes.RIVER_ANDUIN, TolkienBiomes.RIVER_CELDUIN, TolkienBiomes.RIVER_GWATHLO, TolkienBiomes.RIVER_LUNE, TolkienBiomes.LAKE, TolkienBiomes.LAKE_EVENDIM, TolkienBiomes.LONG_LAKE, TolkienBiomes.SEA_OF_RHUN, TolkienBiomes.SEA_OF_NURNEN), waterBed()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.FOROCHEL, TolkienBiomes.FOROCHEL_SLOPES, TolkienBiomes.ERED_MITHRIN), snowFloor()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORIA), MOUNTAIN_STONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.CARDOLAN, TolkienBiomes.RHUDAUR, TolkienBiomes.DUNLAND, TolkienBiomes.ETTENMOORS, TolkienBiomes.BARROW_DOWNS, TolkienBiomes.EMYN_MUIL, TolkienBiomes.TROLLSHAWS, TolkienBiomes.EREGION), highlandFloor()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ENEDWAITH, TolkienBiomes.GLADDEN), wetFloor()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MIRKWOOD, TolkienBiomes.MIRKWOOD_SPOOKY, TolkienBiomes.ERYN_VORN, TolkienBiomes.OLD_FOREST, TolkienBiomes.FANGORN, TolkienBiomes.LORINAND, TolkienBiomes.WILD_WOOD, TolkienBiomes.FIRIEN), woodlandFloor()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), angmarSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.IMLADRIS), imladrisSurface()),
                                 ironHillsSurface(), hithaeglirSurface(), whiteMountainsFloor(), makeTolkienWorldRules())),
@@ -90,6 +97,9 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH, TolkienBiomes.KHAND), SANDSTONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.UMBAR), SANDSTONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.RIVER, TolkienBiomes.RIVER_ANDUIN, TolkienBiomes.RIVER_CELDUIN, TolkienBiomes.RIVER_GWATHLO, TolkienBiomes.RIVER_LUNE, TolkienBiomes.LAKE, TolkienBiomes.LAKE_EVENDIM, TolkienBiomes.LONG_LAKE, TolkienBiomes.SEA_OF_RHUN, TolkienBiomes.SEA_OF_NURNEN), SAND),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.FOROCHEL, TolkienBiomes.FOROCHEL_SLOPES, TolkienBiomes.ERED_MITHRIN), STONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORIA), MOUNTAIN_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), COARSE_DIRT),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
                         blueMountainsFloor(),
@@ -310,7 +320,8 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 	}
 
 	/**
-	 * The wasteland countries - the Brown Lands between Mirkwood and Anduin, and the empty east beyond Rhun -
+	 * The wasteland countries - the Brown Lands between Mirkwood and Anduin, the Dagorlad before Mordor's gate
+	 * and the empty east beyond Rhun -
 	 * take no rain, so grass is not their floor. Coarse dirt carries the ground, gravel shows through where the
 	 * surface noise is at its highest, and grass holds only within reach of a river or a pool.
 	 */
@@ -319,6 +330,49 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 				SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), GRASS_BLOCK),
 				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.25D, 1.0D), GRAVEL),
 				COARSE_DIRT);
+	}
+
+	/** The bed of every river, lake and inland sea: sand, with gravel bars where the surface noise runs high. */
+	private static SurfaceRules.RuleSource waterBed() {
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.2D, 1.0D), GRAVEL),
+				SAND);
+	}
+
+	/** The frozen north: Forochel's pack ice, the slopes above it, and Ered Mithrin rising out of the cold. */
+	private static SurfaceRules.RuleSource snowFloor() {
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.steep(), STONE),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.PACKED_ICE, -0.35D, 0.2D), PACKED_ICE),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.ICE, -0.0625D, 0.025D), ICE),
+				SNOW_BLOCK);
+	}
+
+	/** The high, broken countries: rock through the grass, coarse dirt where the weather strips the soil. */
+	private static SurfaceRules.RuleSource highlandFloor() {
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.not(SurfaceRules.waterBlockCheck(-1, 0)), DIRT),
+				SurfaceRules.ifTrue(SurfaceRules.steep(), STONE),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.45D, 1.0D), STONE),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.1D, 0.45D), COARSE_DIRT),
+				GRASS_BLOCK);
+	}
+
+	/** The wet interior and the Gladden's levels: grass, with the water's mud breaking through. */
+	private static SurfaceRules.RuleSource wetFloor() {
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-2, 0), MUD),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.35D, 1.0D), MUD),
+				GRASS_BLOCK);
+	}
+
+	/** The woods: grass in the clearings, leaf mould and bare earth under the canopy. */
+	private static SurfaceRules.RuleSource woodlandFloor() {
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.not(SurfaceRules.waterBlockCheck(-1, 0)), DIRT),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.25D, 1.0D), COARSE_DIRT),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, -0.15D, 0.25D), PODZOL),
+				GRASS_BLOCK);
 	}
 
 	@NotNull

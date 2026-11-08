@@ -399,3 +399,20 @@ costs of haradwaith, khand, umbar, mordor, ash_mountains and nurn. Dagorlad is t
 keeps the grass floor. The ten water biomes give their fish no spawn charge either - vanilla's river and ocean do
 the same, so that is not a defect.
 
+
+Umbar's shore split was checked before anything else touched it: `UMBAR` is drawn at 70+/-8, sea level is 63 and
+Belfalas (68+/-5) is the northern neighbour, so `UMBAR_SHORE_HEIGHT` 68 leaves a five-block beach and stops the sand
+at the Belfalas border. It was left as it was. Dagorlad and the Brown Lands are not a hostile/peaceful pair - neither
+carries `HOSTILE` or `PEACEFUL`, and both spawn `dagorladSpawning` (brigand, warg, mordor orc, uruk, swarm), so both
+are hostile in effect; Dagorlad joined `wastelandFloor()`, which is surface only. If one of them should be peaceful,
+its tag and its spawn list both need changing, and neither was.
+
+The canon floors added to `TolkienSurfaceRules`: `waterBed()` for river, river_anduin, river_celduin, river_gwathlo,
+river_lune, lake, lake_evendim, long_lake, sea_of_rhun, sea_of_nurnen; `snowFloor()` for forochel, forochel_slopes,
+ered_mithrin; mountain stone for moria; `highlandFloor()` for cardolan, rhudaur, dunland, ettenmoors, barrow_downs,
+emyn_muil, trollshaws, eregion; `wetFloor()` for enedwaith, gladden; `woodlandFloor()` for mirkwood, mirkwood_spooky,
+eryn_vorn, old_forest, fangorn, lorianand, wild_wood, firien. Eleven countries stay on the shared fallback -
+belfalas, dale, dorwinion, eriador, gondor, ithilien, lindon, minhiriath, rhun, rohan, shire - because grass over
+dirt is the ground they want and a rule would only duplicate it. `MUD` was missing from the class's block constants
+(`TolkienSurfaceRuleData` has its own), which the first compile caught.
+

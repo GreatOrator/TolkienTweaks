@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Every country now stands on ground its canon asks for.** The countries that still wore the shared grass floor are
+  given their own: sand and gravel beds under all ten rivers, lakes and inland seas; snow, packed ice and stone over
+  Forochel, its slopes and Ered Mithrin; mountain stone through Moria; rock showing through grass on the high broken
+  countries (Cardolan, Rhudaur, Dunland, Ettenmoors, the Barrow Downs, Emyn Muil, the Trollshaws, Eregion); mud through
+  the grass of Enedwaith and the Gladden; and leaf mould and bare earth under the woods (Mirkwood, Mirkwood Spooky,
+  Eryn Vorn, the Old Forest, Fangorn, Lorinand, the Wild Wood, Firien). The Dagorlad joins the Brown Lands' dry floor
+  so the two sides of one plain match. Eleven grass countries - the Shire, Eriador, Lindon, Minhiriath, Rohan,
+  Belfalas, Gondor, Ithilien, Dale, Rhun and Dorwinion - keep the shared grass over dirt, which is already right for
+  them.
 - **The older countries are checked against their own tags.** Ered Mithrin was tagged hostile but carried the Iron
   Hills' peaceful list - dwarves, goats, crebain, no monster - so it takes the Misty Mountains': trolls, goblins,
   duergar. Eregion was tagged peaceful but shared Firien's list, Hurons and all, and has its own now, Firien's without
