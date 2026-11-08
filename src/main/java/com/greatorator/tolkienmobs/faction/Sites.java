@@ -158,7 +158,8 @@ public final class Sites extends SavedData {
      * The wood-troll's page names a body rather than a place, so its ground was the one crag nobody had cut for
      * it - the three the stone asks in were all spoken for, and a lair in one of them sent the player back into a
      * hill the stone had already emptied. This is a variant like the others (tools/make_troll_cave.py with its own
-     * seed and its chambers nudged), raised by the page that names him rather than by the world.
+     * seed and its chambers nudged), and it is pinned like the stone's three: the world raises the lair on the hill the
+     * scout marked, and the page that names him finds that lair standing rather than surveying for one of its own.
      */
     public static final String TROLL_CAVE_4 = "tolkienmobs:key_structures/troll_cave_4";
     /**

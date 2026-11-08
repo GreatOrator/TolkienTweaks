@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Matuna's lair has its ground in the pack.** The fourth crag had a template, a stone name and a checklist line
+  but no pin, so a command asking for it was told nothing was called that, and any world without a hand-written pin
+  fell back on the middle of the Trollshaws. The hill the scout marked in the scouting world, 4633, 94, -3081, is in
+  the pack's pin table now: the lair is raised there like the stone's three, whether or not the page that names him has
+  been taken.
 - **A saved grade is believed only where it is a height.** The pass stopped in the middle of the Thorenhad road had
   already written a profile built on the floor of the world into the world's own note, and resuming it would have laid
   the rest of the road under the ground. A station whose saved height is not inside the world takes the ground under

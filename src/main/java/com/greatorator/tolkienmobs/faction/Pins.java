@@ -63,7 +63,7 @@ public final class Pins extends SavedData {
             // the city covers x 5200..5753 by z -3370..-2859, with the crown at 318.
             Map.entry("rivendell", new BlockPos(5200, 75, -3370)),
             // Chapter one, walked in the scouting world: the names on the ground their pages are spoken on, and
-            // the camp and the three crags on the hillsides they were found on. The y is where the scout stood;
+            // the camps and the four crags on the hillsides they were found on. The y is where the scout stood;
             // the laying measures the ground under a footprint and seats it, so the block is a target and not a
             // measurement. Keys go through the Sites constants, so a checklist line and a placement cannot drift.
             Map.entry("thorenhad", new BlockPos(4691, 87, -3273)),
@@ -82,6 +82,12 @@ public final class Pins extends SavedData {
             Map.entry(Sites.TROLL_CAVE, new BlockPos(4460, 125, -2477)),
             Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4568, 112, -2511)),
             Map.entry(Sites.TROLL_CAVE_3, new BlockPos(4508, 124, -2429)),
+            // Matuna's lair, the wood-troll's own crag: the hill the scout marked in the wood east of the valley, at
+            // 4633, 94, -3081. Pinned like the stone's three, so the lair stands whether or not the page that names him
+            // has been taken, and /tmpin and /tmtp have a name for it at last. Without a pin the crag had none of that:
+            // a command asking for it was told nothing was called that, and the page's own survey fell back on the
+            // middle of the Trollshaws.
+            Map.entry(Sites.TROLL_CAVE_4, new BlockPos(4633, 94, -3081)),
             // The valley's stone, marked inside the city once it was standing: the block the milestone should stand
             // on, walked at 5499, 150, -3080. It has no build of ours under it, so Sites.STANDING holds it.
             Map.entry("rivendell.stone", new BlockPos(5499, 150, -3080)),
