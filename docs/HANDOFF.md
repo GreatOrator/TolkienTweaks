@@ -102,6 +102,53 @@ lays the new kind over it, but columns the old road paved or widened are not tak
 Barachen's fire has its track: from the camp's south door at 4820, 76, -2886 to the mark at 4892, 74, -3097 where the
 Thorenhad road runs past, wild and three wide the whole way. Compiled, not yet seen in a world.
 
+## The session that stopped here: 8 November, Roads 5
+
+Committed, compiled, not seen in a world: `6f6f829c` furnished the water biomes; `3b70723d` made the Thorenhad road
+a main road (`Kind.MAIN`, seven wide, of the country's own surface, removed from `BANDED`); `aa747f35` made its grade
+answer to its own column's ground within the same cut-and-fill, water keeping the relief because the river is the
+bridge's; `b5bc3323` stopped `shore_reeds` placing cane in a water column.
+
+The player made `Scouting World - Roads 5` and reported three things from it: the Thorenhad road is significantly
+better but still lifts toward its far end and stays there to the termination point; Barachen's road digs down at its
+end but does terminate properly; and the rivers were standing full of sugar cane across their width, which was the
+`WORLD_SURFACE_WG` bed read described in `b5bc3323`.
+
+**Markers walked in Roads 5**, read with `tools/ammolite_markers.py` (6 `block_ammolite`, 4 groups):
+
+| marker | position | the player's word for it |
+| --- | --- | --- |
+| 4741, 81, -3092 | cave end | three cave ends for the chapter's four crags, two of them converging on one |
+| 4741, 81, -3086 | cave end | as above |
+| 4741, 81, -3082 | cave end | as above |
+| 4786, 78, -3082 | not yet explained | 24 south of the wood ruin's own `.end` at 4787, 78, -3058 |
+| 4819, 76, -2897 | bend | guides the track away from Barachen's camp, 11 south of its door |
+| 4895, 74, -3075 | road end | where Barachen's track should go, nearer the ford than the 4892, 74, -3097 in `ROUTES` |
+
+So no cave marker is missing: three markers for four caves is what the player described. What is missing is the
+**pairing** - which of the three at x 4741 ends Bandrith's, Hoklond's, Sholdroth's or Matuna's road, and which two
+share one. It cannot be derived: the three sit within ten blocks of each other, the three crags are 620 to 720 blocks
+north of them and Matuna's lair is 63. A wrong pairing lays a road to the wrong crag.
+
+**Not yet measured.** An attempt to read the two reported ends out of the save scanned the arda dimension for
+`minecraft:dirt_path` and found 1,004 paths in 18 cells, so the save reads; but a `gb.blocks_from_world` read of the
+box round the ford end (4880, 60, -3130 to 5000, 110, -3030) came back with no blocks at all, which is either chunks
+that were never saved there or a bad box, and the throwaway probe was deleted rather than trusted. Both defects are
+therefore still unmeasured: the player's F3 coordinates for the lift and for the dig are what settles which chunks to
+look at. The suspicion on the lift is the two `SETTLE_PASSES` sweeps that run after the ground clamp - they answer to
+the pinned ends and not to the ground, so a far end whose `endGround` reads a mound can carry the last stretch up
+above its own ground; on the dig it is the opposite, a pinned end below the ground it meets.
+
+**The next three moves**, in order: record the three cave routes in `Roads.ROUTES` as wild `Route.Riverless` from each
+crag's `.end` pin (`Pins.SOURCE`, 4515/4624/4562/4689) to its marker, sharing the one marker two of them converge on;
+re-record Barachen's route from the camp door 4820, 76, -2886 to 4895, 74, -3075 with 4819, 76, -2897 in
+`Roads.BENDS`; then measure and fix the two ends. A crag is a named structure rather than a build of its own, so the
+route's footprint is the crag's own and the kind is wild - check `Sites` for the crag's footprint before writing one.
+
+Reminder for the next session: `forget` then `build` re-lays a road, but the blocks already laid are read back by
+`surfaceAt` as ground, so a re-lay over an old embankment will keep riding it. Only pristine ground shows a grading
+change.
+
 ## Open
 
 - **Two crags** were refused by `plane`/`ground()`; the fix reads ground past plants and a refusal now names the column
