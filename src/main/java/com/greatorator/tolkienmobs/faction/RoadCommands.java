@@ -1474,7 +1474,20 @@ public final class RoadCommands {
             // then runs on from country it knows rather than into the floor of the world.
             fillVoid(ground, startY);
             for (int i = 0; i < n; i++) relief[i] = reliefAt(ground, i, startY);
-            for (int i = 0; i < n; i++) height[i] = relief[i];
+            // A road that names its kind starts on its own ground rather than on the relief. Relief is the middle of
+            // the ground eight stations either side, and a profile begun there is already a shelf; the band below
+            // can only say how far the shelf may drift, never pull it down to the hollows it is passing over.
+            // Measured in Roads 5, the Thorenhad road ran level at 80 for three hundred stations over ground between
+            // 74 and 79, carrying four to five blocks of stone under it the whole way - the fill that read as the road
+            // taking off and staying up. Started on the ground, the same smoothing has a dip to walk into instead of
+            // an average to flatten, and the band is then only what keeps a bump from being built into the road.
+            // Water keeps the relief, because the river is the bridge's and a station over it has no ground to answer
+            // to.
+            boolean grounded = Roads.kind(route) != null;
+            for (int i = 0; i < n; i++) {
+                boolean dry = ground[i] != WATER && ground[i] != VOID;
+                height[i] = grounded && dry ? ground[i] : relief[i];
+            }
             if (startY != VOID && startY != WATER) height[0] = startY;
             if (endY != VOID && endY != WATER) height[n - 1] = endY;
             for (int pass = 0; pass < PROFILE_PASSES; pass++) {
@@ -1513,7 +1526,6 @@ public final class RoadCommands {
             // that had taken off from the ground. The road a valley walks is the ground it crosses, so the band here is
             // the ground's own: a hollow is a dip it walks down into and out of, not an embankment it rides over. Water
             // keeps the relief, because the river is the bridge's and there is no ground in the station to answer to.
-            boolean grounded = Roads.kind(route) != null;
             for (int i = 1; i < n - 1; i++) {
                 boolean dry = ground[i] != WATER && ground[i] != VOID;
                 int base = grounded && dry ? ground[i] : relief[i];

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A main road is the ground it crosses, not a shelf four blocks over it.** The grade began at `relief`, the middle
+  of the ground eight stations either side, and a route naming its kind answered to its own ground only as a band -
+  so a profile that started as an average stayed an average, and the band could say how far it might drift without
+  ever pulling it down into the hollows it was passing over. Measured along the Thorenhad road in Roads 5: level at
+  80 for three hundred stations over ground between 74 and 79, with four to five blocks of stone under it the whole
+  way, which is the fill that read as the road taking off and staying up. Such a route now starts its profile on its
+  own column's ground, so the smoothing has a dip to walk into rather than an average to flatten; water keeps the
+  relief, since a station over the river has no ground to answer to.
 - **The chapter's roads are recorded end to end.** The wood ruin gets its way down to 4741, 81, -3092 - the pin two
   of the crags' roads also arrive on - through its marked bend at 4786, 78, -3082, and each of the four crags gets a
   road from the ground a road arriving at a crag meets, its `.end` pin twenty-seven or twenty-eight blocks out, to

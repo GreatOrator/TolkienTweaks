@@ -140,6 +140,15 @@ look at. The suspicion on the lift is the two `SETTLE_PASSES` sweeps that run af
 the pinned ends and not to the ground, so a far end whose `endGround` reads a mound can carry the last stretch up
 above its own ground; on the dig it is the opposite, a pinned end below the ground it meets.
 
+**The lift at the ford end is explained and fixed, only compiled.** Read out of Roads 5 by a probe over the road's own
+columns (surface in the main road's mix with stone under it): three hundred stations level at y 80 while the ground
+either side ran 74 to 79, four to five blocks of stone under the surface the whole way. The grade was *seeded* from
+`relief`, the middle of the ground eight stations either side, so it began as a shelf and the +/-4 band could only
+stop it drifting further. A route that names its kind now seeds from its own column's ground instead. The dig at
+Barachen's end is the same rule seen the other way round and should move with it. Neither has been seen in a world:
+re-laying over the old road will keep reading the old fill as ground, so only a fresh world or pristine ground shows
+the difference.
+
 **The next three moves**, in order: the two graded ends - the lift at the Thorenhad road's far end and the dig at
 Barachen's - once the player's F3 coordinates name the chunks to read; then the five new roads in a world, since none
 of them has been seen laid and a 700-block road between countries is where a search is most likely to fall back on the
