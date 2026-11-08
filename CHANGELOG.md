@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Elladan's camp branch is bent to meet the main road.** The branch ran straight out of the door to a mark at
+  4648, 89, -3325, sixteen blocks short of the main road's own start and past the line that road runs on, so the two
+  sections never met: the camp's path simply carried on into the trees. It now follows the camp's paving to a bend
+  recorded at 4648, 89, -3321 - where the stone path ends - and comes down onto the main road's start at 4633, 91,
+  -3331 along the line the main road leaves on. About sixty degrees of turn at the paving's end, and a junction
+  instead of a track running on past it.
 - **A road is met along its bends, not through the hill.** Which end a pass set off from was read as the straight-line
   distance to the route's two ends, so a player standing on a bend could be nearer the far end through the rock than
   along the road and have the road laid from the other end. The meet point is now measured on the road itself - the

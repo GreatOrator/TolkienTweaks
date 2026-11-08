@@ -50,9 +50,11 @@ public final class Roads {
             new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5006, -3075, 4,
                     74, 75, 76, 16, 32, "bridge_end", "bridge_middle"),
             // Elladan's camp's own way out, and the only road the camp is given: the block beside its door at 4648, 90,
-            // -3314 to the mark at 4648, 89, -3325, where the camp's path meets the main road. The camp is a wild
+            // -3314, down the camp's own paving to the bend at 4648, 89, -3321, and then over to the main road's own
+            // start mark at 4633, 91, -3331 - so the two sections meet end to end, the branch arriving along the line
+            // the main road leaves on rather than running on past the junction into the trees. The camp is a wild
             // build, so its own track is wild - three blocks wide - however near the seven-wide road it ends.
-            new Route.Riverless(ELLADAN_BRANCH, 4640, 4655, -3313, -3298, 4648, -3314, 4648, -3325),
+            new Route.Riverless(ELLADAN_BRANCH, 4640, 4655, -3313, -3298, 4648, -3314, 4633, -3331),
             // The Thorenhad road, the valley's main road: its end at the mark 4633, 91, -3331 - the ford being the
             // other end, so the road is walked towards the ford - down to the ford's own road end at 4972, 86, -3075,
             // where the crossing's exit road stops, and no further: the road over the water and this dry one are the
@@ -87,7 +89,11 @@ public final class Roads {
             // The Thorenhad road's own line, walked in Roads 3: three marks between the camp and the ford that keep
             // the road off the hill and out of the crossing, in the order the road meets them.
             THORENHAD_ROAD, List.of(new BlockPos(4875, 74, -3179),
-                    new BlockPos(4885, 74, -3133), new BlockPos(4903, 74, -3102)));
+                    new BlockPos(4885, 74, -3133), new BlockPos(4903, 74, -3102)),
+            // The camp's branch turns once, where the camp's own stone path ends: the road follows the path out of the
+            // door and then swings onto the main road's start, so it meets the road it was walked for at a junction
+            // rather than carrying straight on past it.
+            ELLADAN_BRANCH, List.of(new BlockPos(4648, 89, -3321)));
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
     public static List<BlockPos> bends(Route route) {

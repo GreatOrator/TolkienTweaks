@@ -72,8 +72,11 @@ named yet). A hairpin's apron is one kind wider than the run it turns, and a wil
 `Roads.BUILDS` says which build a road leaves from where the road has a name of its own, so forgetting the road at a
 camp still clears the camp's flag.
 
-The Thorenhad road's camp branch is recorded: Elladan's camp walks out of its door at 4648, 90, -3314 to the mark
-at 4648, 89, -3325 as a wild track three wide (`ELLADAN_BRANCH`), and the main road ends at the mark 4633, 91, -3331 -
+The Thorenhad road's camp branch is recorded: Elladan's camp walks out of its door at 4648, 90, -3314 down its own
+paving to a bend at 4648, 89, -3321 - where the camp's stone path ends - and then over to the main road's own start
+mark at 4633, 91, -3331 as a wild track three wide (`ELLADAN_BRANCH`). The turn is about sixty degrees, taken at the
+paving's end, so the branch comes down onto the main road along the line that road runs rather than carrying straight
+on past the junction into the trees. The main road runs from that mark
 the ford being its other end - from which it runs banded down to the ford's road end at 4972, 86, -3075. The camp is
 dressed first, so the branch is the road its own approach plans; the main road is planned by standing near its end and
 running `/tmroad build`. The camp's old main-road note is under `tolkienmobs:key_structures/elledancamp`, which no
