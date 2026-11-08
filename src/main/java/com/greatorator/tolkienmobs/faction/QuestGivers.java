@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.network.manager.ConversationManager;
 import net.minecraft.ChatFormatting;
@@ -88,12 +89,12 @@ public final class QuestGivers {
     /** One giver at a time near a player: the offer is theirs, and a crowd of them reads as a bug. */
     private static final double NEAR = 64.0;
     /**
-     * How long a traveller stands with work nobody has taken before moving on, in ticks: half an hour.
-     * One who has handed the work over is a body the player has to come back to, and is left alone; one
-     * whose offer is still lying in the road is scenery, and a long-lived world would otherwise fill with
-     * immortal strangers holding pages nobody will ever read.
+     * How long a traveller stands with work nobody has taken before moving on, in ticks, is a setting rather than a
+     * number in this file: half an hour unless a pack says otherwise, and nought for a pack that wants them to stand
+     * for ever. One who has handed the work over is a body the player has to come back to, and is left alone; one
+     * whose offer is still lying in the road is scenery, and a long-lived world would otherwise fill with immortal
+     * strangers holding pages nobody will ever read. See {@link TolkienMobsConfig#questGiverLifetimeTicks()}.
      */
-    private static final long GIVER_LIFETIME = 20L * 60L * 30L;
     /** How far from the player travellers are swept for having stood too long, in blocks. */
     private static final double SWEEP = 96.0D;
     /** Where the world time a traveller arrived is kept, since an entity's own age starts at each load. */
@@ -148,6 +149,9 @@ public final class QuestGivers {
      * when somebody walks back into it.
      */
     private static void sweepStaleGivers(ServerLevel level, ServerPlayer player, long now) {
+        long lifetime = TolkienMobsConfig.questGiverLifetimeTicks();
+        // Nought is a pack saying its travellers are the world's: nobody is swept for having stood too long.
+        if (lifetime <= 0L) return;
         for (Entity body : level.getEntities(player, player.getBoundingBox().inflate(SWEEP),
                 seen -> seen.entityTags().contains(GIVER_TAG)
                         && !seen.entityTags().contains(CAMPAIGN_GIVER_TAG))) {
@@ -158,7 +162,7 @@ public final class QuestGivers {
                 body.getPersistentData().putLong(BORN, now);
                 continue;
             }
-            if (now - born < GIVER_LIFETIME) continue;
+            if (now - born < lifetime) continue;
             if (QuestLedger.offerOf(body.getUUID()) == null) continue;
             QuestLedger.forgetGiver(player, body.getUUID());
             body.discard();

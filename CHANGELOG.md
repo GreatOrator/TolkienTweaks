@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- **How long a giver waits is a setting.** A traveller holding an offer nobody has taken already moved on half an
+  hour after arriving; that half hour is `giverLifetimeMinutes` in the quest section now, so a pack can lengthen or
+  shorten it, and nought keeps them standing for ever. A giver whose work has been taken is still left alone, since
+  they are the body the work is carried back to - it is only the offers nobody reads that go stale.
 - **A road leaves its build square, and never through it.** The walk could take its first step diagonally, and a
   band seven wide swinging off a door cuts the corner of a sixteen-block camp - which is a road that took a piece of
   the building as it turned. Every road now runs sixteen stations straight out of the door, square to the wall it

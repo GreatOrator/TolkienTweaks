@@ -221,6 +221,8 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue QUEST_GOODS_MAX;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> QUEST_GIVER_NAMES;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> QUEST_GIVER_TITLES;
+    /** How long a giver holding an unaccepted offer stands in the world, in minutes; nought keeps them. */
+    private static final ModConfigSpec.IntValue QUEST_GIVER_LIFETIME;
 
 
     static final ModConfigSpec SPEC;
@@ -530,6 +532,13 @@ public class TolkienMobsConfig {
                                 "Stone-helm",
                                 "Ironfoot"),
                         TolkienMobsConfig::validateLabel);
+        QUEST_GIVER_LIFETIME = BUILDER
+                .comment("How long a traveller holding work nobody has taken stands in the world before moving on, in",
+                        "minutes. Once the work is taken they are the body it is carried back to and are left alone, so",
+                        "this is only about the offers that go stale: a world walked over and over would otherwise fill",
+                        "with immortal strangers holding pages nobody will ever read. Nought keeps them for ever",
+                        "(Default 30, or half an hour)")
+                .defineInRange("giverLifetimeMinutes", 30, 0, 10080);
         BUILDER.pop();
 
         BUILDER.pop();
@@ -770,6 +779,14 @@ public class TolkienMobsConfig {
     /** The titles a giver may be handed, empty where the mod's own eight are to be used. */
     public static List<String> questGiverTitles() {
         return entries(QUEST_GIVER_TITLES);
+    }
+
+    /**
+     * How long a giver whose offer nobody has taken stands before moving on, in ticks: the file's minutes, and nought
+     * for one that never moves on. Twenty ticks to the second, so a minute is twelve hundred.
+     */
+    public static long questGiverLifetimeTicks() {
+        return value(QUEST_GIVER_LIFETIME, 30) * 1200L;
     }
 
     /**
