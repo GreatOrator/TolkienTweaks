@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A crag is seated by its own height.** The crag seat was a fixed fifteen to sixteen blocks down - right for a crag
+  sixteen blocks tall, which the shipped cut is not: it is 56 by 56, ten layers of solid rock under it, chambers at y 6
+  to 19 and its grass crown at y 27. Bandrith's and Hoklond's therefore stood eleven blocks proud of the hillside, the
+  hill sitting on the ground and the entrance hanging in the air beside it. The seat is measured off the template's own
+  highest block, read once per crag and cached, so the crown goes at the ground under the footprint and the flank below
+  it is buried. A file that will not read leaves a crag on its ground rather than sinking it on a guess.
 - **A ruin takes the ground out of itself.** The sweep that carries the ground around a build to its roofline only
   ever cut *above* that roofline, so a ruin seated on the highest column of a bank kept the hill standing inside its
   own walls - and where the template has a keep, the keep's height was the cap, so the ground filled the ruin to the top

@@ -345,18 +345,18 @@ public final class Sites extends SavedData {
      */
     private static final int SEAT_SINK = 4;
     /**
-     * The crag's own seat. It is cut in two halves - bare rock from its foot to y 8, grass from y 9 to
-     * its crown, with the mouth's sill at y 6 - so seating it like a house leaves the rock skirt
-     * standing above the ground and the grass a good six blocks higher than the terrain it was dropped
-     * on. Seated by its grass line instead, nine blocks in, the grass stood exactly at the ground it was
-     * placed on - which is a crag that has been set down on a field rather than one the ground has taken
-     * back: every block of its skirt and its shell showed, stone and deepslate, and the hill it was
-     * dropped on had to be believed rather than seen. Fifteen blocks in buries the grass line six deep,
-     * which is the skirt and the bare shell with it and only the mouth and the crown's own rock left
-     * showing; sixteen is as deep as it is ever set, the one-block error the shape of the ground under
-     * a footprint this size is allowed to leave, spent on both counts.
+     * The crag's seat, measured off the cut it seats.
+     * <p>
+     * A crag is a hill, and a hill has a height: the shipped cut is 56 by 56 with ten layers of solid rock under it,
+     * its chambers at y 6 to 19 and its grass crown at y 27. A seat written down as a number can only be right for one
+     * template - the numbers that stood here, fifteen and sixteen, were right for a crag sixteen blocks tall, and this
+     * one was then left standing eleven blocks proud of the hillside with its entrance hanging in the air beside it.
+     * Every crag the campaign cuts is seated by its own crown instead: the crown goes at the ground under the
+     * footprint, the rock and turfy flank beneath it buried in the hill, which is what a crag is taken for.
      */
-    private static final Seat SUNK_CRAG = new Seat(15, 16, 0, 0, -1, Direction.NORTH);
+    private static Seat sunkCrag(int crown) {
+        return new Seat(crown, crown + 1, 0, 0, -1, Direction.NORTH);
+    }
     /** A building that stands on its ground rather than in it: hall, tent, house, arena. */
     private static final Seat ON_SURFACE = new Seat(0, SEAT_SINK, 0, 0, -1, Direction.NORTH);
     /**
@@ -476,6 +476,11 @@ public final class Sites extends SavedData {
     private static final Set<String> CHECKED = new HashSet<>();
     /** The blocks read out of each template's own file, so a template is read once rather than once a session. */
     private static final Map<String, List<Sample>> SAMPLES = new HashMap<>();
+    /**
+     * The highest block each crag's file draws, by structure, so a seat is measured once rather than on every visit:
+     * a build is dressed on each approach, and a template's file is tens of thousands of blocks to walk.
+     */
+    private static final Map<String, Integer> CROWNS = new HashMap<>();
     /** How many of a template's blocks are compared with the ground: enough to tell a camp from a clearing. */
     private static final int SAMPLE = 48;
     private static final Sites NO_SERVER = new Sites(false);
@@ -538,6 +543,7 @@ public final class Sites extends SavedData {
             STOOD.clear();
             CHECKED.clear();
             SAMPLES.clear();
+            CROWNS.clear();
         }
     }
 
@@ -1114,7 +1120,7 @@ public final class Sites extends SavedData {
         BlockPos pinned = Pins.at(level, site.structure());
         BlockPos anchor = pinned != null ? pinned : site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
         if (!chunksLoaded(level, anchor, size.getX(), size.getZ())) return;
-        Seat seat = seatFor(site.structure());
+        Seat seat = seatFor(level, site.structure(), size);
         // A pinned building stands at its pin, and nowhere else. The corner the pin names is the corner the
         // template is laid from, so the door the road leaves by and the pin a scout walked are the same block; the
         // search used to move a camp up to eight rings away from it and put the camp and its road in two places.
@@ -1185,7 +1191,7 @@ public final class Sites extends SavedData {
         Vec3i size = footprint(level, site.structure());
         if (size == null) return;
         BlockPos corner = site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
-        Seat seat = seatFor(site.structure());
+        Seat seat = seatFor(level, site.structure(), size);
         // Once a session, a build already standing has its ground swept the way a new one does: a world raised before
         // this pass existed is the world with a hill over its camps, and walking up to one is reason enough to fix it.
         if (SWEPT.add(site.structure())) sweep(level, corner, size, site.structure());
@@ -1279,9 +1285,25 @@ public final class Sites extends SavedData {
         return CRAGS.contains(structure);
     }
 
-    private static Seat seatFor(String structure) {
+    private static Seat seatFor(ServerLevel level, String structure, Vec3i size) {
         Seat door = DOORWAYS.get(structure);
-        return door != null ? door : isCave(structure) ? SUNK_CRAG : ON_SURFACE;
+        if (door != null) return door;
+        if (!isCave(structure)) return ON_SURFACE;
+        int crown = CROWNS.computeIfAbsent(structure, key -> crownOf(level, key, size));
+        // A file that will not read leaves the crag on its ground rather than buried on a guess: a hill standing too
+        // high can be walked into, and one sunk by a number nobody measured cannot be found at all.
+        return crown < 0 ? ON_SURFACE : sunkCrag(crown);
+    }
+
+    /** The highest block a crag's file draws, or -1 when the file cannot be read. */
+    private static int crownOf(ServerLevel level, String structure, Vec3i size) {
+        Lines lines = lines(level, structure, size);
+        if (lines == null) return -1;
+        int crown = -1;
+        for (int top : lines.roof()) {
+            if (top != Integer.MIN_VALUE) crown = Math.max(crown, top);
+        }
+        return crown;
     }
 
     /**

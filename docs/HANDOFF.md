@@ -456,3 +456,13 @@ fluids alone; the ring outside still eases from the roofline to the country. The
 `Sites.stoneGround(level, place)`, which resolves a place's `<place>.stone` pin to the milestone standing on it (or the
 ground it will stand on), so Rivendell's arrow goes to the stone at 5499, 150, -3080 rather than the city pin at 5200,
 75, -3370.
+
+Bandrith's and Hoklond's crags stood above the ground. The reason is a seat that was written down instead of
+measured: `SUNK_CRAG` was `Seat(15, 16, ...)`, and `plane()` clamps its sink between those two numbers, so every crag
+went down fifteen or sixteen blocks. The shipped cut, `troll_cave.nbt`, is 56 by 36 by 56 with 42,292 blocks: layers 0
+to 9 are full 2285-block rock slabs, the chambers are cut at y 6 to 19, and the grass crown is at y 27 (stone 20-23,
+dirt 24-26, grass 27). Fifteen blocks of sink leaves the crown eleven above the highest ground under the footprint,
+which is the mound standing on a hillside in the screenshots. `Sites.seatFor` now reads the crag's own crown through
+`lines()` (the same file read the sweep uses), caches it in `CROWNS` so the per-visit `dress` does not walk the file,
+and returns `sunkCrag(crown)` - floor and cap `crown`/`crown + 1`, so the sink is the template's height and the crown
+lands at the ground. An unreadable file returns `-1` and the crag keeps `ON_SURFACE` rather than being sunk on a guess.
