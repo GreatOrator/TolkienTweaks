@@ -571,7 +571,11 @@ public final class RoadCommands {
             }
             List<int[]> found = descent.path();
             searched = found != null;
-            if (!searched) found = straight(route, span.eastBankX() + span.runIn(), span.bridgeZ());
+            if (!searched) {
+                LOGGER.info("Road {}: no walked way to {}, {}, so the straight line is laid instead",
+                        route.id(), span.eastBankX() + span.runIn(), span.bridgeZ());
+                found = straight(route, span.eastBankX() + span.runIn(), span.bridgeZ());
+            }
             List<int[]> line = new ArrayList<>(found);
             for (int x = span.eastBankX() + span.runIn() - 1; x >= span.eastBankX() + 1; x--) {
                 line.add(new int[]{x, span.bridgeZ()});
@@ -597,7 +601,13 @@ public final class RoadCommands {
             Route.Riverless dry = (Route.Riverless) route;
             List<int[]> found = descent.path();
             searched = found != null;
-            if (!searched) found = straight(route, dry.farX(), dry.farZ());
+            if (!searched) {
+                // Said out loud rather than laid quietly: a road with no walked way is a road laid straight through
+                // whatever stands between its ends, and whoever reads the log should know that is what they have.
+                LOGGER.info("Road {}: no walked way to {}, {}, so the straight line is laid instead",
+                        route.id(), dry.farX(), dry.farZ());
+                found = straight(route, dry.farX(), dry.farZ());
+            }
             approach = hairpins(level, route, simplify(found));
             exit = List.of();
             int startY = endGround(level, route.pathX(), route.pathZ());
@@ -1634,6 +1644,11 @@ public final class RoadCommands {
         keep[0] = true;
         keep[line.size() - 1] = true;
         simplify(line, 0, line.size() - 1, keep);
+        // Douglas-Peucker keeps the bends and drops the straight, and a line with no stations in it is a road with no
+        // band in it. A fallback line is nothing but straights: simplified, it came out as two stations four hundred
+        // blocks apart, and the grade built a stub at either end and called the road laid. One station kept in every
+        // four covers a straight run and leaves a curve exactly as the tolerance drew it.
+        for (int i = 0; i < line.size(); i += 4) keep[i] = true;
         List<int[]> out = new ArrayList<>();
         for (int i = 0; i < line.size(); i++) {
             if (keep[i]) out.add(line.get(i));

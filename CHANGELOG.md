@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road with no bends is still a road.** A walk that found no way fell back to the straight line between the ends,
+  and the simplifier then dropped every station of it - a straight line has no bends to keep - leaving two stations four
+  hundred blocks apart and a grade that built a stub at each end and called the road laid. Stations are kept no more
+  than four blocks apart now, wherever the line came from, and a walk that finds no way says so in the log instead of
+  laying a line quietly.
 - **How long a giver waits is a setting.** A traveller holding an offer nobody has taken already moved on half an
   hour after arriving; that half hour is `giverLifetimeMinutes` in the quest section now, so a pack can lengthen or
   shorten it, and nought keeps them standing for ever. A giver whose work has been taken is still left alone, since
