@@ -623,6 +623,62 @@ public final class Sites extends SavedData {
     }
 
     /**
+     * How far above and below a corner a build's own blocks still count as standing there, in blocks.
+     * <p>
+     * More than one hand seats the same cut - the world's own pass measures the ground under a footprint, the
+     * campaign's fallback seats it on the ground its place was named on - and the two can disagree by the seat's own
+     * sink. A band this wide covers that disagreement without reaching the storey above, which is the copy the guard
+     * exists to refuse.
+     */
+    private static final int STANDING_BAND = 6;
+
+    /**
+     * Whether a template's own blocks are already standing at a corner, and so must not be laid again.
+     * <p>
+     * This is the guard every hand that lays a template asks before it lays one. A building seated on the ground under
+     * it <em>is</em> ground once it stands, so a placement that measures its seat again finds its own roof: the lay is
+     * then a copy stacked on a copy, and the look after that another - the shape a chapter's first camp came out in, a
+     * shaft of camps to the world's ceiling. Refusing to lay over itself is the one rule that holds whatever the
+     * caller's arithmetic was, which is why it is asked here rather than trusted to the seating.
+     * <p>
+     * The answer is read from the template's own file and compared block for block, a majority being enough: the
+     * question is whether the camp is there, not whether anyone has been inside it. A corner whose chunks are not
+     * loaded, or a file that will not read, answers no - the guard has to be able to say "lay it", or a build could
+     * never rise at all.
+     */
+    public static boolean standsAt(ServerLevel level, String structure, BlockPos corner) {
+        Identifier id = Identifier.tryParse(structure);
+        if (id == null) return false;
+        StructureTemplate template = level.getStructureManager().get(id).orElse(null);
+        if (template == null) return false;
+        Vec3i size = template.getSize();
+        if (size.getX() <= 0 || size.getZ() <= 0) return false;
+        if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(size.getX() - 1, 0, size.getZ() - 1))) {
+            return false;
+        }
+        List<Sample> samples = samplesOf(level, id);
+        if (samples.isEmpty()) return false;
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int lift = -STANDING_BAND; lift <= STANDING_BAND; lift++) {
+            if (layer(level, samples, corner, lift, cursor)) return true;
+        }
+        return false;
+    }
+
+    /** One layer of the band: whether a majority of the template's own blocks stand at the corner lifted this far. */
+    private static boolean layer(ServerLevel level, List<Sample> samples, BlockPos corner, int lift,
+                                 BlockPos.MutableBlockPos cursor) {
+        int found = 0;
+        int y = corner.getY() + lift;
+        for (Sample sample : samples) {
+            cursor.set(corner.getX() + sample.x(), y + sample.y(), corner.getZ() + sample.z());
+            BlockState state = level.getBlockState(cursor);
+            if (BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString().equals(sample.block())) found++;
+        }
+        return found * 2 >= samples.size();
+    }
+
+    /**
      * Whether a building the record says is standing is still in the world.
      * <p>
      * A sample of the template's own blocks is compared with what is at those blocks now, and a majority is enough:
@@ -647,14 +703,11 @@ public final class Sites extends SavedData {
         if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(size.getX() - 1, 0, size.getZ() - 1))) {
             return true;
         }
-        List<Sample> samples = samplesOf(level, id);
-        if (samples.isEmpty()) return true;
-        int found = 0;
-        for (Sample sample : samples) {
-            BlockState state = level.getBlockState(corner.offset(sample.x(), sample.y(), sample.z()));
-            if (BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString().equals(sample.block())) found++;
-        }
-        return found * 2 >= samples.size();
+        // The same guard a placement asks, with the same band: a record can be a few blocks off the corner its build
+        // was laid from, because the hands that seat a cut measure different ground. Unreadable samples still count as
+        // standing - forgetting a build nobody can see is worse than trusting a record.
+        if (samplesOf(level, id).isEmpty()) return true;
+        return standsAt(level, site.structure(), corner);
     }
 
     /** One of a template's own blocks: where it sits from the corner, and the block the file says is there. */
@@ -1075,21 +1128,25 @@ public final class Sites extends SavedData {
         }
         UNBUILDABLE.remove(site.player());
         BlockPos corner = found.corner();
-        // A building on a bank wants a bank under it, so the fill reaches as far down as the ground
-        // it was lifted off actually fell away, up to a limit that keeps a butte from a plinth.
-        underpin(level, corner, size.getX(), size.getZ(),
-                Math.min(UNDERPIN_MAX, Math.max(UNDERPIN_DEPTH, found.relief() + 2)));
-        template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
-        // The ground it was laid into is carried to its own roofline, the way the valley's is dressed to the cut's:
-        // without this a build seated in a bank kept the bank standing over it, which is a camp nobody can find.
-        sweep(level, corner, size, site.structure());
-        // The record goes down before the dressing does. A building is seated on the highest ground under its
-        // footprint, and once its walls are standing that ground is its own roof: a site left unwritten because the
-        // man, the animal or the stone failed after the walls went down was built again on the next look, and the copy
-        // was seated on the copy - one camp stacked on the last until the world's ceiling. Walls, then the record,
-        // then what stands at it.
+        // The record goes down before the laying does. A building is seated on the highest ground under its footprint,
+        // and once its walls are standing that ground is its own roof: a site left unwritten because the man, the
+        // animal or the stone failed after the walls went down was built again on the next look, and the copy was
+        // seated on the copy - one camp stacked on the last until the world's ceiling. Record, then the walls, then
+        // what stands at them.
         SITES.put(site.player(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
         instance(level).setDirty();
+        // And a building already standing there is not laid again, whatever the seating arithmetic said: a copy on its
+        // own roof is the one shape no caller should be able to make.
+        if (!standsAt(level, site.structure(), corner)) {
+            // A building on a bank wants a bank under it, so the fill reaches as far down as the ground
+            // it was lifted off actually fell away, up to a limit that keeps a butte from a plinth.
+            underpin(level, corner, size.getX(), size.getZ(),
+                    Math.min(UNDERPIN_MAX, Math.max(UNDERPIN_DEPTH, found.relief() + 2)));
+            template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
+            // The ground it was laid into is carried to its own roofline, the way the valley's is dressed to the cut's:
+            // without this a build seated in a bank kept the bank standing over it, which is a camp nobody can find.
+            sweep(level, corner, size, site.structure());
+        }
         // What the place carries once it stands: the man at a camp, the animal the rider came off at the ruin,
         // and the stone every building has so the travel list can bring a player back to it.
         Body body = site.keeper() ? Body.KEEPER : bodyFor(site.structure());

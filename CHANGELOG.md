@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **No build can be laid over its own blocks.** Every hand that lays a template for the chapter now asks
+  `Sites.standsAt` first: the cut's own blocks are read out of its file and a majority of them standing at the spot
+  refuses the lay, with a few blocks of band so a seat measured by two different hands still counts as the same
+  building. The record a site keeps is read through the same guard, so a camp a couple of blocks off its written corner
+  is still the camp. This is the rule no caller's arithmetic can talk its way past: a building seated on the ground
+  under it is ground of its own once it stands.
 - **Elladan's camp stopped stacking itself to the sky.** The campaign's fallback that lays a camp straight from its
   template re-read the ground under the footprint on every look, and a camp already standing is ground of its own: the
   heightmap answered with its roof, so each look put the next copy eight blocks higher until the world's ceiling. It is

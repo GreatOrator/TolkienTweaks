@@ -1998,8 +1998,13 @@ public final class Campaign extends SavedData {
         // y cannot move, so laying it twice is laying the same blocks in the same place, which is what the note above
         // has always claimed. The slope is what the underpinning is for.
         corner = new BlockPos(corner.getX(), camp.centre().getY(), corner.getZ());
-        template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
-        underpin(level, corner, wide, deep);
+        // A camp already standing at this corner is this camp: it is written down and left alone rather than laid
+        // over. That is the guard's whole job - more than one hand seats this cut, and a lay over one's own blocks is
+        // a copy on their roof.
+        if (!Sites.standsAt(level, structure, corner)) {
+            template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
+            underpin(level, corner, wide, deep);
+        }
         // Written down as standing, so the next look finds it and neither lays it again nor stands a second man at it.
         Sites.laid(level, structure, corner, true);
         return true;

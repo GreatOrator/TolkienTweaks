@@ -437,3 +437,11 @@ so a throw at the door left the walls standing and unrecorded, and the next tick
 `standTent` now seats on the place's own y - the ground the name was walked on, which cannot move - and records the
 camp through the new `Sites.laid`; `Sites.build` writes its record straight after the sweep and before the dressing.
 Worlds that took the tower keep it: it is blocks, not data, and it has to be cleared where it stands.
+
+A build also cannot be laid over itself now. `Sites.standsAt` reads a template's own blocks from its file and
+answers whether a majority of them already stand at a corner, scanning a band of six blocks above and below because
+the hands that seat a cut measure different ground (the world's pass takes the highest column, the campaign's fallback
+takes the place's own y). `Sites.build` asks it before underpin and placement, `Campaign.standTent` before its own lay,
+and `standingBlocks` now reads a site's record through the same guard so a record a few blocks off still counts as
+standing. Road pieces and city pieces are not guarded on purpose: their positions come from a route or a band rather
+than from measuring their own ground, and re-laying one is the same blocks in the same place.
