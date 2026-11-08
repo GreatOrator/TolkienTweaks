@@ -149,6 +149,17 @@ Barachen's end is the same rule seen the other way round and should move with it
 re-laying over the old road will keep reading the old fill as ground, so only a fresh world or pristine ground shows
 the difference.
 
+**The lift and the digs are one fault, and it is ground that was never made.** Roads 6 was graded with `f635badd` in
+it, and the shelf stayed, because the seeding was not the cause. `surfaceAt` read heights off chunks nobody had
+generated, `fillVoid` carried the nearest readable station across them, and each route's middle became a flat line at
+the height of the stations its own ends stood on. The save's own notes (`dimensions/minecraft/overworld/data/tolkienmobs/
+roads.dat`: `approach` is the line, `height` the grade) show it: Barachen's camp 241 stations at 74 while its country
+rises to 90; `troll_cave`, `_2`, `_3` at 75 up Eregion, climbing only at the crag end, which had been visited. The same
+missing ground steered the search into the corridor it could read, which is why three cave roads share one lane at
+x 4832 and two of them set off south first (cave 2 and cave 3: 909 stations within seven blocks). `surfaceAt` now
+calls `level.getChunk` first. Not yet seen in a world, and it costs chunk generation during the walk; a fresh world
+will show whether the grades and the three separate lines come out as country roads.
+
 **The next three moves**, in order: the two graded ends - the lift at the Thorenhad road's far end and the dig at
 Barachen's - once the player's F3 coordinates name the chunks to read; then the five new roads in a world, since none
 of them has been seen laid and a 700-block road between countries is where a search is most likely to fall back on the

@@ -2081,6 +2081,16 @@ public final class RoadCommands {
      * leaves and trunks to the ground the tree is growing on, and only then asks whether it is water.
      */
     private static int surfaceAt(ServerLevel level, int x, int z) {
+        // The chunk is made before its ground is asked for. A heightmap read off a chunk nobody has made is the
+        // floor of the world, and the rest of this class then works around that: a station that could not be read was
+        // given the ground of the nearest one that could, so a road planned ahead of the country was planned as a flat
+        // line at the height of the stations its own two ends stood on. Measured in Roads 6: Barachen's camp road ran
+        // level at 74 for all two hundred and forty-one stations while the country it crossed rose to 90, and the three
+        // cave roads ran level at 75 up Eregion's hillside, their climb appearing only at the crag end - the one end the
+        // player had already stood at. It also explains which way they walked: the search preferred the corridor it
+        // could read, so cave 2 and cave 3 shared nine hundred stations within seven blocks of each other and both set
+        // off south before turning for their caves. Ground that has not been made cannot be planned over; make it.
+        level.getChunk(x >> 4, z >> 4);
         int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
         BlockPos at = new BlockPos(x, y, z);
         BlockState state = level.getBlockState(at);

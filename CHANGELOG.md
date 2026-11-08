@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road is planned over ground that has been made.** `surfaceAt` read a heightmap off chunks nobody had
+  generated, and `fillVoid` then carried the nearest readable station's ground across them, so a route's middle was
+  a flat line at the height of the stations its own ends stood on. Measured in Roads 6: Barachen's camp road level at
+  74 for all 241 stations while the country it crossed rose to 90, and `troll_cave`, `_2` and `_3` level at 75 up
+  Eregion with the climb appearing only at the crag end, which the player had already stood at. The same fault chose
+  their direction: the search preferred the corridor it could read, so cave 2 and cave 3 shared 909 stations within
+  seven blocks of each other and both set off south before turning for their caves. `surfaceAt` now makes the chunk
+  before it asks for its height, so what a road is graded against is the country that exists.
 - **A main road is the ground it crosses, not a shelf four blocks over it.** The grade began at `relief`, the middle
   of the ground eight stations either side, and a route naming its kind answered to its own ground only as a band -
   so a profile that started as an average stayed an average, and the band could say how far it might drift without
