@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **No more inland water where the poster has land.** The country grid begins as open sea, so every cell a fill
+  never reaches stays a bay of it. Forty-four were closed in on at least five of their eight sides by land - the coast
+  below Lindon, the Misty Mountains' northern flank, the ground west of Gladden, the Wild Wood's north edge, the Gap
+  of Rohan, the cells between Eriador and Dunland, the White Mountains' east end, and the Harad/Nurn/Khand border -
+  and each takes the country around it. Filling one uncovers the next, so the list in `draw()` is what the rule
+  settles on over four sweeps, not what one pass found; a bay the poster draws stays, because it reaches open water.
 - **The beach between the Midgewater and the valley was a hole in the drawing.** The Firien fill had been narrowed
   to two cells to keep off the Trollshaws' rows, and the cell it gave up stayed the map's default sea - two cells of
   water inside Eriador's eastern edge, on the walk from the fen to the valley. The shore was also being read off the

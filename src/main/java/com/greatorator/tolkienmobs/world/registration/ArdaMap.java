@@ -1826,6 +1826,45 @@ public final class ArdaMap {
         // row north of the sea's.
         fill(map, Country.RHUN, 44, 16, 46, 22);
 
+        // The cells the poster draws as land but no fill reaches. The grid begins as open sea, so every gap in
+        // the fills is a bay of it: these are the cells closed in on every side by land, each taking the country
+        // it is surrounded by. Filling one uncovers the next, so the list is what the rule settles on, not what
+        // one sweep found. A bay the maps do draw stays, because it reaches water the drawing has open.
+        //
+        fill(map, Country.FORODWAITH, 3, 1, 3, 1);
+        fill(map, Country.HITHAEGLIR, 23, 5, 23, 5);
+        fill(map, Country.HITHAEGLIR, 23, 6, 23, 6);
+        fill(map, Country.HITHAEGLIR, 23, 7, 23, 7);
+        fill(map, Country.GLADDEN, 24, 7, 24, 7);
+        fill(map, Country.HITHAEGLIR, 23, 8, 23, 8);
+        fill(map, Country.GLADDEN, 24, 8, 24, 8);
+        fill(map, Country.HITHAEGLIR, 23, 9, 23, 9);
+        fill(map, Country.GLADDEN, 24, 9, 24, 9);
+        fill(map, Country.HITHAEGLIR, 23, 10, 23, 10);
+        fill(map, Country.GLADDEN, 24, 10, 24, 10);
+        fill(map, Country.HITHAEGLIR, 23, 11, 23, 11);
+        fill(map, Country.GLADDEN, 24, 11, 24, 11);
+        fill(map, Country.HITHAEGLIR, 23, 12, 23, 12);
+        fill(map, Country.GLADDEN, 24, 12, 24, 12);
+        fill(map, Country.GLADDEN, 24, 13, 24, 13);
+        fill(map, Country.GLADDEN, 24, 14, 24, 14);
+        fill(map, Country.LINDON, 2, 19, 2, 19);
+        fill(map, Country.ERIADOR, 17, 19, 17, 19);
+        fill(map, Country.WILD_WOOD, 27, 19, 27, 19);
+        fill(map, Country.ROHAN, 21, 21, 22, 21);
+        fill(map, Country.ERIADOR, 13, 22, 15, 22);
+        fill(map, Country.DUNLAND, 16, 22, 17, 22);
+        fill(map, Country.DUNLAND, 20, 22, 21, 22);
+        fill(map, Country.ROHAN, 22, 22, 22, 22);
+        fill(map, Country.WHITE_MOUNTAINS, 15, 27, 15, 27);
+        fill(map, Country.ITHILIEN, 34, 29, 34, 29);
+        fill(map, Country.ASH_MOUNTAINS, 35, 29, 35, 29);
+        fill(map, Country.NURN, 36, 29, 36, 29);
+        fill(map, Country.HARAD, 34, 30, 37, 30);
+        fill(map, Country.NURN, 38, 30, 41, 30);
+        fill(map, Country.KHAND, 42, 30, 42, 30);
+        fill(map, Country.GONDOR, 21, 31, 21, 31);
+
         bandSeas(map);
         return map;
     }

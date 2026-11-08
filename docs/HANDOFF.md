@@ -369,3 +369,9 @@ off the ground now, not off the blended cell height, which is what stopped a cel
 grid from `draw()` (fills and the mountains' `line()`) and lists the landlocked holes left: (13,22)-(16,22), (22,22),
 (27,19), (24,13)-(24,14), (23,5)-(23,6), (15,27), (21,31), (34,30), (37,30)-(42,30) and (2,19) are still sea in the
 middle of land. Firien's western cell and its southern foot are filled.
+`build/tmp/fill_all.py` rebuilds the grid from `draw()` - the fills and the mountains' `line()`, which the
+first checker silently skipped - and fills every cell closed in by land on five or more of its eight sides,
+with one override: the cell below Lindon goes to Lindon, not to Ered Luin behind it. Filling a cell uncovers
+the next, so it sweeps until the list settles (four sweeps, 44 cells); `build/tmp/check_holes.py` exits non-zero
+if any landlocked hole is left. The drawing's default is `Country.TEMPERATE_SEA`, so a country without a `fill`
+is sea, and the inland seas the map does draw (Rhun, Nurnen) survive because they reach open water.
