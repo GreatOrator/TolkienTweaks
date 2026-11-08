@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The chapter's roads are recorded end to end.** The wood ruin gets its way down to 4741, 81, -3092 - the pin two
+  of the crags' roads also arrive on - through its marked bend at 4786, 78, -3082, and each of the four crags gets a
+  road from the ground a road arriving at a crag meets, its `.end` pin twenty-seven or twenty-eight blocks out, to
+  one of the three pins: Matuna's lair to 4741, 81, -3082, Hoklond's cave to 4741, 81, -3086, and Bandrith's and
+  Sholdroth's together to 4741, 81, -3092, which is the order the walker's distances give. Barachen's track is bent
+  through the two marks at 4819, 76, -2903 and 4896, 74, -2980 rather than laid across the shoulder in one leg, and
+  still ends where it did. All five are wild builds' tracks, so all five are laid three wide of the country's own
+  gravel and dirt; none has been seen in a world yet.
 - **A river is not a marsh: the reeds keep to its banks.** `shore_reeds` placed sugar cane on
   `WORLD_SURFACE_WG`, and Arda's drawn rivers hand that heightmap a bed rather than a surface, so the cane
   started on the riverbed, found sand under it and water beside it, and grew up through the channel: a river

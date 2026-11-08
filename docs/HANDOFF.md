@@ -140,11 +140,11 @@ look at. The suspicion on the lift is the two `SETTLE_PASSES` sweeps that run af
 the pinned ends and not to the ground, so a far end whose `endGround` reads a mound can carry the last stretch up
 above its own ground; on the dig it is the opposite, a pinned end below the ground it meets.
 
-**The next three moves**, in order: record the three cave routes in `Roads.ROUTES` as wild `Route.Riverless` from each
-crag's `.end` pin (`Pins.SOURCE`, 4515/4624/4562/4689) to its marker, sharing the one marker two of them converge on;
-re-record Barachen's route from the camp door 4820, 76, -2886 to 4895, 74, -3075 with 4819, 76, -2897 in
-`Roads.BENDS`; then measure and fix the two ends. A crag is a named structure rather than a build of its own, so the
-route's footprint is the crag's own and the kind is wild - check `Sites` for the crag's footprint before writing one.
+**The next three moves**, in order: the two graded ends - the lift at the Thorenhad road's far end and the dig at
+Barachen's - once the player's F3 coordinates name the chunks to read; then the five new roads in a world, since none
+of them has been seen laid and a 700-block road between countries is where a search is most likely to fall back on the
+straight line (the log says `no walked way to ..., so the straight line is laid instead` when it does); then the crag
+footprints these routes assume, twenty-eight either side of the middle, against what `Sites` measures for a crag.
 
 Reminder for the next session: `forget` then `build` re-lays a road, but the blocks already laid are read back by
 `surfaceAt` as ground, so a re-lay over an old embankment will keep riding it. Only pristine ground shows a grading
@@ -183,6 +183,10 @@ the four crags and the cluster into one network.
    4624, 107, -2479; 4562, 120, -2398; 4689, 86, -3050), or the marker standing at the crag's own middle (4460, 124,
    -2477 and the others)? The `.end` pins are what `Pins` calls "the ground a road arriving at a crag has to meet".
 2. Is Barachen's terminus the marker at 4895, 74, -3075, or the 4892, 74, -3097 that `ROUTES` still names?
+
+Answered: the `.end` pins are the crag ends, and Barachen's terminus stays 4892, 74, -3097. The five routes and
+the three bends are written in `Roads` - the four crags, the ruin's connector and Barachen's two bends - and
+`RoadCorridor` starts a pass for anything in `ROUTES`, so nothing else has to be told about them.
 
 ## Open
 
