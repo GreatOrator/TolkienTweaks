@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road grades from ground the world has actually made.** The Thorenhad road in the redux world ended in a trench
+  because a height read off a chunk nobody had made yet came back as the floor of the world: the grade fell from 78 to
+  -65 in one station, every column after it was left open, and the road stopped at the lip of its own cutting. A column
+  of nothing is now read as nothing and given the ground of the nearest station that has some, and the grade is lifted,
+  a step at a time, to ground it meets that stands more than a road's cut above the plan - so a bank is climbed rather
+  than ending the road.
+- **A crest or a hollow is no longer the road's shape.** The grade answered to each station's own column, so a knoll
+  three blocks over the grass became a filled hump across a flat road, and a cave's mouth pulled the profile down into
+  it. It answers to the middle of the ground eight stations either way now: too narrow to move a middle, and a hillside
+  is still a hillside.
 - **The cave's troll and the crown's ring are written down too.** The record the Elves keep now carries the crag's
   keeper, the Witch-king and the three keepers of his ring, each by tag, UUID and the ground it was left on. A page
   carried into a chamber the world has not read, or an arena walked back into after a reload, finds the body it stood

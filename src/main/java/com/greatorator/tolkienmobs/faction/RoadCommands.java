@@ -113,6 +113,17 @@ public final class RoadCommands {
     /** The deepest cut or tallest fill one column may take before the road is held back to the ground. */
     private static final int CUT_FILL = 4;
     /**
+     * How far along the line the ground is read to find the height a station answers to, in stations.
+     * <p>
+     * A road is a grade through country rather than a cast of it. Read off its own column, a boulder three blocks over
+     * the grass lifts the profile and the band is filled up to it - a hump in a road that was flat either side - and a
+     * cave's mouth twelve blocks down takes the profile with it, after which no band can be cut or filled deep enough,
+     * so the road ends at the lip and the hole is left open. The middle of the ground over this window either side is
+     * neither: a short rise or a short hole is outvoted by the ground around it, while a hillside the road is meant to
+     * climb still is one, because every station of a slope reads the same slope.
+     */
+    private static final int RELIEF_REACH = 8;
+    /**
      * How far the ground on both sides of a column has to stand above it before the column is read as a hole rather
      * than as ground. A hollow a road can walk through is a dip; a cave's mouth is a shaft.
      */
@@ -147,6 +158,12 @@ public final class RoadCommands {
     private static final double HAIRPIN = -0.3D;
     /** A station's surface, as a sentinel, when the ground there is water: the river is the bridge's. */
     private static final int WATER = Integer.MIN_VALUE / 2;
+    /**
+     * A column's answer when there is nothing in it: a chunk the world has not made yet reads as air all the way down
+     * to the floor. It is not a height and nothing may be graded from it - read as one, it was three hundred stations
+     * of the grade falling to the bottom of the world, and a road that stopped at the lip of its own trench.
+     */
+    private static final int VOID = Integer.MIN_VALUE / 4;
 
     /** Templates already read this session, so a re-run does not parse them again. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
@@ -912,15 +929,50 @@ public final class RoadCommands {
     private static void carryOver(int[] ground) {
         int[] was = ground.clone();
         for (int i = 0; i < ground.length; i++) {
-            if (was[i] == WATER) continue;
+            if (was[i] == WATER || was[i] == VOID) continue;
             for (int reach = 1; reach <= HOLE_REACH && i - reach >= 0 && i + reach < ground.length; reach++) {
                 int left = was[i - reach];
                 int right = was[i + reach];
-                if (left == WATER || right == WATER) break;
+                if (left == WATER || right == WATER || left == VOID || right == VOID) break;
                 if (left < was[i] + HOLE_DEPTH || right < was[i] + HOLE_DEPTH) continue;
                 if (Math.abs(left - right) > HOLE_DEPTH) break;
                 ground[i] = Math.max(left, right);
                 break;
+            }
+        }
+    }
+
+    /**
+     * The ground a station answers to: the middle of the dry ground within {@link #RELIEF_REACH} stations of it.
+     * <p>
+     * The middle rather than the mean, because the whole point is to ignore what is not country: one knoll or one
+     * cave's mouth in the window cannot move a middle, and it moves a mean by every block of itself. Water is left out
+     * - the river is the bridge's - and a window with no dry ground in it at all falls back to the height the caller
+     * names.
+     */
+    private static int reliefAt(int[] ground, int at, int fallback) {
+        int[] seen = new int[2 * RELIEF_REACH + 1];
+        int count = 0;
+        for (int i = Math.max(0, at - RELIEF_REACH); i <= Math.min(ground.length - 1, at + RELIEF_REACH); i++) {
+            if (ground[i] == WATER || ground[i] == VOID) continue;
+            seen[count++] = ground[i];
+        }
+        if (count == 0) return fallback;
+        Arrays.sort(seen, 0, count);
+        return seen[count / 2];
+    }
+
+    /**
+     * Gives a station whose ground could not be read the ground of the nearest station that has some: forward along the
+     * line, so a stretch the world has not made yet runs on from the last ground the road actually stood on.
+     */
+    private static void fillVoid(int[] ground, int fallback) {
+        int last = fallback;
+        for (int i = 0; i < ground.length; i++) {
+            if (ground[i] == VOID) {
+                ground[i] = last;
+            } else if (ground[i] != WATER) {
+                last = ground[i];
             }
         }
     }
@@ -942,6 +994,11 @@ public final class RoadCommands {
         private final List<int[]> line;
         private final int n;
         private final int[] ground;
+        /**
+         * The ground each station answers to: the middle of the dry ground either side of it, so a bump or a hole in
+         * one column is not built into the road. Laid over rather than followed - a hole is filled on stone.
+         */
+        private final int[] relief;
         private final double[] height;
         private final Map<Long, Integer> tops = new LinkedHashMap<>();
         /** Every column laid, in the order it was laid; taken once the lips are asked for, not while laying. */
@@ -961,15 +1018,20 @@ public final class RoadCommands {
             this.line = line;
             this.n = line.size();
             this.ground = new int[n];
+            this.relief = new int[n];
             this.height = new double[n];
             if (n < 2) return;
             for (int i = 0; i < n; i++) ground[i] = surfaceAt(level, line.get(i)[0], line.get(i)[1]);
             // Read before the profile is settled, not after: a hole the grade has already dived into is a hole the
             // grade cannot be talked out of, because its own heights are what the smoothing is pulling from.
             carryOver(ground);
-            for (int i = 0; i < n; i++) height[i] = ground[i] == WATER ? startY : ground[i];
-            height[0] = startY;
-            height[n - 1] = endY;
+            // A station whose ground could not be read is given the ground of the nearest station that could: the grade
+            // then runs on from country it knows rather than into the floor of the world.
+            fillVoid(ground, startY);
+            for (int i = 0; i < n; i++) relief[i] = reliefAt(ground, i, startY);
+            for (int i = 0; i < n; i++) height[i] = relief[i];
+            if (startY != VOID && startY != WATER) height[0] = startY;
+            if (endY != VOID && endY != WATER) height[n - 1] = endY;
             for (int pass = 0; pass < PROFILE_PASSES; pass++) {
                 for (int i = 1; i < n - 1; i++) {
                     height[i] = (height[i - 1] + 2.0D * height[i] + height[i + 1]) / 4.0D;
@@ -981,11 +1043,10 @@ public final class RoadCommands {
                     height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
                 }
                 for (int i = 1; i < n - 1; i++) {
-                    if (ground[i] == WATER) continue;
-                    height[i] = Mth.clamp(height[i], ground[i] - CUT_FILL, ground[i] + CUT_FILL);
+                    height[i] = Mth.clamp(height[i], relief[i] - CUT_FILL, relief[i] + CUT_FILL);
                 }
-                height[0] = startY;
-                height[n - 1] = endY;
+                if (startY != VOID && startY != WATER) height[0] = startY;
+                if (endY != VOID && endY != WATER) height[n - 1] = endY;
             }
             for (int settle = 0; settle < SETTLE_PASSES; settle++) {
                 for (int i = 1; i < n; i++) {
@@ -996,11 +1057,22 @@ public final class RoadCommands {
                 }
             }
             // The ground has the last word: whatever the sweeps preferred, no station stands more than the road's own
-            // budget above the ground or under it. A hill is walked over, not bored through, and a profile that was
-            // free to cut a station fifteen blocks under a ridge is held to what a path would actually take off.
+            // budget above the ground it answers to or under it. A hill is walked over, not bored through, a hole is
+            // carried over on stone instead of dived into, and a profile that was free to cut a station fifteen blocks
+            // under a ridge is held to what a path would actually take off.
             for (int i = 1; i < n - 1; i++) {
-                if (ground[i] == WATER) continue;
-                height[i] = Mth.clamp(height[i], ground[i] - CUT_FILL, ground[i] + CUT_FILL);
+                height[i] = Mth.clamp(height[i], relief[i] - CUT_FILL, relief[i] + CUT_FILL);
+            }
+            // And the steps once more, because the ground's word is a band and not a cliff: wherever the ground under
+            // two neighbouring stations was read differently, the clamp above can leave them more than a step apart,
+            // and a step is the one thing the road cannot be laid over.
+            for (int settle = 0; settle < SETTLE_PASSES; settle++) {
+                for (int i = 1; i < n; i++) {
+                    height[i] = Mth.clamp(height[i], height[i - 1] - MAX_STEP, height[i - 1] + MAX_STEP);
+                }
+                for (int i = n - 2; i >= 1; i--) {
+                    height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
+                }
             }
         }
 
@@ -1010,6 +1082,7 @@ public final class RoadCommands {
             this.line = line;
             this.n = line.size();
             this.ground = new int[n];
+            this.relief = new int[n];
             this.height = new double[n];
         }
 
@@ -1138,15 +1211,46 @@ public final class RoadCommands {
         }
 
         /**
+         * Puts this station on ground the plan did not know, and eases the stations after it back onto the grade the
+         * plan had, a step at a time: meeting the country ahead is a climb, not a cliff and not a road that stops.
+         */
+        private void retarget(int i, int held) {
+            height[i] = held;
+            double value = held;
+            for (int j = i + 1; j < n; j++) {
+                if (height[j] > value + MAX_STEP) {
+                    height[j] = value + MAX_STEP;
+                } else if (height[j] < value - MAX_STEP) {
+                    height[j] = value - MAX_STEP;
+                } else {
+                    return;
+                }
+                value = height[j];
+            }
+        }
+
+        /**
          * One station: its height, its width, and every column of it cut or filled to the grade.
          *
          * @return the columns the station walked, laid or left open, which is what the step's budget is spent on
          */
         private int lay(ServerLevel level, int i) {
-            int target = Mth.floor(height[i]);
             int counted = 0;
-            if (i > 0) steepest = Math.max(steepest, Math.abs(target - Mth.floor(height[i - 1])));
             int x = line.get(i)[0], z = line.get(i)[1];
+            // The ground under the station is read before anything is written: the grade was settled from the world as
+            // it stood when the road was planned, and the country a station is met in may not have been made then. Where
+            // that ground stands more than a road's cut above the plan the grade is lifted to it a step at a time, and
+            // the stations after are eased back onto the plan - which is what turns a road ending at its own trench
+            // into a road climbing the bank in front of it.
+            level.getChunk(x >> 4, z >> 4);
+            int under = surfaceAt(level, x, z);
+            if (under != VOID && under != WATER && Mth.floor(height[i]) < under - CUT_FILL) {
+                int before = i > 0 ? Mth.floor(height[i - 1]) : under - CUT_FILL;
+                int lifted = Math.min(under - CUT_FILL, before + (int) MAX_STEP);
+                if (lifted > Mth.floor(height[i])) retarget(i, lifted);
+            }
+            int target = Mth.floor(height[i]);
+            if (i > 0) steepest = Math.max(steepest, Math.abs(target - Mth.floor(height[i - 1])));
             int half = fromWalls(route, x, z) <= TRANSITION_BAND ? PAVED_HALF : WILD_HALF;
             // A hairpin is wider than a run: the apron gives the turn somewhere to be walked around.
             if (turning(line, i)) half += 2;
@@ -1159,7 +1263,16 @@ public final class RoadCommands {
                             && jitter(at, into) % 3 != 0) {
                         continue;
                     }
+                    // The column is read as the world has it, and the world has to have it: a chunk nobody has made
+                    // yet reads as nothing at all, and a block written into it would be dropped anyway.
+                    level.getChunk(at >> 4, into >> 4);
                     int groundAt = surfaceAt(level, at, into);
+                    if (groundAt == VOID) {
+                        level.setBlock(new BlockPos(at, target, into), surface(route, at, into), 2);
+                        tops.put(key(at, into), target);
+                        laid++;
+                        continue;
+                    }
                     if (groundAt == WATER) {
                         // The river is the bridge's. Only the road's own three columns are carried over it on
                         // stone, and only where the grade stands above the water line.
@@ -1169,7 +1282,6 @@ public final class RoadCommands {
                         }
                         int waterTop = level.getHeight(Heightmap.Types.MOTION_BLOCKING, at, into) - 1;
                         if (target <= waterTop) continue;
-                        level.getChunk(at >> 4, into >> 4);
                         for (int y = waterTop; y < target; y++) {
                             level.setBlock(new BlockPos(at, y, into), Blocks.STONE.defaultBlockState(), 2);
                             filled++;
@@ -1427,6 +1539,7 @@ public final class RoadCommands {
             at = at.below();
             state = level.getBlockState(at);
         }
+        if (state.isAir()) return VOID;
         if (!state.getFluidState().isEmpty()) return WATER;
         return y;
     }
@@ -1442,6 +1555,7 @@ public final class RoadCommands {
      */
     private static int endGround(ServerLevel level, int x, int z) {
         int ground = surfaceAt(level, x, z);
+        if (ground == VOID) return VOID;
         return ground == WATER ? level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1 : ground;
     }
 
