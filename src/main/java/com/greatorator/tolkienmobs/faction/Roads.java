@@ -117,6 +117,10 @@ public final class Roads {
          * town's, not a valley's, so a main road across a moor is gravel, coarse dirt, grass and path, the same mix a
          * wild track is laid of. Naming it keeps that width through the open country, which is the whole of what a
          * named kind is for.
+         * <p>
+         * It keeps to the ground it crosses for the same reason: a main road is walked on the country rather than
+         * carried over it on stone, so its grade answers to the ground under it and a hollow is a dip, not an
+         * embankment.
          */
         MAIN(7);
 

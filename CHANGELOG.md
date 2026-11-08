@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Thorenhad road follows the ground again instead of riding a fill above it.** The grade answered to `relief`,
+  the middle of the ground eight stations either side, and `relief` is a height a hillside does not have: the road ran
+  flat at 81 for two hundred and seventy stations over ground between 75 and 82, and stood as much as eight blocks of
+  stone above the low part of it. A route that names its kind now answers to its own column's ground, within the same
+  four blocks of cut and fill, so the road walks down into a hollow and up out of it; water keeps the relief, since the
+  river is the bridge's and a station over it has no ground to answer to. Settlement approaches are unchanged and may
+  still be carried - a build may stand on what it is built on.
 - **The Thorenhad road is a main road now: seven wide, of the country's own surface.** Laid by the bands it was seven
   blocks of street at the camp, five as the paving started, and a three-wide track for the rest of its length - a main
   road that narrowed to a path between places. It names its own kind instead, a new `MAIN`: seven wide from the

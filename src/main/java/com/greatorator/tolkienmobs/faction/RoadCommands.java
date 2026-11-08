@@ -1425,6 +1425,11 @@ public final class RoadCommands {
      * above it and standing on a stone embankment below. The step clamp is a pair of sweeps - forward, then
      * back - so a wall face becomes a stair instead of a cliff, and {@link #PROFILE_PASSES} of them settle the
      * profile.
+     * <p>
+     * That grade of its own is an approach's, not a road's: a settlement's way out is built, and a build may stand on
+     * what it is built on. A road that carries a valley's traffic is the country's, and the country is what it has to
+     * be walked on - so a route that names its kind is held to its own column's ground, and the embankment is not a
+     * thing it does.
      *
      * @return columns laid, cut down, filled up, and left open because the ground was too far off the grade
      */
@@ -1435,7 +1440,8 @@ public final class RoadCommands {
         private final int[] ground;
         /**
          * The ground each station answers to: the middle of the dry ground either side of it, so a bump or a hole in
-         * one column is not built into the road. Laid over rather than followed - a hole is filled on stone.
+         * one column is not built into the road. Laid over rather than followed - a hole is filled on stone - except by
+         * a road that names its kind, which is held to its own column's ground instead.
          */
         private final int[] relief;
         private final double[] height;
@@ -1499,8 +1505,19 @@ public final class RoadCommands {
             // budget above the ground it answers to or under it. A hill is walked over, not bored through, a hole is
             // carried over on stone instead of dived into, and a profile that was free to cut a station fifteen blocks
             // under a ridge is held to what a path would actually take off.
+            //
+            // A road that names its kind answers to its own column's ground rather than to the relief, and is not
+            // carried over anything. Relief is the middle of eight stations either side, and a middle is a height a
+            // hillside does not have: read off it the grade ran flat at 81 for two hundred and seventy stations over
+            // ground between 75 and 82, and stood as much as eight blocks of stone above the low part of it - a road
+            // that had taken off from the ground. The road a valley walks is the ground it crosses, so the band here is
+            // the ground's own: a hollow is a dip it walks down into and out of, not an embankment it rides over. Water
+            // keeps the relief, because the river is the bridge's and there is no ground in the station to answer to.
+            boolean grounded = Roads.kind(route) != null;
             for (int i = 1; i < n - 1; i++) {
-                height[i] = Mth.clamp(height[i], relief[i] - CUT_FILL, relief[i] + CUT_FILL);
+                boolean dry = ground[i] != WATER && ground[i] != VOID;
+                int base = grounded && dry ? ground[i] : relief[i];
+                height[i] = Mth.clamp(height[i], base - CUT_FILL, base + CUT_FILL);
             }
             // And the steps once more, because the ground's word is a band and not a cliff: wherever the ground under
             // two neighbouring stations was read differently, the clamp above can leave them more than a step apart,
