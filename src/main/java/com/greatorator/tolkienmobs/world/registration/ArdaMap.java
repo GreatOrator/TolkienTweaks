@@ -1865,6 +1865,22 @@ public final class ArdaMap {
         fill(map, Country.KHAND, 42, 30, 42, 30);
         fill(map, Country.GONDOR, 21, 31, 21, 31);
 
+        // The countries the poster names that no fill had reached. Each had a biome, a name and a height and
+        // nowhere in the world to be: Cardolan's hills between the Barrow Downs and the Greyflood (the cells the
+        // last sweep had given to Eriador), Minhiriath's coast below the Shire, Enedwaith between it and the White
+        // Mountains' western end, Dorwinion on the north-western shore of the Sea of Rhun, and Umbar on the coast
+        // below Belfalas.
+        fill(map, Country.CARDOLAN, 13, 22, 15, 22);
+        fill(map, Country.MINHIRIATH, 5, 22, 10, 22);
+        fill(map, Country.MINHIRIATH, 5, 23, 11, 23);
+        fill(map, Country.ENEDWAITH, 7, 24, 10, 25);
+        fill(map, Country.DORWINION, 38, 16, 40, 17);
+        fill(map, Country.UMBAR, 22, 34, 24, 35);
+        // Which uncovered a few more cells, taken the same way as the pass above.
+        fill(map, Country.MINHIRIATH, 4, 22, 4, 22);
+        fill(map, Country.MINHIRIATH, 6, 24, 6, 24);
+        fill(map, Country.WHITE_MOUNTAINS, 11, 24, 11, 24);
+
         bandSeas(map);
         return map;
     }

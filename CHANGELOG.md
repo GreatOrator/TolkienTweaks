@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The countries the poster names now have ground.** Five registered countries had a biome, a height, a name and
+  not one cell of the world: Cardolan, Minhiriath, Enedwaith, Dorwinion and Umbar. Cardolan takes the hills between
+  the Barrow Downs and the Greyflood (the cells the hole sweep had given to Eriador), Minhiriath the coast below the
+  Shire, Enedwaith the ground between it and the White Mountains' western end, Dorwinion the north-western shore of
+  the Sea of Rhun, and Umbar the coast below Belfalas. `IMLADRIS` still has no cell on purpose - the valley is cut
+  out of the Trollshaws' cells and blended back in - and the three seas are the grid's own default.
 - **No more inland water where the poster has land.** The country grid begins as open sea, so every cell a fill
   never reaches stays a bay of it. Forty-four were closed in on at least five of their eight sides by land - the coast
   below Lindon, the Misty Mountains' northern flank, the ground west of Gladden, the Wild Wood's north edge, the Gap

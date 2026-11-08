@@ -375,3 +375,7 @@ with one override: the cell below Lindon goes to Lindon, not to Ered Luin behind
 the next, so it sweeps until the list settles (four sweeps, 44 cells); `build/tmp/check_holes.py` exits non-zero
 if any landlocked hole is left. The drawing's default is `Country.TEMPERATE_SEA`, so a country without a `fill`
 is sea, and the inland seas the map does draw (Rhun, Nurnen) survive because they reach open water.
+Every `Country` in the enum now has cells but `IMLADRIS`, which is the valley laid over the Trollshaws' cells
+and blended back into them, and the three seas, which are the grid's default. `python build/tmp/check_holes.py`
+prints the countries with no cells as well as the landlocked holes, so a new country is added to the enum, given
+a `fill`, and checked there.
