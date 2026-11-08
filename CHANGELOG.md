@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A wild track steps up stepped country instead of cutting a notch through it.** A route that names no kind was
+  held to a named road's four blocks of cut and fill, and measured from the relief - the middle of the ground eight
+  stations either side - which on terraced ground sits below the terrace the track is crossing, so the grade cut a
+  slot through it: measured in Roads 6 at the third cave's crag, five blocks into the hillside at the median, with
+  bare dirt walls either side and the terraces stepping over its head. Such a route now takes the ground of its own
+  column and may stand one block off it, and the step sweeps turn a terrace into a step two stations long, which is
+  what a path over a terrace is. A named road keeps its four, being a road built for wheels and a ditch.
 - **A road is planned over ground that has been made.** `surfaceAt` read a heightmap off chunks nobody had
   generated, and `fillVoid` then carried the nearest readable station's ground across them, so a route's middle was
   a flat line at the height of the stations its own ends stood on. Measured in Roads 6: Barachen's camp road level at

@@ -111,6 +111,19 @@ public final class RoadCommands {
     /** The deepest cut or tallest fill one column may take before the road is held back to the ground. */
     private static final int CUT_FILL = 4;
     /**
+     * How far a wild track's grade may stand off the ground of its own column, in blocks.
+     * <p>
+     * A build's way out is a path, not a road anyone takes a cart along, and a path over stepped country steps up it.
+     * Held to the four blocks of cut and fill a named road gets - and measured from the relief, the middle of the
+     * ground eight stations either side of the column - a track crossing terraced ground cut a notch through the
+     * terraces instead: measured in Roads 6 at the third cave's crag, the track ran five blocks into its hillside at
+     * the median, with bare dirt walls either side and the terraces stepping over its head. The band here is a block:
+     * the grade takes the ground it stands on and the step sweeps turn a terrace into a step two stations long, which
+     * is what a path over a terrace is. A named road keeps its four, being a road that was built for wheels and a
+     * ditch.
+     */
+    private static final int WILD_BAND = 1;
+    /**
      * How far along the line the ground is read to find the height a station answers to, in stations.
      * <p>
      * A road is a grade through country rather than a cast of it. Read off its own column, a boulder three blocks over
@@ -1474,7 +1487,7 @@ public final class RoadCommands {
             // then runs on from country it knows rather than into the floor of the world.
             fillVoid(ground, startY);
             for (int i = 0; i < n; i++) relief[i] = reliefAt(ground, i, startY);
-            // A road that names its kind starts on its own ground rather than on the relief. Relief is the middle of
+            // Every road starts on its own ground rather than on the relief. Relief is the middle of
             // the ground eight stations either side, and a profile begun there is already a shelf; the band below
             // can only say how far the shelf may drift, never pull it down to the hollows it is passing over.
             // Measured in Roads 5, the Thorenhad road ran level at 80 for three hundred stations over ground between
@@ -1486,7 +1499,7 @@ public final class RoadCommands {
             boolean grounded = Roads.kind(route) != null;
             for (int i = 0; i < n; i++) {
                 boolean dry = ground[i] != WATER && ground[i] != VOID;
-                height[i] = grounded && dry ? ground[i] : relief[i];
+                height[i] = dry ? ground[i] : relief[i];
             }
             if (startY != VOID && startY != WATER) height[0] = startY;
             if (endY != VOID && endY != WATER) height[n - 1] = endY;
@@ -1501,7 +1514,10 @@ public final class RoadCommands {
                     height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
                 }
                 for (int i = 1; i < n - 1; i++) {
-                    height[i] = Mth.clamp(height[i], relief[i] - CUT_FILL, relief[i] + CUT_FILL);
+                    boolean dry = ground[i] != WATER && ground[i] != VOID;
+                    int base = dry ? ground[i] : relief[i];
+                    int band = grounded && dry ? CUT_FILL : WILD_BAND;
+                    height[i] = Mth.clamp(height[i], base - band, base + band);
                 }
                 if (startY != VOID && startY != WATER) height[0] = startY;
                 if (endY != VOID && endY != WATER) height[n - 1] = endY;
@@ -1528,8 +1544,9 @@ public final class RoadCommands {
             // keeps the relief, because the river is the bridge's and there is no ground in the station to answer to.
             for (int i = 1; i < n - 1; i++) {
                 boolean dry = ground[i] != WATER && ground[i] != VOID;
-                int base = grounded && dry ? ground[i] : relief[i];
-                height[i] = Mth.clamp(height[i], base - CUT_FILL, base + CUT_FILL);
+                int base = dry ? ground[i] : relief[i];
+                int band = grounded && dry ? CUT_FILL : WILD_BAND;
+                height[i] = Mth.clamp(height[i], base - band, base + band);
             }
             // And the steps once more, because the ground's word is a band and not a cliff: wherever the ground under
             // two neighbouring stations was read differently, the clamp above can leave them more than a step apart,

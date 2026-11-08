@@ -160,6 +160,18 @@ x 4832 and two of them set off south first (cave 2 and cave 3: 909 stations with
 calls `level.getChunk` first. Not yet seen in a world, and it costs chunk generation during the walk; a fresh world
 will show whether the grades and the three separate lines come out as country roads.
 
+**Wild tracks were cutting notches through terraces; they now step up them.** A route naming no kind was held to the
+same four blocks of cut and fill as a named road and measured from `relief`, which on stepped ground sits below the
+terrace being crossed - hence the slot in the cave-road images, five blocks into the hillside at the median at
+4573, -2414. Such a route now takes its own column's ground with a band of one block (`WILD_BAND`), the sweeps making
+a terrace a two-station step; named roads keep `CUT_FILL`. Not yet seen in a world.
+
+**The wood ruin's road is laid end to end; it is not connected to anything at its north end.** Its line runs
+4741, -3092 to 4787, -3058, and the world has road within a block of both ends, so the laying is whole. But 4787,
+-3058 stands in open country: the cave corridor that passes Barachen's camp runs at x 4832, forty-six blocks east,
+and the main road is two hundred away to the south-west. If the ruin is meant to join that corridor, it is a route
+change - the far end or a bend - not a laying fault, and the shared pin at 4741, -3092 is what it ties to now.
+
 **The next three moves**, in order: the two graded ends - the lift at the Thorenhad road's far end and the dig at
 Barachen's - once the player's F3 coordinates name the chunks to read; then the five new roads in a world, since none
 of them has been seen laid and a 700-block road between countries is where a search is most likely to fall back on the
