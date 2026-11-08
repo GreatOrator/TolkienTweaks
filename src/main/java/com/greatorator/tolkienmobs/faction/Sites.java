@@ -765,7 +765,7 @@ public final class Sites extends SavedData {
         }
         // The road starts here as well as from any chunk it passes through, and both ask for the same pass, so a
         // build whose chunk loads first begins its road and a road met in the open begins on ground alone.
-        RoadCommands.pass(level, route);
+        RoadCommands.pass(level, route, corner.getX() + size.getX() / 2, corner.getZ() + size.getZ() / 2);
     }
     /**
      * Plants the chapter's own buildings, and stands them as players come near.

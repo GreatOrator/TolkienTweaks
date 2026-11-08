@@ -58,7 +58,7 @@ public final class RoadCorridor {
         for (Route route : Roads.ROUTES) {
             if (route instanceof Route.Crossing) continue;
             if (!touches(route, lowX, lowZ)) continue;
-            RoadCommands.pass(level, route);
+            RoadCommands.pass(level, route, lowX + 8, lowZ + 8);
         }
     }
 

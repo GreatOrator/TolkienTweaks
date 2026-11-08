@@ -81,8 +81,13 @@ route uses now, so it is ignored rather than resumed.
 
 Roads are begun by ground now, not by a build being found: a pass is the world's, held by road, and any
 chunk a dry road passes through starts that road from whichever end the player meets it - stepping while the
-ground under its head is loaded, waiting when it is not, so a road survives a walk away or a logout. A
-crossing is still begun by its city's dressing, because a bridge needs its span and abutments first.
+ground under its head is loaded, waiting when it is not, so a road survives a walk away or a logout. The end
+it is met at is the end it lays from: `RoadJob.outward` is set at planning time from the point that asked
+(the chunk's centre, a build's middle), and a dry road met at its far end has its stations turned round and
+its two ends' ground swapped before the grade is laid, so the player facing the road sees it come towards them
+rather than fill in behind a hill three hundred blocks away. The note keeps the alignment in laying order, so
+a pass carried over a restart resumes the same way. A crossing is still begun by its city's dressing, because
+a bridge needs its span and abutments first, and keeps its own order - its geometry is the span, not a place.
 `RoadCommands.PASSES` is the one store, so a build's approach and a road met in the open cannot plan two passes
 over the same stretch.
 

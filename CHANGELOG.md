@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road is laid from the end it is met at.** The pass walked its stations from the route's own start, so a player
+  who came on the main road at the ford watched it fill in from the camp three hundred blocks away - and only while
+  that far end's ground was loaded. A pass now starts from the end nearer the ground that asked for it: met at the far
+  end, the alignment is walked the other way, its stations turned round and the two ends' ground swapped, so the road
+  lays outward from where the player is standing. A crossing keeps its own order, since its span and abutments are its
+  own geometry, and a pass already in hand keeps the direction it began with.
 - **A road begins wherever its ground loads, not where its build was found.** A road was planned only when a
   build's site was dressed and stepped only while a player was within ninety-six blocks of its head, so the crossing
   out of Rivendell led away across the ford and stopped: the road existed up to the first build that had been found

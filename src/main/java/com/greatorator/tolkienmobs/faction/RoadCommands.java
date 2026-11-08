@@ -268,15 +268,18 @@ public final class RoadCommands {
      * <p>
      * Two callers can ask for the same road - the chunk it passes through and the build it leaves from - and they must
      * get the same pass rather than two that each lay half of it. A road already down owes nothing and gets none.
+     * <p>
+     * The point the ask comes from settles which end the road is laid from: the end nearer it is the end the player is
+     * standing at, and a dry road is walked outward from there rather than from the build the route was written for.
      */
-    static RoadJob pass(ServerLevel level, Route route) {
+    static RoadJob pass(ServerLevel level, Route route, int x, int z) {
         // A bridge is not begun from the ground under it: it needs the city's span and abutments first, so the
         // crossing stays with the dressing and asks for its pass there.
         if (route instanceof Route.Crossing) return null;
         RoadJob existing = PASSES.get(route.id());
         if (existing != null) return existing;
         if (down(level, route)) return null;
-        RoadJob made = new RoadJob(route);
+        RoadJob made = new RoadJob(route, x, z);
         PASSES.put(route.id(), made);
         return made;
     }
@@ -432,7 +435,22 @@ public final class RoadCommands {
             return route;
         }
 
+        /** Whether this pass lays from the far end towards the build rather than from the build outwards. */
+        private final boolean outward;
+
         private RoadJob(Route route) {
+            this(route, route.pathX(), route.pathZ());
+        }
+
+        /**
+         * One road pass, begun from the end nearer the point it was asked from.
+         * <p>
+         * A player who comes on a road at its far end and is made to watch it fill in from the other end three hundred
+         * blocks away has not been given a road: the pass lays from the ground that asked for it, whichever end that
+         * ground is at. A crossing keeps its own order - its span and abutments are its own geometry rather than a
+         * place on a map - so only a dry road is ever turned round.
+         */
+        private RoadJob(Route route, int x, int z) {
             this.route = route;
             this.span = route instanceof Route.Crossing crossing ? crossing : null;
             // A road with no water on it has no span to sweep and nothing to bridge, so its first stage is the
@@ -440,6 +458,9 @@ public final class RoadCommands {
             this.stage = span == null ? Stage.SEARCH : Stage.SWEEP;
             this.swept = span == null ? 0 : span.westBankX() - 1;
             this.pillarX = span == null ? 0 : span.westBankX();
+            this.outward = span == null && route instanceof Route.Riverless dry
+                    && Math.hypot(x - dry.farX(), z - dry.farZ())
+                    < Math.hypot(x - route.pathX(), z - route.pathZ());
         }
 
         /** One step; false when the road is down and {@link #summary} has the answer. */
@@ -478,6 +499,7 @@ public final class RoadCommands {
          */
         int[] head() {
             if (graded != null) return graded.head();
+            if (outward && route instanceof Route.Riverless dry) return new int[]{dry.farX(), dry.farZ()};
             return new int[]{route.pathX(), route.pathZ()};
         }
 
@@ -755,7 +777,16 @@ public final class RoadCommands {
             exit = List.of();
             int startY = endGround(level, route.pathX(), route.pathZ());
             int endY = endGround(level, dry.farX(), dry.farZ());
-            graded = new Graded(level, route, approach, startY, endY);
+            if (outward) {
+                // The same road, walked the other way: the stations are turned round and the two ends' ground goes
+                // with them, so the grade is the one it always was and the laying begins where the player stands.
+                Collections.reverse(approach);
+                graded = new Graded(level, route, approach, endY, startY);
+                LOGGER.info("Road {}: met at its far end, so it is laid from {}, {} back to its build",
+                        route.id(), dry.farX(), dry.farZ());
+            } else {
+                graded = new Graded(level, route, approach, startY, endY);
+            }
             far = null;
             stage = Stage.GRADE;
         }
