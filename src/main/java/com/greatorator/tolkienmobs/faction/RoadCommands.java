@@ -775,6 +775,15 @@ public final class RoadCommands {
         /** What a step pays for standing a block off the grade between the ends, and how far off it stops counting. */
         private static final double PROFILE_PENALTY = 0.5D;
         private static final double PROFILE_OFF = 24.0D;
+        /**
+         * How many stations a road runs straight out of its build before the country may turn it.
+         * <p>
+         * A road leaves a door square to the wall, the way a path out of a gate does. Left to itself the search may
+         * take its first step diagonally - and a band seven wide swinging off the door cuts the corner of a build of
+         * sixteen, which is a road that took a piece of the camp as it turned. Sixteen stations is far enough out that
+         * the turn is made in the country, and short enough to be a driveway rather than a road.
+         */
+        private static final int RUN_OUT = 16;
         /** How much further a second attempt may run, once the first found no way inside its budget at all. */
         private static final double WIDER = 3.0D;
         private final Route route;
@@ -813,6 +822,9 @@ public final class RoadCommands {
         private final int lineX;
         private final int lineZ;
         private final double lineSq;
+        /** Which way is out of the build, as one step a station: the wall the road leaves by. */
+        private final int outX;
+        private final int outZ;
         private double startGround = Double.NaN;
         private double goalGround = Double.NaN;
         private int looked;
@@ -833,7 +845,15 @@ public final class RoadCommands {
                 goalX = dry.farX();
                 goalZ = dry.farZ();
             }
-            int[] bounds = window(startX, startZ, goalX, goalZ);
+            // The road leaves the build square to its own wall, and the walk begins where that run-out stops: a
+            // searched first step is a diagonal one as often as not, and a road that turns on the doorstep turns
+            // through the doorstep.
+            int[] out = outward(route, startX, startZ);
+            this.outX = out[0];
+            this.outZ = out[1];
+            int fromX = startX + outX * RUN_OUT;
+            int fromZ = startZ + outZ * RUN_OUT;
+            int[] bounds = window(fromX, fromZ, goalX, goalZ);
             if (bounds == null) {
                 this.x0 = 0;
                 this.x1 = 0;
@@ -874,7 +894,7 @@ public final class RoadCommands {
             this.heading = new byte[nodes];
             this.settled = new boolean[nodes];
             this.travelled = new float[nodes];
-            this.start = (startX - x0) * deep + (startZ - z0);
+            this.start = (fromX - x0) * deep + (fromZ - z0);
             this.goal = (goalX - x0) * deep + (goalZ - z0);
             int wide = Math.abs(goalX - startX);
             int deepApart = Math.abs(goalZ - startZ);
@@ -1015,6 +1035,27 @@ public final class RoadCommands {
             open.add(new double[]{0.0D, start});
         }
 
+        /**
+         * Which way is out of the build, from the block the road starts on: the side of the build's own footprint that
+         * block stands beyond, and nothing when it stands inside the footprint and says nothing about the way out.
+         * <p>
+         * A corner reads as the side it is furthest beyond, which for a road leaving a door beside a corner is the
+         * side the door faces; a footprint the start is exactly on answers with that side rather than with none, since
+         * the city's own path ends on its wall and the road still leaves westward from it.
+         */
+        private static int[] outward(Route route, int x, int z) {
+            int west = route.cityX0() - x;
+            int east = x - route.cityX1();
+            int north = route.cityZ0() - z;
+            int south = z - route.cityZ1();
+            int most = Math.max(Math.max(west, east), Math.max(north, south));
+            if (most < 0) return new int[]{0, 0};
+            if (most == west) return new int[]{-1, 0};
+            if (most == east) return new int[]{1, 0};
+            if (most == north) return new int[]{0, -1};
+            return new int[]{0, 1};
+        }
+
         /** The walk that was found, or null when the search never reached the bend. */
         private List<int[]> path() {
             if (!fits) return null;
@@ -1026,11 +1067,22 @@ public final class RoadCommands {
                 node = from[node];
             }
             Collections.reverse(path);
-            // The alignment starts where the city's path ends, exactly once.
-            if (path.isEmpty() || path.get(0)[0] != route.pathX() || path.get(0)[1] != route.pathZ()) {
-                path.add(0, new int[]{route.pathX(), route.pathZ()});
+            // The way out of the build is the build's own: the stations from its door to the end of the run-out are
+            // square to the wall it leaves by, and the searched way starts where they stop.
+            List<int[]> whole = new ArrayList<>(path.size() + RUN_OUT);
+            if (outX != 0 || outZ != 0) {
+                for (int step = 0; step <= RUN_OUT; step++) {
+                    whole.add(new int[]{route.pathX() + outX * step, route.pathZ() + outZ * step});
+                }
             }
-            return path;
+            for (int[] station : path) {
+                if (!whole.isEmpty() && whole.get(whole.size() - 1)[0] == station[0]
+                        && whole.get(whole.size() - 1)[1] == station[1]) {
+                    continue;
+                }
+                whole.add(station);
+            }
+            return whole;
         }
     }
 
@@ -1386,6 +1438,14 @@ public final class RoadCommands {
                     counted++;
                     int at = x + dx;
                     int into = z + dz;
+                    // The build is the build's own ground. A band is seven wide, so a station one block outside a
+                    // wall reached three blocks into it, which is how a road turning out of a door took the corner of
+                    // the camp with it. Nothing inside the footprint is cut, filled, cleared or paved: the road meets
+                    // the wall and the wall is the build's.
+                    if (at >= route.cityX0() && at <= route.cityX1()
+                            && into >= route.cityZ0() && into <= route.cityZ1()) {
+                        continue;
+                    }
                     if (half == WILD_HALF && (Math.abs(dx) == WILD_HALF || Math.abs(dz) == WILD_HALF)
                             && jitter(at, into) % 3 != 0) {
                         continue;

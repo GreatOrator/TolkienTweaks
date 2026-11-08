@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road leaves its build square, and never through it.** The walk could take its first step diagonally, and a
+  band seven wide swinging off a door cuts the corner of a sixteen-block camp - which is a road that took a piece of
+  the building as it turned. Every road now runs sixteen stations straight out of the door, square to the wall it
+  leaves by, before the country may turn it; and no column inside a build's own footprint is cut, filled, cleared or
+  paved, so the road meets the wall and the wall stays the build's.
 - **A finished road keeps the alignment it was laid along.** The note a pass leaves when it finishes carried where the
   road met the build and the block under it, and nothing of the way it took - so every road became unreadable the
   moment it was done, and the first worlds whose passes completed had five-word records and no way to say how many
