@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A river is not a marsh: the reeds keep to its banks.** `shore_reeds` placed sugar cane on
+  `WORLD_SURFACE_WG`, and Arda's drawn rivers hand that heightmap a bed rather than a surface, so the cane
+  started on the riverbed, found sand under it and water beside it, and grew up through the channel: a river
+  came out standing full of cane, all the way across its width. The placed feature now refuses a column that
+  is water before the cane is asked for it, so what the biome grows is the cane on the bank and the channel
+  keeps its grass and kelp.
 - **The Thorenhad road follows the ground again instead of riding a fill above it.** The grade answered to `relief`,
   the middle of the ground eight stations either side, and `relief` is a height a hillside does not have: the road ran
   flat at 81 for two hundred and seventy stations over ground between 75 and 82, and stood as much as eight blocks of

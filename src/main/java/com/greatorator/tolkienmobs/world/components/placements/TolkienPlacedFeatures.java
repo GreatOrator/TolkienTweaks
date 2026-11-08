@@ -14,6 +14,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
 
@@ -345,10 +346,19 @@ public class TolkienPlacedFeatures {
         // which is what HEIGHTMAP reads once the water is there; reeds are placed on the land, and the cane
         // feature itself refuses any column without water beside it, so the highest count still only reeds
         // the water's edge.
+        //
+        // The cane is also refused the water itself. Arda's drawn rivers hand WORLD_SURFACE a bed rather than a
+        // surface - the height the generator kept is the ground it laid, not the water it filled over it - so a
+        // cane placed on that height starts on the riverbed, and the feature finds sand under it and water beside
+        // it and grows up through the water. A river came out standing full of reeds, which is a marsh's look and
+        // not a river's. The filter tests the block it is about to stand in: air on a bank, water in the middle of
+        // the channel, and only the first is reeded.
         context.register(PLACED_WATERLILY, new PlacedFeature(features.getOrThrow(configured("waterlily")),
                 List.of(CountPlacement.of(4), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome())));
         context.register(PLACED_SHORE_REEDS, new PlacedFeature(features.getOrThrow(configured("sugar_cane")),
-                List.of(CountPlacement.of(12), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(CountPlacement.of(12), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                        BlockPredicateFilter.forPredicate(BlockPredicate.not(BlockPredicate.matchesBlocks(Blocks.WATER))),
+                        BiomeFilter.biome())));
     }
 
     /**
