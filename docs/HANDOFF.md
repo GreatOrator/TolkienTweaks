@@ -132,8 +132,9 @@ north of them and Matuna's lair is 63. A wrong pairing lays a road to the wrong 
 
 **Not yet measured.** An attempt to read the two reported ends out of the save scanned the arda dimension for
 `minecraft:dirt_path` and found 1,004 paths in 18 cells, so the save reads; but a `gb.blocks_from_world` read of the
-box round the ford end (4880, 60, -3130 to 5000, 110, -3030) came back with no blocks at all, which is either chunks
-that were never saved there or a bad box, and the throwaway probe was deleted rather than trusted. Both defects are
+box round the ford end (4880, 60, -3130 to 5000, 110, -3030) came back with no blocks at all, which was the probe's own bug - it took
+the topmost block of each column, and the topmost block in a saved section is air, so every column read as
+air and no road could be found. The chunks were there all along; `blocks_from_world` reads this save fine. Both defects are
 therefore still unmeasured: the player's F3 coordinates for the lift and for the dig are what settles which chunks to
 look at. The suspicion on the lift is the two `SETTLE_PASSES` sweeps that run after the ground clamp - they answer to
 the pinned ends and not to the ground, so a far end whose `endGround` reads a mound can carry the last stretch up
@@ -148,6 +149,40 @@ route's footprint is the crag's own and the kind is wild - check `Sites` for the
 Reminder for the next session: `forget` then `build` re-lays a road, but the blocks already laid are read back by
 `surfaceAt` as ground, so a re-lay over an old embankment will keep riding it. Only pristine ground shows a grading
 change.
+
+### The network as walked
+
+Eleven markers now read out of Roads 5, every one the player described and nothing scanned that was not named:
+
+| marker | what it is |
+| --- | --- |
+| 4460, 124, -2477 | the crag Bandrith's cave, marker on its pin |
+| 4508, 123, -2429 | the crag Sholdroth's cave |
+| 4568, 111, -2511 | the crag Hoklond's cave |
+| 4633, 92, -3081 | the crag Matuna's lair |
+| 4741, 81, -3082 | a cave road's end, for the nearest cave |
+| 4741, 81, -3086 | a cave road's end, for the next cave |
+| 4741, 81, -3092 | a cave road's end shared by the last two, and the start of the wood ruin's road |
+| 4786, 78, -3082 | the wood ruin road's bend |
+| 4819, 76, -2903 | Barachen's track's first bend, 11 south of its door |
+| 4896, 74, -2980 | Barachen's track's second bend |
+| 4895, 74, -3075 | where Barachen's track terminates |
+
+**The cave pairing is by closest to furthest**, measured from the three pins: Matuna's lair (108 blocks) is nearest
+and takes 4741, 81, -3082; Hoklond's cave (604) is next and takes 4741, 81, -3086; Bandrith's (670) and Sholdroth's
+(698) are the last two and share 4741, 81, -3092. The shared pin is also where the wood ruin's road begins: the ruin's
+own `.end` at 4787, 78, -3058, through the bend at 4786, 78, -3082, to 4741, 81, -3092 - which is what ties the ruin,
+the four crags and the cluster into one network.
+
+**Barachen's track** is walked as door 4820, 76, -2886 - bend 4819, 76, -2903 - bend 4896, 74, -2980 - terminus
+4895, 74, -3075, replacing the single straight leg that `ROUTES` holds now.
+
+**Asked of the player before the routes are written**, since both change where a road is graded to:
+
+1. Is a cave road's crag end the recorded `.end` pin, 27-28 blocks out from the middle of the crag (4515, 121, -2446;
+   4624, 107, -2479; 4562, 120, -2398; 4689, 86, -3050), or the marker standing at the crag's own middle (4460, 124,
+   -2477 and the others)? The `.end` pins are what `Pins` calls "the ground a road arriving at a crag has to meet".
+2. Is Barachen's terminus the marker at 4895, 74, -3075, or the 4892, 74, -3097 that `ROUTES` still names?
 
 ## Open
 
