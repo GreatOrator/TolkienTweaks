@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road is only ever laid on the ground.** `RoadCommands.surfaceAt` walks a column down from the no-leaves heightmap
+  to the soil the tree is growing on, and it was skipping air and logs only: a column whose topmost log had leaves
+  beneath it stopped at the leaves and was read as that height, so the road went on the crown. Measured in Roads 7:
+  road blocks with `oak_leaves` directly beneath them above Barachen's camp, and seventy-eight columns of the camp's
+  own way in left hanging in the air once the canopy clearing took those leaves away - a road that stands on nothing
+  is what a road on a treetop looks like. The walk now skips `RoadPaint.cover`, the same list the corridor clearing
+  uses - leaves, trunks, vines, snow and the plants between the pavers - so the reading and the clearing cannot
+  disagree about what is ground. Roads already laid keep the columns they have; this is what the next ones stand on.
 - **The default trees grow instead of being laid down.** The three trees built by hand in `structure/natural` were
   planted as structures, so every wood repeated the same three trees block for block and a stand of them read as
   copies. Their shape is measured into code now. The templates stand thirteen, twenty-four and forty-six blocks tall

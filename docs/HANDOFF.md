@@ -35,6 +35,12 @@ with no commands typed. A player walks the chapter and the world has already bui
 | `world/registration/TolkienBiomeGenerationSettings.java` | What a biome generates: only the mod's own features, and no carvers. |
 | `run/logs/latest.log` | The evidence. `grep "Road \|laid in\|will not take\|Dressing"` answers most questions. |
 
+A column's ground for the road pass is read by `RoadCommands.surfaceAt`, which walks down through everything
+`RoadPaint.cover` calls cover - leaves, trunks, vines, snow, replaceable plants - to the soil. Both use that one
+method on purpose: the reading and the corridor clearing must agree, or the clearing takes away what the road was
+standing on and leaves it in the air. Roads 7 had road blocks sitting on oak leaves at the junction above
+Barachen's camp, and seventy-eight columns of the camp's road left hanging when the canopy went.
+
 ## Where it stood on 8 November 2026
 
 Done and seen in a world by the player: the camp, Barachen's camp, the wood tower and one crag place at their pins; the

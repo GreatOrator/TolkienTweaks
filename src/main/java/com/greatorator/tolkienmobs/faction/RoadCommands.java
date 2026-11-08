@@ -2095,7 +2095,11 @@ public final class RoadCommands {
      * A heightmap answers with whatever stops motion, and that includes the crowns of the trees. Read that
      * way, a valley road is a road laid on treetops: it stands up stone columns wherever the canopy was
      * higher than the bank, and it grades against a forest roof instead of a hillside. This walks down past
-     * leaves and trunks to the ground the tree is growing on, and only then asks whether it is water.
+     * everything that grows - leaves, trunks, vines, snow, the plants between the pavers - to the ground the
+     * tree is growing on, and only then asks whether it is water. A column whose topmost log had leaves
+     * under it used to stop at the leaves and be read as that height: Roads 7 had road blocks with oak leaves
+     * directly beneath them at the junction above Barachen's camp, and the canopy clearing then took the
+     * leaves away and left the road hanging in the air over the gap it stood on.
      */
     private static int surfaceAt(ServerLevel level, int x, int z) {
         // The chunk is made before its ground is asked for. A heightmap read off a chunk nobody has made is the
@@ -2111,7 +2115,7 @@ public final class RoadCommands {
         int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
         BlockPos at = new BlockPos(x, y, z);
         BlockState state = level.getBlockState(at);
-        while (y > level.getMinY() && (state.isAir() || state.is(BlockTags.LOGS))) {
+        while (y > level.getMinY() && (state.isAir() || RoadPaint.cover(state))) {
             y--;
             at = at.below();
             state = level.getBlockState(at);

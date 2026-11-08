@@ -266,8 +266,14 @@ public final class RoadPaint {
         return cleared;
     }
 
-    /** What a road's corridor takes away: what a tree or a patch of ground cover put there, never the ground. */
-    private static boolean cover(BlockState state) {
+    /**
+     * What a road's corridor takes away: what a tree or a patch of ground cover put there, never the ground.
+     * <p>
+     * Shared with the pass that reads a column's ground: what is cover to the clearing is not ground to the
+     * grade either, and the two must not drift apart - a column read against one list and cleared against the
+     * other leaves the road standing on what was taken away.
+     */
+    static boolean cover(BlockState state) {
         return state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)
                 || state.is(BlockTags.REPLACEABLE_BY_TREES) || state.is(Blocks.VINE)
                 || state.is(Blocks.SNOW);
