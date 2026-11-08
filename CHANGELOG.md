@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The wood ruin's door is where its road arrives.** Its seat named the northwest corner of the floor plate as the
+  doorway, so the ground it was measured against - and the travel stone stood beside it - was five blocks west of the
+  way in the road actually meets: the ruin's own `.end` pin is corner + 5 east on the same north face. The plate is
+  uniform at layer 0 - every one of its 182 columns has a block there, and the layers above are open across the whole
+  footprint - so any column on that face is a valid sill, and the arrival column is the right one. The sill layer and
+  the facing were already right and are unchanged.
 - **A crag is seated by its own entrance.** The crag seat was fifteen to sixteen blocks down, measured against
   nothing: the shipped cuts are 56 by 56 with ten layers of solid rock, chambers at y 6 to 19, the way in cut through
   the east flank at y 6 (Matuna's lair at y 15) and the grass crown at y 27. Fifteen blocks buried the tunnel under the

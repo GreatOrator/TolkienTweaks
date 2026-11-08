@@ -468,3 +468,11 @@ the mouth has to be the datum. Each crag now has a `CRAG_MOUTHS` entry - the mou
 sits on, read off each of the four cuts with a flood fill of their outside air (y 6 for the three the stone asks in,
 y 15 for Matuna's lair) - so `plane()`'s doorway branch sets the mouth's floor at the ground the road arrives on. The
 crown is still read through `lines()` and cached in `CROWNS`, now as the cap that bounds how far a crag may be set in.
+
+The wood ruin's door was the corner of its floor plate rather than where its road arrives: `DOORWAYS` named `(0, 0)`
+while the `WOOD_RUIN.end` pin is corner + 5 east on the same north face, so the seat measured the ground five blocks
+west of the way in and the travel stone stood there. The plate is uniform at layer 0 - every one of its 182 columns has
+a block there and the layers above are open across the whole footprint - so the arrival column is the valid sill, and
+`doorX` is now 5. The same audit found the camps' doors right, found `SEAT_SINK` (4) clamping the doorway sink on
+broken ground, and found Barachen's `.keeper` and `.end` pins two layers lower than the same arithmetic gives at
+Elladan's camp.

@@ -378,7 +378,7 @@ public final class Sites extends SavedData {
     private static final Map<String, Seat> DOORWAYS = Map.of(
             ELLADAN_CAMP, new Seat(0, SEAT_SINK, 8, 0, 1, Direction.NORTH),
             BARACHENS_CAMP, new Seat(0, SEAT_SINK, 8, 0, 1, Direction.NORTH),
-            WOOD_RUIN, new Seat(0, SEAT_SINK, 0, 0, 0, Direction.NORTH),
+            WOOD_RUIN, new Seat(0, SEAT_SINK, 5, 0, 0, Direction.NORTH),
             WILD_TENT, new Seat(0, SEAT_SINK, 0, 3, 0, Direction.WEST),
             BOSS_CASTLE, new Seat(0, SEAT_SINK, 31, 45, 2, Direction.SOUTH),
             BOSS_ARENA, new Seat(0, SEAT_SINK, 0, 0, 1, Direction.WEST));
