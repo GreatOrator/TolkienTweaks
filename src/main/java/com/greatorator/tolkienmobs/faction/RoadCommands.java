@@ -744,6 +744,13 @@ public final class RoadCommands {
      * switchback, which is the road alternative to a hole in the grade or an embankment forty blocks tall. Water is refused
      * outright - the river is the bridge's - and so is the city's own footprint.
      * <p>
+     * A road may run further than the country is wide, but not by any amount. The grade penalty alone will pay any
+     * length to keep off one steep step, and the bench of a meadow between two hills has room for a great many long
+     * ways round: a walk given no budget came back with three thousand eight hundred stations for a four-hundred-block
+     * road, doubling back across the same ground until it had paved a plaza. So the walk carries how far it has run
+     * and refuses a detour longer than {@link #DETOUR} times the distance between its ends, trying once more at
+     * {@link #WIDER} times as much when the country genuinely needs the switchbacks a short budget will not allow.
+     * <p>
      * It falls back to the straight line if the search finds nothing, so the command always lays something.
      */
     private static final class Descent {
@@ -751,6 +758,15 @@ public final class RoadCommands {
         private static final int MARGIN = 96;
         /** The most candidates one search may hold: past it the window narrows, then the line goes straight. */
         private static final long WINDOW = 600_000L;
+        /**
+         * How far a road may run for the distance it has to cover: two and a half times as far as the crow flies, so a
+         * road that switchbacks up a fell is still a road and one that wanders a meadow is not one the walk will find.
+         */
+        private static final double DETOUR = 2.5D;
+        /** What a diagonal step costs over a straight one: one and the root of two less, which is the eight-way guess. */
+        private static final double DIAGONAL = Math.sqrt(2.0D) - 1.0D;
+        /** How much further a second attempt may run, once the first found no way inside its budget at all. */
+        private static final double WIDER = 3.0D;
         private final Route route;
         private final int x0;
         private final int x1;
@@ -769,6 +785,16 @@ public final class RoadCommands {
                 new PriorityQueue<>((left, right) -> Double.compare(left[0], right[0]));
         private final int start;
         private final int goal;
+        /**
+         * How far each candidate has been walked to reach it, in blocks. Distance is carried apart from cost: the grade
+         * penalty is what makes a way expensive, and this is what makes it long.
+         */
+        private final float[] travelled;
+        /** How far apart the two ends are, as the walk may square it, and how much of that a first attempt may spend. */
+        private final double straight;
+        private double room;
+        /** How many times the search has been restarted with a longer road allowed. */
+        private int tries;
         private int looked;
         private boolean done;
 
@@ -801,6 +827,8 @@ public final class RoadCommands {
                 this.from = new int[0];
                 this.heading = new byte[0];
                 this.settled = new boolean[0];
+                this.travelled = new float[0];
+                this.straight = 0.0D;
                 this.start = -1;
                 this.goal = -1;
                 return;
@@ -818,13 +846,20 @@ public final class RoadCommands {
             this.from = new int[nodes];
             this.heading = new byte[nodes];
             this.settled = new boolean[nodes];
+            this.travelled = new float[nodes];
             this.start = (startX - x0) * deep + (startZ - z0);
             this.goal = (goalX - x0) * deep + (goalZ - z0);
+            int wide = Math.abs(goalX - startX);
+            int deepApart = Math.abs(goalZ - startZ);
+            this.straight = Math.max(wide, deepApart) + DIAGONAL * Math.min(wide, deepApart);
+            this.room = Math.max(32.0D, straight * DETOUR);
             Arrays.fill(ground, Integer.MIN_VALUE);
             Arrays.fill(best, Double.MAX_VALUE);
             Arrays.fill(from, -1);
             Arrays.fill(heading, (byte) -1);
+            Arrays.fill(travelled, Float.MAX_VALUE);
             best[start] = 0.0D;
+            travelled[start] = 0.0F;
             open.add(new double[]{0.0D, start});
         }
 
@@ -854,6 +889,12 @@ public final class RoadCommands {
             if (!fits || done) return false;
             for (int poll = 0; poll < polls; poll++) {
                 if (open.isEmpty() || looked >= limit) {
+                    // What stopped it may have been the budget rather than the country: a road up a fell needs more
+                    // than a meadow's worth of switchbacks. One longer attempt, and then the walk is what it is.
+                    if (tries == 0 && from[goal] == -1) {
+                        widen();
+                        continue;
+                    }
                     done = true;
                     break;
                 }
@@ -885,16 +926,43 @@ public final class RoadCommands {
                         double over = Math.max(0.0D, change - TARGET_GRADE * length);
                         double cost = best[node] + length + GRADE_PENALTY * over * over;
                         if (heading[node] != -1 && heading[node] != dir) cost += TURN_COST;
+                        float ran = travelled[node] + (float) length;
+                        if (ran > room) continue;
                         if (cost >= best[at]) continue;
                         best[at] = cost;
+                        travelled[at] = ran;
                         from[at] = node;
                         heading[at] = dir;
-                        double guess = Math.abs(goal / deep - at / deep) + Math.abs(goal % deep - at % deep);
+                        // The guess is the distance left as the walk may actually cover it. It may step in eight
+                        // directions, and a diagonal step is 1.414 of a straight one: measured four ways the guess
+                        // overrates every diagonal, which settles a station by a road the walk would not have chosen.
+                        int gx = Math.abs(goal / deep - at / deep);
+                        int gz = Math.abs(goal % deep - at % deep);
+                        double guess = Math.max(gx, gz) + DIAGONAL * Math.min(gx, gz);
                         open.add(new double[]{cost + guess, at});
                     }
                 }
             }
             return !done;
+        }
+
+        /**
+         * Starts the search again with a longer road allowed, once a first attempt found no way inside its budget: the
+         * country may genuinely need the switchbacks a meadow's worth of road will not buy.
+         */
+        private void widen() {
+            tries++;
+            room *= WIDER;
+            Arrays.fill(best, Double.MAX_VALUE);
+            Arrays.fill(from, -1);
+            Arrays.fill(heading, (byte) -1);
+            Arrays.fill(settled, false);
+            Arrays.fill(travelled, Float.MAX_VALUE);
+            best[start] = 0.0D;
+            travelled[start] = 0.0F;
+            looked = 0;
+            open.clear();
+            open.add(new double[]{0.0D, start});
         }
 
         /** The walk that was found, or null when the search never reached the bend. */

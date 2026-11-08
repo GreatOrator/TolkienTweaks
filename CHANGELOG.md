@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road no longer wanders to keep off a hill.** The way is chosen by cost, and cost alone will pay any length to
+  keep off one steep step: the first walk in a fresh world came back with three thousand eight hundred stations for a
+  four-hundred-block road, doubling back across the same meadow until it had paved a plaza. The walk now carries how
+  far it has run and refuses a detour longer than two and a half times the distance between its ends, with one longer
+  attempt when the country really needs the switchbacks; and its guess at the way ahead is measured in the eight
+  directions it may actually walk instead of four, so it stops settling stations by roads it would not have chosen.
 - **The four crags' road ends are recorded.** The redux walk left an ammolite marker on each crag's footprint edge -
   Matuna's lair among them - and the four are in the pack's pin table now, so a road to any of the stone's three or to
   the wood-troll's own hill has an end to grade to rather than the survey's guess. The ford's marker reads one block
