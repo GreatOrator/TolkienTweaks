@@ -81,7 +81,7 @@ public final class Waypoint {
         if (!named.isEmpty()) {
             Places.Place place = Places.place(level, named);
             if (place == null || !place.dimension().equals(level.dimension())) return null;
-            return new Mark("place.tolkienmobs." + named, place.centre(), level.dimension());
+            return new Mark("place.tolkienmobs." + named, stoneOrCentre(level, named, place), level.dimension());
         }
 
         // A body the campaign stands on ground it pitched itself - the camp at the pass, the hold in the
@@ -100,7 +100,8 @@ public final class Waypoint {
             if (spot.place() == null) return new Mark("hud.tolkienmobs.road.mark", spot.centre(), level.dimension());
             Places.Place place = Places.place(level, spot.place());
             if (place == null || !place.dimension().equals(level.dimension())) return null;
-            return new Mark("place.tolkienmobs." + spot.place(), place.centre(), level.dimension());
+            return new Mark("place.tolkienmobs." + spot.place(), stoneOrCentre(level, spot.place(), place),
+                    level.dimension());
         }
         // A page that names a body points at the ground the line keeps that body on. The body itself
         // would be better and is not something a server can promise: it is only standing while the page
@@ -122,7 +123,7 @@ public final class Waypoint {
         // while the middle of that square is a fountain. Pointed at the middle, the needle led into water.
         BlockPos stand = Campaign.standOf(player, person);
         return new Mark("place.tolkienmobs." + place,
-                stand == null ? where.centre() : stand, level.dimension());
+                stand == null ? stoneOrCentre(level, place, where) : stand, level.dimension());
     }
 
     /**
@@ -136,7 +137,21 @@ public final class Waypoint {
         if (next == null || next.place() == null) return null;
         Places.Place where = Places.place(level, next.place());
         if (where == null || !where.dimension().equals(level.dimension())) return null;
-        return new Mark("place.tolkienmobs." + next.place(), where.centre(), level.dimension());
+        return new Mark("place.tolkienmobs." + next.place(), stoneOrCentre(level, next.place(), where),
+                level.dimension());
+    }
+
+    /**
+     * The ground a place's needle should show: the stone standing there, which is the block a player arrives at, or
+     * the middle of the place when it carries none.
+     * <p>
+     * The valley is the case this exists for. Its place's middle is the low corner the city was cut from, and the walk
+     * a page means is the walk to the milestone inside it - so the needle points at the stone's own coordinates rather
+     * than at the pin the city was planted on, and a player who follows it arrives at the block that names the place.
+     */
+    private static BlockPos stoneOrCentre(ServerLevel level, String place, Places.Place where) {
+        BlockPos stone = Sites.stoneGround(level, place);
+        return stone != null ? stone : where.centre();
     }
 
     /**

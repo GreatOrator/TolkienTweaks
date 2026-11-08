@@ -422,6 +422,26 @@ public final class Sites extends SavedData {
     private static final Set<String> STOOD = new HashSet<>();
 
     /**
+     * Where a place's own stone stands, or null when this world keeps no stone for that place.
+     * <p>
+     * The answer is the stone's own coordinates whether or not it has been stood yet: the pin is where the stone
+     * replaces a scout's marker, and a pin with no marker left under it takes the stone on the ground above it. That
+     * is what the travel list sends a player to and what an arrow should show - the middle of a place is the corner
+     * its ground was cut from, which for the valley is a mile from anybody a page names.
+     */
+    @Nullable
+    public static BlockPos stoneGround(Level level, String place) {
+        for (Stand stand : STANDING) {
+            if (!stand.pin().equals(place + ".stone")) continue;
+            BlockPos pinned = Pins.at(level, stand.pin());
+            if (pinned == null) return null;
+            if (level.getBlockState(pinned).is(TolkienBlocks.MILESTONE_BLOCK.get())) return pinned;
+            return level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pinned);
+        }
+        return null;
+    }
+
+    /**
      * The man a camp is named after, by building: the body minding that fire is him rather than one of the mod's
      * folk wearing a borrowed name. A camp with no line here keeps the drawn name, which is the wild tent's
      * errand - a fire by the road has a stranger at it, and that is what it is.
@@ -1440,9 +1460,12 @@ public final class Sites extends SavedData {
         int wide = size.getX();
         int deep = size.getZ();
         if (wide <= 0 || deep <= 0) return;
-        int[] top = roofline(level, structure, size);
-        if (top == null) return;
+        Lines lines = lines(level, structure, size);
+        if (lines == null) return;
+        int[] top = lines.roof();
+        int[] floor = lines.floor();
         open(top, wide, deep);
+        open(floor, wide, deep);
         int ring = wide * deep > SWEEP_WIDE ? 4 : SWEEP_REACH;
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int dx = -ring; dx < wide + ring; dx++) {
@@ -1458,23 +1481,49 @@ public final class Sites extends SavedData {
                 int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
                 if (surface <= level.getMinY()) continue;
                 if (wet(level, x, surface + 1, z)) continue;
+                if (out == 0) {
+                    // Inside the walls the ground comes down to the build's own floor rather than to its roof. A ruin
+                    // seated on the highest column of a bank has a hill's worth of ground standing inside its own walls,
+                    // and a cut at the roofline leaves it exactly there: a keep's height is the cap, so the ground
+                    // fills the ruin to the top of it and the whole thing reads as a mound of dirt and grass. The cut
+                    // takes only what the template does not stand - the walls are the build, the ground is what is not.
+                    int bottom = floor[nearX + nearZ * wide];
+                    if (bottom == Integer.MIN_VALUE) continue;
+                    sweepInside(level, cursor, corner.getY(), nearX, nearZ, x, z, surface,
+                            corner.getY() + bottom, lines.own());
+                    continue;
+                }
                 double share = Math.min(1.0D, out / (double) ring);
                 double ease = share * share * (3.0D - 2.0D * share);
                 int cap = (int) Math.round(corner.getY() + roof + (surface - corner.getY() - roof) * ease);
-                sweepColumn(level, cursor, x, z, surface, cap, out == 0);
+                sweepColumn(level, cursor, x, z, surface, cap);
             }
         }
     }
 
     /**
-     * The build's own top in every column of its footprint, from its corner; {@code Integer.MIN_VALUE} where the
-     * template stands nothing at all.
+     * A build's own shape as its file draws it: the highest and lowest block in every column of its footprint, from
+     * its corner, and the blocks themselves - the last so that the cut inside the walls can tell the build from the
+     * ground it stands in.
+     */
+    private record Lines(int[] roof, int[] floor, Set<Long> own) {
+    }
+
+    /** The key of one of a template's own blocks, for the sweep's test of what it must not cut. */
+    private static long offset(int x, int y, int z) {
+        return ((long) (x + 512) << 42) | ((long) (z + 512) << 21) | (long) (y + 4096);
+    }
+
+    /**
+     * The build's own top and bottom in every column of its footprint, from its corner; {@code Integer.MIN_VALUE}
+     * where the template stands nothing at all in that column.
      * <p>
      * Read from the template's file rather than from the world, and read after no placement at all: the ground is
-     * what the build has to be carried to, so the number wanted is the one the template drew, not what happens to be
-     * standing now. A hill left over a roof inside the footprint would otherwise be its own answer.
+     * what the build has to be carried to, so the numbers wanted are the ones the template drew, not what happens to
+     * be standing now. A hill left over a roof inside the footprint would otherwise be its own answer.
      */
-    private static int[] roofline(ServerLevel level, String structure, Vec3i size) {
+    @Nullable
+    private static Lines lines(ServerLevel level, String structure, Vec3i size) {
         Identifier id = Identifier.tryParse(structure);
         if (id == null) return null;
         Identifier file = Identifier.fromNamespaceAndPath(id.getNamespace(), "structure/" + id.getPath() + ".nbt");
@@ -1494,7 +1543,10 @@ public final class Sites extends SavedData {
         int wide = size.getX();
         int deep = size.getZ();
         int[] top = new int[wide * deep];
+        int[] floor = new int[wide * deep];
         Arrays.fill(top, Integer.MIN_VALUE);
+        Arrays.fill(floor, Integer.MIN_VALUE);
+        Set<Long> own = new HashSet<>();
         ListTag blocks = tag.getList("blocks").orElseGet(ListTag::new);
         for (int index = 0; index < blocks.size(); index++) {
             CompoundTag block = blocks.getCompoundOrEmpty(index);
@@ -1505,11 +1557,33 @@ public final class Sites extends SavedData {
             ListTag pos = block.getList("pos").orElseGet(ListTag::new);
             if (pos.size() < 3) continue;
             int x = pos.getIntOr(0, 0);
+            int y = pos.getIntOr(1, 0);
             int z = pos.getIntOr(2, 0);
             if (x < 0 || x >= wide || z < 0 || z >= deep) continue;
-            top[x + z * wide] = Math.max(top[x + z * wide], pos.getIntOr(1, 0));
+            int at = x + z * wide;
+            top[at] = Math.max(top[at], y);
+            floor[at] = floor[at] == Integer.MIN_VALUE ? y : Math.min(floor[at], y);
+            own.add(offset(x, y, z));
         }
-        return top;
+        return new Lines(top, floor, own);
+    }
+
+    /**
+     * One column of the sweep inside a build: the ground comes down to the build's own floor and no further, and the
+     * build itself is never what is cut - the walls, the keep, the part of the craft the ground is standing in.
+     * <p>
+     * Water is left where it is, the same rule the ring follows: a chamber the ground has filled with a spring is not
+     * a chamber to bail out on the way past.
+     */
+    private static void sweepInside(ServerLevel level, BlockPos.MutableBlockPos cursor, int base,
+                                    int relX, int relZ, int x, int z, int surface, int floor, Set<Long> own) {
+        for (int y = surface; y > floor; y--) {
+            if (own.contains(offset(relX, y - base, relZ))) continue;
+            cursor.set(x, y, z);
+            BlockState state = level.getBlockState(cursor);
+            if (state.isAir() || !state.getFluidState().isEmpty()) continue;
+            level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        }
     }
 
     /** Fills the build's own holes from the columns beside them, so a doorway is still a wall for the ground's sake. */
@@ -1544,7 +1618,7 @@ public final class Sites extends SavedData {
      * hill had grass - a crown of leaves laid flat at a roofline is not a shoulder, it is a lid.
      */
     private static void sweepColumn(ServerLevel level, BlockPos.MutableBlockPos cursor,
-                                    int x, int z, int surface, int cap, boolean inside) {
+                                    int x, int z, int surface, int cap) {
         if (surface <= cap) return;
         BlockState skin = level.getBlockState(cursor.set(x, surface, z));
         boolean keep = skin.isSolid() && !skin.is(BlockTags.LOGS) && !skin.is(BlockTags.LEAVES)
@@ -1554,7 +1628,6 @@ public final class Sites extends SavedData {
             if (level.getBlockState(cursor).isAir()) continue;
             level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
-        if (inside) return;
         if (keep) {
             level.setBlock(cursor.set(x, cap, z), skin, Block.UPDATE_CLIENTS);
             return;

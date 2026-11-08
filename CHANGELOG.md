@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A ruin takes the ground out of itself.** The sweep that carries the ground around a build to its roofline only
+  ever cut *above* that roofline, so a ruin seated on the highest column of a bank kept the hill standing inside its
+  own walls - and where the template has a keep, the keep's height was the cap, so the ground filled the ruin to the top
+  of it and it read as a mound of dirt and grass. Inside the footprint the cut now comes down to the build's own floor
+  in each column, reads the template's own blocks out of its file and never takes them, and leaves water alone. The
+  ring outside the walls is unchanged.
+- **A place's arrow points at its stone.** The needle for a page that names a place pointed at the place's middle, which
+  for Rivendell is the low corner the city was cut from, a mile from anybody a page names. A place that carries a
+  milestone of the campaign's now points at that stone's own coordinates - the block it stands on, or the ground it will
+  stand on if it has not been set yet - falling back to the place's middle for a place with no stone.
 - **No build can be laid over its own blocks.** Every hand that lays a template for the chapter now asks
   `Sites.standsAt` first: the cut's own blocks are read out of its file and a majority of them standing at the spot
   refuses the lay, with a few blocks of band so a seat measured by two different hands still counts as the same

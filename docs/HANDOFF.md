@@ -445,3 +445,14 @@ takes the place's own y). `Sites.build` asks it before underpin and placement, `
 and `standingBlocks` now reads a site's record through the same guard so a record a few blocks off still counts as
 standing. Road pieces and city pieces are not guarded on purpose: their positions come from a route or a band rather
 than from measuring their own ground, and re-laying one is the same blocks in the same place.
+
+The ruin came out of the ground packed with it. `ttmruin_large_2` is 14 by 29 by 13, every one of its 182 columns
+has a block at y 0 (101 grass, 38 dirt, planks - the cut carries its own pad), and 101 columns are hollow above that.
+Seated on the highest ground under the footprint, the hill stands inside those walls, and `Sites.sweep` only ever cut
+*above* the roofline: for a column carrying the keep that is y 26-28, so the ground came up to the keep's top and the
+ruin read as a mound. The sweep now reads the template's own top *and* bottom per column and its block list in one pass
+(`Sites.lines`), cuts the inside down to the build's floor, skips any block the template itself stands, and leaves
+fluids alone; the ring outside still eases from the roofline to the country. The place needle now asks
+`Sites.stoneGround(level, place)`, which resolves a place's `<place>.stone` pin to the milestone standing on it (or the
+ground it will stand on), so Rivendell's arrow goes to the stone at 5499, 150, -3080 rather than the city pin at 5200,
+75, -3370.
