@@ -345,18 +345,21 @@ public final class Sites extends SavedData {
      */
     private static final int SEAT_SINK = 4;
     /**
-     * The crag's seat, measured off the cut it seats.
+     * Where each crag's way in is, in its own template's blocks, and the layer its floor sits on.
      * <p>
-     * A crag is a hill, and a hill has a height: the shipped cut is 56 by 56 with ten layers of solid rock under it,
-     * its chambers at y 6 to 19 and its grass crown at y 27. A seat written down as a number can only be right for one
-     * template - the numbers that stood here, fifteen and sixteen, were right for a crag sixteen blocks tall, and this
-     * one was then left standing eleven blocks proud of the hillside with its entrance hanging in the air beside it.
-     * Every crag the campaign cuts is seated by its own crown instead: the crown goes at the ground under the
-     * footprint, the rock and turfy flank beneath it buried in the hill, which is what a crag is taken for.
+     * A crag has no door in a wall: it is a hill with a tunnel cut into its east flank, so the mouth is the one thing
+     * that has to meet the ground and the one thing that can be measured for it. These numbers are read off the cuts
+     * with a flood fill of a template's outside air - the three the stone asks in open at y 6 on the east flank at
+     * x 46, z 31, and Matuna's lair at y 15 - and written here rather than guessed, the way a camp's doorway is.
      */
-    private static Seat sunkCrag(int crown) {
-        return new Seat(crown, crown + 1, 0, 0, -1, Direction.NORTH);
+    private record Mouth(int x, int z, int floor) {
     }
+
+    private static final Map<String, Mouth> CRAG_MOUTHS = Map.of(
+            TROLL_CAVE, new Mouth(46, 31, 5),
+            TROLL_CAVE_2, new Mouth(46, 31, 5),
+            TROLL_CAVE_3, new Mouth(46, 31, 5),
+            TROLL_CAVE_4, new Mouth(46, 31, 14));
     /** A building that stands on its ground rather than in it: hall, tent, house, arena. */
     private static final Seat ON_SURFACE = new Seat(0, SEAT_SINK, 0, 0, -1, Direction.NORTH);
     /**
@@ -1290,9 +1293,16 @@ public final class Sites extends SavedData {
         if (door != null) return door;
         if (!isCave(structure)) return ON_SURFACE;
         int crown = CROWNS.computeIfAbsent(structure, key -> crownOf(level, key, size));
-        // A file that will not read leaves the crag on its ground rather than buried on a guess: a hill standing too
-        // high can be walked into, and one sunk by a number nobody measured cannot be found at all.
-        return crown < 0 ? ON_SURFACE : sunkCrag(crown);
+        Mouth mouth = CRAG_MOUTHS.get(structure);
+        // A file that will not read, or a crag whose way in nobody has measured, leaves it on its ground rather than
+        // sunk on a guess: a hill standing too high can be walked into, and one sunk by a number nobody measured cannot
+        // be found at all.
+        if (mouth == null || crown < 0) return ON_SURFACE;
+        // The way in is the datum, not the crown. The seat is measured from the mouth's floor, so that floor comes down
+        // at the ground outside it and a player walks off the hillside straight into the tunnel; seated by the crown
+        // instead, the tunnel is buried by the hill's own height and the crag is one nobody can enter. The crown is the
+        // cap - the most a crag may ever be set into its ground.
+        return new Seat(0, crown + 1, mouth.x(), mouth.z(), mouth.floor(), Direction.EAST);
     }
 
     /** The highest block a crag's file draws, or -1 when the file cannot be read. */

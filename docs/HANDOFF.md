@@ -457,12 +457,14 @@ fluids alone; the ring outside still eases from the roofline to the country. The
 ground it will stand on), so Rivendell's arrow goes to the stone at 5499, 150, -3080 rather than the city pin at 5200,
 75, -3370.
 
-Bandrith's and Hoklond's crags stood above the ground. The reason is a seat that was written down instead of
-measured: `SUNK_CRAG` was `Seat(15, 16, ...)`, and `plane()` clamps its sink between those two numbers, so every crag
-went down fifteen or sixteen blocks. The shipped cut, `troll_cave.nbt`, is 56 by 36 by 56 with 42,292 blocks: layers 0
-to 9 are full 2285-block rock slabs, the chambers are cut at y 6 to 19, and the grass crown is at y 27 (stone 20-23,
-dirt 24-26, grass 27). Fifteen blocks of sink leaves the crown eleven above the highest ground under the footprint,
-which is the mound standing on a hillside in the screenshots. `Sites.seatFor` now reads the crag's own crown through
-`lines()` (the same file read the sweep uses), caches it in `CROWNS` so the per-visit `dress` does not walk the file,
-and returns `sunkCrag(crown)` - floor and cap `crown`/`crown + 1`, so the sink is the template's height and the crown
-lands at the ground. An unreadable file returns `-1` and the crag keeps `ON_SURFACE` rather than being sunk on a guess.
+Bandrith's and Hoklond's crags stood above the ground, and the seat was written down instead of measured:
+`SUNK_CRAG` was `Seat(15, 16, ...)` and `plane()` clamps its sink between those two numbers, so every crag went down
+fifteen or sixteen blocks. `troll_cave.nbt` is 56 by 36 by 56 with 42,292 blocks: layers 0 to 9 are full 2285-block rock
+slabs, the chambers and tunnels are air from y 6 to 22, the way in is cut through the east flank at y 6 on x 46, z 31,
+and the grass crown is at y 27. Fifteen blocks therefore buried the tunnel eleven blocks under the hill's own flank and
+left the crown eleven above the highest ground - a mound sitting on a hillside with its entrance inside it. Seating by
+the crown instead (this was tried first) buries the way in by the hill's own height, which is a crag nobody can enter:
+the mouth has to be the datum. Each crag now has a `CRAG_MOUTHS` entry - the mouth's column and the layer its floor
+sits on, read off each of the four cuts with a flood fill of their outside air (y 6 for the three the stone asks in,
+y 15 for Matuna's lair) - so `plane()`'s doorway branch sets the mouth's floor at the ground the road arrives on. The
+crown is still read through `lines()` and cached in `CROWNS`, now as the cap that bounds how far a crag may be set in.
