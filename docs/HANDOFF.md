@@ -106,6 +106,15 @@ ground around every build to its roofline, no vanilla world generation in Arda, 
   world's `entities` files and will keep the test world slow until they are stripped; the ceiling stripper's approach
   works on `entities` region files too.
 
+- **The test world's folk are back to 24.** `build/tmp/arda_folk.py` (report|strip|verify) splices each chunk's
+  `Entities` list in place, so nothing but that list moves. Arda held 10,353 entities: 5,211 dropped items, 3,439 Elves,
+  2,570 `valley_folk` and 620 bodies wearing a mark slot. Kept: one body per mark (15 slots), the three Elves of the line
+  (tagged by name, not by slot, and untouched) and six loose walkers - 24 in all - and every item removed, 8,377 entities
+  gone, 1,976 left. Verified by rebuilding all 2,823 chunks from the backup and comparing bytes, and by checking every
+  other entity type's count is unchanged. Backup: `build/tmp/arda-entity-backup/20261108-033557` (the original) and
+  `.../033640`. A mark's tag is `tolkienmobs:valley_folk:N`, **not** the base tag: a first pass that matched the base tag
+  kept 620 slot duplicates, was restored byte-for-byte from the backup, and was re-run with the slot rule.
+
 ## What the player is likely to ask next
 
 Trees back in some form; the seam between old and new chunks; whether the two crags stood; whether the camp road
