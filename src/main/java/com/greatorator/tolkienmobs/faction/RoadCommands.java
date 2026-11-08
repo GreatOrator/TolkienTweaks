@@ -2084,7 +2084,8 @@ public final class RoadCommands {
      * The surface of one block: the mix of the kind of road the column is, chosen per block from a hash of x and z so
      * that a chunk border never shows, and so the same column takes the same block whenever asked. The kind is the
      * route's own where it names one, a city's bands where the build is a city, and the wild track's everywhere else -
-     * so a camp's track is gravel and dirt at its own door, and only a city's road is paved.
+     * so a camp's track is gravel and dirt at its own door, a main road is gravel and dirt seven blocks wide, and only
+     * a city's road is paved.
      */
     private static BlockState surface(Route route, int x, int z) {
         Roads.Kind kind = roadKind(route, x, z);

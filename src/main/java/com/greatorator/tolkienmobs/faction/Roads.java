@@ -60,8 +60,9 @@ public final class Roads {
             // where the crossing's exit road stops, and no further: the road over the water and this dry one are the
             // two sections of the same road, and one that ran past the meeting point would grade the same country a
             // second time from the other side. It is a road rather than a build's way out, so it carries its own name
-            // and is laid by the bands - read from the camp it serves, seven at its ground, five where the paving
-            // starts, three for the country between - which is what `BANDED` says of it.
+            // and its own kind: seven wide from the junction to the ford, of the country's own gravel and dirt, which
+            // is what `KINDS` says of it. The bands would have made it a town's street at one end and a track at the
+            // other, and a main road is neither.
             new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4633, -3331, 4972, -3075),
             // Barachen's fire to the mark at 4892, 74, -3097, where the Thorenhad road runs past: the road leaves the
             // camp's own door at 4820, 76, -2886 and ends at the mark, so the two roads meet there instead of each
@@ -100,14 +101,24 @@ public final class Roads {
         return BENDS.getOrDefault(route.id(), List.of());
     }
 
-    /** The three kinds of road there are, and the width each is laid at. */
+    /** The kinds of road there are, and the width each is laid at. */
     public enum Kind {
-        /** A track through open country: three blocks wide. */
+        /** A track through open country: three blocks wide, of whatever the country has underfoot. */
         WILD(3),
         /** The approach to a settlement, where the paving starts: five blocks. */
         TRANSITION(5),
-        /** A settlement's own street, and the main roads that are made to the same width: seven blocks. */
-        URBAN(7);
+        /** A settlement's own street: seven blocks, and paved with the town's own stone. */
+        URBAN(7),
+        /**
+         * A main road: seven blocks wide, of the country's own surface.
+         * <p>
+         * A street's width without a street's paving. A road that carries a valley's traffic is seven wide wherever
+         * it runs, because that is what makes it a road rather than a track - but the stone it is made of is a
+         * town's, not a valley's, so a main road across a moor is gravel, coarse dirt, grass and path, the same mix a
+         * wild track is laid of. Naming it keeps that width through the open country, which is the whole of what a
+         * named kind is for.
+         */
+        MAIN(7);
 
         private final int blocks;
 
@@ -136,12 +147,14 @@ public final class Roads {
      * way. A route with no entry here is laid by the bands, exactly as every road was before there was a way to name
      * one.
      * <p>
-     * What a column is made of is still read from the bands either way: naming a kind settles the width and not the
-     * surface, so a main road through the wilds is seven wide of the country's own gravel until it reaches a town.
+     * What a column is made of follows the kind too, because a town's street is paved and a main road is not: naming
+     * a kind settles both, and {@link Kind#MAIN} is the one that names a width without the paving.
      */
     private static final Map<String, Kind> KINDS = Map.of(
-            // None yet: a road laid one kind from end to end whatever it crosses and whichever end of the chapter it
-            // runs to - a main road kept seven wide across a moor is written here - and its width and mix both follow.
+            // The valley's main road: seven wide from the camp's junction to the ford's road end, and of the
+            // country's own surface the whole way. Laid by the bands it was a road only within a mile of the camp and
+            // a three-wide track for the rest of its length, which is the one thing a main road cannot be.
+            THORENHAD_ROAD, Kind.MAIN
             );
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
@@ -154,16 +167,15 @@ public final class Roads {
      * <p>
      * A settlement's own road is the first: seven blocks of its street inside the wall's band, five where the paving
      * starts, three out in the country, so it widens as it comes in to the gate. A road that is a road rather than a
-     * build's way out is the second - the valley's main road runs from a camp to a crossing and belongs to neither -
-     * and it takes the same bands, read from the build it serves, so it is a road where it meets that build and a
-     * track between.
+     * build's way out does not take the bands at all - the valley's main road runs from a camp to a crossing and
+     * belongs to neither - it names its kind in {@link #KINDS} instead, so it is the same road for its whole length.
      * <p>
      * Every other route is a wild build's own way out - a camp, a ruin, a cave mouth, which is nearly every build the
      * chapter finalises - and is laid wild from its own door: three blocks wide, of the country's own gravel and dirt.
      * The banded roads are named rather than the wild tracks, so a build added later is a wild one until somebody
      * says otherwise: a city is scouted and furnished as one, where a camp is a clearing with a fire in it.
      */
-    private static final Set<String> BANDED = Set.of("rivendell", THORENHAD_ROAD);
+    private static final Set<String> BANDED = Set.of("rivendell");
 
     /** Whether the bands decide a road, column by column, rather than one kind being laid the whole of it. */
     public static boolean banded(Route route) {

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Thorenhad road is a main road now: seven wide, of the country's own surface.** Laid by the bands it was seven
+  blocks of street at the camp, five as the paving started, and a three-wide track for the rest of its length - a main
+  road that narrowed to a path between places. It names its own kind instead, a new `MAIN`: seven wide from the
+  junction to the ford, and gravel, coarse dirt, grass and path the whole way rather than the stone a town paves with.
+  The bands are left to Rivendell's own road, which is a settlement's street and does widen as it comes in to the gate.
 - **Arda's rivers, lakes and seas are furnished again.** The ten water biomes were left with nothing in them: their
   only furnish was vanilla's lily pads and grass, and the rule that Arda grows nothing but the mod's own places took
   those away. They now have ten features of their own - clay, gravel and sand in the bed, stones among them, seagrass
