@@ -196,14 +196,16 @@ public class TolkienPlacedFeatures {
                         Blocks.DARK_OAK_SAPLING)));
 
         // The default trees, weighted the way a wood's own trees are: the first is what the wood is mostly made of,
-        // the second is a tree in every few, and the third is the one worth walking to. None of them is tested against
-        // a sapling - the feature itself judges the ground - and none needs one to grow.
+        // the second is a tree in every few, and the third is the one worth walking to. They are oaks, so they are
+        // tested against an oak sapling - which is the ground rule, soil below and room above, and not a species.
+        // Without it a tree takes whatever the heightmap calls the surface for its ground, and that heightmap reads
+        // logs: a wood grown with no soil test climbed its own trunks, tree standing on tree, to y 319.
         context.register(NATURAL_TREE_1_PLACED_KEY, new PlacedFeature(features.getOrThrow(NATURAL_TREE_1_KEY),
-                VegetationPlacements.treePlacement(PlacementUtils.countExtra(60, 0.1f, 2))));
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(60, 0.1f, 2), Blocks.OAK_SAPLING)));
         context.register(NATURAL_TREE_2_PLACED_KEY, new PlacedFeature(features.getOrThrow(NATURAL_TREE_2_KEY),
-                VegetationPlacements.treePlacement(PlacementUtils.countExtra(8, 0.1f, 2))));
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(8, 0.1f, 2), Blocks.OAK_SAPLING)));
         context.register(NATURAL_TREE_3_PLACED_KEY, new PlacedFeature(features.getOrThrow(NATURAL_TREE_3_KEY),
-                VegetationPlacements.treePlacement(PlacementUtils.countExtra(2, 0.1f, 2))));
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(2, 0.1f, 2), Blocks.OAK_SAPLING)));
 
         context.register(MITHRIL_ORE_PLACED_KEY, new PlacedFeature(features.getOrThrow(OVERWORLD_ORE_MITHRIL_KEY),
                 TolkienOrePlacement.commonOrePlacement(25, HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(16)))));

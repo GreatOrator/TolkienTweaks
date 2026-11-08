@@ -258,6 +258,12 @@ the three bends are written in `Roads` - the four crags, the ruin's connector an
   configured or placed feature. Missing that is what stopped Roads 7 loading - the generated JSON still named the
   retired `tolkienmobs:natural_tree_1..3` features, and the registry refused it as unbound. `runData` rewrote just
   those three files (`written: 3`), so the rest of the pack is unchanged.
+  **The trees need their ground filter.** `NaturalTreeFeature` judged soil itself; `Feature.TREE` only knows what
+  the placement gives it, and the tree placement's heightmap is `OCEAN_FLOOR`, which ignores leaves but counts
+  logs - so with no filter a tree stands on the last trunk's top and a wood grows to build height (measured: 3,091
+  wood columns above y 150 in 61x61 at the ruin, crowns at 319). The three placed features pass `Blocks.OAK_SAPLING`
+  so the sapling's own survival test is the ground rule. Roads 7's already-generated chunks still hold the stacked
+  trees; the fix shows in chunks generated after it.
 - A build already standing in an older world keeps its old seat; the sweep does not re-seat it.
 
 - **A road's note is checked, not believed.** `Progress` writes `at` (where the road met the build) and `block`

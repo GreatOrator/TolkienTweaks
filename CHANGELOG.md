@@ -17,6 +17,12 @@ All notable changes to this project will be documented in this file.
   JSON rather than from the code registration, so the three configured features were written out again with
   `runData`: until that ran, the pack still named the retired `tolkienmobs:natural_tree_*` feature types and the
   world refused to load at all, reported as unbound `tolkienmobs:tree/natural_tree_1..3` in the registry log.
+  Loaded, it showed the other half of the old feature's work: `NaturalTreeFeature` had judged the ground itself,
+  and a plain tree placement does not. Its heightmap ignores leaves but counts logs, so every tree found the top
+  of the tree below it and grew from there - in a 61 by 61 box at the ruin, 3,091 wood columns topped out above
+  y 150 and the crowns reached y 319. The three placed trees now carry vanilla's oak-sapling ground filter, which
+  asks for soil below and room above and nothing about species, since these are oaks; a trunk is not soil, so the
+  climbing stops. Chunks already grown keep their stacked trees.
 - **The wood ruin's road ends on Barachen's own road.** Its line ran from the ruin at 4787, -3058 down through the
   bend at 4786, -3082 to the shared crag pin at 4741, -3092, which left it ending in open country once the crags'
   roads took that pin between them. Two marks walked in Roads 7 settle it: 4787, 78, -3082 below the ruin, and
