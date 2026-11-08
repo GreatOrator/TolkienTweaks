@@ -47,10 +47,17 @@
     [],
     [],
     [
+      "tolkienmobs:dead_bush",
       "tolkienmobs:flower_swamp_milkweed_placed",
+      "tolkienmobs:marsh_brown_mushrooms",
+      "tolkienmobs:marsh_flowers",
+      "tolkienmobs:marsh_grass",
+      "tolkienmobs:marsh_red_mushrooms",
       "tolkienmobs:mud_splatter",
+      "tolkienmobs:pumpkins",
       "tolkienmobs:shore_reeds",
-      "tolkienmobs:swamp_trees"
+      "tolkienmobs:swamp_trees",
+      "tolkienmobs:waterlily"
     ]
   ],
   "has_precipitation": true,

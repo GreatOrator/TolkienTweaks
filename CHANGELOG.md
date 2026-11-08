@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The fens have their plants as well as their trees.** The marsh's grass, swamp flowers, dead bush, mushrooms,
+  pumpkin and lily were vanilla's placed features, which every Arda biome strips back out - so the fen was trees
+  and reeds over bare ground. Each now has a feature the mod names (`marsh_grass`, `marsh_flowers`, `dead_bush`,
+  `marsh_brown_mushrooms`, `marsh_red_mushrooms`, `pumpkins`, and the lily's existing `waterlily`), with vanilla's
+  modifier lists copied in order, the pumpkin's grass-block test included. The Dead Marshes take the dead bush and
+  the mushrooms and nothing green.
 - **The fens have their trees.** The marsh asked for vanilla's `trees_swamp`, which every Arda biome strips out
   because Arda keeps only the features it names itself - so both fens were generated treeless. A mod's own
   `swamp_trees` now carries vanilla's placement unchanged: a weighted two or three a chunk, in square, on the

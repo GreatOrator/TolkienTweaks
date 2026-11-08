@@ -13,6 +13,7 @@ import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.valueproviders.TrapezoidInt;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -130,6 +131,12 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> PLACED_WATERLILY = registerKey("waterlily");
     public static final ResourceKey<PlacedFeature> PLACED_SHORE_REEDS = registerKey("shore_reeds");
     public static final ResourceKey<PlacedFeature> PLACED_SWAMP_TREES = registerKey("swamp_trees");
+    public static final ResourceKey<PlacedFeature> PLACED_MARSH_GRASS = registerKey("marsh_grass");
+    public static final ResourceKey<PlacedFeature> PLACED_MARSH_FLOWERS = registerKey("marsh_flowers");
+    public static final ResourceKey<PlacedFeature> PLACED_DEAD_BUSH = registerKey("dead_bush");
+    public static final ResourceKey<PlacedFeature> PLACED_MARSH_BROWN_MUSHROOMS = registerKey("marsh_brown_mushrooms");
+    public static final ResourceKey<PlacedFeature> PLACED_MARSH_RED_MUSHROOMS = registerKey("marsh_red_mushrooms");
+    public static final ResourceKey<PlacedFeature> PLACED_PUMPKINS = registerKey("pumpkins");
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {
         return ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(MODID, name));
@@ -361,6 +368,44 @@ public class TolkienPlacedFeatures {
         // it and grows up through the water. A river came out standing full of reeds, which is a marsh's look and
         // not a river's. The filter tests the block it is about to stand in: air on a bank, water in the middle of
         // the channel, and only the first is reeded.
+        // The fen's plants. These are vanilla's configured features - the grass, the swamp flowers, the dead bush, the
+        // two mushrooms and the pumpkin are the same plants they always were - but each is placed by a feature the mod
+        // names, because a biome that lists a vanilla placed feature has it stripped straight back out again and grows
+        // nothing. The modifiers below are vanilla's own lists, copied in order and in full.
+        context.register(PLACED_MARSH_GRASS, new PlacedFeature(features.getOrThrow(configured("grass")),
+                List.of(CountPlacement.of(5), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                        BiomeFilter.biome(), CountPlacement.of(32),
+                        RandomOffsetPlacement.of(TrapezoidInt.of(-7, 7, 0), TrapezoidInt.of(-3, 3, 0)),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(BlockPos.ZERO, Blocks.AIR)))));
+        context.register(PLACED_MARSH_FLOWERS, new PlacedFeature(features.getOrThrow(configured("flower_swamp")),
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP,
+                        BiomeFilter.biome(), CountPlacement.of(64),
+                        RandomOffsetPlacement.of(TrapezoidInt.of(-6, 6, 0), TrapezoidInt.of(-2, 2, 0)),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(BlockPos.ZERO, Blocks.AIR)))));
+        context.register(PLACED_DEAD_BUSH, new PlacedFeature(features.getOrThrow(configured("dead_bush")),
+                List.of(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome(),
+                        CountPlacement.of(4),
+                        RandomOffsetPlacement.of(TrapezoidInt.of(-7, 7, 0), TrapezoidInt.of(-3, 3, 0)),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(BlockPos.ZERO, Blocks.AIR)))));
+        context.register(PLACED_MARSH_BROWN_MUSHROOMS, new PlacedFeature(features.getOrThrow(configured("brown_mushroom")),
+                List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome(),
+                        CountPlacement.of(96),
+                        RandomOffsetPlacement.of(TrapezoidInt.of(-7, 7, 0), TrapezoidInt.of(-3, 3, 0)),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(BlockPos.ZERO, Blocks.AIR)))));
+        context.register(PLACED_MARSH_RED_MUSHROOMS, new PlacedFeature(features.getOrThrow(configured("red_mushroom")),
+                List.of(RarityFilter.onAverageOnceEvery(64), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP,
+                        BiomeFilter.biome(), CountPlacement.of(96),
+                        RandomOffsetPlacement.of(TrapezoidInt.of(-7, 7, 0), TrapezoidInt.of(-3, 3, 0)),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(BlockPos.ZERO, Blocks.AIR)))));
+        // The pumpkin is vanilla's one test with a second clause: air to stand in and grass under it, so a marsh
+        // pumpkin is never on mud or in a pool.
+        context.register(PLACED_PUMPKINS, new PlacedFeature(features.getOrThrow(configured("pumpkin")),
+                List.of(RarityFilter.onAverageOnceEvery(300), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP,
+                        BiomeFilter.biome(), CountPlacement.of(96),
+                        RandomOffsetPlacement.of(TrapezoidInt.of(-7, 7, 0), TrapezoidInt.of(-3, 3, 0)),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.allOf(
+                                BlockPredicate.matchesBlocks(BlockPos.ZERO, Blocks.AIR),
+                                BlockPredicate.matchesBlocks(BlockPos.ZERO.below(), Blocks.GRASS_BLOCK))))));
         // The fen's trees, which are vanilla's swamp oak planted exactly the way vanilla plants it: a weighted
         // two or three a chunk, in square, on the ocean floor through no more than two blocks of water, and only
         // where an oak sapling itself would stand - which is what keeps a tree out of a pool, off the reeds and off

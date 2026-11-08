@@ -60,7 +60,11 @@ vanilla plants it (weighted 2/3 a chunk, in square, `surface_water_depth_filter(
 `would_survive` an oak sapling). Vanilla's own `trees_swamp` could not be used: the generator keeps only the
 mod's features, so the marsh's data listed no trees at all. The Dead Marshes still name vanilla's and still
 have none, which is their look; note that every other vanilla list in both fens is stripped the same way -
-the marsh's grass, flowers, dead bush, mushrooms, pumpkin and lily are all vanilla and all absent.
+the fen's grass, flowers, dead bush, mushrooms, pumpkin and lily are now the mod's own features as well
+(`PLACED_MARSH_GRASS`, `PLACED_MARSH_FLOWERS`, `PLACED_DEAD_BUSH`, `PLACED_MARSH_BROWN_MUSHROOMS`,
+`PLACED_MARSH_RED_MUSHROOMS`, `PLACED_PUMPKINS`), each carrying vanilla's modifier list in order; the lily
+reuses `PLACED_WATERLILY`. A vanilla placed feature asked for by name is stripped and grows nothing, so a new
+fen plant is a copy of vanilla's list under a mod key.
 
 ## Where it stood on 8 November 2026
 

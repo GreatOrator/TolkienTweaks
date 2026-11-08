@@ -40,7 +40,10 @@
     [],
     [
       "tolkienmobs:dead_bodies",
+      "tolkienmobs:dead_bush",
       "tolkienmobs:flower_swamp_milkweed_placed",
+      "tolkienmobs:marsh_brown_mushrooms",
+      "tolkienmobs:marsh_red_mushrooms",
       "tolkienmobs:mud_splatter"
     ]
   ],
