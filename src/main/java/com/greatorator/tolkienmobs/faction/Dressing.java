@@ -65,6 +65,8 @@ public final class Dressing {
      * world that dresses its valley and a server that quietly generates a hundred thousand columns for nobody.
      */
     private static final int WORK_REACH = 320;
+    /** How many times a road that cannot be built is tried before it is left for the next visit to the valley. */
+    private static final int ROAD_ATTEMPTS = 3;
     /** How many pieces of the cut one tick reads while the outline is being taken. */
     private static final int PIECES_PER_TICK = 4;
     /** How many chunks of ring one tick dresses. */
@@ -139,11 +141,20 @@ public final class Dressing {
             // exactly the idle work this whole gate exists to avoid.
             if (!watched(level, box)) return null;
             boolean[] done = dressed(folder, level, corner);
-            if (done[0] && done[1]) {
+            // The road's completion is the road's own record, not a flag kept beside the cut. A marker written after a
+            // pass that failed said the crossing was down when it was not, and the world believed it for good; the
+            // pass writes its own note, so it can only say what actually happened. A build with no route has no road
+            // to lay, which is the only other way to be finished.
+            Route route = Roads.forGround(box.lowX(), box.lowZ(), box.highX(), box.highZ());
+            boolean roadDown = route == null || RoadCommands.down(level, route);
+            if (route != null && !roadDown) {
+                LOGGER.info("Rivendell: the crossing is not down, so a road is planned for it");
+            }
+            if (done[0] && roadDown) {
                 finished = key;
                 return null;
             }
-            return new Job(key, folder, parts, corner, box, done[0], done[1]);
+            return new Job(key, folder, parts, corner, box, done[0], roadDown);
         } catch (IOException unreadable) {
             LOGGER.warn("Rivendell: the cut could not be read, so the ground is not dressed: {}",
                     unreadable.getMessage());
@@ -178,6 +189,8 @@ public final class Dressing {
         private boolean road;
         /** The road being laid, once the ground is dressed. */
         private RoadCommands.RoadJob laying;
+        /** How many times the road has failed to build, so a pass that cannot run is not retried every tick for ever. */
+        private int failures;
         private int cut;
         private int filled;
         private int open;
@@ -227,7 +240,7 @@ public final class Dressing {
             }
             if (!road) {
                 apply(level);
-                if (!road) return true;
+                if (!road) return failures < ROAD_ATTEMPTS;
                 write(level, true, true);
             }
             return false;
@@ -404,6 +417,11 @@ public final class Dressing {
                         LOGGER.info("Rivendell: no road is walked for this build, so the ground is all it gets");
                         return;
                     }
+                    if (RoadCommands.down(level, route)) {
+                        road = true;
+                        LOGGER.info("Rivendell: the road is already down, so there is nothing left to build");
+                        return;
+                    }
                     laying = RoadCommands.plan(route);
                 }
                 if (laying.step(level)) return;
@@ -412,8 +430,16 @@ public final class Dressing {
                 LOGGER.info("Rivendell: the road is down - bridge of {} pieces, approach {} blocks, {} columns laid",
                         laid.pieces(), laid.along(), laid.graded()[0] + laid.far()[0]);
             } catch (IOException unreadable) {
-                road = true;
-                LOGGER.warn("Rivendell: the road could not be built: {}", unreadable.getMessage());
+                // Not recorded as laid. A failed pass used to set this flag anyway, and the job then wrote the marker
+                // saying the road was down - which is how a world came to have a crossing nobody had built and no
+                // plan to build one. It is retried a few times and then left for the next visit.
+                laying = null;
+                if (++failures < ROAD_ATTEMPTS) {
+                    LOGGER.warn("Rivendell: the road could not be built, trying again: {}", unreadable.getMessage());
+                    return;
+                }
+                LOGGER.warn("Rivendell: the road could not be built: {} - it is not recorded as laid",
+                        unreadable.getMessage());
             }
         }
 

@@ -708,6 +708,12 @@ public final class Sites extends SavedData {
         // A build nobody has walked a road for gets none: a road laid to another build's numbers is worse than ground
         // with no way down it. Nothing is written down for that, so the day a route is walked the world can lay it.
         if (route == null) return;
+        if (RoadCommands.down(level, route)) {
+            // The road is down already, so the site's own record catches up without planning a second pass over it.
+            SITES.put(key, SITES.getOrDefault(key, site).roaded());
+            instance(level).setDirty();
+            return;
+        }
         if (!ROADS.containsKey(key)) ROADS.put(key, RoadCommands.plan(route));
     }
 
@@ -1020,8 +1026,9 @@ public final class Sites extends SavedData {
             found = plane(level, pinned, size.getX(), size.getZ(), seat);
             if (found == null) {
                 if (UNBUILDABLE.add(site.player())) {
-                    LOGGER.info("The pin at {} will not take {} - re-pin it rather than move the build",
-                            pinned, site.structure());
+                    LOGGER.info("The pin at {} will not take {} - re-pin it rather than move the build ({})",
+                            pinned, site.structure(),
+                            refusal(level, pinned, size.getX(), size.getZ(), seat));
                 }
                 return;
             }
@@ -1210,7 +1217,16 @@ public final class Sites extends SavedData {
         for (int guard = 0; guard < 96; guard++) {
             cursor.set(x, height - 1, z);
             BlockState state = level.getBlockState(cursor);
-            if (state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)) {
+            // Water is not ground and is not walked down past: a footprint in a river is a footprint in a river, and
+            // a building meant for that bank has to be re-pinned rather than sunk to the bed of it.
+            if (!level.getFluidState(cursor).isEmpty()) return Integer.MIN_VALUE;
+            // What grows on the ground is not the ground. A heightmap answers with the top of a flower, so a footprint
+            // that read one as a cliff refused a whole meadow - which is what stopped two of the three crags being
+            // raised at their pins, a crag's footprint being wide enough that some column of any meadow has a tuft on
+            // it. Wood and anything with no collision at all are stepped down through, so the answer is the earth the
+            // column is actually made of.
+            if (state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)
+                    || state.getCollisionShape(level, cursor).isEmpty()) {
                 height--;
                 continue;
             }
@@ -1220,6 +1236,36 @@ public final class Sites extends SavedData {
             return height;
         }
         return Integer.MIN_VALUE;
+    }
+
+    /**
+     * Why a footprint would not stand on a spot, for the log: the first column that is not ground, and what is there.
+     * <p>
+     * Asked only when a pin has refused a build, so the sweep costs nothing in the ordinary case and the note is a
+     * note rather than a second walk. "Re-pin it" without saying what refused it is a report that takes the scout
+     * back up the hill to look at a column they have already stood on.
+     */
+    private static String refusal(ServerLevel level, BlockPos spot, int wide, int deep, Seat seat) {
+        int stride = Math.max(1, Math.max(wide, deep) / 24);
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int dx = 0; dx < wide; dx += stride) {
+            for (int dz = 0; dz < deep; dz += stride) {
+                int x = spot.getX() + dx;
+                int z = spot.getZ() + dz;
+                if (ground(level, x, z, cursor) != Integer.MIN_VALUE) continue;
+                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
+                return x + ", " + z + " is " + level.getBlockState(new BlockPos(x, top, z)).getBlock().getName().getString()
+                        + " at " + top;
+            }
+        }
+        if (seat.doorway()) {
+            int x = spot.getX() + seat.doorX();
+            int z = spot.getZ() + seat.doorZ();
+            if (ground(level, x, z, cursor) == Integer.MIN_VALUE) {
+                return "the door's own column " + x + ", " + z + " is not ground";
+            }
+        }
+        return "the ground under it could not be measured";
     }
 
     /**

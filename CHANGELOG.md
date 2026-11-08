@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A footprint is measured past what grows on it.** The surface read took the top of a flower as the top of the
+  ground, so a column with a tuft on it was read as a cliff and the footprint was refused; a crag is wide enough that
+  some column of any meadow has one, which is what stopped two of the three crags being raised at their pins. Ground
+  is now walked down through anything with no collision, and a pin still refused says which column refused it and what
+  stands there.
+- **A road that is down is recorded as down by the road.** A finished pass left nothing behind, so the world's
+  dressing kept that answer in a marker beside the cut - and a pass that failed was written there as laid, which is
+  why the crossing was never planned again and Rivendell's road never appeared. The pass writes its own note now, a
+  failed pass is not recorded as laid and is retried a few times before being left for the next visit, and a route
+  with no note is planned and laid.
 - **Only the two scouted road sections are walked.** Rivendell across the ford is the crossing, and Thorenhad's camp
   to the ford's road end is the plain riverless one; they meet at the marker at 4972, -3075 instead of the camp road
   running on to the far bank and grading the same country from the other side. The ruin's road to Barachen's fire is

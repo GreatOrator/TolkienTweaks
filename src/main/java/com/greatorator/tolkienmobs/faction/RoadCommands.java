@@ -204,6 +204,21 @@ public final class RoadCommands {
         return new RoadJob(route);
     }
 
+    /** What a pass that finds its road already down answers with: nothing laid, because nothing was owed. */
+    private static final Road ALREADY_DOWN = new Road(0, 0, 0, 0, false, new int[6], new int[2]);
+
+    /**
+     * Whether this world already has this road down, from the note its own pass leaves when it finishes.
+     * <p>
+     * This is the question the world's dressing asks before planning a road, and it is answered by the road rather
+     * than by a file beside the city: see {@link Progress}, whose every record used to be removed on completion,
+     * leaving no way to tell a road that was down from one never begun.
+     */
+    static boolean down(ServerLevel level, Route route) {
+        CompoundTag carried = Progress.of(level, route.id());
+        return carried != null && carried.getBooleanOr("down", false);
+    }
+
     /** How many columns of the sweep and the pillars one step may take. */
     private static final int COLUMNS_PER_STEP = 12;
     /**
@@ -300,6 +315,9 @@ public final class RoadCommands {
                 looked = true;
                 CompoundTag carried = Progress.of(level, route.id());
                 if (carried != null) restore(carried);
+                // A pass planned over a road the world already has down owes nothing; it says so at once rather than
+                // grading the same country a second time.
+                if (done != null) return false;
             }
             try {
                 Stage ran = stage;
@@ -451,6 +469,11 @@ public final class RoadCommands {
          * pass that cannot be carried is still a pass; the ground it would have laid is the ground it lays.
          */
         private void restore(CompoundTag tag) {
+            if (tag.getBooleanOr("down", false)) {
+                // The note a finished pass leaves. This road is down, so this pass is done before it begins.
+                done = ALREADY_DOWN;
+                return;
+            }
             Stage saved;
             try {
                 saved = Stage.valueOf(tag.getStringOr("stage", Stage.SEARCH.name()));
@@ -1492,10 +1515,14 @@ public final class RoadCommands {
         private static void remember(RoadJob job, ServerLevel level) {
             CompoundTag tag = job.save();
             if (tag == null) {
-                ROADS.remove(job.route.id());
-            } else {
-                ROADS.put(job.route.id(), tag);
+                // A finished pass leaves a note rather than nothing. Without it a record could not tell a road that
+                // was down from one never begun once it had vanished, so the world's dressing kept that answer in a
+                // marker file beside the cut - and a marker written after a pass that failed said the crossing was
+                // laid when it was not, and no pass was ever planned over it again.
+                tag = new CompoundTag();
+                tag.putBoolean("down", true);
             }
+            ROADS.put(job.route.id(), tag);
             instance(level).setDirty();
         }
     }
