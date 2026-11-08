@@ -137,8 +137,17 @@ public final class RoadCommands {
     private static final double MAX_STEP = 1.0D;
     /** How many times the two step sweeps are alternated after the last pass, so both ends agree. */
     private static final int SETTLE_PASSES = 8;
-    /** How far above the road a column's trunks and leaves are cleared, so no crown hangs over the grade. */
-    private static final int CANOPY_CLEAR = 16;
+    /**
+     * How far above the road a column's trunks and leaves are cleared, so no crown hangs over the grade.
+     * <p>
+     * Tall enough for the tallest crown the chapter's own woods grow. Mirkwood's are the tallest: read out of Roads 3
+     * along the Thorenhad road's line, twenty-two columns of a hundred and eighteen carry a crown taller than sixteen
+     * blocks, the tallest standing twenty over the grade at 4939, -3088, and the camp's own junction at 4633, -3331
+     * has one seventeen over it. A reach of sixteen therefore left the top of the crown hanging over the road and it
+     * came out under its own leaves at the join. The reach is one rule rather than a measurement per column: a road
+     * cut through a wood is a lane, and the lane runs under sky however tall the trees it is cut through.
+     */
+    private static final int CANOPY_CLEAR = 24;
     /** The grade the descent aims for, in blocks of rise per block of travel; anything steeper is penalised. */
     private static final double TARGET_GRADE = 0.35D;
     /** What a block of grade above the target costs, squared: a wall face becomes expensive to fall down. */

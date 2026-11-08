@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The road clears the whole crown of a Mirkwood tree.** The corridor's columns were cleared of leaves and trunks
+  sixteen blocks above the surface, which is enough for an oak and not for the chapter's own woods: sampled along the
+  Thorenhad road's line, twenty-two of a hundred and eighteen columns carry a crown taller than that, the tallest
+  twenty blocks over the grade at 4939, -3088, and the camp's new junction at 4633, -3331 has one seventeen over it -
+  so the branch would have come out under the top of the tree at the very join it was bent to make. The reach is now
+  twenty-four, and a road cut through Mirkwood runs under sky.
 - **Elladan's camp branch is bent to meet the main road.** The branch ran straight out of the door to a mark at
   4648, 89, -3325, sixteen blocks short of the main road's own start and past the line that road runs on, so the two
   sections never met: the camp's path simply carried on into the trees. It now follows the camp's paving to a bend
