@@ -48,6 +48,12 @@ ground. The cadence follows `MinecraftServer.getCurrentSmoothedTickTime()` betwe
 consequences: a city nobody walks does not finish, and therefore the road that waits on it does not plan; and a
 band can sit half-laid until the player's view reaches its far pieces.
 
+Sugar cane is placed only by `TolkienPlacedFeatures.PLACED_SHORE_REEDS`: `not(water)` at the position *and*
+`would_survive` for the cane itself, because either one alone leaves a case - the refusal lets a position above a
+channel through, and survival alone accepts a bed with water round it. The marsh names that feature too. Note
+that `runData` cannot run while the client is open (it rewrites `build/moddev/artifacts/minecraft-patched-*.jar`
+and Windows locks it); the placed-feature and biome JSONs were hand-written in its shape for this change.
+
 ## Where it stood on 8 November 2026
 
 Done and seen in a world by the player: the camp, Barachen's camp, the wood tower and one crag place at their pins; the

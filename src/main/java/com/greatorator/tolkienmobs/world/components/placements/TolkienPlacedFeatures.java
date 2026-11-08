@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.world.components.placements;
 import com.google.common.collect.ImmutableList;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import net.minecraft.core.Holder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -357,9 +358,16 @@ public class TolkienPlacedFeatures {
         // the channel, and only the first is reeded.
         context.register(PLACED_WATERLILY, new PlacedFeature(features.getOrThrow(configured("waterlily")),
                 List.of(CountPlacement.of(4), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome())));
+        // And the cane has to be able to stand where it is put, which is a different question from what the column
+        // reads. Refusing water at the position leaves two ways to be wrong: a column read above a channel passes the
+        // refusal and is placed, and a position at the bed is soil with water round it, which the cane's own survival
+        // test accepts - cane standing in the water it was meant to keep out of. Asking the cane itself is the fix:
+        // soil under the position and water beside it, and never a position that is water.
         context.register(PLACED_SHORE_REEDS, new PlacedFeature(features.getOrThrow(configured("sugar_cane")),
                 List.of(CountPlacement.of(12), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         BlockPredicateFilter.forPredicate(BlockPredicate.not(BlockPredicate.matchesBlocks(Blocks.WATER))),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(Blocks.SUGAR_CANE.defaultBlockState(),
+                                BlockPos.ZERO)),
                         BiomeFilter.biome())));
     }
 

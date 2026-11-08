@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Shore cane can no longer stand in the water.** Two things grew sugar cane: the mod's `shore_reeds`, which refused
+  a water column but never asked whether the cane could stand where it was being put, and the marsh, which named
+  vanilla's `patch_sugar_cane_swamp` with no filter on it at all. The shore feature now also carries the cane's own
+  survival test - soil under the position and water beside it - so a column read above a channel, or a position at a
+  bed with water round it, cannot be reeded; a marsh grows the same filtered feature rather than vanilla's. The client
+  held the patched jar, so `runData` could not run: the two JSONs are written by hand in its shape, and the next
+  datagen run should report nothing written.
 - **Rivendell's raise works on ground the world has, nearest first, at the world's own pace.** `lay` made every chunk
   under a piece before standing it - nine chunk columns of generation, inside a tick, for a piece that may be four
   hundred blocks from the player. The raise now lays only into chunks that are already made, so the city fills in as

@@ -1044,7 +1044,9 @@ public abstract class BiomeHelper {
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_SWAMP)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_MUD_SPLATTER)
 				.addFeature(GenerationStep.Decoration.LAKES, TolkienPlacedFeatures.PLACED_MARSH_POOLS)
-				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_SUGAR_CANE_SWAMP)
+				// The marsh's cane is the mod's own placed feature, not vanilla's: the vanilla swamp cane has no filter on
+				// it at all, so a marsh pool came out reeded across its water while the shores were being kept clear.
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_SHORE_REEDS)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_PUMPKIN)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_WATERLILY)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
