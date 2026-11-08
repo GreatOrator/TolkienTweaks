@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Thorenhad road is a main road, seven blocks wide its whole length.** It was recorded as Elladan's camp's
+  own road, which made it the camp's way out: a wild build's track, three wide, whatever it carried. It is a road in
+  its own right now - `Roads.THORENHAD_ROAD`, so it has a record of its own in the save - and `Roads.KINDS` lays it
+  `URBAN`: seven blocks of the settlement's own mix from the camp down to the ford's road end. The camp's own branch
+  off it is to come, as a wild track three wide pinned where the branch leaves the main road. The new name means the
+  old note (`tolkienmobs:key_structures/elledancamp`) is not this road's any more, so the next pass plans it fresh
+  instead of believing an alignment walked for a camp.
 - **A build is a city or a wild place, and its road is laid to match.** The three kinds were read off the ground
   the road crossed, so a camp's own track left the camp as a paved street five blocks wide, and the camps - nearly
   every build the chapter finalises - were given a gate they do not have. `Roads.CITIES` now names the cities

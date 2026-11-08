@@ -27,23 +27,31 @@ public final class Roads {
     private Roads() {
     }
 
+    /**
+     * The Thorenhad road, which is a road rather than a build's own way out: the main road from Elladan's camp down
+     * to the ford's road end. It is named here because a road that carries more than one build's traffic is not any
+     * one build's to walk - naming it is what gives it a record of its own in the save, and what a kind is written
+     * against when the road is to be laid wider than the country it crosses.
+     */
+    public static final String THORENHAD_ROAD = "tolkienmobs:roads/thorenhad";
+
     /** Every build that has a road walked for it. A build missing here gets none. */
     public static final List<Route> ROUTES = List.of(
             // Rivendell: the path's last block at 5200, 134, -3034, the banks at 5055 and 5006 on z -3075, the deck
             // at 76 - the numbers the scouted valley was walked to, 584 pieces of city above the path's end.
             new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5006, -3075, 4,
                     74, 75, 76, 16, 32, "bridge_end", "bridge_middle"),
-            // Thorenhad's camp to the ford's own road end, and no further: the block beside the camp's door at
-            // 4648, 90, -3314 to the marker at 4972, 86, -3075, where the crossing's exit road stops. The road over
-            // the water and this dry one are the two sections of the same road, so this one ends where that one ends
-            // rather than at the far bank. A section that ran past the meeting point would grade the same country a
-            // second time, from the other side, and the two passes would fight over the blocks between them.
-            //
-            new Route.Riverless(Sites.ELLADAN_CAMP, 4640, 4655, -3313, -3298, 4648, -3314, 4972, -3075),
+            // The Thorenhad road, the valley's main road: Elladan's camp at 4648, 90, -3314 down to the ford's own
+            // road end at 4972, 86, -3075, where the crossing's exit road stops - and no further, since the road over
+            // the water and this dry one are the two sections of the same road and one that ran past the meeting point
+            // would grade the same country a second time from the other side. It is not the camp's own way out - the
+            // camp's branch off it is a separate wild track, pinned where it leaves the main road - so it carries its
+            // own name rather than the camp's, and `KINDS` lays it URBAN, seven wide, the whole way down.
+            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4648, -3314, 4972, -3075),
             // Barachen's fire to the mark at 4892, 74, -3097, where the Thorenhad road runs past: the road leaves the
             // camp's own door at 4820, 76, -2886 and ends at the mark, so the two roads meet there instead of each
             // grading the country the other has already laid. The camp is sixteen by sixteen from its corner pin at
-            // 4812, 77, -2885, and the track is a wild path three blocks wide the whole way - see HALVES.
+            // 4812, 77, -2885. A wild build's track, so it is laid wild - three blocks wide - the whole way.
             new Route.Riverless(Sites.BARACHENS_CAMP, 4812, 4827, -2885, -2870, 4820, -2886, 4892, -3097)
             // A road with no water on it is the other kind, and is the whole of what a dry road needs: the build's
             // footprint and its entry point, and the block the road ends at. Nothing is swept, bridged or pillared;
@@ -65,7 +73,7 @@ public final class Roads {
     private static final Map<String, List<BlockPos>> BENDS = Map.of(
             // The Thorenhad road's own line, walked in Roads 3: three marks between the camp and the ford that keep
             // the road off the hill and out of the crossing, in the order the road meets them.
-            Sites.ELLADAN_CAMP, List.of(new BlockPos(4875, 74, -3179),
+            THORENHAD_ROAD, List.of(new BlockPos(4875, 74, -3179),
                     new BlockPos(4885, 74, -3133), new BlockPos(4903, 74, -3102)));
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
@@ -113,10 +121,9 @@ public final class Roads {
      * surface, so a main road through the wilds is seven wide of the country's own gravel until it reaches a town.
      */
     private static final Map<String, Kind> KINDS = Map.of(
-            // None yet: a road that is one kind from end to end whatever its build is, which is how a main road is
-            // made between two wild places - the width and the mix both follow the kind named here.
-            // Sites.ELLADAN_CAMP, Kind.URBAN);
-            );
+            // The valley's main road: seven blocks of the settlement's own mix from Elladan's camp to the ford, so a
+            // road that carries every traveller in the chapter is a road and not the track a wild build walks out of.
+            THORENHAD_ROAD, Kind.URBAN);
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {

@@ -27,7 +27,7 @@ with no commands typed. A player walks the chapter and the world has already bui
 | `faction/Pins.java` | The scouted spots: `SOURCE`, crag pins, the ford marker. "The pin wins, the marker only informs facing." |
 | `faction/Keepers.java` | The bodies the line has stood, by tag, UUID and last ground, so a keeper is found in an unloaded chunk. |
 | `faction/Sites.java` | Seats a build at its pin with no drift, underpins it, sweeps the ground to its roofline, and plans a road for it. |
-| `faction/Roads.java` | `ROUTES`: one `Route.Crossing` (Rivendell) and two `Route.Riverless` (Elledan's camp to the ford, Barachen's fire to the mark); `BENDS` and `KINDS` by route. |
+| `faction/Roads.java` | `ROUTES`: Rivendell's crossing, the Thorenhad main road (`THORENHAD_ROAD`, `URBAN` seven wide, camp to ford), Barachen's fire's track; `BENDS` and `KINDS` by route. |
 | `faction/RoadCommands.java` | The road pass: sweep, bridge, pillars, search, grade, lips, and `Progress` (the road's own record). |
 | `faction/Dressing.java` | The city's own drape and the check that plans a road when one is not down. |
 | `faction/RoadPaint.java` | Roads painted at world generation, as a pure function of the column. |
@@ -68,9 +68,13 @@ A road is one of three kinds now, and the kind is its width: a wild track three 
 city's own seven. A build is a city or a wild place - `Roads.CITIES` names the cities, Rivendell only so far - and a
 wild place's road is wild from its own door out, width and surface both: three wide of gravel and dirt, no paving.
 A city's road takes the bands per column, so it widens as it comes in to the gate. A route naming a kind in
-`Roads.KINDS` overrides both (none named yet - that is how a main road is made). A hairpin's apron is one kind wider
-than the run it turns, and a wild edge is worn by one column in three. So the Thorenhad road from Elladan's camp is a
-wild track end to end, and only Rivendell's crossing paves.
+`Roads.KINDS` overrides both - the Thorenhad road names `URBAN` there, which is how a main road is made. A hairpin's apron is one kind wider
+than the run it turns, and a wild edge is worn by one column in three. So the Thorenhad road is seven wide from the camp down to the ford, and
+Rivendell's crossing paves at its own gate.
+
+The Thorenhad road wants its camp branch as a separate wild track: a marker where the branch leaves the main road
+(and, if the main road is to stop short of the camp's door, a second at that end) will let the main road start at the
+junction and a `Sites.ELLADAN_CAMP` route run the camp's door out to it, three wide.
 
 A road already laid keeps the width and the surface it was laid with: `/tmroad forget` at the build then a re-walk
 lays the new kind over it, but columns the old road paved or widened are not taken back.
