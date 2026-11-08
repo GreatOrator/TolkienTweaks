@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road can be bent where the country needs it.** The walk between a build and its far end was one line chosen by
+  cost, so where the country offered only one way round a hill it took that way even when it meant crossing at the
+  ford and coming back to its own end - a road 1016 stations long for a 423-block run, turning back on itself
+  forty-eight times. A route may now be given the blocks it must pass through, recorded in `Roads.BENDS` from the
+  ammolite markers walked on the ground, and the walk is split into a leg per point: door to first bend, bend to
+  bend, last bend to the far end. Nothing is pinned in a world - the positions live in the build the way a route's
+  ends do - and a route with no entry there is still walked as one leg, so a road that needs no bend behaves exactly
+  as it did before.
+
+
+  A road already half laid carries the alignment it found, so `/tmroad forget` at the build throws that note
+  away and the next pass walks the road again through the bends now recorded for it.
 - **A camp's keeper is the man the camp is named after.** The world raises Thorenhad and Barachen's fire from their
   pins, and it stood a stranger named out of the giver pool at each of them while the campaign stood Elladan and
   Barachen separately once their pages came up - so a player who walked to Thorenhad before taking one found a

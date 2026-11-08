@@ -710,6 +710,29 @@ public final class Sites extends SavedData {
         return site == null ? null : site.centre();
     }
 
+    /**
+     * Forgets that a build's road is down, so the next pass at it lays the road again.
+     * <p>
+     * A site notes its road as laid so the world does not grade the same country on every visit, and a road whose
+     * route has since been given bends is a road that note is now wrong about. The pass still in hand for the build
+     * is dropped with it, since nothing here is worth carrying to a walk that is about to be redone.
+     */
+    public static void forgetRoad(ServerLevel level, String structure) {
+        boolean changed = false;
+        for (Map.Entry<UUID, Site> row : SITES.entrySet()) {
+            Site site = row.getValue();
+            if (!site.road() || !site.structure().equals(structure)) continue;
+            row.setValue(new Site(site.player(), site.dimension(), site.centre(), site.structure(), site.keeper(),
+                    site.built(), site.found(), site.country(), false));
+            changed = true;
+        }
+        ROADS.keySet().removeIf(key -> {
+            Site site = SITES.get(key);
+            return site != null && site.structure().equals(structure);
+        });
+        if (changed) instance(level).setDirty();
+    }
+
     /** Whether the player is standing in the structure they were sent to find. */
     public static boolean reached(ServerPlayer player) {
         Site site = siteOf(player);

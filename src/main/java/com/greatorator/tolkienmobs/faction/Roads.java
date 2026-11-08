@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.faction;
 import net.minecraft.core.BlockPos;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Where each build's road leaves from, and how it crosses the water on the way down.
@@ -45,6 +46,26 @@ public final class Roads {
             // the same search finds the way and the same grade lays it, arriving on the ground at the far end:
             // new Route.Riverless("<build>", cityX0, cityX1, cityZ0, cityZ1, pathX, pathZ, farX, farZ)
     );
+
+    /**
+     * The blocks a road is bent through, by route, in the order the road walks them.
+     * <p>
+     * These are ammolite markers walked on the ground and recorded here, the way a route's own ends are: a position
+     * is written down in the build rather than pinned in the world, so every world gets the same bend and nothing
+     * has to be scouted twice. The walk is split at each one - the door to the first bend, bend to bend, and the
+     * last bend to the far end - so the line is forced through the point rather than merely nudged toward it.
+     * <p>
+     * A route with no entry here is walked in one leg, exactly as every road was before there was a way to bend one.
+     * The list is in the order the road meets the marks, since the legs are walked in that order.
+     */
+    private static final Map<String, List<BlockPos>> BENDS = Map.of(
+            // Sites.ELLADAN_CAMP, List.of(new BlockPos(4652, 90, -3290), new BlockPos(4700, 88, -3170))
+    );
+
+    /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
+    public static List<BlockPos> bends(Route route) {
+        return BENDS.getOrDefault(route.id(), List.of());
+    }
 
     /**
      * The route of the build standing on this ground, or null when nobody has walked one for it.

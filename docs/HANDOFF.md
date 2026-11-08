@@ -55,6 +55,14 @@ line finds the body the world stood instead of standing a second one; a nameless
 taken away. A camp the world raised from its pin is not laid again at its place's middle (`Sites.raisedAt` guards
 `standTent`), and Barachen's fire gets Barachen's cut rather than Elladan's. Compiled, not yet seen in a world.
 
+Roads can be bent through recorded points now: `Roads.BENDS` holds a list of blocks per route, and the walk is split
+into a leg per bend so the line is forced through each one. A route with no entry there is walked exactly as before,
+one leg from the door to the far end. The Thorenhad road is waiting on the scout's markers: its first alignment came
+back 1016 stations long, looping north and east and back to the far end, which is why it went through the ford.
+Compiled, not yet seen in a world.
+A road already in progress keeps its saved alignment, so `/tmroad forget` at the build clears the note and
+the site's road flag, and the next tick walks it again with whatever bends are recorded for it.
+
 ## Open
 
 - **Two crags** were refused by `plane`/`ground()`; the fix reads ground past plants and a refusal now names the column

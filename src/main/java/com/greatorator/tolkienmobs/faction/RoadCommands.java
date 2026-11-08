@@ -176,7 +176,8 @@ public final class RoadCommands {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         dispatcher.register(Commands.literal("tmroad")
                 .requires(MAY_BUILD)
-                .then(Commands.literal("build").executes(RoadCommands::build)));
+                .then(Commands.literal("build").executes(RoadCommands::build))
+                .then(Commands.literal("forget").executes(RoadCommands::forget)));
     }
 
     /** What a road pass came to, so the hand can say it and the world's own dressing can only log it. */
@@ -219,6 +220,29 @@ public final class RoadCommands {
             source.sendFailure(Component.literal("The road could not be built: " + failed.getMessage()));
             return 0;
         }
+    }
+
+    /**
+     * Throws away what has been laid of the road at the hand's feet, so the next pass walks it again.
+     * <p>
+     * A pass carries its alignment: the stations the search found are written down with the grade, and a world
+     * restarted mid-road picks them up rather than searching a second time. That is what makes a long road survive a
+     * logout, and it is also why a bend recorded after a walk began would never be taken - the saved line predates it.
+     * Forgetting the note is the way back to the search. The blocks already laid are left standing; the new grade
+     * lays over them.
+     */
+    private static int forget(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        Route route = Roads.nearest(BlockPos.containing(source.getPosition()));
+        if (route == null) {
+            source.sendFailure(Component.literal("No build has a road walked for it here."));
+            return 0;
+        }
+        Progress.forget(source.getLevel(), route.id());
+        Sites.forgetRoad(source.getLevel(), route.id());
+        source.sendSuccess(() -> Component.literal("Forgot the road at " + route.id()
+                + " - the next pass walks it again."), true);
+        return 1;
     }
 
     /** The road itself, without a sender to answer: the pass the hand runs and the world runs for it. */
@@ -347,6 +371,14 @@ public final class RoadCommands {
         /** Whether this pass began somewhere other than its own first stage, which the totals then start from. */
         private boolean resumed;
         private Road done;
+        /** The stations walked so far, across every bend this road is recorded as passing through. */
+        private List<int[]> walked;
+        /** The bends recorded for this road, or an empty list: a road with none is walked in a single leg. */
+        private List<BlockPos> bends;
+        /** The leg being walked, and the block it starts from. Leg nought starts at the build's own door. */
+        private int leg;
+        private int fromX;
+        private int fromZ;
 
         private RoadJob(Route route) {
             this.route = route;
@@ -418,8 +450,7 @@ public final class RoadCommands {
                     if (pillarX > span.eastBankX()) stage = Stage.SEARCH;
                 }
                 case SEARCH -> {
-                    if (descent == null) descent = new Descent(route);
-                    if (!descent.step(level, SEARCH_PER_STEP)) align(level);
+                    if (!walk(level)) align(level);
                 }
                 case GRADE -> {
                     int budget = PAVING_PER_STEP;
@@ -558,6 +589,66 @@ public final class RoadCommands {
         }
 
         /**
+         * Walks the road a leg at a time: from the build's door to the first recorded bend, from that bend to the
+         * next, and from the last bend to the far end. A road with no recorded bends is one leg, which is the walk
+         * every road had before there was a way to bend one.
+         * <p>
+         * The point of a leg is that the line cannot skip it: the next leg starts where the last one stopped, so a
+         * bend recorded on the ground is a station the road is walked through rather than a suggestion the walk can
+         * price away. A leg the country will not take a road to gives up the whole walked way, and the line is laid
+         * straight between the route's ends with the log saying which leg failed.
+         *
+         * @return whether there is more walking to do, so the tick that ran this can come back to it
+         */
+        private boolean walk(ServerLevel level) {
+            if (bends == null) {
+                bends = Roads.bends(route);
+                walked = new ArrayList<>();
+                leg = 0;
+                fromX = route.pathX();
+                fromZ = route.pathZ();
+                if (!bends.isEmpty()) {
+                    LOGGER.info("Road {}: bent through {} recorded point{}", route.id(), bends.size(),
+                            bends.size() == 1 ? "" : "s");
+                }
+            }
+            int toX;
+            int toZ;
+            if (leg < bends.size()) {
+                BlockPos bend = bends.get(leg);
+                toX = bend.getX();
+                toZ = bend.getZ();
+            } else if (route instanceof Route.Crossing span) {
+                // The approach arrives on the span's own line, a run-in back from the east bank.
+                toX = span.eastBankX() + span.runIn();
+                toZ = span.bridgeZ();
+            } else {
+                Route.Riverless dry = (Route.Riverless) route;
+                toX = dry.farX();
+                toZ = dry.farZ();
+            }
+            if (descent == null) descent = new Descent(route, fromX, fromZ, toX, toZ, leg == 0);
+            if (descent.step(level, SEARCH_PER_STEP)) return true;
+            List<int[]> part = descent.path();
+            if (part == null || part.isEmpty()) {
+                // A bend no road can reach is a road with no walked way at all: the line goes straight between the
+                // recorded ends, as it did before there were bends, and the log names the leg that refused it.
+                LOGGER.info("Road {}: no walked way from {}, {} to {}, {} (leg {})", route.id(), fromX, fromZ,
+                        toX, toZ, leg + 1);
+                searched = false;
+                walked = null;
+                return false;
+            }
+            // The leg starts where the last one stopped, so its first station is the station already walked.
+            for (int at = walked.isEmpty() ? 0 : 1; at < part.size(); at++) walked.add(part.get(at));
+            fromX = toX;
+            fromZ = toZ;
+            leg++;
+            descent = null;
+            return leg <= bends.size();
+        }
+
+        /**
          * The alignment and the two profiles, once the search has finished.
          * <p>
          * The last leg is on the span's own line, so the road walks onto the abutment square rather than meeting it
@@ -569,7 +660,7 @@ public final class RoadCommands {
                 alignDry(level);
                 return;
             }
-            List<int[]> found = descent.path();
+            List<int[]> found = walked;
             searched = found != null;
             if (!searched) {
                 LOGGER.info("Road {}: no walked way to {}, {}, so the straight line is laid instead",
@@ -599,7 +690,7 @@ public final class RoadCommands {
          */
         private void alignDry(ServerLevel level) {
             Route.Riverless dry = (Route.Riverless) route;
-            List<int[]> found = descent.path();
+            List<int[]> found = walked;
             searched = found != null;
             if (!searched) {
                 // Said out loud rather than laid quietly: a road with no walked way is a road laid straight through
@@ -842,25 +933,12 @@ public final class RoadCommands {
         private int looked;
         private boolean done;
 
-        private Descent(Route route) {
+        private Descent(Route route, int startX, int startZ, int goalX, int goalZ, boolean leave) {
             this.route = route;
-            int startX = route.pathX();
-            int startZ = route.pathZ();
-            int goalX;
-            int goalZ;
-            if (route instanceof Route.Crossing crossing) {
-                // The approach arrives on the span's own line, a run-in back from the east bank.
-                goalX = crossing.eastBankX() + crossing.runIn();
-                goalZ = crossing.bridgeZ();
-            } else {
-                Route.Riverless dry = (Route.Riverless) route;
-                goalX = dry.farX();
-                goalZ = dry.farZ();
-            }
             // The road leaves the build square to its own wall, and the walk begins where that run-out stops: a
             // searched first step is a diagonal one as often as not, and a road that turns on the doorstep turns
-            // through the doorstep.
-            int[] out = outward(route, startX, startZ);
+            // through the doorstep. A leg that begins at a bend has no wall to leave, so it begins where it is.
+            int[] out = leave ? outward(route, startX, startZ) : new int[]{0, 0};
             this.outX = out[0];
             this.outZ = out[1];
             int fromX = startX + outX * RUN_OUT;
@@ -1889,6 +1967,12 @@ public final class RoadCommands {
             CompoundTag tag = new CompoundTag();
             ROADS.forEach(tag::put);
             return tag;
+        }
+
+        /** Forgets what a pass had done for a route, so the next one searches its way again. */
+        static void forget(ServerLevel level, String route) {
+            Progress store = instance(level);
+            if (ROADS.remove(route) != null) store.setDirty();
         }
 
         private static Progress instance(ServerLevel level) {
