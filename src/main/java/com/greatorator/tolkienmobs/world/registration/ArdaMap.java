@@ -1562,7 +1562,11 @@ public final class ArdaMap {
         // The ground is the reference heightmap where it has land, and the drawing where it has sea:
         // an ocean column is the drawing's, and the map's own zero would put it at the sea's height.
         int height = groundHeight(blockX, blockZ, drawn, relief, rough);
-        boolean shore = seaInReach && Math.abs(drawn - SEA_LEVEL) <= BEACH_HEIGHT;
+        // The shore is read off the ground that is actually there, not off the drawing: the cells are blended
+        // over half a cell either side of a border, so a cell drawn at seventy beside a sea drawn at forty
+        // crosses the waterline in a band eighty blocks wide - a beach across country that is nowhere near
+        // the water. A hole in the drawing (every cell starts as sea) then reads as a coast on all four sides.
+        boolean shore = seaInReach && Math.abs(height - SEA_LEVEL) <= BEACH_HEIGHT;
         return new Ground(cover, height, drawn, shore, upland);
     }
 
@@ -1737,6 +1741,13 @@ public final class ArdaMap {
         // give them anyway - the valley, Elladan's camp, Barachen's fire, the rider's ruin, the camp
         // the errands pitch and the three crags the stone asks in each want ground of their own.
         fill(map, Country.FIRIEN, 18, 17, 19, 18);
+        // The westernmost of the hills' three cells was never filled: the hills are three cells wide, and the
+        // fill was narrowed to two to keep off the Trollshaws' rows, which left the map's default sea standing
+        // inside Eriador's eastern edge - a two-cell hole between the Midgewater and the valley, with ground
+        // drawn at seventy on one side of it and nothing but the drawing's bed under the hole itself.
+        fill(map, Country.FIRIEN, 17, 17, 17, 18);
+        // And the same hole at the hills' southern end, where they meet the mountains.
+        fill(map, Country.FIRIEN, 20, 19, 20, 19);
         fill(map, Country.TROLLSHAWS, 17, 12, 19, 16);
         fill(map, Country.LORINAND, 21, 13, 21, 14);
         fill(map, Country.LORINAND, 23, 15, 24, 18);

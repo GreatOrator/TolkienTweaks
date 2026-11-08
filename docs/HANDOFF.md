@@ -362,3 +362,10 @@ the three bends are written in `Roads` - the four crags, the ruin's connector an
 
 Trees back in some form; the seam between old and new chunks; whether the two crags stood; whether the camp road
 finished; widening the sweep's reach per build; reporting what a sweep came to.
+
+The drawing's default country is `Country.TEMPERATE_SEA`, so any cell a fill misses is sea, and the shore is read
+off the ground now, not off the blended cell height, which is what stopped a cell drawn at 70 beside a sea drawn at
+38 from painting an eighty-block beach across country nowhere near water. `build/tmp/grid_holes.py` rebuilds the
+grid from `draw()` (fills and the mountains' `line()`) and lists the landlocked holes left: (13,22)-(16,22), (22,22),
+(27,19), (24,13)-(24,14), (23,5)-(23,6), (15,27), (21,31), (34,30), (37,30)-(42,30) and (2,19) are still sea in the
+middle of land. Firien's western cell and its southern foot are filled.

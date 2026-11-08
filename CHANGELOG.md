@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The beach between the Midgewater and the valley was a hole in the drawing.** The Firien fill had been narrowed
+  to two cells to keep off the Trollshaws' rows, and the cell it gave up stayed the map's default sea - two cells of
+  water inside Eriador's eastern edge, on the walk from the fen to the valley. The shore was also being read off the
+  *blended* cell height rather than the ground: a cell drawn at 70 beside a sea drawn at 38 crosses the waterline
+  over an eighty-block band, so the land beside the hole came out as a beach. The hills are filled three cells wide
+  again, with their southern foot, and `Sample.shore` now tests the ground that is actually there.
 - **The fens have their plants as well as their trees.** The marsh's grass, swamp flowers, dead bush, mushrooms,
   pumpkin and lily were vanilla's placed features, which every Arda biome strips back out - so the fen was trees
   and reeds over bare ground. Each now has a feature the mod names (`marsh_grass`, `marsh_flowers`, `dead_bush`,
