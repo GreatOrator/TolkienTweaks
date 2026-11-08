@@ -1161,9 +1161,18 @@ public final class Sites extends SavedData {
         return CAVE_VARIANTS.get(Math.max(0, Math.min(CAVE_VARIANTS.size() - 1, asked)));
     }
 
+    /**
+     * Every crag the campaign cuts: the stone's three, and Matuna's lair with them. A crag is the mod's one build with
+     * rock for a lower half, so all of them are buried in their ground rather than seated on it - and the lair that was
+     * not in this list was seated like a hall, its skirt standing above the hill and its grass line six blocks higher
+     * than the ground it had been dropped on, because nobody had told the seating that the fourth hill was the same
+     * kind of build.
+     */
+    private static final Set<String> CRAGS = Set.of(TROLL_CAVE, TROLL_CAVE_2, TROLL_CAVE_3, TROLL_CAVE_4);
+
     /** Whether a template is one of the campaign's crags, which are buried in their ground, not seated on it. */
     public static boolean isCave(String structure) {
-        return CAVE_VARIANTS.contains(structure);
+        return CRAGS.contains(structure);
     }
 
     private static Seat seatFor(String structure) {

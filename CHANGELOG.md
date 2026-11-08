@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Matuna's lair is set into its hill like the stone's three crags.** The fourth crag was not in the list of crags,
+  so it was seated on its ground the way a hall is: its rock skirt stood above the hill and its grass line six blocks
+  higher than the ground it had been dropped on. It is a crag like the others now, buried to its grass line with only
+  its mouth and its crown's own rock showing.
 - **Matuna's lair has its ground in the pack.** The fourth crag had a template, a stone name and a checklist line
   but no pin, so a command asking for it was told nothing was called that, and any world without a hand-written pin
   fell back on the middle of the Trollshaws. The hill the scout marked in the scouting world, 4633, 94, -3081, is in
