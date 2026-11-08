@@ -35,16 +35,10 @@
     [],
     [],
     [],
-    [
-      "minecraft:disk_clay"
-    ],
+    [],
     [],
     [],
     [
-      "minecraft:trees_swamp",
-      "minecraft:patch_dead_bush",
-      "minecraft:brown_mushroom_swamp",
-      "minecraft:red_mushroom_swamp",
       "tolkienmobs:dead_bodies",
       "tolkienmobs:flower_swamp_milkweed_placed",
       "tolkienmobs:mud_splatter"
@@ -68,9 +62,9 @@
   "spawners": {
     "ambient": [
       {
-        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 3,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmcrebain",
         "weight": 10
       }
     ],
@@ -79,15 +73,15 @@
     "misc": [],
     "monster": [
       {
-        "type": "tolkienmobs:entityttmswamphag",
         "maxCount": 1,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmswamphag",
         "weight": 20
       },
       {
-        "type": "tolkienmobs:entityttmswarm",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmswarm",
         "weight": 15
       }
     ],

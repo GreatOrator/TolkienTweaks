@@ -43,21 +43,10 @@
     [],
     [],
     [],
-    [
-      "minecraft:disk_clay"
-    ],
+    [],
     [],
     [],
     [
-      "minecraft:trees_swamp",
-      "minecraft:flower_swamp",
-      "minecraft:patch_grass_normal",
-      "minecraft:patch_dead_bush",
-      "minecraft:patch_waterlily",
-      "minecraft:brown_mushroom_swamp",
-      "minecraft:red_mushroom_swamp",
-      "minecraft:patch_sugar_cane_swamp",
-      "minecraft:patch_pumpkin",
       "tolkienmobs:flower_swamp_milkweed_placed",
       "tolkienmobs:mud_splatter"
     ]
@@ -88,15 +77,15 @@
   "spawners": {
     "ambient": [
       {
-        "type": "tolkienmobs:entityttmfrog",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmfrog",
         "weight": 35
       },
       {
-        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 5,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmcrebain",
         "weight": 20
       }
     ],
@@ -105,21 +94,21 @@
     "misc": [],
     "monster": [
       {
-        "type": "tolkienmobs:entityttmfellspirit",
         "maxCount": 3,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmfellspirit",
         "weight": 25
       },
       {
-        "type": "tolkienmobs:entityttmswamphag",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmswamphag",
         "weight": 25
       },
       {
-        "type": "tolkienmobs:entityttmswarm",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmswarm",
         "weight": 10
       }
     ],

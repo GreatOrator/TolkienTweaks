@@ -42,7 +42,6 @@
     [],
     [],
     [
-      "minecraft:patch_grass_jungle",
       "tolkienmobs:fangorn_fallen_leaves",
       "tolkienmobs:fangorn_fallen_log",
       "tolkienmobs:stumps"
@@ -62,9 +61,9 @@
     "misc": [],
     "monster": [
       {
-        "type": "tolkienmobs:entityttmtreeent",
         "maxCount": 1,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmtreeent",
         "weight": 25
       }
     ],

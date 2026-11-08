@@ -26,23 +26,6 @@
     [],
     [],
     [
-      "minecraft:ore_coal_upper",
-      "minecraft:ore_coal_lower",
-      "minecraft:ore_iron_upper",
-      "minecraft:ore_iron_middle",
-      "minecraft:ore_iron_small",
-      "minecraft:ore_gold",
-      "minecraft:ore_gold_lower",
-      "minecraft:ore_redstone",
-      "minecraft:ore_redstone_lower",
-      "minecraft:ore_diamond",
-      "minecraft:ore_diamond_medium",
-      "minecraft:ore_diamond_large",
-      "minecraft:ore_diamond_buried",
-      "minecraft:ore_lapis",
-      "minecraft:ore_lapis_buried",
-      "minecraft:ore_copper",
-      "minecraft:underwater_magma",
       "tolkienmobs:legacy_coal_ore",
       "tolkienmobs:legacy_copper_ore",
       "tolkienmobs:legacy_diamond_ore",
@@ -55,13 +38,10 @@
     [],
     [],
     [
-      "minecraft:trees_windswept_hills",
-      "minecraft:patch_grass_forest",
       "tolkienmobs:dwarven_maple_fallen_leaves",
       "tolkienmobs:dwarven_maple_fallen_log"
     ],
     [
-      "minecraft:freeze_top_layer",
       "tolkienmobs:mountain_peak"
     ]
   ],
@@ -91,39 +71,39 @@
   "spawners": {
     "ambient": [
       {
-        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmcrebain",
         "weight": 10
       }
     ],
     "axolotls": [],
     "creature": [
       {
-        "type": "minecraft:goat",
         "maxCount": 3,
         "minCount": 1,
+        "type": "minecraft:goat",
         "weight": 15
       }
     ],
     "misc": [],
     "monster": [
       {
-        "type": "tolkienmobs:entityttmtroll",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmtroll",
         "weight": 35
       },
       {
-        "type": "tolkienmobs:entityttmgoblin",
         "maxCount": 5,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmgoblin",
         "weight": 45
       },
       {
-        "type": "tolkienmobs:entityttmduergar",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmduergar",
         "weight": 20
       }
     ],

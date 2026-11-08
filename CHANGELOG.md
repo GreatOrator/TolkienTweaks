@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Arda grows nothing that was not drawn into it.** Every biome listed vanilla's trees, grass, flowers, ores, lava
+  lakes and monster rooms as features and vanilla's cave, canyon and ravine as carvers, so a world the map had drawn and
+  this mod places was furnished and undermined by another world's answers. The biome generator now keeps only the mod's
+  own entries - rubble, stumps, the mallorn, the flowers - and drops every carver, the carvers having cut where the
+  noise's terrain was rather than where the map's is: a mouth in the middle of a field, a shaft under a road. The crags
+  are sunk templates and keep their own chambers. Generated chunks are untouched; the change is in chunks made after it.
+- **A hole in the ground is spanned rather than followed.** A cave's mouth, a ravine's lip or a shaft read as ground
+  is a grade the profile took, so the road dived into it, the band could not be filled deep enough, and the road ended
+  at the lip with a gap beyond. Ground that stands `HOLE_DEPTH` above a column on both sides, with the two sides
+  agreeing, is now read as a hole and carried over at the level of its sides; a fall line has one side high and one
+  low and is graded exactly as before. A column below the grade is filled up to it however deep the hollow, while a
+  cut stays held to `CUT_FILL`, so a hollow is bridged and a hill is still walked over rather than bored through.
 - **Every build has the ground around it carried to its roofline.** The valley has been dressed column by column to
   the cut's own outline since it was first laid, and a building placed from a template had nothing of the kind: a camp
   seated in a hillside kept the hill leaning over its roof and a wood's crown through its hall. Each placement now

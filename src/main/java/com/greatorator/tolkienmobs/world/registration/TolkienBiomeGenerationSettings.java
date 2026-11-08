@@ -14,6 +14,8 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.*;
 
+import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+
 /** Datagen builder that keeps shared features in a consistent order across biome borders. */
 public class TolkienBiomeGenerationSettings extends BiomeGenerationSettings.Builder {
     private static final List<Map<ResourceKey<PlacedFeature>, Integer>> VANILLA_ORDER = vanillaFeatureOrder();
@@ -23,20 +25,43 @@ public class TolkienBiomeGenerationSettings extends BiomeGenerationSettings.Buil
     }
 
     /**
-     * Leaves vanilla's own water out of every Tolkien biome.
+     * Nothing but the mod's own places is scattered in Arda.
      * <p>
-     * The map draws Arda's rivers and lakes, and its ground is fixed: a placed lake digs a bowl of its own
-     * and fills it to a height it picks, which is a sheet of water standing over the ground the drawing put
-     * there - and a water spring does the same on a smaller scale. Lava lakes and lava springs are left as
-     * they are, since the drawing says nothing about them.
+     * The map draws the ground, the water and the country, and everything standing on it is placed - a camp, a road,
+     * a crag - so a feature from another world's lists is that world answering a question the drawing has already
+     * answered: a wood grown through a build, grass over a road, an ore vein under a mountain that was drawn as rock.
+     * Vanilla's water was the first of these to go, because a placed lake digs a bowl of its own and fills it to a
+     * height it picks; this is the rest of them, and the same rule for another mod's features as for vanilla's.
+     * <p>
+     * The mod's own places are the country's furnish and stay: rubble, stumps, the mallorn, the flowers. What is left
+     * out is everything not asked for by name - including vanilla's ores and its snow layer, since a feature is a
+     * feature.
      */
     @Override
     public BiomeGenerationSettings.Builder addFeature(GenerationStep.Decoration step, Holder<PlacedFeature> feature) {
-        String path = feature.unwrapKey().map(key -> key.identifier().getPath()).orElse("");
-        if (!path.equals("lake_water") && !path.equals("spring_water")) {
-            super.addFeature(step, feature);
-        }
+        if (!own(feature.unwrapKey().map(ResourceKey::identifier))) return this;
+        super.addFeature(step, feature);
         return this;
+    }
+
+    /**
+     * And nothing carves it either.
+     * <p>
+     * A carver is the same answer from the same other world, and the one that has cost the map most: it cuts where the
+     * <em>noise's</em> terrain was, so a cave is dug through the drawn ground in places the drawing never put a cave -
+     * a mouth opening in the middle of a field, a shaft under a road, a hole the road then has to be carried over. The
+     * crags are templates sunk into their own ground and keep their chambers; the drawn rock stays drawn.
+     */
+    @Override
+    public BiomeGenerationSettings.Builder addCarver(Holder<ConfiguredWorldCarver<?>> carver) {
+        if (!own(carver.unwrapKey().map(ResourceKey::identifier))) return this;
+        super.addCarver(carver);
+        return this;
+    }
+
+    /** Whether a registry entry is the mod's own, which is the only kind Arda grows. */
+    private static boolean own(java.util.Optional<net.minecraft.resources.Identifier> id) {
+        return id.map(identifier -> identifier.getNamespace().equals(MODID)).orElse(false);
     }
 
     @Override

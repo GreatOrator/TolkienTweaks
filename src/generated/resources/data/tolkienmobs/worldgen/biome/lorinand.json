@@ -47,10 +47,6 @@
     [],
     [],
     [
-      "minecraft:patch_large_fern",
-      "minecraft:patch_grass_forest",
-      "minecraft:brown_mushroom_normal",
-      "minecraft:red_mushroom_normal",
       "tolkienmobs:flower_elanor_placed",
       "tolkienmobs:mallorn_fallen_leaves",
       "tolkienmobs:mallorn_fallen_log"
@@ -96,51 +92,51 @@
     "axolotls": [],
     "creature": [
       {
-        "type": "tolkienmobs:entityttmelves",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmelves",
         "weight": 35
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:sheep",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:pig",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:chicken",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:cow",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:horse",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:donkey",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
-        "type": "tolkienmobs:entityttmauroch",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmauroch",
         "weight": 10
       }
     ],

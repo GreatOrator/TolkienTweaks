@@ -22,11 +22,7 @@
     "minecraft:visual/sky_color": "#78a7ff",
     "minecraft:visual/water_fog_color": "#050533"
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
+  "carvers": [],
   "downfall": 0.8,
   "effects": {
     "foliage_color": "#4ead4e",
@@ -35,47 +31,12 @@
   },
   "features": [
     [],
-    [
-      "minecraft:lake_lava_underground",
-      "minecraft:lake_lava_surface"
-    ],
     [],
-    [
-      "minecraft:monster_room",
-      "minecraft:monster_room_deep"
-    ],
+    [],
+    [],
     [],
     [],
     [
-      "minecraft:ore_dirt",
-      "minecraft:ore_gravel",
-      "minecraft:ore_granite_upper",
-      "minecraft:ore_granite_lower",
-      "minecraft:ore_diorite_upper",
-      "minecraft:ore_diorite_lower",
-      "minecraft:ore_andesite_upper",
-      "minecraft:ore_andesite_lower",
-      "minecraft:ore_tuff",
-      "minecraft:ore_coal_upper",
-      "minecraft:ore_coal_lower",
-      "minecraft:ore_iron_upper",
-      "minecraft:ore_iron_middle",
-      "minecraft:ore_iron_small",
-      "minecraft:ore_gold",
-      "minecraft:ore_gold_lower",
-      "minecraft:ore_redstone",
-      "minecraft:ore_redstone_lower",
-      "minecraft:ore_diamond",
-      "minecraft:ore_diamond_medium",
-      "minecraft:ore_diamond_large",
-      "minecraft:ore_diamond_buried",
-      "minecraft:ore_lapis",
-      "minecraft:ore_lapis_buried",
-      "minecraft:ore_copper",
-      "minecraft:underwater_magma",
-      "minecraft:disk_sand",
-      "minecraft:disk_clay",
-      "minecraft:disk_gravel",
       "tolkienmobs:legacy_coal_ore",
       "tolkienmobs:legacy_copper_ore",
       "tolkienmobs:legacy_diamond_ore",
@@ -87,17 +48,6 @@
     [],
     [],
     [
-      "minecraft:glow_lichen",
-      "minecraft:patch_large_fern",
-      "minecraft:trees_plains",
-      "minecraft:flower_plains",
-      "minecraft:patch_grass_plain",
-      "minecraft:flower_default",
-      "minecraft:brown_mushroom_old_growth",
-      "minecraft:red_mushroom_old_growth",
-      "minecraft:patch_grass_forest",
-      "minecraft:brown_mushroom_normal",
-      "minecraft:red_mushroom_normal",
       "tolkienmobs:culumalda_fallen_leaves",
       "tolkienmobs:culumalda_fallen_log",
       "tolkienmobs:lebethron_fallen_leaves",
@@ -146,60 +96,60 @@
   "spawners": {
     "ambient": [
       {
-        "type": "tolkienmobs:entityttmthrush",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmthrush",
         "weight": 10
       },
       {
-        "type": "tolkienmobs:entityttmsquirrel",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmsquirrel",
         "weight": 10
       }
     ],
     "axolotls": [],
     "creature": [
       {
-        "type": "tolkienmobs:entityttmelves",
         "maxCount": 3,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmelves",
         "weight": 45
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:sheep",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:pig",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:chicken",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:cow",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:horse",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
-        "type": "tolkienmobs:entityttmauroch",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmauroch",
         "weight": 10
       }
     ],

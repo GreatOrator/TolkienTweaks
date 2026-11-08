@@ -37,10 +37,6 @@
     [],
     [],
     [
-      "minecraft:patch_large_fern",
-      "minecraft:brown_mushroom_old_growth",
-      "minecraft:red_mushroom_old_growth",
-      "minecraft:patch_grass_forest",
       "tolkienmobs:flower_mirkwood_placed",
       "tolkienmobs:mirkwood_fallen_leaves",
       "tolkienmobs:mirkwood_fallen_log",
@@ -73,9 +69,9 @@
   "spawners": {
     "ambient": [
       {
-        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmcrebain",
         "weight": 10
       }
     ],
@@ -84,27 +80,27 @@
     "misc": [],
     "monster": [
       {
-        "type": "tolkienmobs:entityttmgoblin",
         "maxCount": 5,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmgoblin",
         "weight": 20
       },
       {
-        "type": "tolkienmobs:entityttmfellspirit",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmfellspirit",
         "weight": 25
       },
       {
-        "type": "tolkienmobs:entityttmbrigand",
         "maxCount": 3,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmbrigand",
         "weight": 25
       },
       {
-        "type": "tolkienmobs:entityttmmirkwoodspider",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmmirkwoodspider",
         "weight": 35
       }
     ],

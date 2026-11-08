@@ -24,9 +24,7 @@
   },
   "features": [
     [],
-    [
-      "minecraft:spring_water"
-    ],
+    [],
     [],
     [],
     [],
@@ -43,12 +41,6 @@
     [],
     [],
     [
-      "minecraft:patch_large_fern",
-      "minecraft:dark_forest_vegetation",
-      "minecraft:flower_plains",
-      "minecraft:brown_mushroom_old_growth",
-      "minecraft:red_mushroom_old_growth",
-      "minecraft:patch_grass_forest",
       "tolkienmobs:culumalda_fallen_leaves",
       "tolkienmobs:culumalda_fallen_log",
       "tolkienmobs:lebethron_fallen_leaves",
@@ -117,93 +109,93 @@
   "spawners": {
     "ambient": [
       {
+        "maxCount": 2,
+        "minCount": 1,
         "type": "tolkienmobs:entityttmcrebain",
-        "maxCount": 2,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 2,
+        "minCount": 1,
         "type": "tolkienmobs:entityttmsquirrel",
-        "maxCount": 2,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 2,
+        "minCount": 1,
         "type": "tolkienmobs:entityttmfrog",
-        "maxCount": 2,
-        "minCount": 1,
         "weight": 10
       },
       {
-        "type": "tolkienmobs:entityttmthrush",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmthrush",
         "weight": 10
       }
     ],
     "axolotls": [],
     "creature": [
       {
-        "type": "tolkienmobs:entityttmelves",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmelves",
         "weight": 35
       },
       {
-        "type": "minecraft:wolf",
         "maxCount": 2,
         "minCount": 1,
+        "type": "minecraft:wolf",
         "weight": 20
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:sheep",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:pig",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:chicken",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:cow",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:horse",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
+        "maxCount": 4,
+        "minCount": 1,
         "type": "minecraft:donkey",
-        "maxCount": 4,
-        "minCount": 1,
         "weight": 10
       },
       {
-        "type": "tolkienmobs:entityttmauroch",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmauroch",
         "weight": 10
       }
     ],
     "misc": [],
     "monster": [
       {
-        "type": "tolkienmobs:entityttmhuron",
         "maxCount": 5,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmhuron",
         "weight": 45
       }
     ],

@@ -110,6 +110,18 @@ public final class RoadCommands {
     private static final int PROFILE_PASSES = 8;
     /** The deepest cut or tallest fill one column may take before the road is held back to the ground. */
     private static final int CUT_FILL = 4;
+    /**
+     * How far the ground on both sides of a column has to stand above it before the column is read as a hole rather
+     * than as ground. A hollow a road can walk through is a dip; a cave's mouth is a shaft.
+     */
+    private static final int HOLE_DEPTH = 4;
+    /** How far either side of a column the ground is read to tell a hole from a fall line. */
+    private static final int HOLE_REACH = 6;
+    /**
+     * How deep a hole may be carried over on stone before the road gives up on it. A mouth or a shaft is bridged; a
+     * ravine sixty blocks down is the country's business, not a road's.
+     */
+    private static final int HOLE_FILL = 32;
     /** The most one station's surface may rise or fall above the one before it, in blocks. */
     private static final double MAX_STEP = 1.0D;
     /** How many times the two step sweeps are alternated after the last pass, so both ends agree. */
@@ -867,6 +879,32 @@ public final class RoadCommands {
     }
 
     /**
+     * Gives a hole in the ground the level of the ground around it, so the road goes over it rather than down into it.
+     * <p>
+     * A cave's mouth, a ravine's lip, the shaft a stronghold left: each is a column that drops away and comes back
+     * within a few blocks, and read as ground it is a grade the road dutifully takes. The profile then dives into the
+     * hole, the band cannot be filled to follow it, and the road stops at the lip with a gap beyond it - which is not a
+     * road that stopped, it is a road nobody asked what was under it. A column is a hole when the ground on both sides
+     * stands {@link #HOLE_DEPTH} above it and the two sides agree with each other; a fall line has one side high and
+     * one side low, and is left exactly as it is.
+     */
+    private static void carryOver(int[] ground) {
+        int[] was = ground.clone();
+        for (int i = 0; i < ground.length; i++) {
+            if (was[i] == WATER) continue;
+            for (int reach = 1; reach <= HOLE_REACH && i - reach >= 0 && i + reach < ground.length; reach++) {
+                int left = was[i - reach];
+                int right = was[i + reach];
+                if (left == WATER || right == WATER) break;
+                if (left < was[i] + HOLE_DEPTH || right < was[i] + HOLE_DEPTH) continue;
+                if (Math.abs(left - right) > HOLE_DEPTH) break;
+                ground[i] = Math.max(left, right);
+                break;
+            }
+        }
+    }
+
+    /**
      * Lays one graded road: heights along the alignment, smoothed, held to a step at a time, then eased back
      * toward the ground wherever the cut or fill that would cost stays within budget.
      * <p>
@@ -904,10 +942,11 @@ public final class RoadCommands {
             this.ground = new int[n];
             this.height = new double[n];
             if (n < 2) return;
-            for (int i = 0; i < n; i++) {
-                ground[i] = surfaceAt(level, line.get(i)[0], line.get(i)[1]);
-                height[i] = ground[i] == WATER ? startY : ground[i];
-            }
+            for (int i = 0; i < n; i++) ground[i] = surfaceAt(level, line.get(i)[0], line.get(i)[1]);
+            // Read before the profile is settled, not after: a hole the grade has already dived into is a hole the
+            // grade cannot be talked out of, because its own heights are what the smoothing is pulling from.
+            carryOver(ground);
+            for (int i = 0; i < n; i++) height[i] = ground[i] == WATER ? startY : ground[i];
             height[0] = startY;
             height[n - 1] = endY;
             for (int pass = 0; pass < PROFILE_PASSES; pass++) {
@@ -1120,12 +1159,12 @@ public final class RoadCommands {
                         continue;
                     }
                     int step = target - groundAt;
-                    // Ground this far off the grade is not cut or filled: the band loses that column and goes on.
-                    // The alignment's own column used to be exempt, which is what put a staircase of stone in the air
-                    // over a tree and a shaft far underground under a ridge - a column the grade cannot reach is a
-                    // column the grade was wrong about. With the profile held to the ground this only narrows the
-                    // road against a bank.
-                    if (Math.abs(step) > CUT_FILL) {
+                    // Ground above the grade is cut no deeper than CUT_FILL: a hill standing that far over a profile
+                    // is a hill the profile was wrong about, and a road that bores into it is a trench. Ground below
+                    // the grade is filled up to it however deep the hollow - that is the other half of the same
+                    // question, and refusing it was the road stopping at the first hole in the ground, since the
+                    // profile had already been carried over that hole and the band's own columns had not.
+                    if (step < -CUT_FILL || step > HOLE_FILL) {
                         open++;
                         continue;
                     }

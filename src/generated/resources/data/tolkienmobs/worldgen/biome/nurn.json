@@ -27,11 +27,7 @@
     "minecraft:visual/sky_color": "#75aaff",
     "minecraft:visual/water_fog_color": "#5a4d33"
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
+  "carvers": [],
   "downfall": 0.2,
   "effects": {
     "foliage_color": "#8a9a4f",
@@ -44,22 +40,10 @@
       "tolkienmobs:nurn_lake"
     ],
     [],
-    [
-      "minecraft:monster_room",
-      "minecraft:monster_room_deep"
-    ],
+    [],
     [],
     [],
     [
-      "minecraft:ore_dirt",
-      "minecraft:ore_gravel",
-      "minecraft:ore_granite_upper",
-      "minecraft:ore_granite_lower",
-      "minecraft:ore_diorite_upper",
-      "minecraft:ore_diorite_lower",
-      "minecraft:ore_andesite_upper",
-      "minecraft:ore_andesite_lower",
-      "minecraft:ore_tuff",
       "tolkienmobs:legacy_coal_ore",
       "tolkienmobs:legacy_copper_ore",
       "tolkienmobs:legacy_diamond_ore",
@@ -70,15 +54,8 @@
       "tolkienmobs:morguliron_ore_placed"
     ],
     [],
+    [],
     [
-      "minecraft:spring_water"
-    ],
-    [
-      "minecraft:glow_lichen",
-      "minecraft:flower_plains",
-      "minecraft:patch_grass_plain",
-      "minecraft:brown_mushroom_normal",
-      "minecraft:red_mushroom_normal",
       "tolkienmobs:deadwood_fallen_log",
       "tolkienmobs:random_rubble"
     ]
@@ -117,57 +94,57 @@
   "spawners": {
     "ambient": [
       {
-        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmcrebain",
         "weight": 10
       }
     ],
     "axolotls": [],
     "creature": [
       {
+        "maxCount": 3,
+        "minCount": 1,
         "type": "minecraft:sheep",
-        "maxCount": 3,
-        "minCount": 1,
         "weight": 8
       },
       {
+        "maxCount": 3,
+        "minCount": 1,
         "type": "tolkienmobs:entityttmauroch",
-        "maxCount": 3,
-        "minCount": 1,
         "weight": 8
       },
       {
-        "type": "tolkienmobs:entityttmorc_trader",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmorc_trader",
         "weight": 2
       }
     ],
     "misc": [],
     "monster": [
       {
-        "type": "tolkienmobs:entityttmgoblin",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmgoblin",
         "weight": 20
       },
       {
-        "type": "tolkienmobs:entityttmwarg",
         "maxCount": 3,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmwarg",
         "weight": 20
       },
       {
-        "type": "tolkienmobs:entityttmmordororc",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmmordororc",
         "weight": 25
       },
       {
-        "type": "tolkienmobs:entityttmurukhai",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmurukhai",
         "weight": 35
       }
     ],

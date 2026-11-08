@@ -17,9 +17,7 @@
     [],
     [],
     [],
-    [
-      "minecraft:desert_well"
-    ],
+    [],
     [],
     [
       "tolkienmobs:legacy_coal_ore",
@@ -32,13 +30,7 @@
     ],
     [],
     [],
-    [
-      "minecraft:patch_dry_grass_desert",
-      "minecraft:patch_dead_bush_2",
-      "minecraft:patch_sugar_cane_desert",
-      "minecraft:patch_pumpkin",
-      "minecraft:patch_cactus_desert"
-    ]
+    []
   ],
   "has_precipitation": false,
   "spawn_costs": {
@@ -58,33 +50,33 @@
   "spawners": {
     "ambient": [
       {
-        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 1,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmcrebain",
         "weight": 15
       }
     ],
     "axolotls": [],
     "creature": [
       {
-        "type": "tolkienmobs:entityttmmumakil",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmmumakil",
         "weight": 25
       },
       {
-        "type": "tolkienmobs:entityttmsouthron",
         "maxCount": 2,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmsouthron",
         "weight": 5
       }
     ],
     "misc": [],
     "monster": [
       {
-        "type": "tolkienmobs:entityttmharadrim",
         "maxCount": 4,
         "minCount": 1,
+        "type": "tolkienmobs:entityttmharadrim",
         "weight": 45
       }
     ],
