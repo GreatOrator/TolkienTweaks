@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The highlands and the woods are greened back.** The high broken countries had stone on almost a third of their
+  ground and the woods had leaf mould over more of the floor than grass did, so both read bald. The highlands keep
+  stone only on the highest surface noise (0.72-1.0 rather than 0.45-1.0) and coarse dirt in the band below it
+  (0.45-0.72), and the woods keep grass as the common floor: coarse dirt now takes only the top of the noise
+  (0.6-1.0) and podzol one narrow band (-0.3-0.05) instead of a quarter of the ground each. Cliffs still show rock.
 - **Every country now stands on ground its canon asks for.** The countries that still wore the shared grass floor are
   given their own: sand and gravel beds under all ten rivers, lakes and inland seas; snow, packed ice and stone over
   Forochel, its slopes and Ered Mithrin; mountain stone through Moria; rock showing through grass on the high broken

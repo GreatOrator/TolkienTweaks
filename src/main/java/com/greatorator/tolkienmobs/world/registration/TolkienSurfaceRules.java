@@ -353,8 +353,8 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 		return SurfaceRules.sequence(
 				SurfaceRules.ifTrue(SurfaceRules.not(SurfaceRules.waterBlockCheck(-1, 0)), DIRT),
 				SurfaceRules.ifTrue(SurfaceRules.steep(), STONE),
-				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.45D, 1.0D), STONE),
-				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.1D, 0.45D), COARSE_DIRT),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.72D, 1.0D), STONE),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.45D, 0.72D), COARSE_DIRT),
 				GRASS_BLOCK);
 	}
 
@@ -370,8 +370,8 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 	private static SurfaceRules.RuleSource woodlandFloor() {
 		return SurfaceRules.sequence(
 				SurfaceRules.ifTrue(SurfaceRules.not(SurfaceRules.waterBlockCheck(-1, 0)), DIRT),
-				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.25D, 1.0D), COARSE_DIRT),
-				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, -0.15D, 0.25D), PODZOL),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.6D, 1.0D), COARSE_DIRT),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, -0.3D, 0.05D), PODZOL),
 				GRASS_BLOCK);
 	}
 

@@ -416,3 +416,11 @@ belfalas, dale, dorwinion, eriador, gondor, ithilien, lindon, minhiriath, rhun, 
 dirt is the ground they want and a rule would only duplicate it. `MUD` was missing from the class's block constants
 (`TolkienSurfaceRuleData` has its own), which the first compile caught.
 
+
+The two floors added in the canon pass were tuned down before a player saw them: `highlandFloor()` had `STONE` from
+surface noise 0.45 and `COARSE_DIRT` from 0.10, which left little grass, and `woodlandFloor()` had coarse dirt from
+0.25 and podzol across -0.15..0.25, so leaf mould covered more of a wood than grass did. The highlands now take stone
+at 0.72-1.0 and coarse dirt at 0.45-0.72; the woods take coarse dirt at 0.6-1.0 and podzol at -0.3..0.05, with grass
+under everything else. Steep ground is still stone. The exact share of each block is not measured - it depends on the
+SURFACE noise distribution, which is roughly normal around zero - so the bands are deliberately conservative.
+
