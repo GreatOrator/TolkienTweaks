@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The wood beside the road is trimmed, not sheared.** Canopy clearing ran down the road's own columns only, to
+  their full height right at the edge, so the leaves still standing beyond it made a sheer face along the lane: a
+  corridor with walls. The columns beside the road are now trimmed too, a step shallower for each one out - three
+  columns of shoulder, at three quarters, a half and a quarter of the reach - and only their leaves go, never their
+  trunks, so a tree beside the road keeps its crown instead of being left as a crown in the air. Past the shoulder the
+  wood is untouched, and a column with no crown over it costs two heightmap reads and nothing else, so open country
+  pays nothing for it.
 - **The road clears the whole crown of a Mirkwood tree.** The corridor's columns were cleared of leaves and trunks
   sixteen blocks above the surface, which is enough for an oak and not for the chapter's own woods: sampled along the
   Thorenhad road's line, twenty-two of a hundred and eighteen columns carry a crown taller than that, the tallest

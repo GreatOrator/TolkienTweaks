@@ -148,6 +148,26 @@ public final class RoadCommands {
      * cut through a wood is a lane, and the lane runs under sky however tall the trees it is cut through.
      */
     private static final int CANOPY_CLEAR = 24;
+    /**
+     * How many columns beyond the road's edge the wood is trimmed, so the lane steps down into the trees instead of
+     * being cut square through them.
+     * <p>
+     * Cleared only over the road's own columns, the crown was taken away to its full height right at the edge and left
+     * standing beyond it: the wood beside the lane was a sheer face of leaf, which reads as a corridor with walls
+     * rather than a road through a wood. The columns beside the road are trimmed too, a step shallower for each one
+     * out, and past these the wood is left as it has it.
+     */
+    private static final int CANOPY_SHOULDER = 3;
+
+    /**
+     * How far above its own ground a column beside the road is trimmed: the whole crown over the road's own edge, then
+     * a step shallower for each column out, and nothing past the shoulder.
+     */
+    private static int canopyReach(int beyond) {
+        if (beyond <= 0) return CANOPY_CLEAR;
+        if (beyond > CANOPY_SHOULDER) return 0;
+        return CANOPY_CLEAR * (CANOPY_SHOULDER - beyond + 1) / (CANOPY_SHOULDER + 1);
+    }
     /** The grade the descent aims for, in blocks of rise per block of travel; anything steeper is penalised. */
     private static final double TARGET_GRADE = 0.35D;
     /** What a block of grade above the target costs, squared: a wall face becomes expensive to fall down. */
@@ -1766,16 +1786,65 @@ public final class RoadCommands {
                     laid++;
                     // A road cut through a wood leaves its canopy hanging, so the corridor's own columns are
                     // cleared of leaves and logs above the road's surface.
-                    for (int y = target + 1; y <= target + CANOPY_CLEAR; y++) {
-                        BlockPos crown = new BlockPos(at, y, into);
-                        BlockState over = level.getBlockState(crown);
-                        if (!over.is(BlockTags.LEAVES) && !over.is(BlockTags.LOGS)) continue;
-                        level.setBlock(crown, Blocks.AIR.defaultBlockState(), 2);
-                        cleared++;
+                    cleared += trimCanopy(level, at, into, target, CANOPY_CLEAR, true);
+                }
+            }
+            // The road's own columns are cleared to their full reach; the ones beside it are trimmed a step shallower
+            // for each column out, so the lane steps down into the wood and the trees keep the crowns they grew.
+            int band = half + CANOPY_SHOULDER;
+            for (int dx = -band; dx <= band; dx++) {
+                for (int dz = -band; dz <= band; dz++) {
+                    // How far out this column stands from the road's edge, rounded: square to the edge a column is as
+                    // far out as its offset, and on the corner as far as both offsets put together.
+                    int beyond = (int) Math.round(Math.hypot(Math.max(0, Math.abs(dx) - half),
+                            Math.max(0, Math.abs(dz) - half)));
+                    if (beyond < 1) continue;
+                    int reach = canopyReach(beyond);
+                    if (reach <= 0) continue;
+                    int at = x + dx;
+                    int into = z + dz;
+                    // Nothing beside the road is trimmed inside the build itself, for the same reason nothing of it is
+                    // paved: the wall and whatever grows behind it are the build's.
+                    if (at >= route.cityX0() && at <= route.cityX1()
+                            && into >= route.cityZ0() && into <= route.cityZ1()) {
+                        continue;
                     }
+                    // A column whose leaves reach no higher than its ground has no crown over it, which is most of the
+                    // country a road crosses: nothing is read or written until there is something to trim.
+                    if (level.getHeight(Heightmap.Types.MOTION_BLOCKING, at, into)
+                            <= level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at, into)) {
+                        continue;
+                    }
+                    level.getChunk(at >> 4, into >> 4);
+                    int base = surfaceAt(level, at, into);
+                    if (base == VOID || base == WATER) base = target;
+                    cleared += trimCanopy(level, at, into, base, reach, false);
                 }
             }
             return counted;
+        }
+
+        /**
+         * Clears the crown over one column, up to {@code reach} above the ground it grows from.
+         * <p>
+         * Leaves go wherever they stand over the lane. Trunks go only where the road itself runs: a trunk cut at
+         * shoulder height leaves the crown it was carrying standing in the air, which looks worse than the wall this
+         * was meant to take away. So a tree beside the road keeps its trunk and every leaf still hanging from it, and
+         * only the leaves which reach out over the lane are taken.
+         *
+         * @return how many blocks were cleared, for the pass's own total
+         */
+        private static int trimCanopy(ServerLevel level, int x, int z, int base, int reach, boolean trunks) {
+            int count = 0;
+            for (int y = base + 1; y <= base + reach; y++) {
+                BlockPos crown = new BlockPos(x, y, z);
+                BlockState over = level.getBlockState(crown);
+                boolean leaf = over.is(BlockTags.LEAVES);
+                if (!leaf && !(trunks && over.is(BlockTags.LOGS))) continue;
+                level.setBlock(crown, Blocks.AIR.defaultBlockState(), 2);
+                count++;
+            }
+            return count;
         }
     }
 
