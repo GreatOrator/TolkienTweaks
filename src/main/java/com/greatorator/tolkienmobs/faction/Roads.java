@@ -69,19 +69,20 @@ public final class Roads {
             // grading the country the other has already laid. The camp is sixteen by sixteen from its corner pin at
             // 4812, 77, -2885. A wild build's track, so it is laid wild - three blocks wide - the whole way.
             new Route.Riverless(Sites.BARACHENS_CAMP, 4812, 4827, -2885, -2870, 4820, -2886, 4892, -3097),
-            // The wood ruin's own way out, and the piece that ties the chapter's roads together: the ruin's road end
-            // at 4787, 78, -3058, south through the bend the scout marked at 4786, 78, -3082, to the pin at
-            // 4741, 81, -3092 - which is the pin two of the crags' roads also arrive on, so the ruin and the four
-            // crags meet on one block rather than each stopping in a field of its own. The ruin is fourteen across,
-            // its pin being its low corner, so its footprint is the pin and thirteen either way.
-            new Route.Riverless(Sites.WOOD_RUIN, 4782, 4795, -3058, -3045, 4787, -3058, 4741, -3092),
+            // The wood ruin's own way out, walked in Roads 7: out of the ruin's south edge at 4787, 78, -3058, down
+            // through the mark the scout set below it at 4787, 78, -3082, and then east to the mark on Barachen's own
+            // road at 4892, 74, -3044 - so the ruin joins the track the camp's traffic already uses instead of ending
+            // in open country on the pin the crags' roads took for themselves. The ruin was measured at 4783..4795 by
+            // -3058..-3047 of stone brick, spruce fence and trapdoor, so its footprint is that box less the row the
+            // road leaves on: a road that searched through its own walls would find a way round them.
+            new Route.Riverless(Sites.WOOD_RUIN, 4783, 4795, -3057, -3047, 4787, -3058, 4892, -3044),
             // The four crags, one road each, from the ground a road arriving at a crag meets to the pins the scout
             // walked in the country between them. A crag's `.end` pin sits twenty-seven or twenty-eight blocks out
             // from the middle of the rock, which is where a road has to end rather than climbing the crag, so each
             // footprint here is that middle and twenty-eight either side. Which crag takes which pin is the
             // walker's distance and not ours: Matuna's lair is the nearest and takes 4741, 81, -3082, Hoklond's cave
             // is the next and takes 4741, 81, -3086, and Bandrith's and Sholdroth's are the farthest two, which share
-            // 4741, 81, -3092 - the same pin the ruin's road comes down onto.
+            // 4741, 81, -3092.
             new Route.Riverless(Sites.TROLL_CAVE, 4432, 4488, -2505, -2449, 4515, -2446, 4741, -3092),
             new Route.Riverless(Sites.TROLL_CAVE_2, 4540, 4596, -2539, -2483, 4624, -2479, 4741, -3086),
             new Route.Riverless(Sites.TROLL_CAVE_3, 4480, 4536, -2457, -2401, 4562, -2398, 4741, -3092),
@@ -115,8 +116,9 @@ public final class Roads {
             // Barachen's track, walked in Roads 5: off the camp's own ground through the mark at 4819, 76, -2903,
             // and then down the shoulder by 4896, 74, -2980 rather than across it in one leg.
             Sites.BARACHENS_CAMP, List.of(new BlockPos(4819, 76, -2903), new BlockPos(4896, 74, -2980)),
-            // The wood ruin's road turns once, on the bend the scout marked below the ruin.
-            Sites.WOOD_RUIN, List.of(new BlockPos(4786, 78, -3082)));
+            // The wood ruin's road turns once, on the mark the scout set below the ruin in Roads 7: it leaves the
+            // ruin southward, then runs east along the country to the camp's road rather than cutting the corner.
+            Sites.WOOD_RUIN, List.of(new BlockPos(4787, 78, -3082)));
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
     public static List<BlockPos> bends(Route route) {

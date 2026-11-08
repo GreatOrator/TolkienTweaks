@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The wood ruin's road ends on Barachen's own road.** Its line ran from the ruin at 4787, -3058 down through the
+  bend at 4786, -3082 to the shared crag pin at 4741, -3092, which left it ending in open country once the crags'
+  roads took that pin between them. Two marks walked in Roads 7 settle it: 4787, 78, -3082 below the ruin, and
+  4892, 74, -3044, which stands on Barachen's camp road's own line. The route now leaves the ruin's south edge, runs
+  south through the first mark and east to the second, so the ruin joins the track the camp's traffic already uses.
+  The ruin was measured at 4783..4795 by -3058..-3047 of stone brick, spruce fence and trapdoor, and its footprint is
+  that box less the row the road leaves on.
 - **A wild track steps up stepped country instead of cutting a notch through it.** A route that names no kind was
   held to a named road's four blocks of cut and fill, and measured from the relief - the middle of the ground eight
   stations either side - which on terraced ground sits below the terrace the track is crossing, so the grade cut a

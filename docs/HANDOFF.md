@@ -160,13 +160,20 @@ x 4832 and two of them set off south first (cave 2 and cave 3: 909 stations with
 calls `level.getChunk` first. Not yet seen in a world, and it costs chunk generation during the walk; a fresh world
 will show whether the grades and the three separate lines come out as country roads.
 
+**The ruin's road now ends on Barachen's own road.** The scout set two marks in Roads 7: 4787, 78, -3082 below the
+ruin - one block from the bend already recorded - and 4892, 74, -3044, which stands on Barachen's camp road's own
+line. `Sites.WOOD_RUIN` now leaves the ruin's south edge at 4787, -3058, runs south through 4787, -3082 and east to
+4892, -3044, so the ruin joins the track the camp uses instead of ending in open country on the crag pin; the crags'
+three roads still share their pins without it. The ruin measures 4783..4795 by -3058..-3047 of stone brick, spruce
+fence and trapdoor, so its footprint is that box less the row the road leaves on. Not yet seen in a world.
+
 **Wild tracks were cutting notches through terraces; they now step up them.** A route naming no kind was held to the
 same four blocks of cut and fill as a named road and measured from `relief`, which on stepped ground sits below the
 terrace being crossed - hence the slot in the cave-road images, five blocks into the hillside at the median at
 4573, -2414. Such a route now takes its own column's ground with a band of one block (`WILD_BAND`), the sweeps making
 a terrace a two-station step; named roads keep `CUT_FILL`. Not yet seen in a world.
 
-**The wood ruin's road is laid end to end; it is not connected to anything at its north end.** Its line runs
+*(Answered in Roads 7 - see above.)* **The wood ruin's road was laid end to end with nothing to join.** Its line runs
 4741, -3092 to 4787, -3058, and the world has road within a block of both ends, so the laying is whole. But 4787,
 -3058 stands in open country: the cave corridor that passes Barachen's camp runs at x 4832, forty-six blocks east,
 and the main road is two hundred away to the south-west. If the ruin is meant to join that corridor, it is a route
