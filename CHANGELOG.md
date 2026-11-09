@@ -2,12 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-- **The vale stops flattening the Misty Mountains, and a drawn river stands at its bank.** The country
-  beside Imladris settled to the city's own floor over nine hundred blocks, so the range south of the
-  valley stood at seventy-four where the drawing puts a hundred and sixty and the Bruinen ran in a slot
-  under a plain labelled river. It now settles over a hundred and twenty-eight, and a river reads its
-  water level from the ground at its own edge rather than from the incised bed, so the channel sits
-  level with the land beside it.
+- **The vale stops flattening the Misty Mountains.** The country beside Imladris settled to the city's
+  own floor over nine hundred blocks, so the range south of the valley stood at seventy-four where the
+  drawing puts a hundred and sixty and the Bruinen ran in a slot under a plain labelled river. It now
+  settles over a hundred and twenty-eight blocks, and the range has the height the drawing gives it.
 - **Glóin stands on the dwarf model too, on his own face.** His camp page had him a scaled man like
   Gimli was; he is now the pack's dwarf wearing `middle-earth/gloin.png`, which the same named-skin
   lookup picks up from the name he wears, so the two dwarves of the chapter stand alike and a world
