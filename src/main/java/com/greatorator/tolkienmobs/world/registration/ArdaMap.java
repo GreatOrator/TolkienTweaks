@@ -1073,7 +1073,11 @@ public final class ArdaMap {
             int z = north + row * blocks;
             for (int column = 0; column < width; column++) {
                 int x = west + column * blocks;
-                if (ArdaMasks.daleRun(x, z) < 0) {
+                // The bank is grown from every drawn river the vale's water reaches, both the water leaving
+                // it and the water coming down into it. The level the dale holds is the leaving half's, but
+                // the ground beside a river has to be graded on both, or an upstream stretch keeps its drawn
+                // edge and stands as a wall with the water at its foot.
+                if (ArdaMasks.daleBankRun(x, z) < 0) {
                     continue;
                 }
                 if (!ArdaMasks.waterCell(column, row)) {

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The bank is graded on both halves of the river, not only the water leaving the vale.** The run the bank
+  is grown from was the same one the dale's water level is read from, which covers only the half downstream
+  of the ford - so every upstream stretch of the drawn river kept the drawing's own edge, a channel at 101
+  in country at 154, and stood as a fifty-block wall with the water at its foot. That is why the walls were
+  always on the side coming down into the vale. The bank now has a run of its own, followed on both halves;
+  the water level keeps the leaving half's.
+
 - **Every river leaving the vale is graded, not only the one drawn as the Bruinen.** The dale's cells were
   seeded only from the named Bruinen, and the bank the ground is graded over is grown from those seeds, so
   every other stretch of drawn water leaving the vale kept the drawing's own edge: a channel at a hundred

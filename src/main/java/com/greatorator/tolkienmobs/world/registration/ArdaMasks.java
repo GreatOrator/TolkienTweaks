@@ -241,6 +241,11 @@ final class ArdaMasks {
      * dale does not reach, and the run in cells plus one otherwise.
      */
     private static volatile byte[] DALE_RUN = new byte[0];
+    /**
+     * The same run, followed from the ford on both halves of the river: how far each cell of drawn water is
+     * from the ford by the water's own way, for the bank the ground beside it is graded over.
+     */
+    private static volatile byte[] DALE_BANK_RUN = new byte[0];
 
     /**
      * Builds the dale: the Bruinen's own drawn course downstream of the vale, grown out by the bank the
@@ -253,11 +258,13 @@ final class ArdaMasks {
      * how far the following goes - and only that half is kept, because the water coming down into the vale
      * from the mountains has a descent of its own to run.
      * <p>
-     * Every river leaving the vale is seeded, not only the one the ford happens to be drawn on. The bank the
-     * ground beside the water is graded over is grown from these seeds, so a river the seeds left out kept
-     * its drawn edge - and the drawing lays a channel at a hundred and one in country at a hundred and
-     * fifty-four, which without the bank is a gorge wall of fifty blocks with the water at its foot: the
-     * sheer sides the save showed beside the branch, on stretches of river the named course never reached.
+     * Two follows come out of it. The level the dale holds is read from the water leaving the vale only, as
+     * it was. The bank the ground beside the water is graded over is read from every drawn river the vale's
+     * water reaches, on both sides of the ford: the bank used to be grown from the leaving half alone, so
+     * every upstream stretch kept its drawn edge - and the drawing lays a channel at a hundred and one in
+     * country at a hundred and fifty-four, which without the bank is a gorge wall of fifty blocks with the
+     * water at its foot. That is the wall the save showed beside the branch, and it was always on the side
+     * coming down into the vale.
      * <p>
      * Built once and read a byte at a time: every river column asks it, so the answer has to cost nothing.
      * <p>
@@ -266,10 +273,16 @@ final class ArdaMasks {
      * is what the fall of their water is measured along.
      */
     static void buildDale(int fromX, int fromZ, double alongX, double alongZ, int reachBlocks) {
+        DALE_RUN = follow(fromX, fromZ, alongX, alongZ, reachBlocks, true);
+        DALE_BANK_RUN = follow(fromX, fromZ, alongX, alongZ, reachBlocks, false);
+    }
+
+    /** One following of the drawn water from the ford: all of it, or only what leaves the vale. */
+    private static byte[] follow(int fromX, int fromZ, double alongX, double alongZ, int reachBlocks,
+                                 boolean leaving) {
         byte[] run = new byte[WIDTH * HEIGHT];
         if (RIVER_NAMES.length == 0) {
-            DALE_RUN = run;
-            return;
+            return run;
         }
         int fordColumn = Math.floorDiv(fromX - WEST, BLOCKS);
         int fordRow = Math.floorDiv(fromZ - NORTH, BLOCKS);
@@ -277,7 +290,7 @@ final class ArdaMasks {
         int tail = 0;
         for (int row = 0; row < HEIGHT; row++) {
             for (int column = 0; column < WIDTH; column++) {
-                if ((column - fordColumn) * alongX + (row - fordRow) * alongZ < 0.0D) {
+                if (leaving && (column - fordColumn) * alongX + (row - fordRow) * alongZ < 0.0D) {
                     continue;
                 }
                 if (!waterCell(column, row)) {
@@ -316,7 +329,7 @@ final class ArdaMasks {
                 }
             }
         }
-        DALE_RUN = run;
+        return run;
     }
 
     /**
@@ -324,7 +337,18 @@ final class ArdaMasks {
      * does not reach it.
      */
     static int daleRun(int blockX, int blockZ) {
-        byte[] run = DALE_RUN;
+        return runOf(DALE_RUN, blockX, blockZ);
+    }
+
+    /**
+     * How far a column of drawn water runs from the ford by the water's own way, in blocks, on either side
+     * of it, or -1 where no drawn water connects to the ford at all.
+     */
+    static int daleBankRun(int blockX, int blockZ) {
+        return runOf(DALE_BANK_RUN, blockX, blockZ);
+    }
+
+    private static int runOf(byte[] run, int blockX, int blockZ) {
         if (run.length == 0) {
             return -1;
         }
