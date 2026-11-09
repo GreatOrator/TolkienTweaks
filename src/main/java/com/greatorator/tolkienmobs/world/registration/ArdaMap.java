@@ -991,33 +991,144 @@ public final class ArdaMap {
     }
 
     /**
-     * How high the ground beside the dale's river may stand, or {@link Integer#MIN_VALUE} where the dale
-     * does not reach.
-     * <p>
-     * A river held at the vale's water with the drawing forty blocks over it would stand in a slot, so the
-     * ground round it comes down as a bank of one block per block of run to the water's own level - the
-     * dale's floor - and is left at whatever the drawing gives it past the bank's own reach.
+     * The height the ground beside the dale's water may stand at, one cell per mask cell, or null until
+     * it is built. Every level in it moves with the vale's floor, so a raised world builds it again.
      */
-    private static int daleBank(int blockX, int blockZ) {
-        if (!ArdaMasks.dale(blockX, blockZ)
-                && Math.hypot(blockX - BRUINEN_FORD_X, blockZ - BRUINEN_FORD_Z) > DALE_REACH + DALE_BANK) {
-            return Integer.MIN_VALUE;
+    private static volatile char[] daleBanks;
+
+    /**
+     * Builds the bank: how high the ground beside the dale's water may stand, grown out from the water one
+     * cell at a time.
+     * <p>
+     * The bank used to be walked out per column with eight rays, and that is what the canyon walls were: a
+     * ray answers the distance along the ray, not the distance to the water, so between two rays the answer
+     * came out too long and the cut left a wedge standing between them - a fan of faces down a stretch of
+     * river that should have been one slope. Grown cell by cell from the water, a column's answer depends
+     * only on how far it really is from the river.
+     * <p>
+     * The water stands one block out of the ground at the bank's foot and one more for every block of run,
+     * so the valley is a bowl with the river in the bottom of it rather than a slot with a lid.
+     */
+    private static void buildDaleBanks() {
+        int width = ArdaMasks.maskWidth();
+        int height = ArdaMasks.maskHeight();
+        int blocks = Math.max(1, ArdaMasks.maskBlocks());
+        int west = ArdaMasks.maskWest();
+        int north = ArdaMasks.maskNorth();
+        if (width <= 0 || height <= 0) {
+            daleBanks = new char[0];
+            return;
         }
-        int need = Integer.MAX_VALUE;
-        for (int step = 0; step < 8; step++) {
-            double dirX = Math.cos(step * Math.PI / 4.0D);
-            double dirZ = Math.sin(step * Math.PI / 4.0D);
-            for (int reach = 2; reach <= DALE_BANK; reach += 2) {
-                int px = blockX + (int) Math.round(dirX * reach);
-                int pz = blockZ + (int) Math.round(dirZ * reach);
-                if (!ArdaMasks.river(px, pz)) {
+        char[] banks = new char[width * height];
+        int[] queue = new int[1 << 14];
+        int tail = 0;
+        double reach = DALE_REACH + DALE_BANK;
+        for (int row = 0; row < height; row++) {
+            int z = north + row * blocks;
+            for (int column = 0; column < width; column++) {
+                int x = west + column * blocks;
+                if (Math.hypot(x - BRUINEN_FORD_X, z - BRUINEN_FORD_Z) > reach && !ArdaMasks.dale(x, z)) {
                     continue;
                 }
-                need = Math.min(need, Math.max(SEA_LEVEL, drawnWater(px, pz)) + reach);
-                break;
+                if (!ArdaMasks.waterCell(column, row)) {
+                    continue;
+                }
+                banks[row * width + column] = (char) Math.max(SEA_LEVEL, drawnWater(x, z));
+                if (tail == queue.length) {
+                    queue = java.util.Arrays.copyOf(queue, tail * 2);
+                }
+                queue[tail++] = row * width + column;
             }
         }
-        return need == Integer.MAX_VALUE ? Integer.MIN_VALUE : need;
+        for (int step = 0; step < DALE_BANK / blocks; step++) {
+            int end = tail;
+            for (int at = 0; at < end; at++) {
+                int cell = queue[at];
+                int bank = banks[cell] + 1;
+                int row = cell / width;
+                int column = cell - row * width;
+                for (int dir = 0; dir < 4; dir++) {
+                    int nearRow = row + (dir == 0 ? 1 : dir == 1 ? -1 : 0);
+                    int nearColumn = column + (dir == 2 ? 1 : dir == 3 ? -1 : 0);
+                    if (nearRow < 0 || nearRow >= height || nearColumn < 0 || nearColumn >= width) {
+                        continue;
+                    }
+                    int nearCell = nearRow * width + nearColumn;
+                    if (banks[nearCell] != 0) {
+                        continue;
+                    }
+                    banks[nearCell] = (char) bank;
+                    if (tail == queue.length) {
+                        queue = java.util.Arrays.copyOf(queue, tail * 2);
+                    }
+                    queue[tail++] = nearCell;
+                }
+            }
+        }
+        daleBanks = banks;
+    }
+
+    /**
+     * How high the ground beside the dale's water may stand, or {@link Integer#MIN_VALUE} where the dale
+     * does not reach.
+     * <p>
+     * Read between cells: the bank is one block of rise per block of run on eight-block cells, so a cell's
+     * own height held for eight blocks of tread would make the slope a staircase of shelves instead.
+     */
+    private static int daleBank(int blockX, int blockZ) {
+        char[] banks = daleBanks;
+        if (banks == null) {
+            synchronized (BRUINEN_LOCK) {
+                banks = daleBanks;
+                if (banks == null) {
+                    buildDaleBanks();
+                    banks = daleBanks;
+                }
+            }
+        }
+        int width = ArdaMasks.maskWidth();
+        int height = ArdaMasks.maskHeight();
+        if (banks.length == 0 || width <= 0 || height <= 0) {
+            return Integer.MIN_VALUE;
+        }
+        double across = (blockX - ArdaMasks.maskWest()) / (double) ArdaMasks.maskBlocks() - 0.5D;
+        double along = (blockZ - ArdaMasks.maskNorth()) / (double) ArdaMasks.maskBlocks() - 0.5D;
+        if (across < -0.5D || along < -0.5D || across > width - 0.5D || along > height - 0.5D) {
+            return Integer.MIN_VALUE;
+        }
+        int west = (int) Math.floor(Math.max(0.0D, across));
+        int north = (int) Math.floor(Math.max(0.0D, along));
+        int east = Math.min(width - 1, west + 1);
+        int south = Math.min(height - 1, north + 1);
+        double shareX = Math.min(1.0D, Math.max(0.0D, across - west));
+        double shareZ = Math.min(1.0D, Math.max(0.0D, along - north));
+        double total = 0.0D;
+        double sum = 0.0D;
+        int corner = banks[north * width + west];
+        double weight = (1.0D - shareX) * (1.0D - shareZ);
+        if (corner != 0) {
+            total += weight;
+            sum += weight * corner;
+        }
+        corner = banks[north * width + east];
+        weight = shareX * (1.0D - shareZ);
+        if (corner != 0) {
+            total += weight;
+            sum += weight * corner;
+        }
+        corner = banks[south * width + west];
+        weight = (1.0D - shareX) * shareZ;
+        if (corner != 0) {
+            total += weight;
+            sum += weight * corner;
+        }
+        corner = banks[south * width + east];
+        weight = shareX * shareZ;
+        if (corner != 0) {
+            total += weight;
+            sum += weight * corner;
+        }
+        return total <= 0.0D ? Integer.MIN_VALUE : (int) Math.round(sum / total);
     }
 
     /**
@@ -1323,6 +1434,7 @@ public final class ArdaMap {
         SHOULDER_TOP = VALLEY_CROWN;
         BRUINEN_WATER = PLANTED_FLOOR + 8 + lift;
         bruinenProfile = null;
+        daleBanks = null;
     }
 
     /** How far the valley has been raised above where the city was planted, in blocks. */

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The canyon is graded from the water itself, not from a walk of eight rays.** The ground beside the
+  dale's water was capped by walking eight rays out to the nearest river and taking that ray's own length,
+  which answers the distance along the ray rather than the distance to the water: between two rays the
+  answer came out long, so the cut left a wedge of ground standing between every pair and the canyon walls
+  read as a fan of sheer faces. The cap is grown out from the drawn water one cell at a time now, and read
+  between cells, so a column depends only on how far it really is from the river and the walls are one slope.
+
 - **The Bruinen is held at the vale's water along its whole drawn course past the vale.** The river leaves
   the vale at 76 and the drawing climbs it back to 155 over the next few hundred blocks before bringing it
   down again over a thousand, so the vale sat at the top of a hump. The dale follows the course now: the

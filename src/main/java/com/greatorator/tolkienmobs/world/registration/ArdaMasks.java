@@ -216,6 +216,26 @@ final class ArdaMasks {
         return RIVER_NAMES[row * WIDTH + column] & 0xFF;
     }
 
+    /**
+     * Whether the drawing marks a cell as river water, read a cell at a time.
+     * <p>
+     * The bank the ground beside a river is graded over is grown from these, so the test has to answer for
+     * a whole cell at once and to cost nothing: the narrowed channel a block at a time is what the water is,
+     * but the drawn edge is where the ground beside it has to start coming down.
+     */
+    static boolean waterCell(int column, int row) {
+        if (column < 0 || column >= WIDTH || row < 0 || row >= HEIGHT) {
+            return false;
+        }
+        int fineColumn = Math.floorDiv(column * BLOCKS + WEST - BRUINEN_WEST, BRUINEN_BLOCKS);
+        int fineRow = Math.floorDiv(row * BLOCKS + NORTH - BRUINEN_NORTH, BRUINEN_BLOCKS);
+        if (fineColumn >= 0 && fineColumn < BRUINEN_WIDE && fineRow >= 0 && fineRow < BRUINEN_DEEP
+                && BRUINEN[fineRow * BRUINEN_WIDE + fineColumn]) {
+            return true;
+        }
+        return RIVERS.length != 0 && (RIVERS[row * WIDTH + column] & 0xFF) >= WATER * 255.0D;
+    }
+
     /** 1 where a column is the Bruinen's own course past the vale, or the bank the ground is graded over. */
     private static volatile byte[] DALE = new byte[0];
 
