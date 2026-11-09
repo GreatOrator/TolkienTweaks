@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Only the Bruinen's channel is river, and its cut stops at the end of its climb.** A column six
+  hundred blocks off the course still projected onto one of its corners, and the vale floor there stands
+  under the branch's water: every such column read as river, so the mountain wore a river's bed of sand
+  across the vale. The cut now ends where its wall reaches the crown, and the river flag follows the
+  channel rather than the water level.
+
 - **The vale stops flattening the Misty Mountains.** The country beside Imladris settled to the city's
   own floor over nine hundred blocks, so the range south of the valley stood at seventy-four where the
   drawing puts a hundred and sixty and the Bruinen ran in a slot under a plain labelled river. It now

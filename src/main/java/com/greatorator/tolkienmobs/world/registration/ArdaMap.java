@@ -1222,8 +1222,16 @@ public final class ArdaMap {
         if (at[5] > 0.5D || at[6] > 0.5D) {
             // Behind the mouth is the city's own water; past the join is the Bruinen's.
             return ground;
+        }        if (at[2] > MOUTH_RUN) {
+            // The cut is the massif opening to its own river, and it has finished opening at the end of
+            // the climb: past that the wall is the crown and there is nothing here to cut. A column six
+            // hundred blocks off the course still projects onto one of its corners, and the vale floor
+            // there stands under the branch's water - which read as a river across country the drawing
+            // gives no river to, dressed as a river bed where the mountain should be.
+            return ground;
         }
         double share = at[0];
+
         // Measured from the course's own middle rather than from the legs between its points, so the channel
         // and the ground round it bend with the river.
         double offsetX = blockX - courseX(share);
@@ -1271,7 +1279,13 @@ public final class ArdaMap {
         // beside the mouth stands under it, so a floor given this level as its water would be flooded to
         // the height of the river thirty blocks away from it.
         int water = out <= 0.0D ? (int) Math.round(level) : SEA_LEVEL;
-        return new Sample(ground.country(), height, height < level, false, ground.upland(), water);
+        // Only the channel is the river. The ground beside it read as river whenever it stood under the
+        // water's level, and in the vale that is every column of the floor: a country of river biome and
+        // a bed of sand where the drawing has neither, because the floor stands eight blocks under the
+        // city's own water.
+        boolean channel = out <= 0.0D && height < level;
+        return new Sample(ground.country(), height, channel, false, ground.upland(), water);
+
     }
 
 
