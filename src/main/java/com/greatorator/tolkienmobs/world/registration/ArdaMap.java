@@ -769,7 +769,7 @@ public final class ArdaMap {
         // map draws runs past the valley's east side, inside the floor the city stands on, and the branch
         // out of the city has to meet it in the open: the drawing answers before the rock and before the
         // floor, so the river cuts its own channel through both and the fork is water, not a notch.
-        Sample drawn = water(blockX, blockZ, shiftX, shiftZ, ground);
+        Sample drawn = water(blockX, blockZ, ground);
         if (drawn != null) {
             return drawn;
         }
@@ -826,7 +826,7 @@ public final class ArdaMap {
      * A drawn river's water stands at the channel's own level rather than at each column's: see
      * {@link #riverLevel}.
      */
-    private static Sample water(int blockX, int blockZ, double shiftX, double shiftZ, Ground ground) {
+    private static Sample water(int blockX, int blockZ, Ground ground) {
         if (ArdaMasks.lake(blockX, blockZ)) {
             // One level for the whole sheet. Laid at the ground the drawing gives each column, a lake
             // inherits every rise and fall under it and comes out as a staircase of water - the sheet the
@@ -857,13 +857,13 @@ public final class ArdaMap {
             return new Sample(ground.country(), bed, true, false, ground.upland(), surface);
         }
         if (ArdaMasks.river(blockX, blockZ)) {
-            // The surface is the channel's own low level within a short reach rather than this column's
-            // ground: the ground is the drawing with the range's lift and the crag folded into it, and
-            // those step at the mask bake's own pixel edges, so a surface taken from each column's own
-            // step came out as one pool per step, each spilling into the one below it. Near a coast the
-            // grade falls under the sea; held there, the last stretch of a river meets the sea instead of
-            // digging a trench beside it.
-            int surface = riverLevel(blockX, blockZ, shiftX, shiftZ, ground);
+            // The surface is the channel's own level as the drawing gives it, and the low of that channel
+            // within a short reach: the ground here carries the range's lift and the crag, which are rock
+            // and which step at the mask bake's own pixel edges, so a surface taken from the ground stood
+            // the river up on the range's skirt and made one pool per step, each spilling into the next.
+            // Near a coast the grade falls under the sea; held there, the last stretch of a river meets the
+            // sea instead of digging a trench beside it.
+            int surface = riverLevel(blockX, blockZ, ground);
             // As deep as it is wide, within what a channel can be without becoming a canyon - and never
             // deeper than the column stands from its own bank, so the water shallows out to its edge
             // instead of ending in a wall. A bed cut flat from bank to bank makes the river a square hole
@@ -878,16 +878,48 @@ public final class ArdaMap {
     }
 
     /**
+     * The level the drawing gives a column's channel, before the range's lift and the crag are read into it.
+     * <p>
+     * The mask's brightness stands the ground up toward the crown, which is what makes a drawn range as tall as
+     * the built rock beside it - and a channel is water, not rock. Read into the river, the lift stood the
+     * Bruinen up on the skirt of the range it runs past: the stretch by Rivendell read twenty blocks over the
+     * drawing wherever the mask had any brightness and at the drawing's own level where it had none, which is
+     * the dip into the vale at the city and the climb back out of it either side. A river's water, the bank
+     * that holds it and the ground that gives way to it are all the channel's own level, so all three read
+     * here. {@link Integer#MIN_VALUE} where the heightmap has no land at the column.
+     */
+    private static int channelAt(int blockX, int blockZ) {
+        int mapped = ArdaMasks.ground(blockX, blockZ);
+        if (mapped == ArdaMasks.NO_GROUND) {
+            return Integer.MIN_VALUE;
+        }
+        return vale(blockX, blockZ,
+                SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL)));
+    }
+
+    /**
+     * The level drawn water stands at in a column: its channel's own, or the ground where the map has none.
+     */
+    private static int drawnWater(int blockX, int blockZ) {
+        int channel = channelAt(blockX, blockZ);
+        return channel == Integer.MIN_VALUE
+                ? groundAt(blockX / (double) CELL + ORIGIN_COLUMN,
+                blockZ / (double) CELL + ORIGIN_ROW, blockX, blockZ).height()
+                : channel;
+    }
+
+    /**
      * The surface a drawn river's water stands at.
      * <p>
-     * The channel is walked a short way out in eight directions and the water takes the lowest ground it meets
+     * The channel is walked a short way out in eight directions and the water takes the lowest channel it meets
      * on the way, never under the sea. A river's surface cannot stand above the water beside it: a stretch
      * drawn up a step becomes one fall instead of a pool waiting to spill into the row below, and where the
-     * channel is drawn as a slope the surface descends with it instead of stepping. Only columns the river runs
-     * through are asked, so the level is the river's own and never a lake's or the sea's.
+     * channel is drawn as a slope the surface descends with it instead of stepping. Only columns the river
+     * runs through are asked, so the level is the river's own and never a lake's or the sea's.
      */
-    private static int riverLevel(int blockX, int blockZ, double shiftX, double shiftZ, Ground ground) {
-        int surface = Math.max(SEA_LEVEL, ground.height());
+    private static int riverLevel(int blockX, int blockZ, Ground ground) {
+        int own = channelAt(blockX, blockZ);
+        int surface = Math.max(SEA_LEVEL, own == Integer.MIN_VALUE ? ground.height() : own);
         for (int step = 0; step < 8; step++) {
             double dirX = Math.cos(step * Math.PI / 4.0D);
             double dirZ = Math.sin(step * Math.PI / 4.0D);
@@ -897,11 +929,8 @@ public final class ArdaMap {
                 if (!ArdaMasks.river(px, pz)) {
                     continue;
                 }
-                // Read the way this column was read: the cell chosen by the warped map, the mask by the
-                // block the column stands at, so a neighbour is the same kind of answer as the column.
-                int beside = groundAt((px + shiftX) / (double) CELL + ORIGIN_COLUMN,
-                        (pz + shiftZ) / (double) CELL + ORIGIN_ROW, px, pz).height();
-                if (beside < surface) {
+                int beside = channelAt(px, pz);
+                if (beside != Integer.MIN_VALUE && beside < surface) {
                     surface = Math.max(SEA_LEVEL, beside);
                 }
             }
@@ -966,7 +995,10 @@ public final class ArdaMap {
                         pz / (double) CELL + ORIGIN_ROW, px, pz).height();
                 // A lake's bank has to reach its one level, not the ground of the column the mask happens
                 // to hold there, or the bank is as stepped as the sheet used to be.
-                int surface = ArdaMasks.lake(px, pz) ? lakeLevel(px, pz, drawn) : Math.max(SEA_LEVEL, drawn);
+                // A drawn river's water stands at its own channel's level, not at the ground the range's
+                // lift has raised that channel to: the bank has to reach the water that is there.
+                int surface = ArdaMasks.lake(px, pz) ? lakeLevel(px, pz, drawn)
+                        : Math.max(SEA_LEVEL, drawnWater(px, pz));
                 need = Math.max(need, surface + 1 - Math.max(0, reach - (BANK_REACH - BANK_FALL)));
                 break;
             }
@@ -1428,8 +1460,9 @@ public final class ArdaMap {
                 double away = edge - 2.0D;
                 if (away < run) {
                     run = away;
-                    level = Math.max(SEA_LEVEL, groundAt(px / (double) CELL + ORIGIN_COLUMN,
-                            pz / (double) CELL + ORIGIN_ROW, px, pz).height());
+                                    // The water it gives way to is the water that is drawn there: the range's lift is not
+                // the river's level, and ground lowered to the lifted one still stands over the channel.
+                level = Math.max(SEA_LEVEL, drawnWater(px, pz));
                 }
                 break;
             }

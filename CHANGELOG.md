@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A drawn river stands at the drawing's channel, and the rock beside it gives way to that.** The
+  mountain mask lifts the ground toward the crown, which is rock, and that lift was being read into the
+  Bruinen as its level: the stretch by Rivendell stood twenty blocks over its own drawing wherever the
+  mask had any brightness and at the drawing's level where it had none, so the river dipped into the
+  vale at the city's own cut and climbed back out of it either side. The water, the bank that holds it
+  and the ground that gives way to it now all read the channel's own level from the drawing; the lift
+  is what the rock beside the river keeps.
+
+
 - **The drape's deck line is the build's own floor, not a planted height.** A column counted as a deck
   only where its top stood at or under 76, which is the floor tile's own course in a world whose floor
   is 74. A world made since Arda was raised to 512 lifts the valley floor to 266, so every column of the
