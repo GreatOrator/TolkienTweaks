@@ -1317,10 +1317,11 @@ public final class ArdaMap {
      * to come down to. Nothing is done where the column already stands no higher than that.
      */
     private static int giveWay(int blockX, int blockZ, int height) {
-        // The course is measured where it runs and off its own ends, because its ends are water too: the
-        // city's own water at the mouth and the Bruinen's at the join. Reading a column beyond an end as
-        // having no water at all closed the massif over the river's own mouth, and the flat crown then
-        // stood at 318 three blocks from water at 82 - the wall this cone was written to remove.
+        // The course is measured where it runs, and its two ends are water: the city's at the mouth and
+        // the Bruinen's at the join, which the walk below reaches by its drawn channel. What is not water
+        // is a column beyond an end, measured across the course's extension: closing the massif over the
+        // mouth is a wall, and opening it six hundred blocks from the river is a vale behind the city.
+        // They are different columns, and only one of them is the river's.
         double run = Double.MAX_VALUE;
         int level = SEA_LEVEL;
         if (BRANCH) {
@@ -1328,10 +1329,18 @@ public final class ArdaMap {
             // under the water: the rock has given way before the water's own edge, and the cut leaves
             // no face beside the river for the bank to end on.
             double[] at = project(blockX, blockZ);
-            double offsetX = blockX - courseX(at[0]);
-            double offsetZ = blockZ - courseZ(at[0]);
-            run = Math.abs(offsetX * -at[4] + offsetZ * at[3]);
-            level = bruinenWater(at[0]);
+            // Only the course's own length is water. Past the mouth the branch has not left the city
+            // yet, and past the join the water there is the drawn Bruinen's, which the walk below finds
+            // for itself. A column beyond an end was measured across the course's extension instead, and
+            // the rock behind the walls came down to the river's level six hundred blocks from any water:
+            // a vale gouged into the massif at the back of the city, level with the branch and nowhere
+            // near it.
+            if (at[5] < 0.5D && at[6] < 0.5D) {
+                double offsetX = blockX - courseX(at[0]);
+                double offsetZ = blockZ - courseZ(at[0]);
+                run = Math.abs(offsetX * -at[4] + offsetZ * at[3]);
+                level = bruinenWater(at[0]);
+            }
         }
         for (int step = 0; step < 8; step++) {
             double dirX = Math.cos(step * Math.PI / 4.0D);

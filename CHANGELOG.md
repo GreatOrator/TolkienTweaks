@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The massif gives way to the branch only along the branch.** The ground round the valley is brought
+  down to the river it opens to, and a column beyond either end of the course was measured across the
+  course's extension: at the back of the city, level with the branch and six hundred blocks from any
+  water, the rock came down from the crown to the river level - a vale gouged into the massif behind the
+  walls. Past the mouth and past the join the branch no longer answers; the drawn water at the join is
+  still found by the walk.
+
 - **Only the Bruinen's channel is river, and its cut stops at the end of its climb.** A column six
   hundred blocks off the course still projected onto one of its corners, and the vale floor there stands
   under the branch's water: every such column read as river, so the mountain wore a river's bed of sand
