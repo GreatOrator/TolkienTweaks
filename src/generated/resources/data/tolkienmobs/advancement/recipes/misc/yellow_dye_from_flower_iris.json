@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_flower_iris": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:flower_iris"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:yellow_dye_from_flower_iris"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_flower_iris"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:yellow_dye_from_flower_iris"
+    ]
+  }
+}

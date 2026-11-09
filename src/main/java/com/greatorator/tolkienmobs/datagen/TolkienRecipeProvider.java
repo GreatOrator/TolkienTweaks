@@ -188,6 +188,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         oneToOneConversionRecipe(pRecipeOutput, Items.RED_DYE, TolkienBlocks.FLOWER_MIRKWOOD.get(), "red_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.ORANGE_DYE, TolkienBlocks.FLOWER_ALFIRIN.get(), "orange_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.YELLOW_DYE, TolkienBlocks.FLOWER_ELANOR.get(), "yellow_dye", 2);
+        oneToOneConversionRecipe(pRecipeOutput, Items.YELLOW_DYE, TolkienBlocks.FLOWER_IRIS.get(), "yellow_dye", 2);
         // Lime
         oneToOneConversionRecipe(pRecipeOutput, Items.GREEN_DYE, TolkienBlocks.FLOWER_ATHELAS.get(), "green_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.CYAN_DYE, TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "cyan_dye", 2);

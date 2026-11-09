@@ -268,9 +268,9 @@ public class TolkienPlacedFeatures {
         context.register(PLACED_LAPIS_ORE, new PlacedFeature(features.getOrThrow(LAPIS_ORE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(30)), InSquarePlacement.spread(), CountPlacement.of(2), BiomeFilter.biome()).build()));
         context.register(PLACED_COPPER_ORE, new PlacedFeature(features.getOrThrow(COPPER_ORE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(96)), InSquarePlacement.spread(), CountPlacement.of(6), BiomeFilter.biome()).build()));
         context.register(MOUNTAIN_STONE_PLACED_KEY, new PlacedFeature(features.getOrThrow(MOUNTAIN_STONE_BLOB),
-                TolkienOrePlacement.commonOrePlacement(16, HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(128)))));
+                TolkienOrePlacement.commonOrePlacement(16, HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(10)))));
 
-        context.register(FLOWER_IRIS_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_IRIS_KEY), 128));
+        context.register(FLOWER_IRIS_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_IRIS_KEY), 10));
         context.register(FLOWER_SIMBELMYNE_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_SIMBELMYNE_KEY), 64));
         context.register(FLOWER_MIRKWOOD_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_MIRKWOOD_KEY), 96));
         context.register(FLOWER_ALFIRIN_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_ALFIRIN_KEY), 80));
