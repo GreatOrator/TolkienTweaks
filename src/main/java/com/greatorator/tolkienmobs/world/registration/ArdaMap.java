@@ -370,22 +370,25 @@ public final class ArdaMap {
      * bank can climb to the tallest ground it cuts before the field ends.
      * <p>
      * The reach is read off the massif rather than picked. Its crown stands two hundred and forty-two
-     * blocks over the vale's water, so a bank that climbs one block per block of run needs that much run to
-     * reach it. Ninety-six could not: the flank kept its own height to the end of the field and stood there
-     * as a face, which is the wall the save showed standing back from the river.
+     * blocks over the vale's water, so a bank that climbs two blocks per block of run needs a hundred and
+     * twenty-one blocks of run to reach it; the field is set at twice that, so the ground between the crest
+     * and the field's own edge has room to be graded rather than stepped. Ninety-six was short even at one
+     * block per block: the flank kept its own height to the end of the field and stood there as a face.
      */
     private static final int DALE_BANK = 256;
     /**
-     * How many blocks the bank rises for each block of run out from the water: one, which is the slope a
-     * person climbs and the slope the drawn country beside the vale already has.
+     * How many blocks the bank rises for each block of run out from the water: two, so the ground beside the
+     * river climbs to the drawn country inside the width of one hillside instead of spanning it.
      * <p>
-     * Three was tried, on the reasoning that a bank reaching its height sooner would read as a mountain
-     * rather than a shelf. It is seventy-two degrees, which is a gorge: the save showed the branch running in
-     * a slot with the water at the bottom of a wall on either side, and the massif's flanks terraced into
-     * steps where the cell grid met a slope that steep. The reach above is read for this slope, so the bank
-     * still climbs to the crown.
+     * One was the drawn country's own slope, and it left the cut so wide that the river read as the floor of
+     * a bowl: seventy-five blocks of drop over seventy-five blocks of tread either side, which is a long walk
+     * and a very visible rim where the drawing starts again. Three is a chute - the save showed it as a slot
+     * with the water at the bottom of a wall on either side, and the massif's flanks terraced where the cell
+     * grid met a slope that steep. Two is the middle: the bank reaches the drawn ground in one flank's width
+     * and the water's own edge still reads as the foot of a slope rather than the edge of a basin. The reach
+     * above is read for this slope, so the bank still climbs to the crown.
      */
-    private static final int DALE_RISE = 1;
+    private static final int DALE_RISE = 2;
     /**
      * How much roll the bank's own surface has, in blocks, and how far apart its rises and hollows stand.
      * <p>

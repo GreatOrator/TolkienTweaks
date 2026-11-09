@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The bank climbs two blocks for every block of run out from the river, not one.** At one the cut from the
+  river up to the drawn country was as wide as it was deep - seventy-five blocks of tread either side - so
+  the vale read as the floor of a bowl with a rim where the drawing started again. Two brings the drawn
+  ground in to one flank's width, and the bank still reaches the massif's crown (a hundred and twenty-one
+  blocks of run, inside the field's own hundred and twenty-eight).
+
 - **The dale's run is a distance along the river again, so the Bruinen is no longer held flat at the vale's
   water.** The following was seeded from every drawn water cell at once, which gave every stretch of the
   river a run of nought: the water never climbed, and `daleWater` returned the vale's water for the whole
