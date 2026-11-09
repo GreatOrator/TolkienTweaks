@@ -399,21 +399,8 @@ public final class ArdaMap {
      */
     private static final int DALE_ROLL = 4;
     private static final int DALE_ROLL_SCALE = 48;
-    /**
-     * The way the Bruinen leaves the vale, as a unit vector: south-west, down to the Gwathló, which is how
-     * the maps draw it.
-     * <p>
-     * The drawing climbs the river back to the level of the country either side of the vale and brings it
-     * down again over the next thousand blocks, so a vale at the river's own water sat at the top of a hump.
-     * Downstream of the ford the dale keeps the water at the vale's level for as long as the drawing lays
-     * country over it, and only that half of the river: the water coming down into the vale from the
-     * mountains has its own descent to run, and holding it level would cut the mountains down to a shelf.
-     */
-    private static final double BRUINEN_DOWN_X = -0.614D;
-    private static final double BRUINEN_DOWN_Z = 0.789D;
-
     static {
-        ArdaMasks.buildDale(BRUINEN_FORD_X, BRUINEN_FORD_Z, BRUINEN_DOWN_X, BRUINEN_DOWN_Z, DALE_REACH);
+        ArdaMasks.buildDale(BRUINEN_FORD_X, BRUINEN_FORD_Z, DALE_REACH);
     }
     /**
      * How far the crown's own surface rolls below the crown, in blocks.
@@ -1036,6 +1023,14 @@ public final class ArdaMap {
      * it from its own height, one block of fall per {@link #DALE_GRADE} of run along the branch. Held flat
      * at the vale's water from wherever it entered the dale instead, every crossing had to lose its whole
      * height in one step where the dale began, which is the sheer face at the crossings.
+     * <p>
+     * The run is read on both halves of the river. Held for the leaving half alone, the water coming down
+     * into the vale had no fall of its own and took its level straight off the vale's apron, which is a
+     * radius: the surface was pulled down across the channel rather than along it - seventeen blocks over
+     * forty of drawn channel at the vale's south rim, water lying on a hillside in plates - and at the ford,
+     * where the two halves met, it lost twenty-four blocks in one column. Read from the water's own run, a
+     * stretch a mile out stands the same whether it is coming or going, and the halves meet at the crossing
+     * with nothing between them.
      */
     private static int daleWater(int blockX, int blockZ, int channel) {
         int run = ArdaMasks.daleRun(blockX, blockZ);
@@ -1090,10 +1085,10 @@ public final class ArdaMap {
             for (int column = 0; column < width; column++) {
                 int x = west + column * blocks;
                 // The bank is grown from every drawn river the vale's water reaches, both the water leaving
-                // it and the water coming down into it. The level the dale holds is the leaving half's, but
-                // the ground beside a river has to be graded on both, or an upstream stretch keeps its drawn
-                // edge and stands as a wall with the water at its foot.
-                if (ArdaMasks.daleBankRun(x, z) < 0) {
+                // it and the water coming down into it: the dale holds the level on both halves, so the
+                // ground beside either has to be graded down to it, or a stretch keeps its drawn edge and
+                // stands as a wall with the water at its foot.
+                if (ArdaMasks.daleRun(x, z) < 0) {
                     continue;
                 }
                 if (!ArdaMasks.waterCell(column, row)) {

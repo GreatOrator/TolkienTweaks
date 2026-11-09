@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
+- The dale follows the Bruinen on both halves of the river and reads the water's level from the run, so the drawn channel beside the vale no longer tilts across its own width or steps into the ford.
 - **The dale's bank grades the massif's outward fall, not only the drawn country.** The Bruinen crosses
   that band on its way past the vale, and the bank skipped it: the valley answers before the bank does, so
   the rock kept the crown's own height over water a hundred and eighty blocks under it - a sheer face down
