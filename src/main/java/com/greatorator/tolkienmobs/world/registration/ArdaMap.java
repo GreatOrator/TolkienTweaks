@@ -935,17 +935,20 @@ public final class ArdaMap {
      * the join and gives the drawing back over the run from there to {@link #DALE_REACH}, so the descent
      * into the vale and the climb out of it are one broad dale rather than a dip and a rise.
      * <p>
-     * Nothing is held where the drawing already stands at or below that water: the dale only carries the
-     * river down to what the vale's own floor is, never up out of its bed.
+     * The hold works both ways, and has to. The vale apron pulls the drawn channel down to the vale's
+     * own floor, so at the join the river's channel stands eight blocks under the water the city holds:
+     * held only downward, the dale left that dip in the middle of itself, and put the river under the
+     * branch that feeds it. A river within the dale stands at the city's water wherever the drawing has
+     * it above or below that, and the drawing takes it back as the dale runs out.
      */
     private static int daleWater(int blockX, int blockZ, int channel) {
-        if (channel <= BRUINEN_WATER) {
-            return channel;
-        }
         double away = Math.hypot(blockX - BRUINEN_FORD_X, blockZ - BRUINEN_FORD_Z);
         double share = 1.0D - smooth(Mth.clamp(
                 (away - DALE_HOLD) / (double) (DALE_REACH - DALE_HOLD), 0.0D, 1.0D));
-        return (int) Math.round(channel - (channel - BRUINEN_WATER) * share);
+        if (share <= 0.0D) {
+            return channel;
+        }
+        return (int) Math.round(channel + (BRUINEN_WATER - channel) * share);
     }
 
     /**
@@ -1350,8 +1353,11 @@ public final class ArdaMap {
             lastX = x;
             lastZ = z;
             // The surface may fall no faster than the grade, so the eight blocks between the city's water and
-            // the vale are carried down the course rather than dropped at the wall.
-            int drawn = groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height();
+            // the vale are carried down the course rather than dropped at the wall. The water it meets is
+            // the river's own, not the ground the drawing lays at the column: the drawn Bruinen's surface is
+            // held at the city's water where the branch joins it, and a branch read off the ground under the
+            // fork fell eight blocks under the water it feeds there - the wall at the mouth.
+            int drawn = drawnWater(x, z);
             int grade = BRUINEN_WATER - (int) Math.floor(run / BRUINEN_GRADE);
             lowest = Math.min(lowest, Math.max(drawn, grade));
             profile[step] = lowest;

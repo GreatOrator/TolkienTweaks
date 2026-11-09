@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The dale holds the river up as well as down, and the branch meets it at its own water.** The vale's
+  apron pulls the drawn channel down to the vale's floor, so at the join the Bruinen's water stood eight
+  blocks under the water the city holds - a dip in the middle of the dale - and the branch, read off the
+  ground under the fork, fell the same eight blocks below the river it feeds: the wall at the mouth. The
+  hold now works both ways within its reach, so a river by the city stands at the city's water wherever
+  the drawing gives it above or below that, and the branch reads the river's water rather than the ground
+  and comes to the join level.
+
 - **The vale holds the Bruinen in a dale instead of dipping it in and out of the vale.** The vale's
   apron is a radius and the Bruinen is not, so the drawn river was pulled down to the vale's own water
   where the apron came nearest - the city's mouth - and released again as it left: the water went down
