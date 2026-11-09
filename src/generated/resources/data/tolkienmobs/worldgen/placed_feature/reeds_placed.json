@@ -10,11 +10,23 @@
     },
     {
       "type": "minecraft:heightmap",
-      "heightmap": "WORLD_SURFACE_WG"
+      "heightmap": "OCEAN_FLOOR_WG"
     },
     {
       "type": "minecraft:count",
       "count": 40
+    },
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:would_survive",
+        "state": {
+          "Name": "tolkienmobs:reed",
+          "Properties": {
+            "age": "0"
+          }
+        }
+      }
     },
     {
       "type": "minecraft:biome"

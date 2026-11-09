@@ -169,12 +169,15 @@ public class TolkienPlacedFeatures {
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> features = context.lookup(Registries.CONFIGURED_FEATURE);
 
-        // Reeds stand in beds along the water, so they are placed in clumps the way the flowers are.
+        // Reeds stand in beds along the water, so they are placed in clumps the way the flowers are. The origin is the
+        // ocean floor rather than the surface height, so the survival test sees the water beside the bank instead of
+        // the air above it: the same reason sugar cane grows on the shore and not in the middle of a meadow.
         context.register(REEDS_PLACED_KEY, new PlacedFeature(features.getOrThrow(REEDS_KEY), List.of(
                 RarityFilter.onAverageOnceEvery(2),
                 InSquarePlacement.spread(),
-                PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                net.minecraft.world.level.levelgen.placement.HeightmapPlacement.onHeightmap(net.minecraft.world.level.levelgen.Heightmap.Types.OCEAN_FLOOR_WG),
                 CountPlacement.of(40),
+                net.minecraft.world.level.levelgen.placement.BlockPredicateFilter.forPredicate(net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate.wouldSurvive(TolkienBlocks.REED.get().defaultBlockState(), net.minecraft.core.BlockPos.ZERO)),
                 BiomeFilter.biome())));
         context.register(PINE_PLACED_KEY, new PlacedFeature(features.getOrThrow(PINE_KEY),
                 VegetationPlacements.treePlacement(PlacementUtils.countExtra(2, 0.1f, 1), Blocks.SPRUCE_SAPLING)));
