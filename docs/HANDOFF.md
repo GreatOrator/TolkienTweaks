@@ -502,3 +502,26 @@ decision 3, and is the one piece of chapter two with nothing built at all.
 - **The reed's trunk is sugar cane's logic, not ours.** `TolkienReedBlock extends SugarCaneBlock`, so it keeps sugar
   cane's support test and growth; only the shape and the texture are the mod's. Anything that looks wrong about reeds
   standing where they should not is vanilla's own rule, not a new one.
+
+
+## The seam scene - parked, 9 November 2026
+
+Nothing is built; this is the place kept for it.
+
+- **Script.** The seam's dialogue is the owner's own. `customnpcs/dialogs/CH2-Last Refuge/108.json` opens
+  Elrond's "Onward, Misty Mountains" and `109`-`111` are its three answers; that is the departure at the
+  pass, so it is this scene's. `CH1-Chasing Shadows/105`-`107` (Legolas's "Hasten Their Departure") stays
+  page 25's own conversation and is not part of the seam.
+- **Cast.** Elrond only, from `elrond.json`. The company's own lines are not written.
+- **No ground and no camera.** `Roads.ROUTES` has no `Sites.GLOIN_CAMP` route and `RoadPaint.LINES` is
+  empty, so the pass road does not exist yet; the pack has no cutscene or camera system (`grep -i cutscene`
+  finds only this file). The scene is to read `Sites.GLOIN_CAMP`'s `.scene` and `.keeper` pins, falling back
+  to the `.keeper` spot, rather than hardcode coordinates.
+- **Blocked on the survey.** The owner is pinning `gloincamp`, `.end`, `.keeper` and `.scene` and marking the
+  pass track; what the next sitting needs is the `Map.entry(...)` lines `/tmpin build` prints.
+- **The Bruinen by the valley is drawn and watered.** Checked against `Serious Test`'s player column
+  (5143, -3659): the drawn river is thirteen blocks west, `rivers.png` and `bruinen.png` both carry it, and
+  the chunks there hold water at y 62 with the `river` biome. The ground beside it stands at 74 because
+  `giveWay` grades the mountainside down to the drawn water over its own reach, not because a branch was
+  dropped, and the `river` label reaching the dry bank is the four-block biome cell rather than a missing
+  channel. The city's own outlet branch is watered too: y 82 at the mouth, y 74 at the ford.

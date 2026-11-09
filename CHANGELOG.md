@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The seam scene is parked, and the Bruinen by the valley is shown to be drawn.** The chapter-one to
+  chapter-two cutscene now has its stop recorded in `docs/HANDOFF.md` - Elrond's own departure dialogue
+  (`108`-`111`), the pins the survey still owes and the pass road that does not exist yet - so the next
+  sitting can build it without re-deriving the script. A check of `Serious Test`'s player column against
+  the river masks found the drawn Bruinen present in both masks and its chunks watered at y 62, with the
+  low ground beside it the gorge's own give-way rather than a branch the bake dropped.
+
 - **The Gladden grows its reeds and irises, and three lands get the trees canon gives them.** A reed block is
   sugar cane's plant under the mod's own name and the owner's own model, standing three high along the Gladden's
   water; a Gladden iris is the great yellow flower the marsh is named for, laid in beds of its own. Eryn Vorn and
