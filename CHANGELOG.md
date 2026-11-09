@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Bruinen is held at the vale's water along its whole drawn course past the vale.** The river leaves
+  the vale at 76 and the drawing climbs it back to 155 over the next few hundred blocks before bringing it
+  down again over a thousand, so the vale sat at the top of a hump. The dale follows the course now: the
+  names bake says which named river each drawn cell belongs to, and downstream of the ford that named water
+  is held at the vale's level - with the ground beside it graded down over the same reach - until the drawing
+  lays country at or under it. Only the half of the course past the ford is taken; the water coming down
+  into the vale from the mountains keeps its own descent.
+
 - **The Bruinen stands at the vale's own water and takes its descent at a grade.** The country the masks
   draw round the vale stands at 155 to 175 and the vale's floor at 74, and the hold blended that height back
   into the drawing over two hundred blocks - one block in three, which is a wall of water at the rim, and a

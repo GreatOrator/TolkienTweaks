@@ -216,6 +216,66 @@ final class ArdaMasks {
         return RIVER_NAMES[row * WIDTH + column] & 0xFF;
     }
 
+    /** 1 where a column is the Bruinen's own course past the vale, or the bank the ground is graded over. */
+    private static volatile byte[] DALE = new byte[0];
+
+    /**
+     * Builds the dale: the Bruinen's own drawn course downstream of the vale, grown out by the bank the
+     * ground beside it is graded over.
+     * <p>
+     * A radius round the vale cannot tell the Bruinen from the Brandywine, and no radius reaches the end of
+     * the course: the river leaves the vale at 155 in the drawing and runs six thousand blocks to come down
+     * to the vale's own level, through every bend and crossing on the way. So the river is followed by name
+     * instead - the names bake says which named river each drawn cell belongs to, and the ford's own name is
+     * the Bruinen's - and only the half of that course which leaves the vale is kept, because the water
+     * coming down into the vale from the mountains has a descent of its own to run.
+     * <p>
+     * Built once and read a byte at a time: the water asks it for every river column and the ground for every
+     * column, so either answer has to cost nothing.
+     */
+    static void buildDale(int fromX, int fromZ, double alongX, double alongZ, int bankBlocks) {
+        byte[] dale = new byte[WIDTH * HEIGHT];
+        DALE = dale;
+        int name = riverName(fromX, fromZ);
+        if (RIVER_NAMES.length == 0 || name == 0) {
+            return;
+        }
+        int fordColumn = Math.floorDiv(fromX - WEST, BLOCKS);
+        int fordRow = Math.floorDiv(fromZ - NORTH, BLOCKS);
+        int grow = Math.max(1, bankBlocks / BLOCKS);
+        for (int row = 0; row < HEIGHT; row++) {
+            for (int column = 0; column < WIDTH; column++) {
+                if ((RIVER_NAMES[row * WIDTH + column] & 0xFF) != name) {
+                    continue;
+                }
+                if ((column - fordColumn) * alongX + (row - fordRow) * alongZ < 0.0D) {
+                    continue;
+                }
+                for (int near = row - grow; near <= row + grow; near++) {
+                    if (near < 0 || near >= HEIGHT) {
+                        continue;
+                    }
+                    java.util.Arrays.fill(dale, near * WIDTH + Math.max(0, column - grow),
+                            near * WIDTH + Math.min(WIDTH - 1, column + grow) + 1, (byte) 1);
+                }
+            }
+        }
+    }
+
+    /** Whether a column is in the dale: the Bruinen's own course past the vale, or its bank. */
+    static boolean dale(int blockX, int blockZ) {
+        byte[] dale = DALE;
+        if (dale.length == 0) {
+            return false;
+        }
+        int column = Math.floorDiv(blockX - WEST, BLOCKS);
+        int row = Math.floorDiv(blockZ - NORTH, BLOCKS);
+        if (column < 0 || column >= WIDTH || row < 0 || row >= HEIGHT) {
+            return false;
+        }
+        return dale[row * WIDTH + column] != 0;
+    }
+
     /**
      * The lake sheets, one byte per cell: 0 for dry ground and 1..6 for the sheet a cell belongs to. Baked by
      * {@code tools/arda_lake_ids.py} from the same mask, so a lake can be given one water level of its own

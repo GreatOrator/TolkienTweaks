@@ -341,7 +341,23 @@ public final class ArdaMap {
      * How far out from the dale's river the ground comes down to its water, in blocks: a bank at one block
      * of run to one of rise, long enough to carry the eighty the vale takes out of the country beside it.
      */
-    private static final int DALE_BANK = 72;
+    private static final int DALE_BANK = 96;
+    /**
+     * The way the Bruinen leaves the vale, as a unit vector: south-west, down to the Gwathló, which is how
+     * the maps draw it.
+     * <p>
+     * The drawing climbs the river back to the level of the country either side of the vale and brings it
+     * down again over the next thousand blocks, so a vale at the river's own water sat at the top of a hump.
+     * Downstream of the ford the dale keeps the water at the vale's level for as long as the drawing lays
+     * country over it, and only that half of the river: the water coming down into the vale from the
+     * mountains has its own descent to run, and holding it level would cut the mountains down to a shelf.
+     */
+    private static final double BRUINEN_DOWN_X = -0.614D;
+    private static final double BRUINEN_DOWN_Z = 0.789D;
+
+    static {
+        ArdaMasks.buildDale(BRUINEN_FORD_X, BRUINEN_FORD_Z, BRUINEN_DOWN_X, BRUINEN_DOWN_Z, DALE_BANK);
+    }
     /**
      * How far the crown's own surface rolls below the crown, in blocks.
      * <p>
@@ -954,14 +970,21 @@ public final class ArdaMap {
      * Past the hold the eight blocks the vale takes out of the country are given back at {@link #DALE_GRADE}
      * - one block of rise per grade of run - because a blend spends them over whatever run the blend is
      * written with, and a run short enough to read as a dale spends them at one in three.
+     * <p>
+     * Downstream the grade is not the answer. The drawing climbs the river back to the level of the country
+     * either side of the vale and brings it down again over the next thousand blocks, so grading it out of
+     * the vale takes the water up onto a hump it has no business on. That half of the course is held at the
+     * vale's own water for as far as the drawing lays country over it - {@link ArdaMasks#buildDale} follows
+     * the river by name and answers which columns those are - and the drawing takes the water back where it
+     * is already lower.
      */
     private static int daleWater(int blockX, int blockZ, int channel) {
         int water = VALLEY_FLOOR + DALE_DEPTH;
-        double away = Math.hypot(blockX - BRUINEN_FORD_X, blockZ - BRUINEN_FORD_Z);
-        if (away <= DALE_HOLD) {
-            return water;
+        if (ArdaMasks.dale(blockX, blockZ)) {
+            return Math.min(channel, water);
         }
-        int ramp = water + (int) ((away - DALE_HOLD) / DALE_GRADE);
+        double away = Math.hypot(blockX - BRUINEN_FORD_X, blockZ - BRUINEN_FORD_Z);
+        int ramp = away <= DALE_HOLD ? water : water + (int) ((away - DALE_HOLD) / DALE_GRADE);
         // The drawing takes the water back where the ground it lays is lower than the ramp would carry it,
         // and the vale's own floor is two under the sheet: what the dale holds, it holds, both ways.
         return Math.max(water, Math.min(channel, ramp));
@@ -976,7 +999,8 @@ public final class ArdaMap {
      * dale's floor - and is left at whatever the drawing gives it past the bank's own reach.
      */
     private static int daleBank(int blockX, int blockZ) {
-        if (Math.hypot(blockX - BRUINEN_FORD_X, blockZ - BRUINEN_FORD_Z) > DALE_REACH + DALE_BANK) {
+        if (!ArdaMasks.dale(blockX, blockZ)
+                && Math.hypot(blockX - BRUINEN_FORD_X, blockZ - BRUINEN_FORD_Z) > DALE_REACH + DALE_BANK) {
             return Integer.MIN_VALUE;
         }
         int need = Integer.MAX_VALUE;
