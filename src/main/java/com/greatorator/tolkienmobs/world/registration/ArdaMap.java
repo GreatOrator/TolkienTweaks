@@ -1658,7 +1658,13 @@ public final class ArdaMap {
      */
     private static int vale(double blockX, double blockZ, int height) {
         double beyond = beyond(blockX, blockZ);
-        double share = (beyond - (VALLEY_RIM + VALLEY_FALL)) / (double) VALLEY_VALE;
+        // Measured from the massif's own foot rather than from the end of its fall. The fall blends the
+        // crest away to whatever the ground answers, and the apron stood past it, so the ground the fall
+        // landed on was the vale floor: a flat ring beyond the ridge where a mountain the drawing puts at
+        // a hundred and sixty stood at seventy-four. The apron begins where the foot does, so the fall has
+        // drawn country to land on and the range keeps its height past the crest.
+        double share = (beyond - VALLEY_RIM) / (double) VALLEY_VALE;
+
         if (share >= 1.0D) {
             return height;
         }

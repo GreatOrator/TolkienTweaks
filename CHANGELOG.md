@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The vale begins at the massif's foot, not past its fall.** The apron that brings the country to the
+  city's floor started where the massif's fall ended, so the fall had nothing but the floor to land on:
+  beyond the crest was a flat ring where the drawing puts the range, a hundred and sixty blocks of
+  mountain at seventy-four. The apron now starts at the foot, so the ridge comes down onto drawn country
+  and the range keeps its height outside the crest.
+
 - **The valley's ground holds the water it stands beside.** The valley answers before the bank does, so
   the floor beside a drawn river stayed at the floor while the river kept its own surface: on the vale's
   outer edge the water stood twenty-three blocks over the ground with a face at its edge, which is the
