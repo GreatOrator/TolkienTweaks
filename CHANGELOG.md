@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The massif's opening to the water is eased out where it hands the ground back.** The vale's fall ends at
+  a fixed distance from the floor and the cut the water gets ran right up to it, so the ground inside the
+  seam stood where the water's curve put it and the ground outside at the drawing's own height - a face
+  standing along the vale's outline, straight where the seam is straight and diagonal at its corners. That
+  is the stepped edge the save showed in the sand beside the river at 6049, -3034, and at every other point
+  on the seam. The last ninety-six blocks of the fall now ease the cut back to the ground the massif hands
+  back.
+
 - **The bank beside the dale's river climbs a block per block again, over a reach that can carry it.**
   Three was seventy-two degrees, and the save showed the branch running in a gorge with a wall on either
   side. One is forty-five, which is the flank the drawn country beside the vale already has; the reach grows

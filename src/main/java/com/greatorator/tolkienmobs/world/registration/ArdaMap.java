@@ -163,6 +163,17 @@ public final class ArdaMap {
      * ending in a wall, and hands the country back to the drawing while it is still a mountain.
      */
     private static final int VALLEY_VALE = 128;
+    /**
+     * How far inside the end of the massif's fall its opening to the water is eased back out, in blocks.
+     * <p>
+     * The fall hands the ground back to the drawing at one fixed distance from the valley's floor, and the
+     * opening the water gets is only cut inside that. Cut to the seam, as it was, the ground inside stood
+     * where the water's curve put it and the ground outside at the drawing's own height, and the difference
+     * between them stood as a face along the seam - the straight-edged step in the bank beside the river,
+     * which the save showed once at each side of the vale. The last of the fall takes the cut back out, so
+     * the seam is a join in the ground rather than an edge in it.
+     */
+    private static final int GIVE_EDGE = 96;
 
     /**
      * The height the mountains round the valley reach, and how far from that they are allowed to wander.
@@ -1448,7 +1459,16 @@ public final class ArdaMap {
         }
         // Water at the foot of the crown is what turns a face into a wall: the ground falls away from any
         // water it stands beside, so the massif opens into a valley wherever the rivers reach it.
-        return new Sample(country, giveWay(x, z, height), false, false, ground.upland());
+        int given = giveWay(x, z, height);
+        if (given < height) {
+            // The opening is the massif's own. Past the fall the ground is the drawn country, which nothing
+            // here cuts, so the cut is taken back out over the last of the fall rather than run to the seam
+            // and stopped there.
+            double seam = Mth.clamp((beyond - (ridge + VALLEY_FALL - GIVE_EDGE)) / (double) GIVE_EDGE,
+                    0.0D, 1.0D);
+            height = (int) Math.round(given + (height - given) * smooth(seam));
+        }
+        return new Sample(country, height, false, false, ground.upland());
     }
 
     /**
