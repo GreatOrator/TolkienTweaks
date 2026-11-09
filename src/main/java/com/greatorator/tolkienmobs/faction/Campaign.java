@@ -27,8 +27,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -485,11 +483,10 @@ public final class Campaign extends SavedData {
      * puts the east end of the High Pass. The camp's door is in the middle of its south side, so he stands a few
      * blocks out from it on the approach and faces the way a player walks in.
      * <p>
-     * He is a human model at a dwarf's height rather than the mod's dwarf, which is the old world's own
-     * answer: the reference's dwarves were always the human silhouette, drawn short. The pack's dwarf is a
-     * villager of the Iron Hills and would have to be redrawn to stop reading as one, and a named body
-     * that is a scaled man keeps the face the reference gave him - {@code glo.in.png}, in the pack's own
-     * middle-earth folder, found by the same name-to-file rule the Elves' faces use.
+     * He stands on the pack's own dwarf now, wearing the face drawn for him: a dwarf's named skin is looked
+     * for under {@code middle-earth/gloin.png} by the same name-to-file rule the Elves' faces use, and a
+     * named model under {@code geckolib/models/merchant/gloin.json} - which the pack does not draw, so he
+     * stands on the folk's own model. A dwarf with art of his own wears it; every other dwarf is untouched.
      */
     private static final String GLOIN = "Glóin";
     private static final String GLOIN_TAG = "tolkienmobs:campaign_gloin";
@@ -497,8 +494,6 @@ public final class Campaign extends SavedData {
     private static final double GLOIN_REACH = 96.0D;
     /** Where he stands, from the middle of the camp's footprint: south of the door, on the way in. */
     private static final int[] GLOIN_STAND = {0, 6};
-    /** Shoulder-high on an Elf: about waist height on a man, which is what a dwarf's door was cut for. */
-    private static final float GLOIN_HEIGHT = 0.62F;
     private static final String TOCAMP_TITLE = "campaign.tolkienmobs.page.tocamp";
     private static final String TOCAMP_PLACE = "campaign.tolkienmobs.page.tocamp.place";
     private static final String TOCAMP_CLOSING = "campaign.tolkienmobs.page.tocamp.closing";
@@ -1765,13 +1760,18 @@ public final class Campaign extends SavedData {
         BlockPos post = floorNear(level, middle.offset(GLOIN_STAND[0], 0, GLOIN_STAND[1]));
         Entity keeper = keeperWith(level, GLOIN_TAG);
         if (keeper != null) {
-            if (post != null) recallKeeper(level, keeper, post, GLOIN_REACH, GLOIN_TAG);
-            return;
+            // Before the dwarf model had his face he was stood as a scaled man. That body is retired rather
+            // than recalled, so a world that already holds him gets the dwarf when next looked at.
+            if (keeper instanceof DwarfEntity) {
+                if (post != null) recallKeeper(level, keeper, post, GLOIN_REACH, GLOIN_TAG);
+                return;
+            }
+            keeper.discard();
         }
         BlockPos stand = post != null ? post
                 : floorNear(level, middle.offset(GLOIN_STAND[0], 0, GLOIN_STAND[1]), player);
         if (stand == null) return;
-        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        Entity entity = TolkienEntities.ENTITY_TTM_DWARF.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob dwarf)) return;
         // Facing south, which is the way the camp's door looks: a player walks up to his face, not his back.
         dwarf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 0.0F, 0.0F);
@@ -1783,10 +1783,7 @@ public final class Campaign extends SavedData {
         dwarf.addTag(GLOIN_TAG);
         dwarf.setCustomName(Component.literal(GLOIN).withStyle(ChatFormatting.GOLD));
         dwarf.setCustomNameVisible(true);
-        // The height is an attribute rather than a model's business, so his reach, his step and his nameplate
-        // are all a dwarf's and the renderer needs to know nothing about the chapter's cast.
-        AttributeInstance height = dwarf.getAttribute(Attributes.SCALE);
-        if (height != null) height.setBaseValue(GLOIN_HEIGHT);
+
         level.addFreshEntity(dwarf);
         Keepers.remember(level, GLOIN_TAG, dwarf);
     }

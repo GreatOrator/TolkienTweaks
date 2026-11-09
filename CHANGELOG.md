@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Glóin stands on the dwarf model too, on his own face.** His camp page had him a scaled man like
+  Gimli was; he is now the pack's dwarf wearing `middle-earth/gloin.png`, which the same named-skin
+  lookup picks up from the name he wears, so the two dwarves of the chapter stand alike and a world
+  already holding the scaled man retires him for a dwarf.
 - **Gimli is drawn as a dwarf, on his own face.** He was stood as a scaled man because the pack had no
   face for him; his own skin under `middle-earth/gimli.png` and his own model file are now what he is
   drawn with, looked for by the name he wears, so a dwarf with art of his own wears it and every village
