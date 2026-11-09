@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The bank beside the dale's river climbs a block per block again, over a reach that can carry it.**
+  Three was seventy-two degrees, and the save showed the branch running in a gorge with a wall on either
+  side. One is forty-five, which is the flank the drawn country beside the vale already has; the reach grows
+  from ninety-six to two hundred and fifty-six so the bank can still climb to the massif's crown, which
+  stands two hundred and forty-two over the water.
+
+- **The dale's water falls more slowly, and hands itself back to the drawing at the end of the reach.**
+  A block per twenty-four of run rather than sixteen, which spreads the branch's climb over three or four
+  hundred blocks of range. The fall no longer stops at the reach's edge: over its last three hundred and
+  twenty blocks the drawing takes the water back, so a branch climbing into the mountains ends at the
+  drawing's own level instead of in a step of twenty blocks or more where the field ran out.
+
+- **The massif opens onto the river over twice the ground.** The climb from water to crown now takes three
+  hundred and twenty blocks rather than a hundred and sixty, so no part of it is steeper than a block and a
+  fifth instead of the sixty-six degrees that read as a striped face closing the ford.
+
+- **The city's branch meets the drawn Bruinen at the drawn river's own level.** The profile's last step was
+  read a few blocks short of the join, where the drawing stands a block higher, so the branch arrived a
+  block over the water it runs into. The join is now measured at the join.
+
 - **The bank beside the dale's river climbs three blocks per block of run, not one.** One for one was
   too shallow to be a mountain: the massif's flank stands two hundred and forty blocks over the vale's water
   and the cut never reached it inside the bank's reach, so the last of its ground stood as a face while the

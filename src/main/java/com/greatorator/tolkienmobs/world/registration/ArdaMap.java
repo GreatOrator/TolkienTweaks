@@ -318,9 +318,13 @@ public final class ArdaMap {
     /**
      * The run over which the ground climbs from drawn water to the crown. Ninety-six put the massif's west
      * flank at 319 within a hundred blocks of the Bruinen at 74, which reads across the river as a wall; a
-     * hundred and sixty spreads the same climb over nearly twice the ground.
+     * hundred and sixty spread the same climb over nearly twice the ground and still took more than two
+     * blocks of height per block of run through the middle of the curve - sixty-six degrees, which is the
+     * striped face the save showed closing the ford, and the terraces where the cell grid met it. Three
+     * hundred and twenty halves that again: no part of the climb is steeper than a block and a fifth, which
+     * is a mountainside rather than a wall.
      */
-    private static final int MOUTH_RUN = 160;
+    private static final int MOUTH_RUN = 320;
     /**
      * The dale's own numbers, in blocks: how gently its water may fall, how far over the vale's floor the
      * sheet stands, and how far along the water a fall is followed.
@@ -333,27 +337,44 @@ public final class ArdaMap {
      * Eight was steep. A branch entering the dale a hundred blocks over the river lost all of that within
      * eight hundred blocks of the junction, so the water came down the last stretch of the branch like a
      * chute into the crossing while the river it joined stayed at the vale's water for a thousand blocks
-     * either side. Sixteen gives the same fall twice the branch to run down, which is the grade the ground
-     * beside it takes.
+     * either side. Sixteen gave it twice the branch. Twenty-four gives it more: the drawing holds a branch
+     * at the vale's own level for a long stretch before the mountains take it up, and the climb that follows
+     * is three or four hundred blocks of range, so the fall is spread as thinly as a river's own.
+     * <p>
+     * The fall hands itself back to the drawing over the last {@link #DALE_EASE} blocks of the reach instead
+     * of stopping at its end. Stopped, the water stood at the last block of fall and then, one column
+     * further out, at the drawing - and the drawing on a branch climbing into the range stands above any
+     * fall that has run out of reach, so the branch ended at the field's own edge in a step of twenty blocks
+     * or more: the strip of sheer ground the save showed across the water at the top of a branch.
      */
-    private static final int DALE_GRADE = 16;
+    private static final int DALE_GRADE = 24;
+    /**
+     * How far inside the end of the dale's reach the fall hands the water back to the drawing, in blocks.
+     */
+    private static final int DALE_EASE = 320;
     private static final int DALE_DEPTH = 2;
     private static final int DALE_REACH = 2000;
     /**
-     * How far out from the dale's river the ground comes down to its water, in blocks: a bank that climbs
-     * {@link #DALE_RISE} for every block of run, far enough out to reach the tallest ground beside the water.
+     * How far out from the dale's river the ground comes down to its water, in blocks: far enough that the
+     * bank can climb to the tallest ground it cuts before the field ends.
      * <p>
-     * One for one was the first answer and it was too shallow to be a mountain. The country beside the vale
-     * stands eighty blocks over its water, so the cut ran eighty blocks out; the massif's flank had two
-     * hundred and forty to lose and never reached the bank's own line before the reach ended, which is the
-     * face the save showed standing back from the river. Three climbs the crown within eighty, and eighty is
-     * inside this reach: the bank can climb to any ground it cuts, so no column of its field ends in a step.
+     * The reach is read off the massif rather than picked. Its crown stands two hundred and forty-two
+     * blocks over the vale's water, so a bank that climbs one block per block of run needs that much run to
+     * reach it. Ninety-six could not: the flank kept its own height to the end of the field and stood there
+     * as a face, which is the wall the save showed standing back from the river.
      */
-    private static final int DALE_BANK = 96;
+    private static final int DALE_BANK = 256;
     /**
-     * How many blocks the bank rises for each block of run out from the water.
+     * How many blocks the bank rises for each block of run out from the water: one, which is the slope a
+     * person climbs and the slope the drawn country beside the vale already has.
+     * <p>
+     * Three was tried, on the reasoning that a bank reaching its height sooner would read as a mountain
+     * rather than a shelf. It is seventy-two degrees, which is a gorge: the save showed the branch running in
+     * a slot with the water at the bottom of a wall on either side, and the massif's flanks terraced into
+     * steps where the cell grid met a slope that steep. The reach above is read for this slope, so the bank
+     * still climbs to the crown.
      */
-    private static final int DALE_RISE = 3;
+    private static final int DALE_RISE = 1;
     /**
      * How much roll the bank's own surface has, in blocks, and how far apart its rises and hollows stand.
      * <p>
@@ -397,7 +418,7 @@ public final class ArdaMap {
      * How far the walk for drawn water reaches. It must pass {@link #MOUTH_RUN}, or the climb would be cut off
      * short of the crown and end in the step the climb was written to remove.
      */
-    private static final int WATER_REACH = 176;
+    private static final int WATER_REACH = 340;
     /**
      * How far the branch wanders off its own course, and how many turns it makes on the way, in blocks and in
      * half turns. The wander falls to nothing at each corner, so the water is one channel rather than a
@@ -995,7 +1016,11 @@ public final class ArdaMap {
             return channel;
         }
         int fall = VALLEY_FLOOR + DALE_DEPTH + run / DALE_GRADE;
-        return Math.min(channel, fall);
+        // The reach's own end: the drawing takes the water back a little at a time, so the fall arrives at
+        // the level the drawing gives the branch instead of stopping under it.
+        double hand = Mth.clamp((DALE_REACH - run) / (double) DALE_EASE, 0.0D, 1.0D);
+        double level = fall * smooth(hand) + channel * (1.0D - smooth(hand));
+        return Math.min(channel, (int) Math.round(level));
     }
 
     /**
@@ -1535,6 +1560,12 @@ public final class ArdaMap {
             lowest = Math.min(lowest, Math.max(drawn, grade));
             profile[step] = lowest;
         }
+        // The join is the drawn river's own water, not the level the last step of the course lands on: the
+        // step is read where the drawing lays it, and the drawn Bruinen stands a block higher on the water a
+        // little upstream of the ford. The branch arrived at the crossing a block over the water it runs into
+        // - the lip the save showed between the two rivers. Water does not stand over the river it feeds.
+        profile[BRUINEN_STEPS] = Math.max(profile[BRUINEN_STEPS], riverLevel(
+                (int) Math.round(courseX(1.0D)), (int) Math.round(courseZ(1.0D))));
         return profile;
     }
 
