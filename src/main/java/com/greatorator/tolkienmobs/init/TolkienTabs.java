@@ -803,6 +803,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.LEAFPILE_FANGORNOAK);
                         output.accept(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.BLOCK_DECAY_BLOOM);
+                        output.accept(TolkienBlocks.REED);
                         output.accept(TolkienBlocks.FLOWER_SIMBELMYNE);
                         output.accept(TolkienBlocks.FLOWER_MIRKWOOD);
                         output.accept(TolkienBlocks.FLOWER_IRIS);
