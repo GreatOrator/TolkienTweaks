@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The vale holds the Bruinen in a dale instead of dipping it in and out of the vale.** The vale's
+  apron is a radius and the Bruinen is not, so the drawn river was pulled down to the vale's own water
+  where the apron came nearest - the city's mouth - and released again as it left: the water went down
+  into the vale and climbed back out of it either side, which no river does. The river is now held at the
+  water the city itself stands at for 192 blocks of the join and given its drawing back over the next
+  208, and the ground within forty blocks of it comes down as a bank to that water, so the descent into
+  the vale and the climb out of it are one broad dale with the country following it.
+
 - **A drawn river stands at the drawing's channel, and the rock beside it gives way to that.** The
   mountain mask lifts the ground toward the crown, which is rock, and that lift was being read into the
   Bruinen as its level: the stretch by Rivendell stood twenty blocks over its own drawing wherever the

@@ -322,6 +322,15 @@ public final class ArdaMap {
      */
     private static final int MOUTH_RUN = 160;
     /**
+     * How far the vale's own water is carried out along the drawn river from the join, and how far past
+     * that the drawing is given back, in blocks: the dale the Bruinen runs through instead of dipping into
+     * the vale at the city and climbing back out of it either side.
+     */
+    private static final int DALE_HOLD = 192;
+    private static final int DALE_REACH = 400;
+    /** How far out from the dale's river the ground comes down to its water, in blocks. */
+    private static final int DALE_BANK = 40;
+    /**
      * How far the crown's own surface rolls below the crown, in blocks.
      * <p>
      * A summit standing at exactly one height is a table: every contour on it is the crown's own outline, and
@@ -804,6 +813,12 @@ public final class ArdaMap {
                 height = Math.max(bank, grade);
             }
         }
+        // The dale's ground comes down to the river it holds, so the river is not left in a slot where the
+        // water has been taken out from under the drawing.
+        int dale = daleBank(blockX, blockZ);
+        if (dale != Integer.MIN_VALUE) {
+            height = Math.min(height, dale);
+        }
         return new Sample(ground.country(), height, false, ground.shore(), ground.upland());
     }
 
@@ -863,7 +878,7 @@ public final class ArdaMap {
             // the river up on the range's skirt and made one pool per step, each spilling into the next.
             // Near a coast the grade falls under the sea; held there, the last stretch of a river meets the
             // sea instead of digging a trench beside it.
-            int surface = riverLevel(blockX, blockZ, ground);
+            int surface = riverLevel(blockX, blockZ);
             // As deep as it is wide, within what a channel can be without becoming a canyon - and never
             // deeper than the column stands from its own bank, so the water shallows out to its edge
             // instead of ending in a wall. A bed cut flat from bank to bank makes the river a square hole
@@ -898,14 +913,68 @@ public final class ArdaMap {
     }
 
     /**
-     * The level drawn water stands at in a column: its channel's own, or the ground where the map has none.
+     * The level drawn water stands at in a column: its channel's own, held to the dale's water where the
+     * dale reaches it, or the ground where the map has none.
      */
     private static int drawnWater(int blockX, int blockZ) {
         int channel = channelAt(blockX, blockZ);
-        return channel == Integer.MIN_VALUE
-                ? groundAt(blockX / (double) CELL + ORIGIN_COLUMN,
-                blockZ / (double) CELL + ORIGIN_ROW, blockX, blockZ).height()
-                : channel;
+        if (channel == Integer.MIN_VALUE) {
+            return groundAt(blockX / (double) CELL + ORIGIN_COLUMN,
+                    blockZ / (double) CELL + ORIGIN_ROW, blockX, blockZ).height();
+        }
+        return Math.min(channel, daleWater(blockX, blockZ, channel));
+    }
+
+    /**
+     * The vale's own water carried out along the drawn river, in blocks.
+     * <p>
+     * The vale's apron is a radius and the Bruinen is not: the river was pulled down to the vale's water
+     * where the apron came nearest - the city's own mouth - and released again as it left, so the water
+     * went down into the vale and climbed back out of it either side. No river does that: water does not
+     * climb. This holds the river at the water the city itself stands at for {@link #DALE_HOLD} blocks of
+     * the join and gives the drawing back over the run from there to {@link #DALE_REACH}, so the descent
+     * into the vale and the climb out of it are one broad dale rather than a dip and a rise.
+     * <p>
+     * Nothing is held where the drawing already stands at or below that water: the dale only carries the
+     * river down to what the vale's own floor is, never up out of its bed.
+     */
+    private static int daleWater(int blockX, int blockZ, int channel) {
+        if (channel <= BRUINEN_WATER) {
+            return channel;
+        }
+        double away = Math.hypot(blockX - BRUINEN_FORD_X, blockZ - BRUINEN_FORD_Z);
+        double share = 1.0D - smooth(Mth.clamp(
+                (away - DALE_HOLD) / (double) (DALE_REACH - DALE_HOLD), 0.0D, 1.0D));
+        return (int) Math.round(channel - (channel - BRUINEN_WATER) * share);
+    }
+
+    /**
+     * How high the ground beside the dale's river may stand, or {@link Integer#MIN_VALUE} where the dale
+     * does not reach.
+     * <p>
+     * A river held at the vale's water with the drawing forty blocks over it would stand in a slot, so the
+     * ground round it comes down as a bank of one block per block of run to the water's own level - the
+     * dale's floor - and is left at whatever the drawing gives it past the bank's own reach.
+     */
+    private static int daleBank(int blockX, int blockZ) {
+        if (Math.hypot(blockX - BRUINEN_FORD_X, blockZ - BRUINEN_FORD_Z) > DALE_REACH + DALE_BANK) {
+            return Integer.MIN_VALUE;
+        }
+        int need = Integer.MAX_VALUE;
+        for (int step = 0; step < 8; step++) {
+            double dirX = Math.cos(step * Math.PI / 4.0D);
+            double dirZ = Math.sin(step * Math.PI / 4.0D);
+            for (int reach = 2; reach <= DALE_BANK; reach += 2) {
+                int px = blockX + (int) Math.round(dirX * reach);
+                int pz = blockZ + (int) Math.round(dirZ * reach);
+                if (!ArdaMasks.river(px, pz)) {
+                    continue;
+                }
+                need = Math.min(need, Math.max(SEA_LEVEL, drawnWater(px, pz)) + reach);
+                break;
+            }
+        }
+        return need == Integer.MAX_VALUE ? Integer.MIN_VALUE : need;
     }
 
     /**
@@ -917,9 +986,8 @@ public final class ArdaMap {
      * channel is drawn as a slope the surface descends with it instead of stepping. Only columns the river
      * runs through are asked, so the level is the river's own and never a lake's or the sea's.
      */
-    private static int riverLevel(int blockX, int blockZ, Ground ground) {
-        int own = channelAt(blockX, blockZ);
-        int surface = Math.max(SEA_LEVEL, own == Integer.MIN_VALUE ? ground.height() : own);
+    private static int riverLevel(int blockX, int blockZ) {
+        int surface = Math.max(SEA_LEVEL, drawnWater(blockX, blockZ));
         for (int step = 0; step < 8; step++) {
             double dirX = Math.cos(step * Math.PI / 4.0D);
             double dirZ = Math.sin(step * Math.PI / 4.0D);
@@ -929,8 +997,8 @@ public final class ArdaMap {
                 if (!ArdaMasks.river(px, pz)) {
                     continue;
                 }
-                int beside = channelAt(px, pz);
-                if (beside != Integer.MIN_VALUE && beside < surface) {
+                int beside = drawnWater(px, pz);
+                if (beside < surface) {
                     surface = Math.max(SEA_LEVEL, beside);
                 }
             }
