@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Every river leaving the vale is graded, not only the one drawn as the Bruinen.** The dale's cells were
+  seeded only from the named Bruinen, and the bank the ground is graded over is grown from those seeds, so
+  every other stretch of drawn water leaving the vale kept the drawing's own edge: a channel at a hundred
+  and one in country at a hundred and fifty-four, which is a fifty-block wall with the water at its foot.
+  The seeds are now every drawn river cell on the half of the map the vale drains into, so the bank reaches
+  those stretches too.
+
 - **The massif's opening to the water is eased out where it hands the ground back.** The vale's fall ends at
   a fixed distance from the floor and the cut the water gets ran right up to it, so the ground inside the
   seam stood where the water's curve put it and the ground outside at the drawing's own height - a face

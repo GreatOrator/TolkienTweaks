@@ -248,10 +248,16 @@ final class ArdaMasks {
      * <p>
      * A radius round the vale cannot tell the Bruinen from the Brandywine, and no radius reaches the end of
      * the course: the river leaves the vale at 155 in the drawing and runs six thousand blocks to come down
-     * to the vale's own level, through every bend and crossing on the way. So the river is followed by name
-     * instead - the names bake says which named river each drawn cell belongs to, and the ford's own name is
-     * the Bruinen's - and only the half of that course which leaves the vale is kept, because the water
-     * coming down into the vale from the mountains has a descent of its own to run.
+     * to the vale's own level, through every bend and crossing on the way. So the water is followed from the
+     * ford - every drawn river cell on the half of the map the vale drains into is a seed, and the reach caps
+     * how far the following goes - and only that half is kept, because the water coming down into the vale
+     * from the mountains has a descent of its own to run.
+     * <p>
+     * Every river leaving the vale is seeded, not only the one the ford happens to be drawn on. The bank the
+     * ground beside the water is graded over is grown from these seeds, so a river the seeds left out kept
+     * its drawn edge - and the drawing lays a channel at a hundred and one in country at a hundred and
+     * fifty-four, which without the bank is a gorge wall of fifty blocks with the water at its foot: the
+     * sheer sides the save showed beside the branch, on stretches of river the named course never reached.
      * <p>
      * Built once and read a byte at a time: every river column asks it, so the answer has to cost nothing.
      * <p>
@@ -261,8 +267,7 @@ final class ArdaMasks {
      */
     static void buildDale(int fromX, int fromZ, double alongX, double alongZ, int reachBlocks) {
         byte[] run = new byte[WIDTH * HEIGHT];
-        int name = riverName(fromX, fromZ);
-        if (RIVER_NAMES.length == 0 || name == 0) {
+        if (RIVER_NAMES.length == 0) {
             DALE_RUN = run;
             return;
         }
@@ -272,9 +277,6 @@ final class ArdaMasks {
         int tail = 0;
         for (int row = 0; row < HEIGHT; row++) {
             for (int column = 0; column < WIDTH; column++) {
-                if ((RIVER_NAMES[row * WIDTH + column] & 0xFF) != name) {
-                    continue;
-                }
                 if ((column - fordColumn) * alongX + (row - fordRow) * alongZ < 0.0D) {
                     continue;
                 }
