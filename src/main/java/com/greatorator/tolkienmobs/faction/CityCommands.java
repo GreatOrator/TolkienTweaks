@@ -140,11 +140,13 @@ public final class CityCommands {
      */
     static final int DRAPE_REACH = 32;
     /**
-     * The height at or under which the build's own top is a deck and not a wall. The city's floor is at 74
-     * and its deck tiles lie on 75, so a column that tops out here has nothing built over it: the rock
-     * standing above such a column is the roofline over the city, not a wall at its edge.
+     * How far over the city's own floor a column's top may stand and still be a deck and not a wall: the
+     * floor tile and the course laid on it. Read as a lift over the build's corner rather than as a height in
+     * the world, because a world that raises the valley raises the build with it. A fixed 76 did for a world
+     * whose floor was 74, and in a raised one it made every column of the city a wall: the drape then cut the
+     * ground outside every open face down to the roofline, which is the trench this rule exists to keep shut.
      */
-    static final int DECK_TOP = 76;
+    static final int DECK_LIFT = 2;
     /**
      * How far over the city's floor water at the build's edge may stand and still be its outflow. The city
      * drains at its floor, where the branch takes the water eight blocks over it; water at the edge above that

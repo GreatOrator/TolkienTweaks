@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The drape's deck line is the build's own floor, not a planted height.** A column counted as a deck
+  only where its top stood at or under 76, which is the floor tile's own course in a world whose floor
+  is 74. A world made since Arda was raised to 512 lifts the valley floor to 266, so every column of the
+  city topped out far over 76, nothing read as a deck, and the drape would cut the ground outside every
+  open face down to the roofline - the trench the deck rule exists to keep shut. The line is now the
+  corner the city was planted at plus that course, so a raised valley is dressed as a low one is.
+
 - **A drawn river's water stands at the channel, not at the step above it.** A drawn river took each
   column's own ground as its water's surface, and that ground is the drawing with the range's lift and
   the crag folded into it - which step at the mask bake's own pixel edges. A steeply drawn channel came

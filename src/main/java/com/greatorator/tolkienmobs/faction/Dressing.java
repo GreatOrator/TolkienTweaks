@@ -356,7 +356,9 @@ public final class Dressing {
             int at = gx + gz * wide;
             int wall = outline[at];
             if (wall == Integer.MIN_VALUE) return;
-            boolean banked = wall <= CityCommands.DECK_TOP;
+            // The deck line is the build's own floor, read from the corner the city was planted at: its deck
+            // tiles lie on the two blocks over it, whatever height the world has room for.
+            boolean banked = wall <= origin.getY() + CityCommands.DECK_LIFT;
             // A spring at the wall is not a deck: the column is held for its water, but the ground over that
             // water is still ground the drape is for.
             boolean spring = false;
