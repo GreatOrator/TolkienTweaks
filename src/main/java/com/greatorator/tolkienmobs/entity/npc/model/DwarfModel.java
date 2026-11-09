@@ -16,7 +16,8 @@ public class DwarfModel extends GeoModel<DwarfEntity> {
 
     @Override
     public Identifier getModelResource(GeoRenderState renderState) {
-        return MODEL;
+        Identifier own = DwarfRender.modelFor((TolkienGeoRenderState) renderState);
+        return own != null ? own : MODEL;
     }
 
     @Override

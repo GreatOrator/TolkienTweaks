@@ -179,6 +179,26 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         });
     }
 
+    /**
+     * The file a named body's own art would be in, for a renderer that draws another of the pack's
+     * folk. A dwarf keeps his face in a file of his own, looked for by the same name a named giver is
+     * looked for by, so the lookup lives here rather than being written twice.
+     */
+    @Nullable
+    static Identifier namedSkin(String name) {
+        return namedGiverSkin(name);
+    }
+
+    /** A name as a file name, for a renderer looking for a model or a skin of its own. */
+    static String slugOfName(String name) {
+        return slugOf(name);
+    }
+
+    /** Whether the pack holds a resource, asked once per file per reload. */
+    static boolean resourcePresent(Identifier id) {
+        return skinIsLoaded(id, false);
+    }
+
     public HumanRender(EntityRendererProvider.Context context) {
         super(context, new HumanModel());
         this.shadowRadius = 0.3f;

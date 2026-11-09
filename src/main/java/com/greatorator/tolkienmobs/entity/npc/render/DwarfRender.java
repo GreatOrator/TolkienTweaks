@@ -11,6 +11,8 @@ import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
@@ -57,6 +59,36 @@ public class DwarfRender extends GeoEntityRenderer<DwarfEntity, TolkienGeoRender
                         Identifier.fromNamespaceAndPath(MODID, "textures/entity/dwarf/dwarf7.png"));
             });
 
+    /** Where a named dwarf's own skin and model are looked for, if anybody has drawn them. */
+    private static final Identifier NAMED_SKIN =
+            Identifier.fromNamespaceAndPath(MODID, "textures/entity/middle-earth/");
+    private static final Identifier NAMED_MODEL =
+            Identifier.fromNamespaceAndPath(MODID, "geckolib/models/merchant/");
+
+    /**
+     * The model a named dwarf is drawn with, if the pack has drawn him one of his own, or null for the
+     * folk's own model. A dwarf's cap is his own file rather than a code path, so the name he is wearing
+     * is what the file is looked for by, and a pack without it draws an ordinary dwarf and says nothing
+     * about it - a named file is for the artist, and art arrives by degrees.
+     */
+    @Nullable
+    public static Identifier modelFor(TolkienGeoRenderState renderState) {
+        if (renderState.giverName.isEmpty()) return null;
+        String slug = HumanRender.slugOfName(renderState.giverName);
+        if (slug.isEmpty()) return null;
+        Identifier own = NAMED_MODEL.withSuffix(slug + ".json");
+        return HumanRender.resourcePresent(own) ? own : null;
+    }
+
+    /** The file a named dwarf's skin would be in, or null for a body wearing no name. */
+    @Nullable
+    private static Identifier namedSkin(String name) {
+        if (name.isEmpty()) return null;
+        String slug = HumanRender.slugOfName(name);
+        if (slug.isEmpty()) return null;
+        return NAMED_SKIN.withSuffix(slug + ".png");
+    }
+
     public DwarfRender(EntityRendererProvider.Context context) {
         super(context, new DwarfModel());
         this.shadowRadius = 0.3f;
@@ -69,6 +101,10 @@ public class DwarfRender extends GeoEntityRenderer<DwarfEntity, TolkienGeoRender
 
     /** The variant's texture, for the model and for the base class's texture lookup. */
     public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        // Asked before the variant: a dwarf with art of his own is one person, not one of a folk's coats.
+        // The file is optional, so a dwarf nobody has drawn keeps the clothes of his folk.
+        Identifier own = namedSkin(renderState.giverName);
+        if (own != null && HumanRender.resourcePresent(own)) return own;
         return LOCATION_BY_VARIANT.get(renderState.variant);
     }
 
@@ -80,6 +116,10 @@ public class DwarfRender extends GeoEntityRenderer<DwarfEntity, TolkienGeoRender
     @Override
     public void addRenderData(DwarfEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
         renderState.variant = animatable.getTolkienVariant();
+        // A dwarf is named when he is somebody in particular, which is the only case a file of his own
+        // is worth looking for; a village dwarf keeps his folk's clothes.
+        Component name = animatable.getCustomName();
+        renderState.giverName = name == null ? "" : name.getString();
     }
 
     /** The model's own scaling, which 5 applies here rather than in preRender. */

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Gimli is drawn as a dwarf, on his own face.** He was stood as a scaled man because the pack had no
+  face for him; his own skin under `middle-earth/gimli.png` and his own model file are now what he is
+  drawn with, looked for by the name he wears, so a dwarf with art of his own wears it and every village
+  dwarf keeps the clothes of his folk unchanged.
+
 - **The seam scene is parked, and the Bruinen by the valley is shown to be drawn.** The chapter-one to
   chapter-two cutscene now has its stop recorded in `docs/HANDOFF.md` - Elrond's own departure dialogue
   (`108`-`111`), the pins the survey still owes and the pass road that does not exist yet - so the next

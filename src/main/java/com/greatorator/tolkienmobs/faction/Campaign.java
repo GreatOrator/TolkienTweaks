@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.faction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.greatorator.tolkienmobs.entity.boss.WitchKingEntity;
+import com.greatorator.tolkienmobs.entity.npc.DwarfEntity;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.network.manager.CampaignSyncManager;
@@ -410,7 +411,6 @@ public final class Campaign extends SavedData {
     private static final String GIMLI = "Gimli";
     private static final String GIMLI_TAG = "tolkienmobs:campaign_gimli";
     private static final double GIMLI_REACH = 96.0D;
-    private static final float GIMLI_HEIGHT = 0.62F;
     /** Where he stands, from the middle of the hold's footprint: the spiral room, beside its well. */
     private static final int[] GIMLI_STAND = {38, 61};
     private static final String REFUGE_TITLE = "campaign.tolkienmobs.page.refuge";
@@ -1815,13 +1815,18 @@ public final class Campaign extends SavedData {
         BlockPos post = floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]));
         Entity keeper = keeperWith(level, GIMLI_TAG);
         if (keeper != null) {
-            if (post != null) recallKeeper(level, keeper, post, reach, GIMLI_TAG);
-            return;
+            // Before the dwarf model had his face he was stood as a scaled man. That body is retired
+            // rather than recalled, so a world that already holds him gets the dwarf when next looked at.
+            if (keeper instanceof DwarfEntity) {
+                if (post != null) recallKeeper(level, keeper, post, reach, GIMLI_TAG);
+                return;
+            }
+            keeper.discard();
         }
         BlockPos stand = post != null ? post
                 : floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]), player);
         if (stand == null) return;
-        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        Entity entity = TolkienEntities.ENTITY_TTM_DWARF.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob dwarf)) return;
         dwarf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
                 level.getRandom().nextFloat() * 360.0F, 0.0F);
@@ -1833,10 +1838,6 @@ public final class Campaign extends SavedData {
         dwarf.addTag(GIMLI_TAG);
         dwarf.setCustomName(Component.literal(GIMLI).withStyle(ChatFormatting.GOLD));
         dwarf.setCustomNameVisible(true);
-        // His father's height, for the same reason: the pack's dwarf is a villager of the Iron Hills, and
-        // a named body that is a scaled man keeps the face the old world gave him.
-        AttributeInstance height = dwarf.getAttribute(Attributes.SCALE);
-        if (height != null) height.setBaseValue(GIMLI_HEIGHT);
         level.addFreshEntity(dwarf);
         Keepers.remember(level, GIMLI_TAG, dwarf);
     }
