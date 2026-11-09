@@ -108,15 +108,15 @@ Likewise canon is silent on **Angmar's** palette, the **Wild Wood**'s trees (we 
 is a design choice, not a reading), and **Nurn's** grass. These are inventions that do not contradict anything; leave
 them as decisions rather than defects.
 
-## The decisions worth making now
+## The verdict, 9 November 2026
 
-- **Cheap and visible:** 1 (no trees on the Downs), 2 (gold Lórien), 4 (open Mark), 7 and 8 (right peoples), 11
-  (recolour the neon), 12 (snow, not glacier, on the Misty Mountains).
-- **Cheap and visible, but needs a feature:** 3 (the Gladden's reeds and irises) — worth it because chapter two's camp
-  stands in it.
-- **Expensive, and only worth it against a chapter:** 5 (Mirkwood's three belts), 6 (Eryn Vorn's conifers), 9 (holly
-  in Eregion), 10 (Ithilien's garden).
-
-Every change here is a `BiomeMaker` or modifier edit followed by `./gradlew runData` (the worldgen is read from the
-generated JSON, not the code bootstrap), and chunks already generated keep what they have — so each fix shows only in
-ground made after it.
+- **1, the Barrow-downs' dead trees: kept.** Not canon, but the downs read as an empty field without them. Closed as
+  a choice, not a defect.
+- **2, 4, 7, 8, 11, 12: applied.** Gold Lorinand, no culumalda in the Mark, the right peoples in Emyn Muil, Khand,
+  Cardolan and Minhiriath, the neon greens recoloured, and snow over rock instead of a glacier on the Misty Mountains.
+- **3, the Gladden: applied except the flowers.** Marsh palette, out of the woodland tag, no humans. Reeds and irises
+  wait on the vegetation work: sugar cane is the viable correlate for the reeds, the vanilla waterlily for the pads,
+  and the iris needs its own block.
+- **5, 6, 9, 10: new trees, waiting on their textures.** A dark conifer for Eryn Vorn and Mirkwood's fir south, holly
+  over Eregion, and Ithilien's southern tree. Each needs leaves, a hardened leaves variant, and a texture seen before
+  it is finalised.

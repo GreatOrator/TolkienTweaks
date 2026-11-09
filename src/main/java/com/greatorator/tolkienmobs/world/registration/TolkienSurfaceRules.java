@@ -101,7 +101,7 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.FOROCHEL, TolkienBiomes.FOROCHEL_SLOPES, TolkienBiomes.ERED_MITHRIN), STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORIA), MOUNTAIN_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), COARSE_DIRT),
-                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), STONE))),
                         blueMountainsFloor(),
                         blueMountainsRock(),
                         whiteMountainsRock(),
@@ -388,8 +388,8 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 				SurfaceRules.ifTrue(
 						SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR),
 						SurfaceRules.sequence(
-								SurfaceRules.ifTrue(mountainType, PACKED_ICE),
-								SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.PACKED_ICE, -0.5, 0.2), PACKED_ICE),
+								SurfaceRules.ifTrue(mountainType, STONE),
+								SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.PACKED_ICE, -0.5, 0.2), SNOW_BLOCK),
 								SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.ICE, -0.0625, 0.025), ICE),
 								SurfaceRules.ifTrue(waterBlocks, SNOW_BLOCK)
 						)
@@ -397,8 +397,8 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 				SurfaceRules.ifTrue(
 						SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR),
 						SurfaceRules.sequence(
-								SurfaceRules.ifTrue(mountainType, PACKED_ICE),
-								SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.PACKED_ICE, 0.0, 0.2), PACKED_ICE),
+								SurfaceRules.ifTrue(mountainType, STONE),
+								SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.PACKED_ICE, 0.0, 0.2), STONE),
 								SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.ICE, 0.0, 0.025), ICE),
 								SurfaceRules.ifTrue(waterBlocks, SNOW_BLOCK)
 						)

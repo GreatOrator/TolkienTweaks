@@ -2,13 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Seven countries are put right on canon.** **Lorinand** is gold rather than Mirkwood's near-black - foliage
+  `#9DA24A` over grass `#7E8B3E`, in a pale golden mist - and **the Gladden** is a fen: marsh greens, the fen fog,
+  no human village, and out of `#arda_woodland` so the Vales' broadleaf stops growing over the reeds. **The Mark**
+  takes no culumalda, being open grass. **Emyn Muil** loses the elves and the farm animals, **Cardolan** and
+  **Minhiriath** lose the hobbits - all three now carry one empty-lands list of a wolf, crebain and birds - and
+  **Khand** loses Harad's muster, no mumakil and no Haradrim, for riders and their horses. The five biomes that
+  shared the near-pure `#22F927` green each have their own now (the Shire a rich `#77B255`, Firien, the Iron Hills,
+  the Misty Mountains and the White Mountains greyer and paler), the Blue Mountains lose their teal grass, and the
+  Misty Mountains are snow over bare rock instead of a glacier, ice left only in the highest hollows.
+
 - **The biomes are audited against canon, and none of it is applied.** Every country's biome was read against what the
   books say about its ground, trees and people, and set beside the `arda_*` tags, the tree modifiers and the surface
   floors. Most stand: Enedwaith's fens, the Brown Lands' barren floor, Mordor's ash, Forochel's ice, Nurn's
   field-shores. Twelve do not, and `docs/arda-biome-canon.md` writes each one up with the passage it misses and what
   the fix costs - the loudest being the Barrow-downs growing dead trees where Tolkien says no tree grows at all,
   Lorinand wearing Mirkwood's near-black palette instead of gold, and the Gladden being a tan plain with a wood on it
-  rather than the reed-beds and yellow irises canon gives it. They wait on a decision rather than on work.
+  rather than the reed-beds and yellow irises canon gives it. The verdict came in the same sitting: the applied ones are above, the Downs keep their dead trees by choice, and the new trees wait on their textures.
 - **The wood ruin's door is where its road arrives.** Its seat named the northwest corner of the floor plate as the
   doorway, so the ground it was measured against - and the travel stone stood beside it - was five blocks west of the
   way in the road actually meets: the ruin's own `.end` pin is corner + 5 east on the same north face. The plate is

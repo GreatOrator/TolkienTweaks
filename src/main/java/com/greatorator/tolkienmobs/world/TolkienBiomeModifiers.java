@@ -76,10 +76,11 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(HARDENED_MIRKWOOD_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         // Culumalda and lebethron are the mod's own broadleaf trees, and the settled lands of the
-        // new map - the Mark, Lindon, Gondor and Eriador - are their country as much as the Shire's.
+        // new map - Lindon, Gondor and Eriador - are their country as much as the Shire's. The Mark
+        // is open grass, "like a green sea", and takes neither.
         context.register(ADD_TREE_CULUMALDA, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.SHIRE), biomes.getOrThrow(TolkienBiomes.FIRIEN),
-                        biomes.getOrThrow(TolkienBiomes.ROHAN), biomes.getOrThrow(TolkienBiomes.LINDON),
+                        biomes.getOrThrow(TolkienBiomes.LINDON),
                         biomes.getOrThrow(TolkienBiomes.GONDOR), biomes.getOrThrow(TolkienBiomes.ERIADOR)),
                 HolderSet.direct(placedFeatures.getOrThrow(HARDENED_CULUMALDA_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));

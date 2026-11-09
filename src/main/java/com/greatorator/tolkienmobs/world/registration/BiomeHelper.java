@@ -1440,4 +1440,50 @@ public abstract class BiomeHelper {
 		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_LAPIS_ORE);
 		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_COPPER_ORE);
 	}
+
+	/** The empty lands: no people and no herds, only what lives on a hill nobody farms. */
+	public static MobSpawnSettings.Builder emptyLandsSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addMobCharge(EntityType.WOLF, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_THRUSH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * The Gladden's own people: none. It is a marsh of frogs and birds, and the human list it carried
+	 * was the Vales' settled country, not the reeds.
+	 */
+	public static MobSpawnSettings.Builder marshSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.AMBIENT, 20, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 2, 4))
+				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 3))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_FROG.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_THRUSH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * Khand: Variag riders and their horses. The pack has no Variag, so the plain men are the generic
+	 * human until one is made; what it must not have is Harad's muster - no mumakil, no Haradrim.
+	 */
+	public static MobSpawnSettings.Builder khandSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.CREATURE, 30, npc(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 25, new MobSpawnSettings.SpawnerData(EntityType.HORSE, 2, 4))
+				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_HUMAN.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.HORSE, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
+	}
 }

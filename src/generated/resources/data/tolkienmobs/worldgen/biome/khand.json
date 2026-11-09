@@ -30,19 +30,15 @@
   ],
   "has_precipitation": false,
   "spawn_costs": {
+    "minecraft:horse": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
     "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "tolkienmobs:entityttmharadrim": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "tolkienmobs:entityttmmumakil": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "tolkienmobs:entityttmsouthron": {
+    "tolkienmobs:entityttmhuman": {
       "charge": 0.6,
       "energy_budget": 0.15
     }
@@ -51,7 +47,7 @@
     "ambient": [
       {
         "type": "tolkienmobs:entityttmcrebain",
-        "maxCount": 1,
+        "maxCount": 2,
         "minCount": 1,
         "weight": 15
       }
@@ -59,27 +55,20 @@
     "axolotls": [],
     "creature": [
       {
-        "type": "tolkienmobs:entityttmmumakil",
-        "maxCount": 2,
+        "type": "tolkienmobs:entityttmhuman",
+        "maxCount": 3,
         "minCount": 1,
-        "weight": 25
+        "weight": 30
       },
       {
-        "type": "tolkienmobs:entityttmsouthron",
-        "maxCount": 2,
-        "minCount": 1,
-        "weight": 5
+        "type": "minecraft:horse",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 25
       }
     ],
     "misc": [],
-    "monster": [
-      {
-        "type": "tolkienmobs:entityttmharadrim",
-        "maxCount": 4,
-        "minCount": 1,
-        "weight": 45
-      }
-    ],
+    "monster": [],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []

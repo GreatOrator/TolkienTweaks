@@ -110,8 +110,8 @@ public class BiomeMaker extends BiomeHelper{
                 .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), 0.00625F))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(4159204)
-                        .foliageColorOverride(2292007)
-                        .grassColorOverride(2292007)
+                        .foliageColorOverride(0x51683F)
+                        .grassColorOverride(0x5D7345)
                         .build())
                 .mobSpawnSettings(ironHillsSpawning().build())
                 .generationSettings(ironHillsGen(placedFeatureGetter, carverGetter).build())
@@ -137,7 +137,7 @@ public class BiomeMaker extends BiomeHelper{
                 .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), 0.00625F))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(0x59B6BD)
-                        .grassColorOverride(0x59B6BD)
+                        .grassColorOverride(0x64A183)
                         .build())
                 .mobSpawnSettings(blueMountainsSpawning().build())
                 .generationSettings(blueMountainsGen(placedFeatureGetter, carverGetter).build())
@@ -182,8 +182,8 @@ public class BiomeMaker extends BiomeHelper{
                 .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_WARPED_FOREST_MOOD))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(4159204)
-                        .foliageColorOverride(2292007)
-                        .grassColorOverride(2292007)
+                        .foliageColorOverride(0x5C7150)
+                        .grassColorOverride(0x66794F)
                         .build())
                 .mobSpawnSettings(hithaeglirSpawning().build())
                 .generationSettings(hithaeglirGen(placedFeatureGetter, carverGetter).build())
@@ -192,21 +192,21 @@ public class BiomeMaker extends BiomeHelper{
 
     public static Biome makeBiomeGladden(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         gladdenGen(placedFeatureGetter, carverGetter);
-        gladdenSpawning();
+        marshSpawning();
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(true)
                 .temperature(0.8F)
                 .downfall(0.7F)
                 .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.8F)))
-                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(12638463))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0x8FA88C))
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(10518688))
                 .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(TolkienSounds.MEDIEVAL_CITY))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(329011)
-                        .foliageColorOverride(14596231)
-                        .grassColorOverride(14596231)
+                        .foliageColorOverride(0x5E8245)
+                        .grassColorOverride(0x6B8F4E)
                         .build())
-                .mobSpawnSettings(gladdenSpawning().build())
+                .mobSpawnSettings(marshSpawning().build())
                 .generationSettings(gladdenGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
@@ -265,8 +265,8 @@ public class BiomeMaker extends BiomeHelper{
                 .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.LEBETHRON_LEAVES.get(), 0.00625F))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(4159204)
-                        .foliageColorOverride(2292007)
-                        .grassColorOverride(2292007)
+                        .foliageColorOverride(0x6F8C42)
+                        .grassColorOverride(0x7E9B4A)
                         .build())
                 .mobSpawnSettings(firienSpawning().build())
                 .generationSettings(firienGen(placedFeatureGetter, carverGetter).build())
@@ -287,8 +287,8 @@ public class BiomeMaker extends BiomeHelper{
                 .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.00625F))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(4159204)
-                        .foliageColorOverride(2292007)
-                        .grassColorOverride(2292007)
+                        .foliageColorOverride(0x5E9B3F)
+                        .grassColorOverride(0x77B255)
                         .build())
                 .mobSpawnSettings(shireSpawning().build())
                 .generationSettings(shireGen(placedFeatureGetter, carverGetter).build())
@@ -475,7 +475,7 @@ public class BiomeMaker extends BiomeHelper{
                         .foliageColorOverride(6581840)
                         .grassColorOverride(8106000)
                         .build())
-                .mobSpawnSettings(eriadorSpawning().build())
+                .mobSpawnSettings(emptyLandsSpawning().build())
                 .generationSettings(eriadorGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
@@ -494,7 +494,7 @@ public class BiomeMaker extends BiomeHelper{
                         .foliageColorOverride(7241824)
                         .grassColorOverride(8558954)
                         .build())
-                .mobSpawnSettings(eriadorSpawning().build())
+                .mobSpawnSettings(emptyLandsSpawning().build())
                 .generationSettings(eriadorGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
@@ -589,7 +589,7 @@ public class BiomeMaker extends BiomeHelper{
                         .foliageColorOverride(6974058)
                         .grassColorOverride(8421504)
                         .build())
-                .mobSpawnSettings(firienSpawning().build())
+                .mobSpawnSettings(emptyLandsSpawning().build())
                 .generationSettings(firienGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
@@ -665,7 +665,7 @@ public class BiomeMaker extends BiomeHelper{
                         .foliageColorOverride(10658968)
                         .grassColorOverride(11448723)
                         .build())
-                .mobSpawnSettings(haradwaithSpawning().build())
+                .mobSpawnSettings(khandSpawning().build())
                 .generationSettings(haradwaithGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
@@ -724,16 +724,16 @@ public class BiomeMaker extends BiomeHelper{
                 .temperature(0.7F)
                 .downfall(0.8F)
                 .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.7F)))
-                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(5988193))
-                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(5541815))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0xD8CDA6))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x7C8A5E))
                 .setAttribute(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(Musics.createGameMusic(TolkienSounds.MUSIC_DISC_LIGHTOFLOTHLORIEN)))
                 // 26.1 takes a list here; the old single-valued builder kept only the mallorn leaves,
                 // so the second particle is the one that used to survive.
                 .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.MALLORN_LEAVES.get(), 0.00625F))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(54011)
-                        .foliageColorOverride(738353)
-                        .grassColorOverride(738353)
+                        .foliageColorOverride(0x9DA24A)
+                        .grassColorOverride(0x7E8B3E)
                         .build())
                 .mobSpawnSettings(lorinadSpawning().build())
                 .generationSettings(lorinadGen(placedFeatureGetter, carverGetter).build())
@@ -997,8 +997,8 @@ public class BiomeMaker extends BiomeHelper{
                 .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_WARPED_FOREST_MOOD))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(4159204)
-                        .foliageColorOverride(2292007)
-                        .grassColorOverride(2292007)
+                        .foliageColorOverride(0x718568)
+                        .grassColorOverride(0x7E9174)
                         .build())
                 .mobSpawnSettings(whiteMountainsSpawning().build())
                 .generationSettings(whiteMountainsGen(placedFeatureGetter, carverGetter).build())
