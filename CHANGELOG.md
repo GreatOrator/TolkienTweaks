@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The valley's ground holds the water it stands beside.** The valley answers before the bank does, so
+  the floor beside a drawn river stayed at the floor while the river kept its own surface: on the vale's
+  outer edge the water stood twenty-three blocks over the ground with a face at its edge, which is the
+  wall of water. The bank now reaches the valley's ground the way it reaches the country's.
+
 - **The massif gives way to the branch only along the branch.** The ground round the valley is brought
   down to the river it opens to, and a column beyond either end of the course was measured across the
   course's extension: at the back of the city, level with the branch and six hundred blocks from any

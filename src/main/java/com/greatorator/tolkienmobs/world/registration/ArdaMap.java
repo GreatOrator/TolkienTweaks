@@ -767,6 +767,15 @@ public final class ArdaMap {
         if (PLANTED) {
             Sample valley = valley(blockX, blockZ, ground);
             if (valley != null) {
+                // The valley answers before the bank does, and the valley's own floor is far under the
+                // drawn river that crosses its edge: the water kept its own surface while the ground
+                // beside it stayed at the floor, and the vale had a wall of water twenty blocks tall
+                // along it. The bank reaches the valley's ground the same way it reaches the country's.
+                int need = bank(blockX, blockZ, valley.height());
+                if (need > valley.height()) {
+                    return new Sample(valley.country(), Math.min(VALLEY_CROWN, need), false,
+                            valley.shore(), valley.upland(), valley.water());
+                }
                 return valley;
             }
         }
