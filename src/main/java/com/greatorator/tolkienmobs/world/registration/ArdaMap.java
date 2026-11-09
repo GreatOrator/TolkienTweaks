@@ -340,10 +340,30 @@ public final class ArdaMap {
     private static final int DALE_DEPTH = 2;
     private static final int DALE_REACH = 2000;
     /**
-     * How far out from the dale's river the ground comes down to its water, in blocks: a bank at one block
-     * of run to one of rise, long enough to carry the eighty the vale takes out of the country beside it.
+     * How far out from the dale's river the ground comes down to its water, in blocks: a bank that climbs
+     * {@link #DALE_RISE} for every block of run, far enough out to reach the tallest ground beside the water.
+     * <p>
+     * One for one was the first answer and it was too shallow to be a mountain. The country beside the vale
+     * stands eighty blocks over its water, so the cut ran eighty blocks out; the massif's flank had two
+     * hundred and forty to lose and never reached the bank's own line before the reach ended, which is the
+     * face the save showed standing back from the river. Three climbs the crown within eighty, and eighty is
+     * inside this reach: the bank can climb to any ground it cuts, so no column of its field ends in a step.
      */
     private static final int DALE_BANK = 96;
+    /**
+     * How many blocks the bank rises for each block of run out from the water.
+     */
+    private static final int DALE_RISE = 3;
+    /**
+     * How much roll the bank's own surface has, in blocks, and how far apart its rises and hollows stand.
+     * <p>
+     * A bank cut to one curve is a cone: every contour on it is parallel to the river, and it reads as a cut
+     * however shallowly it is graded. A few blocks of roll, read against the cut rather than the ground,
+     * breaks those contours into spurs and gullies where the cut is deep and dies out where it is shallow,
+     * so the foot of the slope - and the water's own edge - stays the foot of the slope.
+     */
+    private static final int DALE_ROLL = 4;
+    private static final int DALE_ROLL_SCALE = 48;
     /**
      * The way the Bruinen leaves the vale, as a unit vector: south-west, down to the Gwathló, which is how
      * the maps draw it.
@@ -845,7 +865,7 @@ public final class ArdaMap {
         }
         // The dale's ground comes down to the river it holds, so the river is not left in a slot where the
         // water has been taken out from under the drawing.
-        int dale = daleBank(blockX, blockZ);
+        int dale = daleBank(blockX, blockZ, height);
         if (dale != Integer.MIN_VALUE) {
             height = Math.min(height, dale);
         }
@@ -994,11 +1014,11 @@ public final class ArdaMap {
      * river that should have been one slope. Grown cell by cell from the water, a column's answer depends
      * only on how far it really is from the river.
      * <p>
-     * The water stands one block out of the ground at the bank's foot and one more for every block of run,
-     * so the valley is a bowl with the river in the bottom of it rather than a slot with a lid. The rise is
-     * per cell rather than per ring: a ring is {@code blocks} of run, and a bank grown a block a ring put
-     * the ground twelve blocks over the water across ninety-six of tread and then ended - a shelf, with the
-     * edge of the mask standing over it as the wall the save showed back from the river.
+     * The water stands one block out of the ground at the bank's foot and {@link #DALE_RISE} more for every
+     * block of run, so the valley is a bowl with the river in the bottom of it rather than a slot with a lid.
+     * The rise is per cell rather than per ring: a ring is {@code blocks} of run, and a bank grown a block a
+     * ring put the ground twelve blocks over the water across ninety-six of tread and then ended - a shelf,
+     * with the edge of the mask standing over it as the wall the save showed back from the river.
      */
     private static void buildDaleBanks() {
         int width = ArdaMasks.maskWidth();
@@ -1034,7 +1054,7 @@ public final class ArdaMap {
             int end = tail;
             for (int at = 0; at < end; at++) {
                 int cell = queue[at];
-                int bank = banks[cell] + blocks;
+                int bank = banks[cell] + blocks * DALE_RISE;
                 int row = cell / width;
                 int column = cell - row * width;
                 for (int dir = 0; dir < 4; dir++) {
@@ -1062,10 +1082,12 @@ public final class ArdaMap {
      * How high the ground beside the dale's water may stand, or {@link Integer#MIN_VALUE} where the dale
      * does not reach.
      * <p>
-     * Read between cells: the bank is one block of rise per block of run on eight-block cells, so a cell's
-     * own height held for eight blocks of tread would make the slope a staircase of shelves instead.
+     * Read between cells: the bank rises {@link #DALE_RISE} blocks per block of run on eight-block cells,
+     * so a cell's own height held for eight blocks of tread would make the slope a staircase of shelves
+     * instead. The roll is added after the read, and only by as much as the bank takes off this column: a
+     * column the bank does not touch is not lifted, and a shore the bank shaves by a block keeps its edge.
      */
-    private static int daleBank(int blockX, int blockZ) {
+    private static int daleBank(int blockX, int blockZ, int standing) {
         char[] banks = daleBanks;
         if (banks == null) {
             synchronized (BRUINEN_LOCK) {
@@ -1118,7 +1140,16 @@ public final class ArdaMap {
             total += weight;
             sum += weight * corner;
         }
-        return total <= 0.0D ? Integer.MIN_VALUE : (int) Math.round(sum / total);
+        if (total <= 0.0D) {
+            return Integer.MIN_VALUE;
+        }
+        int bank = (int) Math.round(sum / total);
+        if (standing <= bank) {
+            return bank;
+        }
+        double roll = (fractal(blockX, blockZ, DALE_ROLL_SCALE, 71) - 0.5D) * 2.0D * DALE_ROLL
+                * Math.min(1.0D, (standing - bank) / (double) DALE_ROLL);
+        return bank + (int) Math.round(roll);
     }
 
     /**

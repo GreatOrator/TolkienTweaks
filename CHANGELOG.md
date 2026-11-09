@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The bank beside the dale's river climbs three blocks per block of run, not one.** One for one was
+  too shallow to be a mountain: the massif's flank stands two hundred and forty blocks over the vale's water
+  and the cut never reached it inside the bank's reach, so the last of its ground stood as a face while the
+  shallower country beside it was cut all the way. Three climbs the crown within eighty blocks, inside the
+  reach, so the bank can climb to any ground it cuts and no column of its field ends in a step.
+
+- **The bank's own surface carries a few blocks of roll.** A cut to one curve is a cone: every contour on it
+  is parallel to the river and it reads as a cut however shallowing it is graded. Four blocks of the map's
+  own noise, read against how much the bank takes off the column, gives the slope spurs and gullies where it
+  is deep and dies out where it is shallow, so the water's edge stays the water's edge.
+
 - **The bank beside the dale's river rises a block per block of run, not per ring of the mask.** Its cells
   are eight blocks across and the growth added one block of height per ring, so the ground for ninety-six
   blocks out from the water was held at twelve blocks over it and the edge of that shelf stood thirty or
