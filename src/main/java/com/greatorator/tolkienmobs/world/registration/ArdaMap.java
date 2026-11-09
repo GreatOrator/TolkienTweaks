@@ -879,6 +879,19 @@ public final class ArdaMap {
                     return new Sample(valley.country(), Math.min(VALLEY_CROWN, need), false,
                             valley.shore(), valley.upland(), valley.water());
                 }
+                // The massif's outward fall is the dale's ground as much as the drawn country's: the Bruinen
+                // crosses that band on its way past the vale, and it was the one stretch the bank never
+                // reached - the crown standing at its own height over water a hundred and eighty blocks
+                // under it, down the whole western side of the range and its north face, with the drawing's
+                // channel cut through the middle of it. The cut is kept off the floor, the shoulder and the
+                // crown, past the rim, because that ground is the city's own and the build stands on it.
+                if (beyond(blockX, blockZ) > VALLEY_RIM) {
+                    int dale = daleBank(blockX, blockZ, valley.height());
+                    if (dale != Integer.MIN_VALUE && dale < valley.height()) {
+                        return new Sample(valley.country(), dale, false, valley.shore(),
+                                valley.upland(), valley.water());
+                    }
+                }
                 return valley;
             }
         }

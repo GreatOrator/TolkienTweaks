@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The dale's bank grades the massif's outward fall, not only the drawn country.** The Bruinen crosses
+  that band on its way past the vale, and the bank skipped it: the valley answers before the bank does, so
+  the rock kept the crown's own height over water a hundred and eighty blocks under it - a sheer face down
+  the range's whole western side and its north face, with the drawn channel cut through it. Ground past the
+  rim is graded to the water now; the floor, the shoulder and the crown are still the city's own.
+
 - **The bank climbs two blocks for every block of run out from the river, not one.** At one the cut from the
   river up to the drawn country was as wide as it was deep - seventy-five blocks of tread either side - so
   the vale read as the floor of a bowl with a rim where the drawing started again. Two brings the drawn
