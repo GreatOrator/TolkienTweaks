@@ -236,8 +236,11 @@ final class ArdaMasks {
         return RIVERS.length != 0 && (RIVERS[row * WIDTH + column] & 0xFF) >= WATER * 255.0D;
     }
 
-    /** 1 where a column is the Bruinen's own course past the vale, or the bank the ground is graded over. */
-    private static volatile byte[] DALE = new byte[0];
+    /**
+     * How far each cell of drawn water runs from the Bruinen's own course past the vale: 0 for water the
+     * dale does not reach, and the run in cells plus one otherwise.
+     */
+    private static volatile byte[] DALE_RUN = new byte[0];
 
     /**
      * Builds the dale: the Bruinen's own drawn course downstream of the vale, grown out by the bank the
@@ -250,19 +253,23 @@ final class ArdaMasks {
      * the Bruinen's - and only the half of that course which leaves the vale is kept, because the water
      * coming down into the vale from the mountains has a descent of its own to run.
      * <p>
-     * Built once and read a byte at a time: the water asks it for every river column and the ground for every
-     * column, so either answer has to cost nothing.
+     * Built once and read a byte at a time: every river column asks it, so the answer has to cost nothing.
+     * <p>
+     * The course itself is the run of nought: the water the dale holds at the vale's level. Everything
+     * else in the run is a crossing or the water coming down into the vale from the mountains, and the run
+     * is what the fall of their water is measured along.
      */
-    static void buildDale(int fromX, int fromZ, double alongX, double alongZ, int bankBlocks) {
-        byte[] dale = new byte[WIDTH * HEIGHT];
-        DALE = dale;
+    static void buildDale(int fromX, int fromZ, double alongX, double alongZ, int reachBlocks) {
+        byte[] run = new byte[WIDTH * HEIGHT];
         int name = riverName(fromX, fromZ);
         if (RIVER_NAMES.length == 0 || name == 0) {
+            DALE_RUN = run;
             return;
         }
         int fordColumn = Math.floorDiv(fromX - WEST, BLOCKS);
         int fordRow = Math.floorDiv(fromZ - NORTH, BLOCKS);
-        int grow = Math.max(1, bankBlocks / BLOCKS);
+        int[] queue = new int[1 << 14];
+        int tail = 0;
         for (int row = 0; row < HEIGHT; row++) {
             for (int column = 0; column < WIDTH; column++) {
                 if ((RIVER_NAMES[row * WIDTH + column] & 0xFF) != name) {
@@ -271,29 +278,80 @@ final class ArdaMasks {
                 if ((column - fordColumn) * alongX + (row - fordRow) * alongZ < 0.0D) {
                     continue;
                 }
-                for (int near = row - grow; near <= row + grow; near++) {
-                    if (near < 0 || near >= HEIGHT) {
+                if (!waterCell(column, row)) {
+                    continue;
+                }
+                run[row * WIDTH + column] = 1;
+                if (tail == queue.length) {
+                    queue = java.util.Arrays.copyOf(queue, tail * 2);
+                }
+                queue[tail++] = row * WIDTH + column;
+            }
+        }
+        int limit = Math.max(1, Math.min(254, reachBlocks / BLOCKS));
+        for (int step = 1; step < limit; step++) {
+            int end = tail;
+            for (int at = 0; at < end; at++) {
+                int cell = queue[at];
+                int next = (run[cell] & 0xFF) + 1;
+                int row = cell / WIDTH;
+                int column = cell - row * WIDTH;
+                for (int dir = 0; dir < 4; dir++) {
+                    int nearRow = row + (dir == 0 ? 1 : dir == 1 ? -1 : 0);
+                    int nearColumn = column + (dir == 2 ? 1 : dir == 3 ? -1 : 0);
+                    if (nearRow < 0 || nearRow >= HEIGHT || nearColumn < 0 || nearColumn >= WIDTH) {
                         continue;
                     }
-                    java.util.Arrays.fill(dale, near * WIDTH + Math.max(0, column - grow),
-                            near * WIDTH + Math.min(WIDTH - 1, column + grow) + 1, (byte) 1);
+                    int nearCell = nearRow * WIDTH + nearColumn;
+                    if (run[nearCell] != 0 || !waterCell(nearColumn, nearRow)) {
+                        continue;
+                    }
+                    run[nearCell] = (byte) next;
+                    if (tail == queue.length) {
+                        queue = java.util.Arrays.copyOf(queue, tail * 2);
+                    }
+                    queue[tail++] = nearCell;
                 }
             }
         }
+        DALE_RUN = run;
     }
 
-    /** Whether a column is in the dale: the Bruinen's own course past the vale, or its bank. */
-    static boolean dale(int blockX, int blockZ) {
-        byte[] dale = DALE;
-        if (dale.length == 0) {
-            return false;
+    /**
+     * How far a column of drawn water runs from the Bruinen's own course, in blocks, or -1 where the dale
+     * does not reach it.
+     */
+    static int daleRun(int blockX, int blockZ) {
+        byte[] run = DALE_RUN;
+        if (run.length == 0) {
+            return -1;
         }
         int column = Math.floorDiv(blockX - WEST, BLOCKS);
         int row = Math.floorDiv(blockZ - NORTH, BLOCKS);
         if (column < 0 || column >= WIDTH || row < 0 || row >= HEIGHT) {
-            return false;
+            return -1;
         }
-        return dale[row * WIDTH + column] != 0;
+        int value = run[row * WIDTH + column] & 0xFF;
+        if (value == 0) {
+            // The channel is narrowed from the drawn one and the cells are the drawing's own, so water can
+            // stand in a cell the run never reached. The nearest step out is the run it has.
+            value = Integer.MAX_VALUE;
+            for (int dir = 0; dir < 4; dir++) {
+                int nearRow = row + (dir == 0 ? 1 : dir == 1 ? -1 : 0);
+                int nearColumn = column + (dir == 2 ? 1 : dir == 3 ? -1 : 0);
+                if (nearRow < 0 || nearRow >= HEIGHT || nearColumn < 0 || nearColumn >= WIDTH) {
+                    continue;
+                }
+                int near = run[nearRow * WIDTH + nearColumn] & 0xFF;
+                if (near != 0) {
+                    value = Math.min(value, near);
+                }
+            }
+            if (value == Integer.MAX_VALUE) {
+                return -1;
+            }
+        }
+        return (value - 1) * BLOCKS;
     }
 
     /**

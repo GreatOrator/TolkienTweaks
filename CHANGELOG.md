@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The crossings fall to the river along their own run instead of at one wall.** A branch that joins the
+  Bruinen was held flat at the vale's 76 from wherever it entered the dale, so everything it had to lose it
+  lost in one step at the dale's edge - the sheer face a crossing showed where it met the river. The dale
+  holds a run now rather than a place: how far each column of drawn water is from the Bruinen's own course,
+  measured along the water, and every branch stands one block of fall per eight of run above the vale's
+  water, so it comes down to 76 at the junction and climbs away from it. The river itself is the run of
+  nought and stays at 76 as before.
+
 - **The canyon is graded from the water itself, not from a walk of eight rays.** The ground beside the
   dale's water was capped by walking eight rays out to the nearest river and taking that ray's own length,
   which answers the distance along the ray rather than the distance to the water: between two rays the
