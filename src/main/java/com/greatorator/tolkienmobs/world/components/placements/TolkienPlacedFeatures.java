@@ -30,6 +30,10 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 import static com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures.*;
 
 public class TolkienPlacedFeatures {
+    public static final ResourceKey<PlacedFeature> REEDS_PLACED_KEY = registerKey("reeds_placed");
+    public static final ResourceKey<PlacedFeature> PINE_PLACED_KEY = registerKey("pine_placed");
+    public static final ResourceKey<PlacedFeature> HOLLY_PLACED_KEY = registerKey("holly_placed");
+    public static final ResourceKey<PlacedFeature> CYPRESS_PLACED_KEY = registerKey("cypress_placed");
     public static final ResourceKey<PlacedFeature> MALLORN_PLACED_KEY = registerKey("mallorn_placed");
     public static final ResourceKey<PlacedFeature> MIRKWOOD_PLACED_KEY = registerKey("mirkwood_placed");
     public static final ResourceKey<PlacedFeature> HARDENED_MIRKWOOD_PLACED_KEY = registerKey("hardened_mirkwood_placed");
@@ -48,6 +52,7 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> HARDENED_DWARVEN_PLACED_KEY = registerKey("hardened_dwarven_placed");
     public static final ResourceKey<PlacedFeature> OLDFORESTOAK_PLACED_KEY = registerKey("oldforestoak_placed");
 
+    public static final ResourceKey<PlacedFeature> FLOWER_IRIS_PLACED_KEY = registerKey("flower_iris_placed");
     public static final ResourceKey<PlacedFeature> FLOWER_SIMBELMYNE_PLACED_KEY = registerKey("flower_simbelmyne_placed");
     public static final ResourceKey<PlacedFeature> FLOWER_MIRKWOOD_PLACED_KEY = registerKey("flower_mirkwood_placed");
     public static final ResourceKey<PlacedFeature> FLOWER_ALFIRIN_PLACED_KEY = registerKey("flower_alfirin_placed");
@@ -164,6 +169,19 @@ public class TolkienPlacedFeatures {
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> features = context.lookup(Registries.CONFIGURED_FEATURE);
 
+        // Reeds stand in beds along the water, so they are placed in clumps the way the flowers are.
+        context.register(REEDS_PLACED_KEY, new PlacedFeature(features.getOrThrow(REEDS_KEY), List.of(
+                RarityFilter.onAverageOnceEvery(2),
+                InSquarePlacement.spread(),
+                PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                CountPlacement.of(40),
+                BiomeFilter.biome())));
+        context.register(PINE_PLACED_KEY, new PlacedFeature(features.getOrThrow(PINE_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(2, 0.1f, 1), Blocks.SPRUCE_SAPLING)));
+        context.register(HOLLY_PLACED_KEY, new PlacedFeature(features.getOrThrow(HOLLY_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(2, 0.1f, 1), Blocks.OAK_SAPLING)));
+        context.register(CYPRESS_PLACED_KEY, new PlacedFeature(features.getOrThrow(CYPRESS_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(2, 0.1f, 1), Blocks.OAK_SAPLING)));
         context.register(MALLORN_PLACED_KEY, new PlacedFeature(features.getOrThrow(MALLORN_KEY),
                 VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
                         TolkienBlocks.SAPLING_MALLORN.get())));
@@ -249,6 +267,7 @@ public class TolkienPlacedFeatures {
         context.register(MOUNTAIN_STONE_PLACED_KEY, new PlacedFeature(features.getOrThrow(MOUNTAIN_STONE_BLOB),
                 TolkienOrePlacement.commonOrePlacement(16, HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(128)))));
 
+        context.register(FLOWER_IRIS_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_IRIS_KEY), 128));
         context.register(FLOWER_SIMBELMYNE_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_SIMBELMYNE_KEY), 64));
         context.register(FLOWER_MIRKWOOD_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_MIRKWOOD_KEY), 96));
         context.register(FLOWER_ALFIRIN_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_ALFIRIN_KEY), 80));

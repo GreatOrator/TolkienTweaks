@@ -85,6 +85,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("item.tolkienmobs.tobacco_pipe.bowl_empty", "Bowl: empty");
             this.add("item.tolkienmobs.tobacco_pipe.pack", "You pack the bowl with %s.");
             this.add("item.tolkienmobs.tobacco_pipe.tip", "You tip the %s back into your pack.");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_IRIS.get(), "Gladden Iris", TolkienBlocks.POTTED_FLOWER_IRIS.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "Simbelmyne", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "Seregon", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "Alfirin", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());
@@ -765,6 +766,13 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("biome.tolkienmobs.blue_mountains", "Blue Mountains");
             this.add("block.tolkienmobs.hardened_leaves_mallorn", "Mallorn Leaves");
             this.add("block.tolkienmobs.hardened_leaves_mirkwood", "Mirkwood Leaves");
+            this.add("block.tolkienmobs.leaves_pine", "Pine Needles");
+            this.add("block.tolkienmobs.hardened_leaves_pine", "Pine Needles");
+            this.add("block.tolkienmobs.leaves_holly", "Holly Leaves");
+            this.add("block.tolkienmobs.hardened_leaves_holly", "Holly Leaves");
+            this.add("block.tolkienmobs.leaves_cypress", "Cypress Leaves");
+            this.add("block.tolkienmobs.hardened_leaves_cypress", "Cypress Leaves");
+            this.add("block.tolkienmobs.reed", "Reeds");
             this.add("block.tolkienmobs.hardened_leaves_culumalda", "Culumalda Leaves");
             this.add("block.tolkienmobs.hardened_leaves_lebethron", "Lebethron Leaves");
             this.add("block.tolkienmobs.hardened_leaves_fangornoak", "Fangorn Oak Leaves");

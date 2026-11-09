@@ -780,6 +780,12 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.SAPLING_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.LEAVES_MALLORN);
                         output.accept(TolkienBlocks.HARDENED_LEAVES_MALLORN);
+                        output.accept(TolkienBlocks.LEAVES_PINE);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_PINE);
+                        output.accept(TolkienBlocks.LEAVES_HOLLY);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_HOLLY);
+                        output.accept(TolkienBlocks.LEAVES_CYPRESS);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_CYPRESS);
                         output.accept(TolkienBlocks.LEAVES_MIRKWOOD);
                         output.accept(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD);
                         output.accept(TolkienBlocks.LEAVES_CULUMALDA);
@@ -799,6 +805,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.BLOCK_DECAY_BLOOM);
                         output.accept(TolkienBlocks.FLOWER_SIMBELMYNE);
                         output.accept(TolkienBlocks.FLOWER_MIRKWOOD);
+                        output.accept(TolkienBlocks.FLOWER_IRIS);
                         output.accept(TolkienBlocks.FLOWER_ALFIRIN);
                         output.accept(TolkienBlocks.FLOWER_ATHELAS);
                         output.accept(TolkienBlocks.FLOWER_NIPHREDIL);

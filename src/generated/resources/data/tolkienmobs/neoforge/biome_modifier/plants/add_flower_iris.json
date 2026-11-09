@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "tolkienmobs:gladden",
+  "features": "tolkienmobs:flower_iris_placed",
+  "step": "vegetal_decoration"
+}

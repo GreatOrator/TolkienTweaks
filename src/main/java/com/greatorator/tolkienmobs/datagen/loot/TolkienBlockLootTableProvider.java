@@ -157,6 +157,12 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_MIRKWOOD_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_MIRKWOOD_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_MIRKWOOD.get());
+        add(TolkienBlocks.LEAVES_PINE.get(), silkAndStick(TolkienBlocks.LEAVES_PINE.get(), Blocks.OAK_SAPLING, DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_PINE.get(), silkAndStick(TolkienBlocks.LEAVES_PINE.get(), Blocks.OAK_SAPLING, DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.LEAVES_HOLLY.get(), silkAndStick(TolkienBlocks.LEAVES_HOLLY.get(), Blocks.OAK_SAPLING, DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_HOLLY.get(), silkAndStick(TolkienBlocks.LEAVES_HOLLY.get(), Blocks.OAK_SAPLING, DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.LEAVES_CYPRESS.get(), silkAndStick(TolkienBlocks.LEAVES_CYPRESS.get(), Blocks.OAK_SAPLING, DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_CYPRESS.get(), silkAndStick(TolkienBlocks.LEAVES_CYPRESS.get(), Blocks.OAK_SAPLING, DEFAULT_SAPLING_DROP_RATES));
         add(TolkienBlocks.LEAVES_MIRKWOOD.get(), silkAndStick(TolkienBlocks.LEAVES_MIRKWOOD.get(), TolkienBlocks.SAPLING_MIRKWOOD.get(), DEFAULT_SAPLING_DROP_RATES));
         add(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get(), silkAndStick(TolkienBlocks.LEAVES_MIRKWOOD.get(), TolkienBlocks.SAPLING_MIRKWOOD.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_MIRKWOOD.get());
@@ -671,6 +677,8 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.WALL_SMOOTH_IRON_STONE.get());
 
         //Flowers & Plants
+        dropSelf(TolkienBlocks.REED.get());
+        dropSelf(TolkienBlocks.FLOWER_IRIS.get());
         dropSelf(TolkienBlocks.FLOWER_SIMBELMYNE.get());
         dropSelf(TolkienBlocks.FLOWER_MIRKWOOD.get());
         dropSelf(TolkienBlocks.FLOWER_ALFIRIN.get());
@@ -682,6 +690,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.FLOWER_AEGLOS.get());
         dropSelf(TolkienBlocks.FLOWER_LISSUIN.get());
         dropSelf(TolkienBlocks.FLOWER_MALLOS.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_IRIS.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());

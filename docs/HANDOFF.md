@@ -491,3 +491,14 @@ beat, a site pinned in `Sites`/`Pins`, a place canon'd to its country, and the r
 and then the cutscene that carries the player from chapter one's last page into chapter two's first. The pages are
 already written (`docs/chapter-two-state.md`, pages 26-36) and never walked; the seam scene is that file's open
 decision 3, and is the one piece of chapter two with nothing built at all.
+
+- **Reeds and irises stand in the Gladden, and three lands have their trees.** `tolkienmobs:reed` is `SugarCaneBlock`'s
+  plant under the mod's own model (`models/block/reed.json`, `textures/block/reed.png`, both brought in from the
+  owner's `reed-1.19` pack), placed three high along water through `plants/add_reeds`; `tolkienmobs:flower_iris` is a
+  flower like the others, through `plants/add_flower_iris`. The three new woods are `pine` (Eryn Vorn, Mirkwood
+  Spooky), `holly` (Eregion) and `cypress` (Ithilien), each with `leaves_*` and `hardened_leaves_*`. Their leaf
+  textures are first drafts: `textures/block/leaves_pine.png`, `leaves_holly.png`, `leaves_cypress.png`. If a texture
+  is replaced, only the PNG changes - the blocks and the features do not care.
+- **The reed's trunk is sugar cane's logic, not ours.** `TolkienReedBlock extends SugarCaneBlock`, so it keeps sugar
+  cane's support test and growth; only the shape and the texture are the mod's. Anything that looks wrong about reeds
+  standing where they should not is vanilla's own rule, not a new one.

@@ -207,6 +207,7 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.FLOWER_MALLOS.get())
                 .add(TolkienBlocks.FLOWER_MIRKWOOD.get())
                 .add(TolkienBlocks.FLOWER_NIPHREDIL.get())
+                .add(TolkienBlocks.FLOWER_IRIS.get())
                 .add(TolkienBlocks.FLOWER_SIMBELMYNE.get())
                 .add(TolkienBlocks.FLOWER_SWAMPMILKWEED.get());
         tag(BlockTags.FLOWER_POTS)
@@ -220,6 +221,7 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.POTTED_FLOWER_MALLOS.get())
                 .add(TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get())
                 .add(TolkienBlocks.POTTED_FLOWER_NIPHREDIL.get())
+                .add(TolkienBlocks.POTTED_FLOWER_IRIS.get())
                 .add(TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get())
                 .add(TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED.get())
                 .add(TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY.get())
@@ -429,6 +431,9 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.WALL_CRACKED_MOUNTAIN_STONE_BRICKS.get());
         tag(BlockTags.LEAVES)
                 .add(TolkienBlocks.LEAVES_MALLORN.get())
+                .add(TolkienBlocks.LEAVES_PINE.get())
+                .add(TolkienBlocks.LEAVES_HOLLY.get())
+                .add(TolkienBlocks.LEAVES_CYPRESS.get())
                 .add(TolkienBlocks.LEAVES_MIRKWOOD.get())
                 .add(TolkienBlocks.LEAVES_CULUMALDA.get())
                 .add(TolkienBlocks.LEAVES_LEBETHRON.get())

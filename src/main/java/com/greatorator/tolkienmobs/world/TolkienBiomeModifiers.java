@@ -23,6 +23,9 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 import static com.greatorator.tolkienmobs.world.components.placements.TolkienPlacedFeatures.*;
 
 public class TolkienBiomeModifiers {
+    public static final ResourceKey<BiomeModifier> ADD_TREE_PINE = registerBiomeKey("tree/add_tree_pine");
+    public static final ResourceKey<BiomeModifier> ADD_TREE_HOLLY = registerBiomeKey("tree/add_tree_holly");
+    public static final ResourceKey<BiomeModifier> ADD_TREE_CYPRESS = registerBiomeKey("tree/add_tree_cypress");
     public static final ResourceKey<BiomeModifier> ADD_TREE_MALLORN = registerBiomeKey("tree/add_tree_mallorn");
     public static final ResourceKey<BiomeModifier> ADD_TREE_MIRKWOOD = registerBiomeKey("tree/add_tree_mirkwood");
     public static final ResourceKey<BiomeModifier> ADD_TREE_CULUMALDA = registerBiomeKey("tree/add_tree_culumalda");
@@ -32,6 +35,8 @@ public class TolkienBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_TREE_DWARVEN = registerBiomeKey("tree/add_tree_dwarven");
     public static final ResourceKey<BiomeModifier> ADD_TREE_OLDFORESTOAK = registerBiomeKey("tree/add_tree_oldforestoak");
 
+    public static final ResourceKey<BiomeModifier> ADD_REEDS = registerBiomeKey("plants/add_reeds");
+    public static final ResourceKey<BiomeModifier> ADD_FLOWER_IRIS = registerBiomeKey("plants/add_flower_iris");
     public static final ResourceKey<BiomeModifier> ADD_FLOWER_SIMBELMYNE = registerBiomeKey("plants/add_flower_simbelmyne");
     public static final ResourceKey<BiomeModifier> ADD_FLOWER_MIRKWOOD = registerBiomeKey("plants/add_flower_mirkwood");
     public static final ResourceKey<BiomeModifier> ADD_FLOWER_ALFIRIN = registerBiomeKey("plants/add_flower_alfirin");
@@ -64,6 +69,21 @@ public class TolkienBiomeModifiers {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
 
+        // The Black Forest cape and Mirkwood's fir south: the pack had no conifer at all.
+        context.register(ADD_TREE_PINE, new BiomeModifiers.AddFeaturesBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.ERYN_VORN), biomes.getOrThrow(TolkienBiomes.MIRKWOOD_SPOOKY)),
+                HolderSet.direct(placedFeatures.getOrThrow(PINE_PLACED_KEY)),
+                GenerationStep.Decoration.VEGETAL_DECORATION));
+        // Eregion is Hollin, and had no holly.
+        context.register(ADD_TREE_HOLLY, new BiomeModifiers.AddFeaturesBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.EREGION)),
+                HolderSet.direct(placedFeatures.getOrThrow(HOLLY_PLACED_KEY)),
+                GenerationStep.Decoration.VEGETAL_DECORATION));
+        // Ithilien's garden of Gondor: the tall southern evergreen.
+        context.register(ADD_TREE_CYPRESS, new BiomeModifiers.AddFeaturesBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.ITHILIEN)),
+                HolderSet.direct(placedFeatures.getOrThrow(CYPRESS_PLACED_KEY)),
+                GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_MALLORN, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.LORINAND)),
                 HolderSet.direct(placedFeatures.getOrThrow(HARDENED_MALLORN_PLACED_KEY)),
@@ -147,6 +167,16 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(TolkienPlacedFeatures.END_AMMOLITE_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES));
 
+        // The Gladden's reed-beds, which canon names and the Vales had none of.
+        context.register(ADD_REEDS, new BiomeModifiers.AddFeaturesBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.GLADDEN)),
+                HolderSet.direct(placedFeatures.getOrThrow(REEDS_PLACED_KEY)),
+                GenerationStep.Decoration.VEGETAL_DECORATION));
+        // The Gladden's yellow irises, in the beds canon puts them in.
+        context.register(ADD_FLOWER_IRIS, new BiomeModifiers.AddFeaturesBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.GLADDEN)),
+                HolderSet.direct(placedFeatures.getOrThrow(FLOWER_IRIS_PLACED_KEY)),
+                GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_SIMBELMYNE, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.BARROW_DOWNS)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_SIMBELMYNE_PLACED_KEY)),

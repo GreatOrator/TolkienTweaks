@@ -114,9 +114,9 @@ them as decisions rather than defects.
   a choice, not a defect.
 - **2, 4, 7, 8, 11, 12: applied.** Gold Lorinand, no culumalda in the Mark, the right peoples in Emyn Muil, Khand,
   Cardolan and Minhiriath, the neon greens recoloured, and snow over rock instead of a glacier on the Misty Mountains.
-- **3, the Gladden: applied except the flowers.** Marsh palette, out of the woodland tag, no humans. Reeds and irises
-  wait on the vegetation work: sugar cane is the viable correlate for the reeds, the vanilla waterlily for the pads,
-  and the iris needs its own block.
-- **5, 6, 9, 10: new trees, waiting on their textures.** A dark conifer for Eryn Vorn and Mirkwood's fir south, holly
-  over Eregion, and Ithilien's southern tree. Each needs leaves, a hardened leaves variant, and a texture seen before
-  it is finalised.
+- **3, the Gladden: applied.** Marsh palette, out of the woodland tag, no humans, and the marsh planted: a reed block
+  (sugar cane's plant, the owner's model) standing three high along the water, and a Gladden iris in beds of its own.
+- **5, 6, 9, 10: applied.** A dark conifer over Eryn Vorn and Mirkwood's fir south, holly over Eregion, and a tall
+  southern evergreen over Ithilien, each with its leaves, its hardened twin and its own biome modifier. The leaf
+  textures are first drafts drawn for the shape of the tree, and the owner has them for approval before they are
+  called final.

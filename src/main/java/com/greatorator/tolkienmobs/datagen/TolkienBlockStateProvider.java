@@ -129,6 +129,15 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_MIRKWOOD_LOG.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_MIRKWOOD_WOOD.get());
         blockWithItem(TolkienBlocks.PLANKS_MIRKWOOD);
+        leavesBlock(TolkienBlocks.LEAVES_PINE);
+        singleBlockBoilerPlate(TolkienBlocks.HARDENED_LEAVES_PINE.get(), "block/leaves", m -> m.texture("all", "block/leaves_pine"));
+        blockItem(TolkienBlocks.HARDENED_LEAVES_PINE);
+        leavesBlock(TolkienBlocks.LEAVES_HOLLY);
+        singleBlockBoilerPlate(TolkienBlocks.HARDENED_LEAVES_HOLLY.get(), "block/leaves", m -> m.texture("all", "block/leaves_holly"));
+        blockItem(TolkienBlocks.HARDENED_LEAVES_HOLLY);
+        leavesBlock(TolkienBlocks.LEAVES_CYPRESS);
+        singleBlockBoilerPlate(TolkienBlocks.HARDENED_LEAVES_CYPRESS.get(), "block/leaves", m -> m.texture("all", "block/leaves_cypress"));
+        blockItem(TolkienBlocks.HARDENED_LEAVES_CYPRESS);
         leavesBlock(TolkienBlocks.LEAVES_MIRKWOOD);
         singleBlockBoilerPlate(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get(), "block/leaves", m -> m.texture("all", "block/leaves_mirkwood"));
         stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MIRKWOOD.get()), blockTexture(TolkienBlocks.PLANKS_MIRKWOOD.get()));
@@ -813,6 +822,7 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_MOUNTAIN_STONE_BRICKS);
 
         //Flowers & Plants
+        makeFlower(TolkienBlocks.FLOWER_IRIS, TolkienBlocks.POTTED_FLOWER_IRIS);
         makeFlower(TolkienBlocks.FLOWER_SIMBELMYNE, TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
         makeFlower(TolkienBlocks.FLOWER_MIRKWOOD, TolkienBlocks.POTTED_FLOWER_MIRKWOOD);
         makeFlower(TolkienBlocks.FLOWER_ALFIRIN, TolkienBlocks.POTTED_FLOWER_ALFIRIN);

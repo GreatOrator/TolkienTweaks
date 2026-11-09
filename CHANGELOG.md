@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Gladden grows its reeds and irises, and three lands get the trees canon gives them.** A reed block is
+  sugar cane's plant under the mod's own name and the owner's own model, standing three high along the Gladden's
+  water; a Gladden iris is the great yellow flower the marsh is named for, laid in beds of its own. Eryn Vorn and
+  Mirkwood's fir south take a dark conifer, Eregion takes holly - the country is Hollin and the pack grew none - and
+  Ithilien takes the tall southern evergreen. Each new leaf has the hardened twin the older woods keep.
+
 - **Seven countries are put right on canon.** **Lorinand** is gold rather than Mirkwood's near-black - foliage
   `#9DA24A` over grass `#7E8B3E`, in a pale golden mist - and **the Gladden** is a fen: marsh greens, the fen fog,
   no human village, and out of `#arda_woodland` so the Vales' broadleaf stops growing over the reeds. **The Mark**

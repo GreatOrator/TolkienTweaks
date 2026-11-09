@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "tolkienmobs:eryn_vorn",
+    "tolkienmobs:mirkwood_spooky"
+  ],
+  "features": "tolkienmobs:pine_placed",
+  "step": "vegetal_decoration"
+}

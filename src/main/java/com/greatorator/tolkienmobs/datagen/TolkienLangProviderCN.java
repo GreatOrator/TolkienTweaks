@@ -85,6 +85,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("item.tolkienmobs.tobacco_pipe.bowl_empty", "烟锅：空");
             this.add("item.tolkienmobs.tobacco_pipe.pack", "你往烟锅里填了%s。");
             this.add("item.tolkienmobs.tobacco_pipe.tip", "你把%s收回了背包。");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_IRIS.get(), "格拉顿鸢尾", TolkienBlocks.POTTED_FLOWER_IRIS.get());
+
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "色瑞刚", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "阿尔费琳", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());

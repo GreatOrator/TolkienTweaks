@@ -25,7 +25,10 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.*;
 import net.minecraft.world.level.levelgen.feature.featuresize.ThreeLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.PineFoliagePlacer;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.LeaveVineDecorator;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TrunkVineDecorator;
@@ -62,6 +65,9 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> NATURAL_TREE_1_KEY = registerKey("tree/natural_tree_1");
     public static final ResourceKey<ConfiguredFeature<?, ?>> NATURAL_TREE_2_KEY = registerKey("tree/natural_tree_2");
     public static final ResourceKey<ConfiguredFeature<?, ?>> NATURAL_TREE_3_KEY = registerKey("tree/natural_tree_3");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> PINE_KEY = registerKey("tree/pine");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> HOLLY_KEY = registerKey("tree/holly");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> CYPRESS_KEY = registerKey("tree/cypress");
     public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_KEY = registerKey("tree/deadwood");
     public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_MAPLE_KEY = registerKey("tree/dwarven_maple");
     public static final ResourceKey<ConfiguredFeature<?, ?>> HARDENED_DWARVEN_MAPLE_KEY = registerKey("tree/hardened_dwarven_maple");
@@ -96,6 +102,8 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> DEAD_BODIES_KEY = registerKey("dead_bodies");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MARSH_POOL_KEY = registerKey("marsh_pool");
 
+    public static final ResourceKey<ConfiguredFeature<?, ?>> REEDS_KEY = registerKey("plants/reeds");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_IRIS_KEY = registerKey("plants/flower_iris");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_SIMBELMYNE_KEY = registerKey("plants/flower_simbelmyne");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_MIRKWOOD_KEY = registerKey("plants/flower_mirkwood");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_ALFIRIN_KEY = registerKey("plants/flower_alfirin");
@@ -185,6 +193,11 @@ public class TolkienConfiguredFeatures {
         context.register(END_ORE_AMMOLITE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(endReplaceables,
                 TolkienBlocks.ORE_END_AMMOLITE.get().defaultBlockState(), 6)));
 
+        // Reeds grow as sugar cane does: a column three high, each layer testing the one below it.
+        context.register(REEDS_KEY, new ConfiguredFeature<>(Feature.BLOCK_COLUMN,
+                BlockColumnConfiguration.simple(ConstantInt.of(3), BlockStateProvider.simple(TolkienBlocks.REED.get()))));
+        context.register(FLOWER_IRIS_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_IRIS.get()))));
         context.register(FLOWER_SIMBELMYNE_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
                 new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_SIMBELMYNE.get()))));
         context.register(FLOWER_MIRKWOOD_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
@@ -334,6 +347,27 @@ public class TolkienConfiguredFeatures {
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
                 .decorators(ImmutableList.of(TolkienDecorators.LOCUST))
                 .build()));
+        // The dark conifer: a fir of the north, and the pine of the Black Forest cape.
+        context.register(PINE_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(Blocks.SPRUCE_LOG),
+                new StraightTrunkPlacer(7, 2, 0),
+                BlockStateProvider.simple(TolkienBlocks.LEAVES_PINE.get()),
+                new PineFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), UniformInt.of(3, 4)),
+                new TwoLayersFeatureSize(1, 0, 2)).ignoreVines().build()));
+        // Holly: the country is named for it, and it is a low, dense, dark-leaved tree.
+        context.register(HOLLY_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(TolkienBlocks.LOG_LEBETHRON.get()),
+                new StraightTrunkPlacer(4, 2, 0),
+                BlockStateProvider.simple(TolkienBlocks.LEAVES_HOLLY.get()),
+                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
+                new TwoLayersFeatureSize(1, 0, 1)).ignoreVines().build()));
+        // The southern tree of Ithilien: tall, narrow and evergreen.
+        context.register(CYPRESS_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(TolkienBlocks.LOG_MIRKWOOD.get()),
+                new StraightTrunkPlacer(9, 2, 0),
+                BlockStateProvider.simple(TolkienBlocks.LEAVES_CYPRESS.get()),
+                new PineFoliagePlacer(ConstantInt.of(0), ConstantInt.of(1), UniformInt.of(4, 6)),
+                new TwoLayersFeatureSize(1, 0, 2)).ignoreVines().build()));
         context.register(DEADWOOD_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_DEADWOOD.get()),
                 new FancyTrunkPlacer(3, 11, 0),
