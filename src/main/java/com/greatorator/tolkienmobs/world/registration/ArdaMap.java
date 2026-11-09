@@ -258,6 +258,15 @@ public final class ArdaMap {
      * branch meets the drawn Bruinen. Sixteen is deep enough to be a real channel at any of those widths.
      */
     private static final int RIVER_DEPTH_MAX = 11;
+    /**
+     * How far along a drawn channel its water looks for the level it stands at, in blocks.
+     * <p>
+     * The drawing's own terracing and the mask bake's pixel edges are a few blocks across, and a river that
+     * takes each column's height as its surface turns them into pools that spill one into the next. Twelve
+     * blocks is a few of them either side of the column: far enough to level a step, near enough that the
+     * water met is the same river and not the sheet it runs into.
+     */
+    private static final int RIVER_LEVEL_REACH = 12;
 
     /**
      * How far from a drawn river or lake its bank is raised, and how many of those blocks the raise falls
@@ -760,7 +769,7 @@ public final class ArdaMap {
         // map draws runs past the valley's east side, inside the floor the city stands on, and the branch
         // out of the city has to meet it in the open: the drawing answers before the rock and before the
         // floor, so the river cuts its own channel through both and the fork is water, not a notch.
-        Sample drawn = water(blockX, blockZ, ground);
+        Sample drawn = water(blockX, blockZ, shiftX, shiftZ, ground);
         if (drawn != null) {
             return drawn;
         }
@@ -808,14 +817,16 @@ public final class ArdaMap {
     /**
      * The water the drawing puts at a column, or null where it draws none.
      * <p>
-     * The masks answer where a river or a lake is, and the top of the water is the ground the drawing gives
-     * the column: the drawing's rivers and lakes are already drawn at their own level, so water follows the
-     * land down instead of standing at a level of its own. Averaging the ground over the country round the
+     * The masks answer where a river or a lake is, and the top of a lake's water is the ground the drawing
+     * gives the column: the drawing's lakes are already drawn at their own level, so water follows the land
+     * down instead of standing at a level of its own. Averaging the ground over the country round the
      * column was tried and put water on top of the land wherever the drawing dips - a lake sheet three or
      * four blocks over its own shore. The bed is cut under that surface, and a drawn river's bed slopes from
      * its middle out to its banks, because one depth for a sixteen-block-wide drawing puts a cliff at both.
+     * A drawn river's water stands at the channel's own level rather than at each column's: see
+     * {@link #riverLevel}.
      */
-    private static Sample water(int blockX, int blockZ, Ground ground) {
+    private static Sample water(int blockX, int blockZ, double shiftX, double shiftZ, Ground ground) {
         if (ArdaMasks.lake(blockX, blockZ)) {
             // One level for the whole sheet. Laid at the ground the drawing gives each column, a lake
             // inherits every rise and fall under it and comes out as a staircase of water - the sheet the
@@ -846,9 +857,13 @@ public final class ArdaMap {
             return new Sample(ground.country(), bed, true, false, ground.upland(), surface);
         }
         if (ArdaMasks.river(blockX, blockZ)) {
-            // Near a coast the ground's grade falls under the sea; held there, the last stretch of a
-            // river meets the sea instead of digging a trench beside it.
-            int surface = Math.max(SEA_LEVEL, ground.height());
+            // The surface is the channel's own low level within a short reach rather than this column's
+            // ground: the ground is the drawing with the range's lift and the crag folded into it, and
+            // those step at the mask bake's own pixel edges, so a surface taken from each column's own
+            // step came out as one pool per step, each spilling into the one below it. Near a coast the
+            // grade falls under the sea; held there, the last stretch of a river meets the sea instead of
+            // digging a trench beside it.
+            int surface = riverLevel(blockX, blockZ, shiftX, shiftZ, ground);
             // As deep as it is wide, within what a channel can be without becoming a canyon - and never
             // deeper than the column stands from its own bank, so the water shallows out to its edge
             // instead of ending in a wall. A bed cut flat from bank to bank makes the river a square hole
@@ -860,6 +875,38 @@ public final class ArdaMap {
                     false, ground.upland(), surface);
         }
         return null;
+    }
+
+    /**
+     * The surface a drawn river's water stands at.
+     * <p>
+     * The channel is walked a short way out in eight directions and the water takes the lowest ground it meets
+     * on the way, never under the sea. A river's surface cannot stand above the water beside it: a stretch
+     * drawn up a step becomes one fall instead of a pool waiting to spill into the row below, and where the
+     * channel is drawn as a slope the surface descends with it instead of stepping. Only columns the river runs
+     * through are asked, so the level is the river's own and never a lake's or the sea's.
+     */
+    private static int riverLevel(int blockX, int blockZ, double shiftX, double shiftZ, Ground ground) {
+        int surface = Math.max(SEA_LEVEL, ground.height());
+        for (int step = 0; step < 8; step++) {
+            double dirX = Math.cos(step * Math.PI / 4.0D);
+            double dirZ = Math.sin(step * Math.PI / 4.0D);
+            for (int reach = 2; reach <= RIVER_LEVEL_REACH; reach += 2) {
+                int px = blockX + (int) Math.round(dirX * reach);
+                int pz = blockZ + (int) Math.round(dirZ * reach);
+                if (!ArdaMasks.river(px, pz)) {
+                    continue;
+                }
+                // Read the way this column was read: the cell chosen by the warped map, the mask by the
+                // block the column stands at, so a neighbour is the same kind of answer as the column.
+                int beside = groundAt((px + shiftX) / (double) CELL + ORIGIN_COLUMN,
+                        (pz + shiftZ) / (double) CELL + ORIGIN_ROW, px, pz).height();
+                if (beside < surface) {
+                    surface = Math.max(SEA_LEVEL, beside);
+                }
+            }
+        }
+        return surface;
     }
 
     /**

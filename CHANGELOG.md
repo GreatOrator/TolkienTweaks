@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A drawn river's water stands at the channel, not at the step above it.** A drawn river took each
+  column's own ground as its water's surface, and that ground is the drawing with the range's lift and
+  the crag folded into it - which step at the mask bake's own pixel edges. A steeply drawn channel came
+  out as a pool per step, and vanilla water then spilt from the high pool into the low one: water top
+  217 at one row and 246 eight blocks later where the drawing puts the river at 214. The water now
+  stands at the channel's own low level within twelve blocks of the column, so a stretch drawn up a step
+  is one fall instead of a row of pools, and a channel drawn as a slope descends with it.
+
 - **The drape cuts the mountain standing over a spring at the wall.** A spring held up at the build's
   edge is a channel, and a channel column was never cut at all - only filled - so the mountain over the
   pool stayed exactly where it was: one chunk of crown left hanging eighty blocks over the spring at the
