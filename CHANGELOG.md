@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Bruinen stands at the vale's own water and takes its descent at a grade.** The country the masks
+  draw round the vale stands at 155 to 175 and the vale's floor at 74, and the hold blended that height back
+  into the drawing over two hundred blocks - one block in three, which is a wall of water at the rim, and a
+  river held at the city outlet's 82 over a floor at 74. The water is the vale's own now, two blocks over
+  its floor and held across the vale, and past that the height comes back at one block of rise per eight of
+  run, with the ground beside it graded down over the same run and the drawing taking the water back where
+  the ground it lays is already lower.
+
 - **The dale holds the river up as well as down, and the branch meets it at its own water.** The vale's
   apron pulls the drawn channel down to the vale's floor, so at the join the Bruinen's water stood eight
   blocks under the water the city holds - a dip in the middle of the dale - and the branch, read off the

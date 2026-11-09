@@ -322,14 +322,26 @@ public final class ArdaMap {
      */
     private static final int MOUTH_RUN = 160;
     /**
-     * How far the vale's own water is carried out along the drawn river from the join, and how far past
-     * that the drawing is given back, in blocks: the dale the Bruinen runs through instead of dipping into
-     * the vale at the city and climbing back out of it either side.
+     * How far the vale's own water is carried out along the drawn river from the join, how far past that
+     * the ground beside it is carried down with it, how gently it may climb, and how far over the vale's
+     * floor the sheet stands, in blocks: the dale the Bruinen runs through instead of dipping into the vale
+     * at the city and climbing back out of it either side.
+     * <p>
+     * The country the masks draw round the vale stands at 155 to 175 and the vale's floor at 74, so a river
+     * leaving it has eighty blocks to take. Blended back into the drawing over two hundred blocks it took
+     * them at one in three, which is a wall of water and reads as one however smooth the blend; at one in
+     * eight over six hundred and forty it is a slope, and the ground it takes with it follows over the same
+     * run.
      */
-    private static final int DALE_HOLD = 192;
-    private static final int DALE_REACH = 400;
-    /** How far out from the dale's river the ground comes down to its water, in blocks. */
-    private static final int DALE_BANK = 40;
+    private static final int DALE_HOLD = 320;
+    private static final int DALE_REACH = 960;
+    private static final int DALE_GRADE = 8;
+    private static final int DALE_DEPTH = 2;
+    /**
+     * How far out from the dale's river the ground comes down to its water, in blocks: a bank at one block
+     * of run to one of rise, long enough to carry the eighty the vale takes out of the country beside it.
+     */
+    private static final int DALE_BANK = 72;
     /**
      * How far the crown's own surface rolls below the crown, in blocks.
      * <p>
@@ -922,7 +934,7 @@ public final class ArdaMap {
             return groundAt(blockX / (double) CELL + ORIGIN_COLUMN,
                     blockZ / (double) CELL + ORIGIN_ROW, blockX, blockZ).height();
         }
-        return Math.min(channel, daleWater(blockX, blockZ, channel));
+        return daleWater(blockX, blockZ, channel);
     }
 
     /**
@@ -931,24 +943,28 @@ public final class ArdaMap {
      * The vale's apron is a radius and the Bruinen is not: the river was pulled down to the vale's water
      * where the apron came nearest - the city's own mouth - and released again as it left, so the water
      * went down into the vale and climbed back out of it either side. No river does that: water does not
-     * climb. This holds the river at the water the city itself stands at for {@link #DALE_HOLD} blocks of
-     * the join and gives the drawing back over the run from there to {@link #DALE_REACH}, so the descent
-     * into the vale and the climb out of it are one broad dale rather than a dip and a rise.
+     * climb. This holds the river at the vale's own water for {@link #DALE_HOLD} blocks of the join and gives
+     * the height back at a grade past that, so the descent into the vale and the climb out of it are one
+     * broad dale rather than a dip and a rise.
      * <p>
-     * The hold works both ways, and has to. The vale apron pulls the drawn channel down to the vale's
-     * own floor, so at the join the river's channel stands eight blocks under the water the city holds:
-     * held only downward, the dale left that dip in the middle of itself, and put the river under the
-     * branch that feeds it. A river within the dale stands at the city's water wherever the drawing has
-     * it above or below that, and the drawing takes it back as the dale runs out.
+     * The water is the vale's own, two blocks over its floor rather than the city outlet's eight, so the
+     * sheet lies on the floor instead of behind a levee across it and the branch falls the six blocks
+     * between the two along its own course.
+     * <p>
+     * Past the hold the eight blocks the vale takes out of the country are given back at {@link #DALE_GRADE}
+     * - one block of rise per grade of run - because a blend spends them over whatever run the blend is
+     * written with, and a run short enough to read as a dale spends them at one in three.
      */
     private static int daleWater(int blockX, int blockZ, int channel) {
+        int water = VALLEY_FLOOR + DALE_DEPTH;
         double away = Math.hypot(blockX - BRUINEN_FORD_X, blockZ - BRUINEN_FORD_Z);
-        double share = 1.0D - smooth(Mth.clamp(
-                (away - DALE_HOLD) / (double) (DALE_REACH - DALE_HOLD), 0.0D, 1.0D));
-        if (share <= 0.0D) {
-            return channel;
+        if (away <= DALE_HOLD) {
+            return water;
         }
-        return (int) Math.round(channel + (BRUINEN_WATER - channel) * share);
+        int ramp = water + (int) ((away - DALE_HOLD) / DALE_GRADE);
+        // The drawing takes the water back where the ground it lays is lower than the ramp would carry it,
+        // and the vale's own floor is two under the sheet: what the dale holds, it holds, both ways.
+        return Math.max(water, Math.min(channel, ramp));
     }
 
     /**
