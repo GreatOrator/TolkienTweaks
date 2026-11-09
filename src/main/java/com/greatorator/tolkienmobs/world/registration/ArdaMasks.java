@@ -254,9 +254,10 @@ final class ArdaMasks {
      * A radius round the vale cannot tell the Bruinen from the Brandywine, and no radius reaches the end of
      * the course: the river leaves the vale at 155 in the drawing and runs six thousand blocks to come down
      * to the vale's own level, through every bend and crossing on the way. So the water is followed from the
-     * ford - every drawn river cell on the half of the map the vale drains into is a seed, and the reach caps
-     * how far the following goes - and only that half is kept, because the water coming down into the vale
-     * from the mountains has a descent of its own to run.
+     * ford itself - the ford's own water is the seed, the following takes a cell at a time along the channel,
+     * and the reach caps how far it goes - and the number it gives is the water's own distance from the
+     * crossing, which is what the fall is measured along. Only the half leaving the vale is kept for the
+     * level, because the water coming down into the vale from the mountains has a descent of its own to run.
      * <p>
      * Two follows come out of it. The level the dale holds is read from the water leaving the vale only, as
      * it was. The bank the ground beside the water is graded over is read from every drawn river the vale's
@@ -268,9 +269,9 @@ final class ArdaMasks {
      * <p>
      * Built once and read a byte at a time: every river column asks it, so the answer has to cost nothing.
      * <p>
-     * The course itself is the run of nought: the water the dale holds at the vale's level. Everything
-     * else in the run is a crossing or the water coming down into the vale from the mountains, and the run
-     * is what the fall of their water is measured along.
+     * The ford's own cells are the run of nought: the water the dale holds at the vale's level. Every
+     * other cell of water is its distance along the channel from that crossing, and the fall of the water
+     * is measured along the same run.
      */
     static void buildDale(int fromX, int fromZ, double alongX, double alongZ, int reachBlocks) {
         DALE_RUN = follow(fromX, fromZ, alongX, alongZ, reachBlocks, true);
@@ -288,19 +289,25 @@ final class ArdaMasks {
         int fordRow = Math.floorDiv(fromZ - NORTH, BLOCKS);
         int[] queue = new int[1 << 14];
         int tail = 0;
-        for (int row = 0; row < HEIGHT; row++) {
-            for (int column = 0; column < WIDTH; column++) {
-                if (leaving && (column - fordColumn) * alongX + (row - fordRow) * alongZ < 0.0D) {
-                    continue;
+        // The ford's own water is the only seed. Seeded from every water cell at once - which is what this
+        // did - every stretch of the river had a run of nought, the following never took a step, and the
+        // fall came out as the vale's water from the ford to the sea: the river lay eighty blocks under the
+        // drawing for a thousand blocks, with the drawn country standing over it as a wall either side.
+        for (int spread = 0; spread <= 3 && tail == 0; spread++) {
+            for (int row = fordRow - spread; row <= fordRow + spread; row++) {
+                for (int column = fordColumn - spread; column <= fordColumn + spread; column++) {
+                    if (Math.max(Math.abs(row - fordRow), Math.abs(column - fordColumn)) != spread) {
+                        continue;
+                    }
+                    if (!waterCell(column, row)) {
+                        continue;
+                    }
+                    run[row * WIDTH + column] = 1;
+                    if (tail == queue.length) {
+                        queue = java.util.Arrays.copyOf(queue, tail * 2);
+                    }
+                    queue[tail++] = row * WIDTH + column;
                 }
-                if (!waterCell(column, row)) {
-                    continue;
-                }
-                run[row * WIDTH + column] = 1;
-                if (tail == queue.length) {
-                    queue = java.util.Arrays.copyOf(queue, tail * 2);
-                }
-                queue[tail++] = row * WIDTH + column;
             }
         }
         int limit = Math.max(1, Math.min(254, reachBlocks / BLOCKS));
@@ -326,6 +333,19 @@ final class ArdaMasks {
                         queue = java.util.Arrays.copyOf(queue, tail * 2);
                     }
                     queue[tail++] = nearCell;
+                }
+            }
+        }
+        // Only the water leaving the vale keeps its run: the water coming down into it has a descent of its
+        // own to run, and holding it to the vale's level cut the mountains down to a shelf. The following
+        // still used both halves on the way - a seed on the ford has to reach the far bank to cross at all -
+        // so the half is dropped here rather than kept out of the walk.
+        if (leaving) {
+            for (int row = 0; row < HEIGHT; row++) {
+                for (int column = 0; column < WIDTH; column++) {
+                    if ((column - fordColumn) * alongX + (row - fordRow) * alongZ < 0.0D) {
+                        run[row * WIDTH + column] = 0;
+                    }
                 }
             }
         }

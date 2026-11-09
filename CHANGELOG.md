@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The dale's run is a distance along the river again, so the Bruinen is no longer held flat at the vale's
+  water.** The following was seeded from every drawn water cell at once, which gave every stretch of the
+  river a run of nought: the water never climbed, and `daleWater` returned the vale's water for the whole
+  downstream course - seventy-seven blocks under the drawing, which is a canyon with the drawn country for
+  its walls on every stretch the bank could not reach, and no grading at all inside the valley. The ford's
+  own water is now the only seed and the run is the water's own distance from the crossing, so the river
+  climbs back to the drawing one block in twenty-four as it was always meant to. Only the half leaving the
+  vale keeps that run; the half coming down into it keeps the drawing's own fall.
+
 - **The bank is graded on both halves of the river, not only the water leaving the vale.** The run the bank
   is grown from was the same one the dale's water level is read from, which covers only the half downstream
   of the ford - so every upstream stretch of the drawn river kept the drawing's own edge, a channel at 101
