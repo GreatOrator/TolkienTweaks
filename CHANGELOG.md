@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The drape cuts the mountain standing over a spring at the wall.** A spring held up at the build's
+  edge is a channel, and a channel column was never cut at all - only filled - so the mountain over the
+  pool stayed exactly where it was: one chunk of crown left hanging eighty blocks over the spring at the
+  back of Rivendell while every other face of the city was dressed. A spring's column is now carried down
+  to the pool's own surface and no further, so the rock over the water comes off and the water stays; a
+  deck is still left alone, since a deck is not a roofline.
+
 - **The vale begins at the massif's foot, not past its fall.** The apron that brings the country to the
   city's floor started where the massif's fall ended, so the fall had nothing but the floor to land on:
   beyond the crest was a flat ring where the drawing puts the range, a hundred and sixty blocks of

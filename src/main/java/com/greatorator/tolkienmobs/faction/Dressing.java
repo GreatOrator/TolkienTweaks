@@ -357,6 +357,9 @@ public final class Dressing {
             int wall = outline[at];
             if (wall == Integer.MIN_VALUE) return;
             boolean banked = wall <= CityCommands.DECK_TOP;
+            // A spring at the wall is not a deck: the column is held for its water, but the ground over that
+            // water is still ground the drape is for.
+            boolean spring = false;
             if (banked) {
                 // A deck is a floor tile rather than a roofline, so the ground outside meets the rock standing over
                 // that deck inside the box and is never cut down to the deck itself.
@@ -369,6 +372,7 @@ public final class Dressing {
                     open++;
                     return;
                 }
+                spring = true;
                 banked = true;
             }
             int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
@@ -399,11 +403,17 @@ public final class Dressing {
             double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) CityCommands.DRAPE_REACH);
             double ease = share * share * (3.0D - 2.0D * share);
             int cap = (int) Math.round(wall + (top - wall) * ease);
-            if (top > cap && !banked) {
-                for (int y = surface; y > cap; y--) {
+            // A deck is not a roofline, so the ground outside it is never cut - the trench that opened round
+            // every face the build leaves open is why. A spring is a different column: its pool is the
+            // build's own top there, so the cut stops at the pool's surface and no further. The mountain
+            // standing over the water comes off - one chunk of crown left hanging over a spring while every
+            // other face was dressed - and the water stays where it is.
+            int down = spring ? Math.max(cap, watered[at]) : cap;
+            if (top > down && (!banked || spring)) {
+                for (int y = surface; y > down; y--) {
                     level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
                 }
-                level.setBlock(new BlockPos(x, cap, z), skin, 2);
+                level.setBlock(new BlockPos(x, down, z), skin, 2);
                 cut++;
             } else if (top < cap) {
                 for (int y = top + 1; y < cap; y++) {

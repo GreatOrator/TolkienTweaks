@@ -1176,8 +1176,9 @@ public final class CityCommands {
      * Water at the build's own edge is left exactly as it is where it is the city's outflow - the channel the
      * river runs in - because filling beside a river is what closes its mouth, and the mouth is the one thing
      * the valley was drawn round. Water at the edge standing above {@link #OUTLET_LIFT} over the floor is a
-     * spring held up in the build: the ground outside is banked to its surface and never cut, so the pool is
-     * held in rather than fed out down the flank. Water out in the ring is neither: it is a pool lying on the
+     * spring held up in the build: the pool is never cut out of, and the ground standing over it is carried
+     * down to the pool's own surface, because a mountain left over a spring is the same shelf the drape takes
+     * off every other face. Water out in the ring is neither: it is a pool lying on the
      * drawn ground, and the pass works on the ground under it, cutting from the pool's surface so the water
      * goes with the ground beneath it.
      * <p>
