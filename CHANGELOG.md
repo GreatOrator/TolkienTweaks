@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The biomes are audited against canon, and none of it is applied.** Every country's biome was read against what the
+  books say about its ground, trees and people, and set beside the `arda_*` tags, the tree modifiers and the surface
+  floors. Most stand: Enedwaith's fens, the Brown Lands' barren floor, Mordor's ash, Forochel's ice, Nurn's
+  field-shores. Twelve do not, and `docs/arda-biome-canon.md` writes each one up with the passage it misses and what
+  the fix costs - the loudest being the Barrow-downs growing dead trees where Tolkien says no tree grows at all,
+  Lorinand wearing Mirkwood's near-black palette instead of gold, and the Gladden being a tan plain with a wood on it
+  rather than the reed-beds and yellow irises canon gives it. They wait on a decision rather than on work.
 - **The wood ruin's door is where its road arrives.** Its seat named the northwest corner of the floor plate as the
   doorway, so the ground it was measured against - and the travel stone stood beside it - was five blocks west of the
   way in the road actually meets: the ruin's own `.end` pin is corner + 5 east on the same north face. The plate is

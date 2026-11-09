@@ -476,3 +476,18 @@ a block there and the layers above are open across the whole footprint - so the 
 `doorX` is now 5. The same audit found the camps' doors right, found `SEAT_SINK` (4) clamping the doorway sink on
 broken ground, and found Barachen's `.keeper` and `.end` pins two layers lower than the same arithmetic gives at
 Elladan's camp.
+
+## Where we stopped - 9 November 2026
+
+The chapter-one ground is settled pending a playtest: the crags are seated by the mouth each cut opens (`CRAG_MOUTHS`,
+measured off the four templates) and the wood ruin's doorway points at where its road arrives. Both are blocks, so
+crags and ruins already standing in a world keep the seat they were given.
+
+The biomes have just been audited against canon - `docs/arda-biome-canon.md` holds twelve findings with what each fix
+costs, and the list of what already stands. **None of it is applied**: it is waiting on a decision, not on work.
+
+The next sitting is chapter two's builds and roads, done the way chapter one's were - a `key_structures` cut per
+beat, a site pinned in `Sites`/`Pins`, a place canon'd to its country, and the road laid from the previous build -
+and then the cutscene that carries the player from chapter one's last page into chapter two's first. The pages are
+already written (`docs/chapter-two-state.md`, pages 26-36) and never walked; the seam scene is that file's open
+decision 3, and is the one piece of chapter two with nothing built at all.
