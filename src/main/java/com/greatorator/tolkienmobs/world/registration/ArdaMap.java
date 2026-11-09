@@ -325,12 +325,18 @@ public final class ArdaMap {
      * The dale's own numbers, in blocks: how gently its water may fall, how far over the vale's floor the
      * sheet stands, and how far along the water a fall is followed.
      * <p>
-     * The country the masks draw round the vale stands at 155 to 175 and the vale's floor at 74, so the
-     * river leaving it has eighty blocks to lose, and every branch coming into it has its own height to
-     * lose as well. Both go at one block of fall per {@link #DALE_GRADE} of run - a slope water can be
-     * followed down - and the drawing takes the water back wherever the ground it lays is lower.
+     * The country the masks draw round the vale stands at 155 to 175 and the vale's water at 76, so a
+     * branch coming into the river has its own height to lose. It goes at one block of fall per
+     * {@link #DALE_GRADE} of run - a slope water can be followed down - and the drawing takes the water
+     * back wherever the ground it lays is lower.
+     * <p>
+     * Eight was steep. A branch entering the dale a hundred blocks over the river lost all of that within
+     * eight hundred blocks of the junction, so the water came down the last stretch of the branch like a
+     * chute into the crossing while the river it joined stayed at the vale's water for a thousand blocks
+     * either side. Sixteen gives the same fall twice the branch to run down, which is the grade the ground
+     * beside it takes.
      */
-    private static final int DALE_GRADE = 8;
+    private static final int DALE_GRADE = 16;
     private static final int DALE_DEPTH = 2;
     private static final int DALE_REACH = 2000;
     /**
@@ -989,7 +995,10 @@ public final class ArdaMap {
      * only on how far it really is from the river.
      * <p>
      * The water stands one block out of the ground at the bank's foot and one more for every block of run,
-     * so the valley is a bowl with the river in the bottom of it rather than a slot with a lid.
+     * so the valley is a bowl with the river in the bottom of it rather than a slot with a lid. The rise is
+     * per cell rather than per ring: a ring is {@code blocks} of run, and a bank grown a block a ring put
+     * the ground twelve blocks over the water across ninety-six of tread and then ended - a shelf, with the
+     * edge of the mask standing over it as the wall the save showed back from the river.
      */
     private static void buildDaleBanks() {
         int width = ArdaMasks.maskWidth();
@@ -1025,7 +1034,7 @@ public final class ArdaMap {
             int end = tail;
             for (int at = 0; at < end; at++) {
                 int cell = queue[at];
-                int bank = banks[cell] + 1;
+                int bank = banks[cell] + blocks;
                 int row = cell / width;
                 int column = cell - row * width;
                 for (int dir = 0; dir < 4; dir++) {

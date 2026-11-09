@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The bank beside the dale's river rises a block per block of run, not per ring of the mask.** Its cells
+  are eight blocks across and the growth added one block of height per ring, so the ground for ninety-six
+  blocks out from the water was held at twelve blocks over it and the edge of that shelf stood thirty or
+  forty blocks over the river as the sheer wall the save showed back from both banks. A ring is eight blocks
+  of run, so a ring now carries eight blocks of rise: the shelf is the graded bank it was written to be, and
+  the wall at its edge is a slope down to the water.
+
+- **A branch falls into the Bruinen at one block per sixteen of run rather than eight.** At eight a crossing
+  that entered the dale a hundred blocks over the river lost all of it within eight hundred blocks of the
+  junction, so it came down the last stretch like a chute into water that stays at the vale's level for a
+  thousand blocks beyond. Sixteen gives the same fall twice the branch to run down, which is the grade the
+  ground beside it takes.
+
 - **The crossings fall to the river along their own run instead of at one wall.** A branch that joins the
   Bruinen was held flat at the vale's 76 from wherever it entered the dale, so everything it had to lose it
   lost in one step at the dale's edge - the sheer face a crossing showed where it met the river. The dale
