@@ -1955,7 +1955,7 @@ public class TolkienBlocks {
     /** The reeds of the Gladden: sugar cane's plant, the mod's own model. */
     public static final DeferredBlock<Block> REED = registerBlock("reed",
             properties -> new TolkienReedBlock(properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().randomTicks().instabreak()
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak()
                     .sound(SoundType.GRASS).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_ATHELAS = registerBlock("flower_athelas", properties -> new TolkienFlowerBlock(MobEffects.REGENERATION, 7, properties),
             BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));

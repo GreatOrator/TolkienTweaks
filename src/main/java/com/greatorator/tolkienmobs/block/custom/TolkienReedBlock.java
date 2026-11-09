@@ -30,9 +30,6 @@ public class TolkienReedBlock extends SugarCaneBlock {
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         BlockState below = level.getBlockState(pos.below());
-        if (below.is(this)) {
-            return true;
-        }
         boolean wetFooted = below.is(BlockTags.DIRT) || below.is(BlockTags.SAND)
                 || below.is(Blocks.MUD) || below.is(Blocks.MUDDY_MANGROVE_ROOTS)
                 || below.is(Blocks.CLAY) || below.is(Blocks.GRAVEL);

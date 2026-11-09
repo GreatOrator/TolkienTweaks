@@ -195,7 +195,7 @@ public class TolkienConfiguredFeatures {
 
         // Reeds grow as sugar cane does: a column three high, each layer testing the one below it.
         context.register(REEDS_KEY, new ConfiguredFeature<>(Feature.BLOCK_COLUMN,
-                BlockColumnConfiguration.simple(ConstantInt.of(3), BlockStateProvider.simple(TolkienBlocks.REED.get()))));
+                BlockColumnConfiguration.simple(ConstantInt.of(1), BlockStateProvider.simple(TolkienBlocks.REED.get()))));
         context.register(FLOWER_IRIS_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
                 new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_IRIS.get()))));
         context.register(FLOWER_SIMBELMYNE_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
