@@ -155,12 +155,14 @@ public final class ArdaMap {
     /**
      * How far past the massif's foot the country is brought down to the valley's own level, in blocks.
      * <p>
-     * Ninety-six blocks of mountain, then its fall, then nine
-     * hundred more of country settling to the vale's floor: without the last of those the massif ends in
-     * a wall of six blocks where the heightmap happens to be, and a valley that the map puts a hundred
-     * blocks above the city is a pit with the whole country standing on its rim.
+     * Ninety-six blocks of mountain, then its fall, then a hundred and twenty-eight more of country
+     * settling to the vale's floor. The settling used to run nine hundred blocks, which is not a vale:
+     * it flattened the whole southern approach of the Misty Mountains to the city's own floor, so the
+     * range stood at seventy-four where the drawing puts it at a hundred and sixty, and the drawn river
+     * ran in a slot under a plain that called itself river. A short apron still keeps the massif from
+     * ending in a wall, and hands the country back to the drawing while it is still a mountain.
      */
-    private static final int VALLEY_VALE = 900;
+    private static final int VALLEY_VALE = 128;
 
     /**
      * The height the mountains round the valley reach, and how far from that they are allowed to wander.
@@ -797,9 +799,10 @@ public final class ArdaMap {
     /**
      * The water the drawing puts at a column, or null where it draws none.
      * <p>
-     * The masks answer where a river or a lake is, and the top of the water is the ground the drawing gives
-     * the column: the drawing's rivers and lakes are already drawn at their own level, so water follows the
-     * land down instead of standing at a level of its own. Averaging the ground over the country round the
+     * The masks answer where a river or a lake is. A lake stands at one level measured for its whole sheet;
+     * a river stands at the height of its own bank, because the drawing incises its channels into the
+     * heightmap and a surface read off the column itself lay a dozen blocks under the land beside it.
+     * Averaging the ground over the country round the
      * column was tried and put water on top of the land wherever the drawing dips - a lake sheet three or
      * four blocks over its own shore. The bed is cut under that surface, and a drawn river's bed slopes from
      * its middle out to its banks, because one depth for a sixteen-block-wide drawing puts a cliff at both.
@@ -835,9 +838,12 @@ public final class ArdaMap {
             return new Sample(ground.country(), bed, true, false, ground.upland(), surface);
         }
         if (ArdaMasks.river(blockX, blockZ)) {
+            // The water stands at its banks, not at the bed the drawing incises: the poster's rivers are
+            // drawn a dozen blocks down into their own valley, and reading the surface off the column
+            // itself left the water that far under the land beside it - a channel nobody can see into.
             // Near a coast the ground's grade falls under the sea; held there, the last stretch of a
             // river meets the sea instead of digging a trench beside it.
-            int surface = Math.max(SEA_LEVEL, ground.height());
+            int surface = Math.max(SEA_LEVEL, Math.max(ground.height(), riverBank(blockX, blockZ)));
             // As deep as it is wide, within what a channel can be without becoming a canyon - and never
             // deeper than the column stands from its own bank, so the water shallows out to its edge
             // instead of ending in a wall. A bed cut flat from bank to bank makes the river a square hole
@@ -877,6 +883,37 @@ public final class ArdaMap {
             return levels[id];
         }
         return Math.max(SEA_LEVEL, fallback);
+    }
+
+    /** How far out a drawn river's own edge is looked for, in blocks: half the widest channel drawn. */
+    private static final int RIVER_EDGE = 24;
+
+    /**
+     * The height the drawn ground stands at the edge of the river a column is in, or
+     * {@link Integer#MIN_VALUE} where no edge lies within {@link #RIVER_EDGE}.
+     * <p>
+     * Walked outward in eight directions to the first column the drawing does not call water, and the
+     * lowest of those answers is kept: a channel carries the level of its lower bank, and a higher one
+     * on the far side is a hillside rather than a dam. From the sea it is never below the sea, for the
+     * same reason the drawn surface never is.
+     */
+    private static int riverBank(int blockX, int blockZ) {
+        int level = Integer.MAX_VALUE;
+        for (int step = 0; step < 8; step++) {
+            double dirX = Math.cos(step * Math.PI / 4.0D);
+            double dirZ = Math.sin(step * Math.PI / 4.0D);
+            for (int reach = 2; reach <= RIVER_EDGE; reach += 2) {
+                int px = blockX + (int) Math.round(dirX * reach);
+                int pz = blockZ + (int) Math.round(dirZ * reach);
+                if (ArdaMasks.river(px, pz) || ArdaMasks.lake(px, pz)) {
+                    continue;
+                }
+                level = Math.min(level, groundAt(px / (double) CELL + ORIGIN_COLUMN,
+                        pz / (double) CELL + ORIGIN_ROW, px, pz).height());
+                break;
+            }
+        }
+        return level == Integer.MAX_VALUE ? Integer.MIN_VALUE : Math.max(SEA_LEVEL, level);
     }
 
     /**
