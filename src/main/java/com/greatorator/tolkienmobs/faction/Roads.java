@@ -86,11 +86,13 @@ public final class Roads {
             // paving to the junction pinned at 4638, -3355, where the main road passes. The camp's ground is the
             // camp's, so the road meets its wall and goes no further in.
             new Route.Riverless(ELLADAN_BRANCH, 4640, 4655, -3313, -3298, 4648, -3314, 4638, -3355),
-            // The Thorenhad road, from the west of that junction along the shelf to 4748, -3355 and then north and
-            // east to the junction at 4818, -3118, where the mountain way ends and the wood ruin's way back meets it.
-            // It is walked through the junction rather than from it so that the strip the scout pinned west of the
-            // junction at 4617, -3356 is part of the same road and not a stub of its own.
-            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4617, -3356, 4818, -3118),
+            // The Thorenhad road is the main road's own line, not the camp's: from its west reach at 4560, -3360
+            // through the pins at 4588, -3355 and on along the shelf to 4748, -3355, then north and east to the
+            // junction at 4818, -3118, where the mountain way ends and the wood ruin's way back meets it. Elladan's
+            // branch is the only road here that is the camp's, and it comes down onto this one at the junction pinned
+            // at 4638, -3355. The road is walked through that junction rather than from it so that the strip west of
+            // it, and now the reach beyond it, is part of the same road and not a stub of its own.
+            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4560, -3360, 4818, -3118),
             // Barachen's camp's own way out: its door at 4819, -2886, west and down to the junction pinned at 4804,
             // -2896, which is the road down the mountain's flank.
             new Route.Riverless(Sites.BARACHENS_CAMP, 4812, 4827, -2885, -2870, 4819, -2886, 4804, -2896),
@@ -147,7 +149,8 @@ public final class Roads {
             // The camp's branch turns once, where the camp's own paving ends.
             Map.entry(ELLADAN_BRANCH, List.of(new BlockPos(4644, 155, -3346))),
             // The main road's own line east of the junction, every pin the scout walked.
-            Map.entry(THORENHAD_ROAD, List.of(new BlockPos(4638, 155, -3355), new BlockPos(4651, 155, -3358),
+            Map.entry(THORENHAD_ROAD, List.of(new BlockPos(4588, 155, -3355), new BlockPos(4617, 155, -3356),
+                    new BlockPos(4638, 155, -3355), new BlockPos(4651, 155, -3358),
                     new BlockPos(4664, 156, -3359), new BlockPos(4684, 156, -3355),
                     new BlockPos(4714, 156, -3355), new BlockPos(4731, 157, -3359),
                     new BlockPos(4748, 157, -3355), new BlockPos(4747, 157, -3339),
