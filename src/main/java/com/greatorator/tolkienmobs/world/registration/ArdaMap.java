@@ -270,14 +270,20 @@ public final class ArdaMap {
      */
     private static final int RIVER_DEPTH_MAX = 11;
     /**
-     * How far along a drawn channel its water looks for the level it stands at, in blocks.
+     * How far out a river column looks for the lowest water of its own channel, in blocks: wider than the
+     * painted band is across, so the whole channel answers with one level.
      * <p>
      * The drawing's own terracing and the mask bake's pixel edges are a few blocks across, and a river that
      * takes each column's height as its surface turns them into pools that spill one into the next. Twelve
-     * blocks is a few of them either side of the column: far enough to level a step, near enough that the
-     * water met is the same river and not the sheet it runs into.
+     * blocks levelled a step between those pixels, but it is read inside one bank rather than across the
+     * channel: the masks paint their rivers as bands thirty blocks wide and more, and the surface a column
+     * standing in one takes is that column's own blend of the vale's apron and the drawn country - a blend that
+     * falls over the channel's width. North of Rivendell that came out as a bowl: fifteen blocks of fall
+     * across forty of channel, the river lying in a stair of pools with its bed terraced under each one and
+     * the terraces showing through the water. Twenty-four reaches across the widest band, so a channel answers
+     * with one level across it, and the only fall its water has is the one along its course.
      */
-    private static final int RIVER_LEVEL_REACH = 12;
+    private static final int RIVER_LEVEL_REACH = 24;
 
     /**
      * How far from a drawn river or lake its bank is raised, and how many of those blocks the raise falls
@@ -1208,8 +1214,8 @@ public final class ArdaMap {
     /**
      * The surface a drawn river's water stands at.
      * <p>
-     * The channel is walked a short way out in eight directions and the water takes the lowest channel it meets
-     * on the way, never under the sea. A river's surface cannot stand above the water beside it: a stretch
+     * The channel is walked out in eight directions, across its own width, and the water takes the lowest
+     * channel it meets on the way, never under the sea. A river's surface cannot stand above the water beside
      * drawn up a step becomes one fall instead of a pool waiting to spill into the row below, and where the
      * channel is drawn as a slope the surface descends with it instead of stepping. Only columns the river
      * runs through are asked, so the level is the river's own and never a lake's or the sea's.
