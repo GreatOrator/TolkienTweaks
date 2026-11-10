@@ -1046,6 +1046,9 @@ public final class Campaign extends SavedData {
         // A front whose line is not written hands nothing: its halls still stand and its herald still
         // speaks for his country, but the campaign does not send a player anywhere it has no pages for.
         if (!FRONTS.contains(alliance)) return null;
+        // Elrond's note stands where chapter two's first page would be: nothing is handed out while it is
+        // unanswered, because the note's errand is the next step and the herald is not the road to it.
+        if (alliance == Alliance.WEST && Departure.awaiting(player)) return null;
         Front[] row = row(player);
         int stage = row[alliance.ordinal()].stage();
         List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
@@ -1199,6 +1202,15 @@ public final class Campaign extends SavedData {
      * finished a step is left holding a book with nothing in it and no way of knowing whether the fault
      * is theirs. Said where a page is settled, so a player who logs back in is not told again.
      */
+    /**
+     * Opens chapter two: the seam has been seen, so the next page of the West's line is handed over rather
+     * than waited for. The scene is the page's own hand: a player who has just watched the Company go is
+     * not sent back to Elrond to ask what next, which is the one moment the relay would read as a runaround.
+     */
+    public static void startChapterTwo(ServerPlayer player) {
+        handOnward(player, Alliance.WEST);
+    }
+
     public static void announceNext(ServerPlayer player) {
         // A page that followed the last one into the book needs no pointer: the player is already
         // carrying what there is to carry.
@@ -1243,6 +1255,12 @@ public final class Campaign extends SavedData {
      */
     public static void remindNext(ServerPlayer player) {
         if (QuestLedger.carriesStory(player)) return;
+        // A player holding an unanswered note is not between pages: they are on the seam, and the note is
+        // what there is to say.
+        if (Departure.awaiting(player)) {
+            Departure.remind(player);
+            return;
+        }
         if (nextStep(player, Alliance.WEST) != null) {
             announceNext(player);
             return;
@@ -2960,6 +2978,9 @@ public final class Campaign extends SavedData {
         keepLegolas(player);
         keepGloin(player);
         keepGimli(player);
+        // The seam between the chapters is walked rather than handed over: the note left at the end of
+        // chapter one is answered at the courtyard, and the company leaving is what opens chapter two.
+        Departure.tick(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());
@@ -3525,6 +3546,9 @@ public final class Campaign extends SavedData {
                 // as the standing so a page cannot be worth one and not the other.
                 payPurse(player, paid);
                 payGift(player, paid);
+                // The chapter's last page does not hand the next one over: it leaves Elrond's note, and
+                // chapter two stays shut until the Company has been seen off at the courtyard.
+                if (DEPARTURE_TITLE.equals(paid.title())) Departure.summon(player);
                 // The missing rider is found with his horse's tack still in the ruin, and the notes make
                 // the bridle the thing carried back rather than the tale alone: the page that finds him
                 // puts the dark saddle in the player's hand, and the report to Elladan is not heard
