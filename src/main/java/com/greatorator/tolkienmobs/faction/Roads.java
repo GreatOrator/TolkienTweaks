@@ -63,6 +63,16 @@ public final class Roads {
     public static final String CAVE_WAY_EAST = "tolkienmobs:roads/cave_way_east";
     public static final String TROLL_CAVE_WAY = "tolkienmobs:roads/troll_cave_way";
 
+    /**
+     * The wood ruin's way back to the road: out of the foot of its stair, south-east under its south wall, to the
+     * junction the mountain way ends at.
+     * <p>
+     * The ruin has two: its own way out west under the wood, and this one, which finishes the connection back to the
+     * road that the mountain way and the Thorenhad road meet on. It is a road of its own rather than part of either
+     * because a route is one line, and this line leaves the ruin south-east where the other leaves it west.
+     */
+    public static final String WOOD_RUIN_LINK = "tolkienmobs:roads/wood_ruin_link";
+
     /** Every build that has a road walked for it. A build missing here gets none. */
     public static final List<Route> ROUTES = List.of(
             // Rivendell: the path's last block at 5200, 134, -3034, down to the crossing the scout pinned on z -3060
@@ -76,11 +86,11 @@ public final class Roads {
             // paving to the junction pinned at 4638, -3355, where the main road passes. The camp's ground is the
             // camp's, so the road meets its wall and goes no further in.
             new Route.Riverless(ELLADAN_BRANCH, 4640, 4655, -3313, -3298, 4648, -3314, 4638, -3355),
-            // The Thorenhad road, from the west of that junction along the shelf to 4745, -3355 - which is as far as
-            // it is marked. It is walked through the junction rather than from it so that the strip the scout pinned
-            // west of the junction at 4617, -3356 is part of the same road and not a stub of its own. The rest of
-            // the road to the ford has still to be walked.
-            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4617, -3356, 4745, -3355),
+            // The Thorenhad road, from the west of that junction along the shelf to 4748, -3355 and then north and
+            // east to the junction at 4818, -3118, where the mountain way ends and the wood ruin's way back meets it.
+            // It is walked through the junction rather than from it so that the strip the scout pinned west of the
+            // junction at 4617, -3356 is part of the same road and not a stub of its own.
+            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4617, -3356, 4818, -3118),
             // Barachen's camp's own way out: its door at 4819, -2886, west and down to the junction pinned at 4804,
             // -2896, which is the road down the mountain's flank.
             new Route.Riverless(Sites.BARACHENS_CAMP, 4812, 4827, -2885, -2870, 4819, -2886, 4804, -2896),
@@ -89,6 +99,10 @@ public final class Roads {
             // ground, stair and all: measured short of the stair, the road's band reached into it and graded the ruin's
             // own steps into road, so the road climbed the tower instead of leaving it.
             new Route.Riverless(Sites.WOOD_RUIN, 4783, 4791, -3064, -3046, 4787, -3064, 4689, -3051),
+            // The ruin's other way: out of the foot of the same stair, south-east under the ruin's south wall to the
+            // junction at 4818, -3118, where the mountain way ends and the Thorenhad road arrives - the ruin's road
+            // back to everything else.
+            new Route.Riverless(WOOD_RUIN_LINK, 4783, 4791, -3064, -3046, 4787, -3064, 4818, -3118),
             // The road down the mountain's west flank: from the bend it takes off the north road at 4789, -2721,
             // down past Barachen's camp and the wood ruin to the pins below at 4818, -3115. It passes two junctions
             // - the camp's at 4804, -2896 and the ruin's at 4824, -3055 - so those are bends rather than ends.
@@ -120,29 +134,38 @@ public final class Roads {
      * A route with no entry here is walked in one leg, exactly as every road was before there was a way to bend one.
      * The list is in the order the road meets the marks, since the legs are walked in that order.
      */
-    private static final Map<String, List<BlockPos>> BENDS = Map.of(
+    private static final Map<String, List<BlockPos>> BENDS = Map.ofEntries(
             // The city's road down to the crossing, in the order it is walked: out of the path's end, north-west
             // round the shoulder, then south-west onto the span's line.
-            "rivendell", List.of(new BlockPos(5186, 132, -3030), new BlockPos(5178, 122, -3025),
+            Map.entry("rivendell", List.of(new BlockPos(5186, 132, -3030), new BlockPos(5178, 122, -3025),
                     new BlockPos(5174, 122, -3004), new BlockPos(5163, 122, -2993),
                     new BlockPos(5138, 121, -3004), new BlockPos(5116, 111, -3008),
                     new BlockPos(5115, 100, -3021), new BlockPos(5109, 92, -3031),
-                    new BlockPos(5108, 78, -3054)),
+                    new BlockPos(5108, 78, -3054))),
             // The camp's branch turns once, where the camp's own paving ends.
-            ELLADAN_BRANCH, List.of(new BlockPos(4644, 155, -3346)),
+            Map.entry(ELLADAN_BRANCH, List.of(new BlockPos(4644, 155, -3346))),
             // The main road's own line east of the junction, every pin the scout walked.
-            THORENHAD_ROAD, List.of(new BlockPos(4638, 155, -3355), new BlockPos(4651, 155, -3358),
+            Map.entry(THORENHAD_ROAD, List.of(new BlockPos(4638, 155, -3355), new BlockPos(4651, 155, -3358),
                     new BlockPos(4664, 156, -3359), new BlockPos(4684, 156, -3355),
-                    new BlockPos(4714, 156, -3355), new BlockPos(4731, 157, -3359)),
+                    new BlockPos(4714, 156, -3355), new BlockPos(4731, 157, -3359),
+                    new BlockPos(4748, 157, -3355), new BlockPos(4747, 157, -3339),
+                    new BlockPos(4747, 157, -3325), new BlockPos(4748, 157, -3292),
+                    new BlockPos(4761, 158, -3266), new BlockPos(4774, 158, -3243),
+                    new BlockPos(4783, 159, -3215), new BlockPos(4791, 159, -3184),
+                    new BlockPos(4799, 159, -3155), new BlockPos(4811, 159, -3143),
+                    new BlockPos(4817, 159, -3131))),
+            // The ruin's way back to the road, out of the same stair foot and south-east to the junction.
+            Map.entry(WOOD_RUIN_LINK, List.of(new BlockPos(4787, 159, -3082), new BlockPos(4793, 159, -3092),
+                    new BlockPos(4808, 159, -3096), new BlockPos(4818, 159, -3097))),
             // The camp's track out of its door and onto the junction.
-            Sites.BARACHENS_CAMP, List.of(new BlockPos(4819, 158, -2893), new BlockPos(4814, 158, -2896)),
+            Map.entry(Sites.BARACHENS_CAMP, List.of(new BlockPos(4819, 158, -2893), new BlockPos(4814, 158, -2896))),
             // The ruin's track: out of the foot of its stair, south to the junction, and west under the wood.
-            Sites.WOOD_RUIN, List.of(new BlockPos(4784, 159, -3069), new BlockPos(4772, 159, -3070),
+            Map.entry(Sites.WOOD_RUIN, List.of(new BlockPos(4784, 159, -3069), new BlockPos(4772, 159, -3070),
                     new BlockPos(4760, 160, -3070), new BlockPos(4752, 160, -3082),
-                    new BlockPos(4725, 160, -3060), new BlockPos(4712, 160, -3049)),
+                    new BlockPos(4725, 160, -3060), new BlockPos(4712, 160, -3049))),
             // The flank road: every pin between the north road and the pins below, which is the switchback the
             // scout walked up the fall.
-            MOUNTAIN_WAY, List.of(new BlockPos(4818, 157, -2742), new BlockPos(4790, 158, -2768),
+            Map.entry(MOUNTAIN_WAY, List.of(new BlockPos(4818, 157, -2742), new BlockPos(4790, 158, -2768),
                     new BlockPos(4811, 157, -2781), new BlockPos(4796, 158, -2812),
                     new BlockPos(4811, 158, -2821), new BlockPos(4799, 158, -2836),
                     new BlockPos(4803, 158, -2854), new BlockPos(4806, 158, -2860),
@@ -150,10 +173,10 @@ public final class Roads {
                     new BlockPos(4804, 158, -2958), new BlockPos(4804, 158, -2998),
                     new BlockPos(4811, 158, -3058), new BlockPos(4824, 158, -3055),
                     new BlockPos(4825, 158, -3069), new BlockPos(4825, 158, -3081),
-                    new BlockPos(4825, 159, -3095)),
+                    new BlockPos(4825, 159, -3095))),
             // The crag road: south out of the crag, east along the country road, and then every pin of the descent
             // to the ford's own road end.
-            FORD_WAY, List.of(new BlockPos(4447, 152, -2526), new BlockPos(4432, 152, -2548),
+            Map.entry(FORD_WAY, List.of(new BlockPos(4447, 152, -2526), new BlockPos(4432, 152, -2548),
                     new BlockPos(4427, 153, -2564), new BlockPos(4417, 154, -2586),
                     new BlockPos(4411, 154, -2635), new BlockPos(4409, 155, -2667),
                     new BlockPos(4427, 155, -2689), new BlockPos(4449, 156, -2705),
@@ -183,11 +206,12 @@ public final class Roads {
                     new BlockPos(4948, 90, -2915), new BlockPos(4948, 89, -2922), new BlockPos(4952, 89, -2943), new BlockPos(4954, 88, -2949),
                     new BlockPos(4954, 87, -2954), new BlockPos(4955, 85, -2963), new BlockPos(4962, 85, -2972), new BlockPos(4966, 84, -2981),
                     new BlockPos(4971, 84, -2986), new BlockPos(4979, 84, -3003), new BlockPos(4987, 83, -3016), new BlockPos(4989, 83, -3025),
-                    new BlockPos(4992, 82, -3032), new BlockPos(4996, 81, -3034), new BlockPos(4998, 80, -3049)),
+                    new BlockPos(4992, 82, -3032), new BlockPos(4996, 81, -3034), new BlockPos(4998, 80, -3049))),
             // The caves' cluster, each road in the order it walks out of the junction it shares with the other two.
-            CAVE_WAY_NORTH, List.of(new BlockPos(4536, 155, -2443), new BlockPos(4543, 155, -2464)),
-            CAVE_WAY_EAST, List.of(new BlockPos(4555, 155, -2517), new BlockPos(4551, 155, -2496)),
-            TROLL_CAVE_WAY, List.of(new BlockPos(4478, 153, -2489)));
+            Map.entry(CAVE_WAY_NORTH, List.of(new BlockPos(4536, 155, -2443), new BlockPos(4543, 155, -2464))),
+            Map.entry(CAVE_WAY_EAST, List.of(new BlockPos(4555, 155, -2517), new BlockPos(4551, 155, -2496))),
+            Map.entry(TROLL_CAVE_WAY, List.of(new BlockPos(4478, 153, -2489)))
+    );
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
     public static List<BlockPos> bends(Route route) {
@@ -256,20 +280,20 @@ public final class Roads {
      * What a column is made of follows the kind too, because a town's street is paved and a main road is not: naming
      * a kind settles both, and {@link Kind#MAIN} is the one that names a width without the paving.
      */
-    private static final Map<String, Kind> KINDS = Map.of(
+    private static final Map<String, Kind> KINDS = Map.ofEntries(
             // Every road the scout has walked is laid the same way for now: five wide, of the country's own gravel
             // and dirt, so that the line can be judged by walking it before it is given its proper width.
-            "rivendell", Kind.WILD_WIDE,
-            ELLADAN_BRANCH, Kind.WILD_WIDE,
-            THORENHAD_ROAD, Kind.WILD_WIDE,
-            Sites.BARACHENS_CAMP, Kind.WILD_WIDE,
-            Sites.WOOD_RUIN, Kind.WILD_WIDE,
-            MOUNTAIN_WAY, Kind.WILD_WIDE,
-            FORD_WAY, Kind.WILD_WIDE,
-            CAVE_WAY_NORTH, Kind.WILD_WIDE,
-            CAVE_WAY_EAST, Kind.WILD_WIDE,
-            TROLL_CAVE_WAY, Kind.WILD_WIDE
-            );
+            Map.entry("rivendell", Kind.WILD_WIDE),
+            Map.entry(ELLADAN_BRANCH, Kind.WILD_WIDE),
+            Map.entry(THORENHAD_ROAD, Kind.WILD_WIDE),
+            Map.entry(Sites.BARACHENS_CAMP, Kind.WILD_WIDE),
+            Map.entry(Sites.WOOD_RUIN, Kind.WILD_WIDE),
+            Map.entry(MOUNTAIN_WAY, Kind.WILD_WIDE),
+            Map.entry(FORD_WAY, Kind.WILD_WIDE),
+            Map.entry(CAVE_WAY_NORTH, Kind.WILD_WIDE),
+            Map.entry(CAVE_WAY_EAST, Kind.WILD_WIDE),
+            Map.entry(TROLL_CAVE_WAY, Kind.WILD_WIDE),
+            Map.entry(WOOD_RUIN_LINK, Kind.WILD_WIDE));
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {
