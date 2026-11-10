@@ -56,8 +56,8 @@ public final class Roads {
      * It is a road rather than a build's way out, so it is named and carries no footprint. North of the ford the
      * Bruinen turns east across it, so the road is two sections rather than one: the crossing at
      * {@link #HIGH_PASS_BRIDGE}, which is where the water is, and this, the dry road beyond the far abutment - from
-     * the block the crossing's exit stops on at 5065, -3129 up to the last marker at 5124, -3399. Those two are the
-     * whole route; every pin between them is a bend.
+     * the block the crossing's exit stops on at 5065, -3129, past the staging plaza at 5117, -3409, and on up the
+     * pass to the last marker at 5187, -3658. Those two are the whole route; every pin between them is a bend.
      */
     public static final String HIGH_PASS_WAY = "tolkienmobs:roads/high_pass_way";
 
@@ -158,9 +158,9 @@ public final class Roads {
             // approach that has to reach the abutment.
             new Route.Crossing(HIGH_PASS_BRIDGE, 5060, 5074, -3070, -3050, 5067, -3062, 5065, -3073, 5065, -3098,
                     4, 77, 78, 79, 8, 32, "bridge_end", "bridge_middle"),
-            // The dry road north of the crossing, from the block the exit stops on to the last marker at 5124,
-            // -3399. Nothing stands behind either end, so the footprint is again only the block the road starts in.
-            new Route.Riverless(HIGH_PASS_WAY, 5060, 5074, -3140, -3120, 5065, -3129, 5124, -3399)
+            // The dry road north of the crossing, from the block the exit stops on to the last marker at 5187,
+            // -3658. Nothing stands behind either end, so the footprint is again only the block the road starts in.
+            new Route.Riverless(HIGH_PASS_WAY, 5060, 5074, -3140, -3120, 5065, -3129, 5187, -3658)
     );
 
     /**
@@ -258,13 +258,36 @@ public final class Roads {
             // abutment, every one the scout walked, because the shoulder above the river turns as it climbs and the
             // vale's north side falls away twenty blocks in less than ninety - legs that long read as a straight line
             // through the country rather than as the line that was walked.
+            //
+            // The second walk carries the road on from the vale's floor: north past the staging plaza, north-west
+            // round the shoulder the pass turns behind, and then up the face in three switchbacks to 161. Every mark
+            // is a pin but three, and those three - the pair at 5164 and 5167 with 5161 and 5170 either side of them,
+            // and 5101 at 92 with 5101 at 90 and 5099 at 93 either side - stand on the line between their neighbours
+            // on a dead-straight run, where a leg already goes. The corners are pins because the search cuts corners:
+            // a switchback walked as one leg from 5143, -3599 to 5169, -3606 is a road across the face rather than up it.
             Map.entry(HIGH_PASS_WAY, List.of(new BlockPos(5071, 78, -3138), new BlockPos(5077, 79, -3153),
                     new BlockPos(5076, 80, -3184), new BlockPos(5077, 81, -3209),
                     new BlockPos(5080, 83, -3230), new BlockPos(5080, 84, -3253),
                     new BlockPos(5070, 85, -3272), new BlockPos(5066, 87, -3292),
                     new BlockPos(5081, 88, -3317), new BlockPos(5080, 86, -3328),
                     new BlockPos(5094, 79, -3347), new BlockPos(5097, 76, -3361),
-                    new BlockPos(5113, 74, -3385), new BlockPos(5124, 76, -3399)))
+                    new BlockPos(5113, 74, -3385), new BlockPos(5124, 76, -3399),
+                    new BlockPos(5119, 78, -3422), new BlockPos(5104, 83, -3436),
+                    new BlockPos(5103, 86, -3441), new BlockPos(5101, 90, -3447),
+                    new BlockPos(5099, 93, -3453), new BlockPos(5096, 95, -3458),
+                    new BlockPos(5095, 95, -3466), new BlockPos(5095, 97, -3511),
+                    new BlockPos(5105, 98, -3527), new BlockPos(5110, 99, -3546),
+                    new BlockPos(5125, 100, -3558), new BlockPos(5140, 103, -3567),
+                    new BlockPos(5147, 105, -3567), new BlockPos(5148, 107, -3563),
+                    new BlockPos(5152, 109, -3556), new BlockPos(5161, 113, -3556),
+                    new BlockPos(5170, 118, -3556), new BlockPos(5171, 118, -3569),
+                    new BlockPos(5172, 120, -3576), new BlockPos(5179, 124, -3576),
+                    new BlockPos(5179, 127, -3583), new BlockPos(5162, 127, -3592),
+                    new BlockPos(5143, 131, -3599), new BlockPos(5143, 137, -3606),
+                    new BlockPos(5169, 141, -3606), new BlockPos(5169, 146, -3612),
+                    new BlockPos(5169, 153, -3623), new BlockPos(5169, 155, -3628),
+                    new BlockPos(5179, 157, -3628), new BlockPos(5184, 160, -3636),
+                    new BlockPos(5185, 161, -3649), new BlockPos(5187, 161, -3658)))
     );
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
