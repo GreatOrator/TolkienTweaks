@@ -61,14 +61,18 @@ public final class Roads {
             // build, so its own track is wild - three blocks wide - however near the seven-wide road it ends.
             new Route.Riverless(ELLADAN_BRANCH, 4640, 4655, -3313, -3298, 4648, -3314, 4633, -3331),
             // The Thorenhad road, the valley's main road: its end at the mark 4633, 91, -3331 - the ford being the
-            // other end, so the road is walked towards the ford - down to the ford's own road end at 4972, 86, -3075,
+            // other end, so the road is walked towards the ford - down to the ford's own road end at 4978, 97, -3075,
             // where the crossing's exit road stops, and no further: the road over the water and this dry one are the
             // two sections of the same road, and one that ran past the meeting point would grade the same country a
             // second time from the other side. It is a road rather than a build's way out, so it carries its own name
             // and its own kind: seven wide from the junction to the ford, of the country's own gravel and dirt, which
             // is what `KINDS` says of it. The bands would have made it a town's street at one end and a track at the
             // other, and a main road is neither.
-            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4633, -3331, 4972, -3075),
+            // The junction is the crossing's own road end rather than the mark the road was walked at. The ground
+            // west of the river stands on the massif's outward fall now, and 4972 - where that mark is - is thirteen
+            // blocks over the exit road's top at 4978. Ending on 4978 puts the two sections of the road down on the
+            // same ground, one block above the ford road's own last slab.
+            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4633, -3331, 4978, -3075),
             // Barachen's fire to the mark at 4892, 74, -3097, where the Thorenhad road runs past: the road leaves the
             // camp's own door at 4820, 76, -2886 and ends at the mark, so the two roads meet there instead of each
             // grading the country the other has already laid. The camp is sixteen by sixteen from its corner pin at

@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
+- The Thorenhad road ends on the crossing's road end rather than the mark it was walked at, so the two sections of the road meet on the ground the massif now stands on instead of thirteen blocks apart.
 - The crossing at the ford is laid two blocks over the highest water on its span, so the bridge stands above the Bruinen instead of one block under it.
 - The branch falls one block in twenty-four instead of twelve, so the four blocks between the city's water and the ford are carried down the whole course rather than cascaded into the crossing.
 - The massif's bench beside the river gets the gorge wall's ribs, so the ground that comes down to the water is broken into spurs and hollows instead of ringing it in plates.
