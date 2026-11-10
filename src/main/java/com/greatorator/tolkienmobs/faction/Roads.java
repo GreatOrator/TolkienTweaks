@@ -95,8 +95,10 @@ public final class Roads {
             new Route.Riverless(MOUNTAIN_WAY, 0, 0, 0, 0, 4789, -2721, 4818, -3115),
             // The road from the crag in the north-west to the ford's own road end: out of the crag at 4460, -2477,
             // south to the country road at 4411, -2635, east along it to 4875, -2691, and then down the massif's
-            // west fall - 155 to 89 in two switchbacks - to the bridge's west bank at 5003, -3060, so the dry road
-            // and the crossing meet end to end on the same ground.
+            // west fall from 155 to 80 - the shoulder north-east, the hairpin at 4937, -2627 where the switchback
+            // turns, and the long fall south - to the bridge's west bank at 5003, -3060, so the dry road and the
+            // crossing meet end to end on the same ground. The line is the scout's own: the descent is bent through
+            // the pins they re-laid a few blocks off the straight shot, sixty-two of them.
             new Route.Riverless(FORD_WAY, 0, 0, 0, 0, 4460, -2477, 5003, -3060),
             // The caves' cluster: three marks where the cave roads meet, so each road is walked out of its own cave to
             // that junction - the north road from its mouth at 4508, -2429, the east road from 4568, -2511, and the
@@ -164,11 +166,22 @@ public final class Roads {
                     new BlockPos(4789, 156, -2671), new BlockPos(4791, 156, -2674),
                     new BlockPos(4793, 156, -2688), new BlockPos(4835, 156, -2717),
                     new BlockPos(4851, 155, -2695), new BlockPos(4875, 154, -2691),
-                    new BlockPos(4898, 127, -2697), new BlockPos(4920, 104, -2713),
-                    new BlockPos(4930, 101, -2731), new BlockPos(4955, 96, -2759),
-                    new BlockPos(4968, 92, -2779), new BlockPos(4976, 89, -2807),
-                    new BlockPos(4957, 89, -2898), new BlockPos(4952, 88, -2928),
-                    new BlockPos(4979, 83, -2997), new BlockPos(4998, 80, -3054)),
+                    new BlockPos(4885, 155, -2684), new BlockPos(4888, 151, -2684), new BlockPos(4890, 147, -2684), new BlockPos(4893, 140, -2684),
+                    new BlockPos(4894, 137, -2684), new BlockPos(4896, 134, -2684), new BlockPos(4898, 131, -2684), new BlockPos(4900, 127, -2684),
+                    new BlockPos(4903, 124, -2683), new BlockPos(4910, 124, -2676), new BlockPos(4913, 121, -2669), new BlockPos(4914, 120, -2659),
+                    new BlockPos(4921, 120, -2652), new BlockPos(4924, 115, -2646), new BlockPos(4930, 115, -2632), new BlockPos(4932, 114, -2628),
+                    new BlockPos(4935, 110, -2632), new BlockPos(4937, 107, -2627), new BlockPos(4937, 106, -2636), new BlockPos(4932, 112, -2636),
+                    new BlockPos(4925, 106, -2656), new BlockPos(4921, 104, -2664), new BlockPos(4921, 103, -2671), new BlockPos(4920, 102, -2679),
+                    new BlockPos(4914, 100, -2686), new BlockPos(4912, 100, -2699), new BlockPos(4919, 99, -2703), new BlockPos(4924, 97, -2707),
+                    new BlockPos(4925, 97, -2717), new BlockPos(4930, 98, -2727), new BlockPos(4935, 98, -2738), new BlockPos(4942, 97, -2747),
+                    new BlockPos(4945, 96, -2750), new BlockPos(4948, 96, -2753), new BlockPos(4955, 95, -2759), new BlockPos(4956, 94, -2761),
+                    new BlockPos(4958, 93, -2768), new BlockPos(4966, 92, -2778), new BlockPos(4973, 91, -2786), new BlockPos(4973, 90, -2803),
+                    new BlockPos(4974, 88, -2822), new BlockPos(4973, 88, -2845), new BlockPos(4968, 89, -2851), new BlockPos(4965, 89, -2866),
+                    new BlockPos(4962, 90, -2873), new BlockPos(4957, 90, -2877), new BlockPos(4957, 90, -2886), new BlockPos(4952, 91, -2908),
+                    new BlockPos(4948, 90, -2915), new BlockPos(4948, 89, -2922), new BlockPos(4952, 89, -2943), new BlockPos(4954, 88, -2949),
+                    new BlockPos(4954, 87, -2954), new BlockPos(4955, 85, -2963), new BlockPos(4962, 85, -2972), new BlockPos(4966, 84, -2981),
+                    new BlockPos(4971, 84, -2986), new BlockPos(4979, 84, -3003), new BlockPos(4987, 83, -3016), new BlockPos(4989, 83, -3025),
+                    new BlockPos(4992, 82, -3032), new BlockPos(4996, 81, -3034), new BlockPos(4998, 80, -3049)),
             // The caves' cluster, each road in the order it walks out of the junction it shares with the other two.
             CAVE_WAY_NORTH, List.of(new BlockPos(4536, 155, -2443), new BlockPos(4543, 155, -2464)),
             CAVE_WAY_EAST, List.of(new BlockPos(4555, 155, -2517), new BlockPos(4551, 155, -2496)),
