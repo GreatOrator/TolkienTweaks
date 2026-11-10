@@ -49,6 +49,18 @@ public final class RoadPaint {
      */
     private static final int VERGE = 2;
 
+    /**
+     * How much air stands over a generated road's own surface, by how far out from the middle of the road the column
+     * is: five over the middle and the first column out, four at the second, three at the edge. It is the profile the
+     * pass keeps for a road it lays, so a generated road and a walked one are tunnels of a size.
+     */
+    private static final int[] TUNNEL = {5, 5, 4, 3};
+
+    /** The headroom a column of a road's corridor is cleared to, from where it stands across the road. */
+    private static int tunnel(int away) {
+        return away < 0 ? TUNNEL[0] : away < TUNNEL.length ? TUNNEL[away] : 0;
+    }
+
     /** How far a generated road may cut into the ground it crosses, in blocks. */
     public static final int MAX_CUT = 4;
     /** How far it may stand above that ground. */
@@ -252,7 +264,15 @@ public final class RoadPaint {
                 if (ground < minY) continue;
                 if (!level.getFluidState(at.set(blockX, ground, blockZ)).isEmpty()) continue;
 
-                for (int y = ground + 1; y <= maxY; y++) {
+                // Headroom rather than a trench to the sky: the corridor is cleared to the tunnel's profile and the
+                // wood keeps every leaf above it. A trunk standing in the lane is the one thing taken whole, since a
+                // tree cut off at the roof leaves the crown it was carrying standing over the road.
+                Station under = nearest(blockX, blockZ, VERGE);
+                int reach = under == null ? TUNNEL[0] : tunnel((int) Math.round(under.away()));
+                boolean trunk = ground + reach + 1 <= maxY
+                        && level.getBlockState(at.set(blockX, ground + reach + 1, blockZ)).is(BlockTags.LOGS);
+                int top = trunk ? maxY : ground + reach;
+                for (int y = ground + 1; y <= top && y <= maxY; y++) {
                     if (!cover(level.getBlockState(at.set(blockX, y, blockZ)))) continue;
                     level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
                     cleared++;

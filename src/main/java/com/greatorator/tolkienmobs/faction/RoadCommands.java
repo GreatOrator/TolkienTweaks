@@ -155,35 +155,22 @@ public final class RoadCommands {
     /** How many times the two step sweeps are alternated after the last pass, so both ends agree. */
     private static final int SETTLE_PASSES = 8;
     /**
-     * How far above the road a column's trunks and leaves are cleared, so no crown hangs over the grade.
+     * How many blocks of air stand over a road's own surface, by how far out from the middle of the road the column
+     * is: five over the middle and the first column out, four at the second, three at the third, and none past it.
      * <p>
-     * Tall enough for the tallest crown the chapter's own woods grow. Mirkwood's are the tallest: read out of Roads 3
-     * along the Thorenhad road's line, twenty-two columns of a hundred and eighteen carry a crown taller than sixteen
-     * blocks, the tallest standing twenty over the grade at 4939, -3088, and the camp's own junction at 4633, -3331
-     * has one seventeen over it. A reach of sixteen therefore left the top of the crown hanging over the road and it
-     * came out under its own leaves at the join. The reach is one rule rather than a measurement per column: a road
-     * cut through a wood is a lane, and the lane runs under sky however tall the trees it is cut through.
+     * A road through a wood used to be cleared to the sky over every column of its band, which in a wood read as a
+     * trench cut through the canopy. What a road needs is headroom rather than daylight: this is the tunnel it keeps,
+     * wide enough to walk under and narrow enough that the wood above it is still a wood.
      */
-    private static final int CANOPY_CLEAR = 24;
-    /**
-     * How many columns beyond the road's edge the wood is trimmed, so the lane steps down into the trees instead of
-     * being cut square through them.
-     * <p>
-     * Cleared only over the road's own columns, the crown was taken away to its full height right at the edge and left
-     * standing beyond it: the wood beside the lane was a sheer face of leaf, which reads as a corridor with walls
-     * rather than a road through a wood. The columns beside the road are trimmed too, a step shallower for each one
-     * out, and past these the wood is left as it has it.
-     */
-    private static final int CANOPY_SHOULDER = 3;
+    private static final int[] TUNNEL = {5, 5, 4, 3};
 
     /**
-     * How far above its own ground a column beside the road is trimmed: the whole crown over the road's own edge, then
-     * a step shallower for each column out, and nothing past the shoulder.
+     * How far above its own column's ground a column of the tunnel is cleared: the headroom its distance from the
+     * middle of the road asks for, and nothing past the last of the profile.
      */
-    private static int canopyReach(int beyond) {
-        if (beyond <= 0) return CANOPY_CLEAR;
-        if (beyond > CANOPY_SHOULDER) return 0;
-        return CANOPY_CLEAR * (CANOPY_SHOULDER - beyond + 1) / (CANOPY_SHOULDER + 1);
+    private static int canopyReach(int offset) {
+        if (offset < 0) return TUNNEL[0];
+        return offset < TUNNEL.length ? TUNNEL[offset] : 0;
     }
     /** The grade the descent aims for, in blocks of rise per block of travel; anything steeper is penalised. */
     private static final double TARGET_GRADE = 0.35D;
@@ -1889,20 +1876,18 @@ public final class RoadCommands {
                     laid++;
                     // A road cut through a wood leaves its canopy hanging, so the corridor's own columns are
                     // cleared of leaves and logs above the road's surface.
-                    cleared += trimCanopy(level, at, into, target, CANOPY_CLEAR, true);
                 }
             }
-            // The road's own columns are cleared to their full reach; the ones beside it are trimmed a step shallower
-            // for each column out, so the lane steps down into the wood and the trees keep the crowns they grew.
-            int band = half + CANOPY_SHOULDER;
+            // The road's own columns and the one either side of them are cleared to the tunnel's headroom: five
+            // blocks over the middle, four at the second column out, three at the edge, and nothing past that. The
+            // wood keeps every leaf above the roof, so a road through a wood is a way under its canopy rather than a
+            // trench cut through the crowns. A trunk standing in the lane goes whole, over the band's own columns: a
+            // tree cut off at the roof leaves the crown it was carrying standing in the air over the road.
+            int band = half + 1;
             for (int dx = -band; dx <= band; dx++) {
                 for (int dz = -band; dz <= band; dz++) {
-                    // How far out this column stands from the road's edge, rounded: square to the edge a column is as
-                    // far out as its offset, and on the corner as far as both offsets put together.
-                    int beyond = (int) Math.round(Math.hypot(Math.max(0, Math.abs(dx) - half),
-                            Math.max(0, Math.abs(dz) - half)));
-                    if (beyond < 1) continue;
-                    int reach = canopyReach(beyond);
+                    int offset = Math.max(Math.abs(dx), Math.abs(dz));
+                    int reach = canopyReach(offset);
                     if (reach <= 0) continue;
                     int at = x + dx;
                     int into = z + dz;
@@ -1912,16 +1897,9 @@ public final class RoadCommands {
                             && into >= route.cityZ0() && into <= route.cityZ1()) {
                         continue;
                     }
-                    // A column whose leaves reach no higher than its ground has no crown over it, which is most of the
-                    // country a road crosses: nothing is read or written until there is something to trim.
-                    if (level.getHeight(Heightmap.Types.MOTION_BLOCKING, at, into)
-                            <= level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at, into)) {
-                        continue;
-                    }
-                    level.getChunk(at >> 4, into >> 4);
-                    int base = surfaceAt(level, at, into);
+                    int base = offset <= half ? target : surfaceAt(level, at, into);
                     if (base == VOID || base == WATER) base = target;
-                    cleared += trimCanopy(level, at, into, base, reach, false);
+                    cleared += trimCanopy(level, at, into, base, reach, offset <= half);
                 }
             }
             return counted;
