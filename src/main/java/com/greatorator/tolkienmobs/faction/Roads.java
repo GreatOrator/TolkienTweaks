@@ -56,10 +56,25 @@ public final class Roads {
      * It is a road rather than a build's way out, so it is named and carries no footprint. North of the ford the
      * Bruinen turns east across it, so the road is two sections rather than one: the crossing at
      * {@link #HIGH_PASS_BRIDGE}, which is where the water is, and this, the dry road beyond the far abutment - from
-     * the block the crossing's exit stops on at 5065, -3129, past the staging plaza at 5117, -3409, and on up the
-     * pass to the last marker at 5187, -3658. Those two are the whole route; every pin between them is a bend.
+     * the block the crossing's exit stops on at 5065, -3129, down the vale and on north to the staging plaza, where
+     * it ends on the mark a scout laid at the disc's own edge, 5124, -3401. Those two are the whole route to the
+     * plaza; every pin between them is a bend. The climb out of the plaza is {@link #HIGH_PASS_CLIMB}.
      */
     public static final String HIGH_PASS_WAY = "tolkienmobs:roads/high_pass_way";
+
+    /**
+     * The climb out of the staging plaza to the top of the pass: the scout's second walk, from the mark on the plaza's
+     * north rim at 5119, -3422, north-west round the shoulder the pass turns behind and then up the face in three
+     * switchbacks to the last marker at 5187, -3658.
+     * <p>
+     * It is a route of its own rather than the tail of {@link #HIGH_PASS_WAY} because of the ground between the two: a
+     * plaza is drawn level across its whole disc and eased into the country at the rim, and it answers for its own
+     * columns before any road does. A road run through the disc would be graded by the pass and then taken back by the
+     * terrain the next time that chunk was raised, which is what left the old end-point unable to carry on. So the
+     * first road ends where the plaza begins and this one starts on its far rim, and the twenty-one blocks between them
+     * are the staging ground itself - a floor to walk across, with no road laid over it.
+     */
+    public static final String HIGH_PASS_CLIMB = "tolkienmobs:roads/high_pass_climb";
 
     /**
      * The bridge the high pass road crosses the Bruinen on, a hundred blocks north of the ford.
@@ -158,9 +173,14 @@ public final class Roads {
             // approach that has to reach the abutment.
             new Route.Crossing(HIGH_PASS_BRIDGE, 5060, 5074, -3070, -3050, 5067, -3062, 5065, -3073, 5065, -3098,
                     4, 77, 78, 79, 8, 32, "bridge_end", "bridge_middle"),
-            // The dry road north of the crossing, from the block the exit stops on to the last marker at 5187,
-            // -3658. Nothing stands behind either end, so the footprint is again only the block the road starts in.
-            new Route.Riverless(HIGH_PASS_WAY, 5060, 5074, -3140, -3120, 5065, -3129, 5187, -3658)
+            // The dry road north of the crossing, from the block the exit stops on to the scout's mark on the staging
+            // plaza at 5124, -3401. Nothing stands behind either end, so the footprint is again only the block the
+            // road starts in.
+            new Route.Riverless(HIGH_PASS_WAY, 5060, 5074, -3140, -3120, 5065, -3129, 5124, -3401),
+            // The climb out of the plaza, from the mark on its north rim to the last marker at 5187, -3658. Its
+            // footprint is the small box that mark stands in, which also keeps the search from cutting back across the
+            // plaza's own floor to reach the shoulder above it.
+            new Route.Riverless(HIGH_PASS_CLIMB, 5112, 5126, -3430, -3414, 5119, -3422, 5187, -3658)
     );
 
     /**
@@ -257,22 +277,22 @@ public final class Roads {
             // bridge's own survey and belong to the crossing, whose banks they mark; these are the pins beyond the far
             // abutment, every one the scout walked, because the shoulder above the river turns as it climbs and the
             // vale's north side falls away twenty blocks in less than ninety - legs that long read as a straight line
-            // through the country rather than as the line that was walked.
-            //
-            // The second walk carries the road on from the vale's floor: north past the staging plaza, north-west
-            // round the shoulder the pass turns behind, and then up the face in three switchbacks to 161. Every mark
-            // is a pin but three, and those three - the pair at 5164 and 5167 with 5161 and 5170 either side of them,
-            // and 5101 at 92 with 5101 at 90 and 5099 at 93 either side - stand on the line between their neighbours
-            // on a dead-straight run, where a leg already goes. The corners are pins because the search cuts corners:
-            // a switchback walked as one leg from 5143, -3599 to 5169, -3606 is a road across the face rather than up it.
+            // through the country rather than as the line that was walked. The road ends at the staging plaza, on the
+            // mark the scout laid at its own edge.
             Map.entry(HIGH_PASS_WAY, List.of(new BlockPos(5071, 78, -3138), new BlockPos(5077, 79, -3153),
                     new BlockPos(5076, 80, -3184), new BlockPos(5077, 81, -3209),
                     new BlockPos(5080, 83, -3230), new BlockPos(5080, 84, -3253),
                     new BlockPos(5070, 85, -3272), new BlockPos(5066, 87, -3292),
                     new BlockPos(5081, 88, -3317), new BlockPos(5080, 86, -3328),
                     new BlockPos(5094, 79, -3347), new BlockPos(5097, 76, -3361),
-                    new BlockPos(5113, 74, -3385), new BlockPos(5124, 76, -3399),
-                    new BlockPos(5119, 78, -3422), new BlockPos(5104, 83, -3436),
+                    new BlockPos(5113, 74, -3385))),
+            // The climb out of the plaza, from the mark on its north rim: north-west round the shoulder the pass turns
+            // behind, and then up the face in three switchbacks to 161. Every mark is a pin but three, and those three -
+            // the pair at 5164 and 5167 with 5161 and 5170 either side of them, and 5101 at 92 with 5101 at 90 and 5099
+            // at 93 either side - stand on the line between their neighbours on a dead-straight run, where a leg already
+            // goes. The corners are pins because the search cuts corners: a switchback walked as one leg from 5143,
+            // -3599 to 5169, -3606 is a road across the face rather than up it.
+            Map.entry(HIGH_PASS_CLIMB, List.of(new BlockPos(5104, 83, -3436),
                     new BlockPos(5103, 86, -3441), new BlockPos(5101, 90, -3447),
                     new BlockPos(5099, 93, -3453), new BlockPos(5096, 95, -3458),
                     new BlockPos(5095, 95, -3466), new BlockPos(5095, 97, -3511),
@@ -287,7 +307,7 @@ public final class Roads {
                     new BlockPos(5169, 141, -3606), new BlockPos(5169, 146, -3612),
                     new BlockPos(5169, 153, -3623), new BlockPos(5169, 155, -3628),
                     new BlockPos(5179, 157, -3628), new BlockPos(5184, 160, -3636),
-                    new BlockPos(5185, 161, -3649), new BlockPos(5187, 161, -3658)))
+                    new BlockPos(5185, 161, -3649)))
     );
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
@@ -375,6 +395,7 @@ public final class Roads {
             // can be judged on foot before it is given a width of its own - the bridge included, whose pieces are nine
             // wide whatever the road either side of it is.
             Map.entry(HIGH_PASS_WAY, Kind.WILD_WIDE),
+            Map.entry(HIGH_PASS_CLIMB, Kind.WILD_WIDE),
             Map.entry(HIGH_PASS_BRIDGE, Kind.WILD_WIDE));
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
@@ -391,7 +412,8 @@ public final class Roads {
      * bridge has to be stood the first time somebody walks to it. These are the routes that answer for themselves.
      */
     private static final Set<String> ROADS = Set.of(THORENHAD_ROAD, ELLADAN_BRANCH, MOUNTAIN_WAY, FORD_WAY,
-            CAVE_WAY_NORTH, CAVE_WAY_EAST, TROLL_CAVE_WAY, WOOD_RUIN_LINK, HIGH_PASS_WAY, HIGH_PASS_BRIDGE);
+            CAVE_WAY_NORTH, CAVE_WAY_EAST, TROLL_CAVE_WAY, WOOD_RUIN_LINK, HIGH_PASS_WAY, HIGH_PASS_CLIMB,
+            HIGH_PASS_BRIDGE);
 
     /** Whether a route is a road rather than a build's own way out, and so begins wherever it is first met. */
     public static boolean road(Route route) {
@@ -479,17 +501,38 @@ public final class Roads {
         return null;
     }
 
-    /** The route nearest a point, for a hand standing beside the build it wants a road for. */
+    /**
+     * The route nearest a point, for a hand standing at the build - or the end - it wants a road for.
+     * <p>
+     * Measured to either end rather than to the start alone, because a road is laid from whichever end the hand stands
+     * at: the staging plaza is where the vale's road finishes and the climb out of it begins, and a hand on the plaza's
+     * edge has to be answered by the end it is standing on rather than by whichever start happens to be closer.
+     */
     public static Route nearest(BlockPos at) {
         Route best = null;
         double nearest = Double.MAX_VALUE;
         for (Route route : ROUTES) {
-            double away = Math.hypot(at.getX() - route.pathX(), at.getZ() - route.pathZ());
+            double away = Math.min(Math.hypot(at.getX() - route.pathX(), at.getZ() - route.pathZ()),
+                    endAway(route, at));
             if (away < nearest) {
                 nearest = away;
                 best = route;
             }
         }
         return best;
+    }
+
+    /** How far a hand stands from a route's other end: a dry road's last marker, or a crossing's far bank. */
+    private static double endAway(Route route, BlockPos at) {
+        int farX = route.pathX();
+        int farZ = route.pathZ();
+        if (route instanceof Route.Riverless dry) {
+            farX = dry.farX();
+            farZ = dry.farZ();
+        } else if (route instanceof Route.Crossing span) {
+            farX = span.farX();
+            farZ = span.farZ();
+        }
+        return Math.hypot(at.getX() - farX, at.getZ() - farZ);
     }
 }
