@@ -173,3 +173,31 @@ until the owner's markers arrive.
 Nothing. No code, no assets and no markers have been added by this note; every fact above comes from
 reading the old pack's JSON and this pack's source. `./gradlew compileJava` was not run for a docs-only
 change, and none of the old scene has been watched in motion.
+
+## The cast's skins have landed - 10 November 2026
+
+All ten of the scene's faces are now in the mod's own texture folder,
+`src/main/resources/assets/tolkienmobs/textures/entity/middle-earth/`, lower-cased and
+named by slug: `gandalf.png`, `aragorn.png`, `boromir.png`, `legolas.png`, `gimli.png`,
+`bilbo.png`, `frodo.png`, `samwise.png`, `merry.png`, `pippin.png`, beside the ones
+already there (`elrond.png`, `glorfindel.png`, `elladan.png`, `gloin.png`, `ranger.png`).
+
+That is the folder `HumanRender` and `DwarfRender` already look in by name, so the tall
+folk and Gimli needed nothing but the keeper tag the scene already sets. Hobbit bodies
+had no named lookup at all - `HobbitRender` went straight to the sixteen village
+variants - so it gained one: a named hobbit asks for `middle-earth/<slug>.png` first
+and falls back to its variant when no file is drawn, the same rule and folder as the
+tall folk.
+
+Elrond is the one body the scene does not spawn: he is the campaign's own, stood in the
+valley, and `middle-earth/elrond.png` exists but `ElvesRender` has no named lookup yet.
+His lines are spoken as chat either way.
+
+## Rehearsing without markers - 10 November 2026
+
+`/tmscene play` gathers the real cast, with the real offsets and the real script, round
+the caller's feet, and takes it away at the end without answering the note or opening
+chapter two. `/tmscene stop` takes it away early, `/tmscene note` hands over the summons,
+`/tmscene forget` clears the note and the having-seen, `/tmscene skip` answers the seam
+outright, and `/tmscene` alone reports the stage. So placement and pacing can be looked
+at on unpinned ground: what is seen there is what the pinned courtyard will get.

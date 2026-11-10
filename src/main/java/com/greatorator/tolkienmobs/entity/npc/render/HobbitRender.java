@@ -10,6 +10,7 @@ import com.greatorator.tolkienmobs.entity.npc.model.HobbitModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
@@ -67,8 +68,17 @@ public class HobbitRender extends GeoEntityRenderer<HobbitEntity, TolkienGeoRend
         return new TolkienGeoRenderState();
     }
 
-    /** The variant's texture, for the model and for the base class's texture lookup. */
+    /**
+     * The variant's texture, for the model and for the base class's texture lookup - unless this hobbit
+     * is somebody in particular and the pack has drawn him. A named hobbit is looked for in the same
+     * folder, and by the same rule, that the tall folk are: {@code Frodo} is {@code middle-earth/frodo.png}.
+     * A hobbit nobody has drawn keeps the clothes of his folk, which is the ordinary state of a pack whose
+     * art arrives by degrees, so a missing file is passed over without a word in the log.
+     */
     public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        Identifier own = renderState.giverName.isEmpty() ? null
+                : HumanRender.namedSkin(renderState.giverName);
+        if (own != null && HumanRender.resourcePresent(own)) return own;
         return LOCATION_BY_VARIANT.get(renderState.variant);
     }
 
@@ -80,6 +90,11 @@ public class HobbitRender extends GeoEntityRenderer<HobbitEntity, TolkienGeoRend
     @Override
     public void addRenderData(HobbitEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
         renderState.variant = animatable.getTolkienVariant();
+        // A name is a synched fact and a variant is not a person, so the name is what a face of one's own
+        // is looked for by. Hobbits in the mod's own scenes are the only named ones, so asking every
+        // unnamed villager is not a case worth guarding against - there is no name to read.
+        Component name = animatable.getCustomName();
+        renderState.giverName = name == null ? "" : name.getString();
     }
 
     /** The model's own scaling, which 5 applies here rather than in preRender. */

@@ -1080,6 +1080,15 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("campaign.tolkienmobs.scene.departure.23", "May they come to it in safety and return to Rivendell in victory.");
             this.add("campaign.tolkienmobs.scene.departure.24", "And so the Company departs. May the stars shine upon their road's end.");
             this.add("campaign.tolkienmobs.scene.departure.25", "Let us go back, Adventurer. There is nothing more we can do for them: the Company must now rely upon their own strength and wisdom.");
+            this.add("command.tolkienmobs.scene.state", "Stage %s of %s. Note waiting: %s. Scene running: %s.");
+            this.add("command.tolkienmobs.scene.yes", "yes");
+            this.add("command.tolkienmobs.scene.no", "no");
+            this.add("command.tolkienmobs.scene.note", "The summons is handed to %s.");
+            this.add("command.tolkienmobs.scene.answered", "%s has already answered the note; /tmscene forget clears it.");
+            this.add("command.tolkienmobs.scene.play", "The Company gathers where %s stands. A rehearsal opens no page.");
+            this.add("command.tolkienmobs.scene.stop", "The Company is taken away.");
+            this.add("command.tolkienmobs.scene.forget", "The note and the having-seen are cleared for %s.");
+            this.add("command.tolkienmobs.scene.skip", "Chapter two is opened for %s.");
             this.add("campaign.tolkienmobs.page.departure.closing", "You tell Elrond what came out of the wood, and he is silent a while. \"A servant of the Enemy in the shape of a beast, and old. That is worse news than the creature itself.\"");
             this.add("screen.tolkienmobs.quests.purse.silver", "Pays %s silver");
             this.add("screen.tolkienmobs.quests.purse.bronze", "Pays %s bronze");

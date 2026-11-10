@@ -182,12 +182,14 @@ public final class Departure {
         private final String dim;
         private final long start;
         private final List<UUID> bodies = new ArrayList<>();
+        private final boolean rehearsal;
         private int sent;
 
-        private Show(BlockPos at, String dim, long start) {
+        private Show(BlockPos at, String dim, long start, boolean rehearsal) {
             this.at = at;
             this.dim = dim;
             this.start = start;
+            this.rehearsal = rehearsal;
         }
     }
 
@@ -224,7 +226,27 @@ public final class Departure {
     }
 
     private static void start(ServerPlayer player, ServerLevel level, BlockPos at) {
-        Show show = new Show(at, level.dimension().identifier().toString(), level.getGameTime());
+        Show show = new Show(at, level.dimension().identifier().toString(), level.getGameTime(), false);
+        stand(level, show, at);
+        SHOWS.put(player.getUUID(), show);
+    }
+
+    /**
+     * Rehearses the scene where the caller stands, without touching the campaign: no note is answered and
+     * no page is opened, so the ground can be looked at and the pacing heard before a marker is set. The
+     * bodies, the offsets and the script are the real ones, which is what makes it worth watching.
+     */
+    public static void play(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        stop(player);
+        BlockPos at = player.blockPosition();
+        Show show = new Show(at, level.dimension().identifier().toString(), level.getGameTime(), true);
+        stand(level, show, at);
+        SHOWS.put(player.getUUID(), show);
+    }
+
+    /** Stands the cast round a mark. The bodies belong to the show and go when it does. */
+    private static void stand(ServerLevel level, Show show, BlockPos at) {
         float facing = 0.0F;
         for (Cast cast : CAST) {
             BlockPos spot = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
@@ -248,13 +270,14 @@ public final class Departure {
             level.addFreshEntity(body);
             show.bodies.add(body.getUUID());
         }
-        SHOWS.put(player.getUUID(), show);
     }
 
     private static void advance(ServerPlayer player, ServerLevel level, Show show) {
-        if (!level.dimension().identifier().toString().equals(show.dim)
+        // A rehearsal is not a showing: the caller may fly off to look at the ground from above and the
+        // words go on being said, since nothing is waiting on them.
+        if (!show.rehearsal && (!level.dimension().identifier().toString().equals(show.dim)
                 || player.blockPosition().distToCenterSqr(show.at.getX() + 0.5D, show.at.getY(),
-                show.at.getZ() + 0.5D) > STAGE_REACH * STAGE_REACH) {
+                show.at.getZ() + 0.5D) > STAGE_REACH * STAGE_REACH)) {
             abort(player, level, show);
             return;
         }
@@ -274,6 +297,8 @@ public final class Departure {
     private static void finish(ServerPlayer player, ServerLevel level, Show show) {
         clear(level, show);
         SHOWS.remove(player.getUUID());
+        // A rehearsal ends as a scene ends - the bodies go - and nothing else about the world moves.
+        if (show.rehearsal) return;
         player.removeTag(SUMMONS);
         player.addTag(SEEN);
         Campaign.startChapterTwo(player);
@@ -303,6 +328,18 @@ public final class Departure {
         if (!(player.level() instanceof ServerLevel level)) return;
         Show show = SHOWS.remove(player.getUUID());
         if (show != null) clear(level, show);
+    }
+
+    /**
+     * Answers the seam without watching it: the note is taken back, the having-seen is written down and
+     * chapter two is opened. For a scene that will not start or cannot be finished - the escape hatch, and
+     * the reason it can be an escape hatch rather than a repair.
+     */
+    public static void skip(ServerPlayer player) {
+        stop(player);
+        player.removeTag(SUMMONS);
+        player.addTag(SEEN);
+        Campaign.startChapterTwo(player);
     }
 
     /** Forgets the summons and the having-seen, so the seam can be walked from its start again. */
