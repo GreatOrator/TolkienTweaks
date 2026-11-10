@@ -46,9 +46,14 @@ public final class Roads {
     /** Every build that has a road walked for it. A build missing here gets none. */
     public static final List<Route> ROUTES = List.of(
             // Rivendell: the path's last block at 5200, 134, -3034, the banks at 5055 and 5006 on z -3075, the deck
-            // at 76 - the numbers the scouted valley was walked to, 584 pieces of city above the path's end.
+            // at 78 - the numbers the scouted valley was walked to, 584 pieces of city above the path's end.
+            // The deck clears the water rather than sitting where it was walked. The dale holds the Bruinen at 76
+            // under the east half of the span and 77 under the west, so the scouted deck at 76 was a walking surface
+            // one block under the river, and the crossing in the save stood with its planks awash. Two over the
+            // highest water on the span is a deck - and the bases under it move with it, so the pieces stand the
+            // same bridge, two blocks higher.
             new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5006, -3075, 4,
-                    74, 75, 76, 16, 32, "bridge_end", "bridge_middle"),
+                    76, 77, 78, 16, 32, "bridge_end", "bridge_middle"),
             // Elladan's camp's own way out, and the only road the camp is given: the block beside its door at 4648, 90,
             // -3314, down the camp's own paving to the bend at 4648, 89, -3321, and then over to the main road's own
             // start mark at 4633, 91, -3331 - so the two sections meet end to end, the branch arriving along the line
