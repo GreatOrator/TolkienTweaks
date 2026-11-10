@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
+- The switchback on the massif's west fall is walked through the scout's new pins: two lines 28 apart at z -2678 and z -2706, arms running the width of that band and dropping two to five blocks each, from 4867, -2688 to 4907, -2706 - nine turns where there were seventeen, so the grade has a long run into every turn instead of a terrace at each.
 - The main road is walked from its west reach at 4560, -3360 through the pins at 4588, -3355 and the junction at 4638, -3355 where Elladan's camp comes down onto it, so the stretch west of the camp belongs to the Thorenhad line rather than to a second road; its path end moved to the new reach, which is also what lets the world re-lay the road without a forget.
 - The mountain way's south end is folded onto the junction pin at 4818, -3118 rather than the 4818, -3115 it was recorded at, so the Thorenhad road, the mountain way and the wood ruin's link all finish on the one block the scout marked, with no three-block gap between three ends.
 - The mountain way's north end joins the north road at last: the road now begins on the pinned junction at 4820, -2708, where the north road's line passes between 4793, -2688 and 4835, -2717, and runs through its first bend at 4810, -2720 down the flank as before. Those two doubled pins are the junctions at either end of the piece, which was the last length the network was waiting on.
