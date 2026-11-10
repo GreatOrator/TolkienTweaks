@@ -84,12 +84,17 @@ public final class Departure {
     }
 
     /**
-     * The ten who wait in the courtyard, placed as the old pack placed them: Elrond at the middle, the
-     * others in the loose half-ring in front of him, the hobbits low and the tall folk behind. Elrond
-     * himself is not spawned - he is already kept in the valley by the campaign - so his lines are spoken
-     * without a body of this scene's own.
+     * The eleven who wait in the courtyard, placed as the old pack placed them: Elrond at the middle, the
+     * others in the loose half-ring in front of him, the hobbits low and the tall folk behind.
+     * <p>
+     * Elrond is a body of the scene's own, not the campaign's keeper. The keeper stays at his post in the
+     * valley for every page that names him - the audience, the tidings carried back - and this one is
+     * stood for the departure and taken away with the rest when the last line is said. Two Elronds can
+     * therefore be in the valley at once, one at the library and one at the plaza, which is the price of
+     * a cutscene that does not move the campaign's own about.
      */
     private static final List<Cast> CAST = List.of(
+            new Cast("Elrond", "elrond", Kind.MAN, -1, 0),
             new Cast("Gandalf", "gandalf", Kind.MAN, -2, 6),
             new Cast("Bilbo", "bilbo", Kind.HOBBIT, 0, 5),
             new Cast("Aragorn", "aragorn", Kind.MAN, 6, 6),
@@ -290,12 +295,6 @@ public final class Departure {
     /** The pin a marked body stands on: the gathering mark's own key, with the body's slug after it. */
     public static String bodyPin(String slug) {
         return GATHER_PIN + "." + slug;
-    }
-
-    /** Where the owner's mithril mark puts Elrond, or null while the plaza has not been read yet. */
-    @Nullable
-    public static BlockPos markedElrond(Level level) {
-        return Pins.at(level, bodyPin("elrond"));
     }
 
     private static void advance(ServerPlayer player, ServerLevel level, Show show) {

@@ -231,3 +231,18 @@ at his old post forty blocks off.
 The old pack's offsets are still there, and are what a body nobody has marked stands on. Nothing
 of this is written into the build: these are world pins, so a mark moved by one block is read
 again by running the command again, and another world keeps its own plaza.
+
+## Elrond stands in the departure - 10 November 2026
+
+The scene used to speak Elrond's five closing lines over a courtyard with no Elrond in it: the only body
+of his in the world is the campaign's keeper, stood where the campaign keeps him. He is now one of the
+scene's own eleven - spawned at his mark with the rest, named, keeper-tagged so he wears `elrond.png`,
+and taken away when the last line is said. The library keeps its keeper for the audience and for the
+tidings carried back, and the plaza gets its own Elrond for the departure; both can be in the valley at
+once.
+
+The plaza's marker blocks are a survey, not furniture: they exist in the world the plaza was walked in
+and in no other. Once `/tmscene marks` has printed the eleven lines it reads, the positions go into the
+build's own pins, so a map with no mithril block in it still stands the Company in the right places - and
+a world that does its own survey still overrules the build, so a plaza can be nudged in a working map
+without a rebuild.
