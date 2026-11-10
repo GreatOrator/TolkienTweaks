@@ -504,24 +504,17 @@ decision 3, and is the one piece of chapter two with nothing built at all.
   standing where they should not is vanilla's own rule, not a new one.
 
 
-## The seam scene - parked, 9 November 2026
+## The seam scene - recovered, 10 November 2026
 
-Nothing is built; this is the place kept for it.
+The parked note this replaces was written before the old pack was read. The scene, its script and its
+cast are recovered and written up in `docs/departure-scene.md`: `FellowshipDepart1` on Gandalf (1138
+ticks) spawns the household, speaks the departure and sends the eight walking, then `ElrondBye` says
+the last five lines. It was never a camera scene - the old world has no camera in it - so the port needs
+a tick-driven beat list and a keeper that can walk to a mark, and no camera machinery at all.
 
-- **Script.** The seam's dialogue is the owner's own. `customnpcs/dialogs/CH2-Last Refuge/108.json` opens
-  Elrond's "Onward, Misty Mountains" and `109`-`111` are its three answers; that is the departure at the
-  pass, so it is this scene's. `CH1-Chasing Shadows/105`-`107` (Legolas's "Hasten Their Departure") stays
-  page 25's own conversation and is not part of the seam.
-- **Cast.** Elrond only, from `elrond.json`. The company's own lines are not written.
-- **No ground and no camera.** `Roads.ROUTES` has no `Sites.GLOIN_CAMP` route and `RoadPaint.LINES` is
-  empty, so the pass road does not exist yet; the pack has no cutscene or camera system (`grep -i cutscene`
-  finds only this file). The scene is to read `Sites.GLOIN_CAMP`'s `.scene` and `.keeper` pins, falling back
-  to the `.keeper` spot, rather than hardcode coordinates.
-- **Blocked on the survey.** The owner is pinning `gloincamp`, `.end`, `.keeper` and `.scene` and marking the
-  pass track; what the next sitting needs is the `Map.entry(...)` lines `/tmpin build` prints.
-- **The Bruinen by the valley is drawn and watered.** Checked against `Serious Test`'s player column
-  (5143, -3659): the drawn river is thirteen blocks west, `rivers.png` and `bruinen.png` both carry it, and
-  the chunks there hold water at y 62 with the `river` biome. The ground beside it stands at 74 because
-  `giveWay` grades the mountainside down to the drawn water over its own reach, not because a branch was
-  dropped, and the `river` label reaching the dry bank is the four-block biome cell rather than a missing
-  channel. The city's own outlet branch is watered too: y 82 at the mouth, y 74 at the ford.
+Two things are still owed by the owner: the marker set and its legend (one spot per body, plus the road
+the nine leave by), and eight faces - `bilbo`, `gandalf`, `aragorn`, `boromir`, `frodo`, `samwise`,
+`merry`, `pippin`. Elrond, Legolas, Gimli and Gloin are already drawn. The ground the seam was blocked
+on is done: the camp and the pass road are pinned and built (87f2217a).
+
+Nothing of the scene is built yet.
