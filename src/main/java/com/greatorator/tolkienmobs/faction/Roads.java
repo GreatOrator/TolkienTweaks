@@ -103,10 +103,12 @@ public final class Roads {
             // junction at 4818, -3118, where the mountain way ends and the Thorenhad road arrives - the ruin's road
             // back to everything else.
             new Route.Riverless(WOOD_RUIN_LINK, 4783, 4791, -3064, -3046, 4787, -3064, 4818, -3118),
-            // The road down the mountain's west flank: from the bend it takes off the north road at 4789, -2721,
+            // The road down the mountain's west flank: off the north road where the scout pinned the join at 4820,
+            // -2708, its first bend at 4810, -2720, and then down — the two doubled pins are the junction at either
+            // end of that short piece, which is the last length the network was waiting on.
             // down past Barachen's camp and the wood ruin to the pins below at 4818, -3115. It passes two junctions
             // - the camp's at 4804, -2896 and the ruin's at 4824, -3055 - so those are bends rather than ends.
-            new Route.Riverless(MOUNTAIN_WAY, 0, 0, 0, 0, 4789, -2721, 4818, -3115),
+            new Route.Riverless(MOUNTAIN_WAY, 0, 0, 0, 0, 4820, -2708, 4818, -3115),
             // The road from the crag in the north-west to the ford's own road end: out of the crag at 4460, -2477,
             // south to the country road at 4411, -2635, east along it to 4875, -2691, and then down the massif's
             // west fall from 155 to 80 - the switchback at 4885, -2684 with six blocks between its legs, the shoulder north-east, the hairpin at 4937, -2627 where the switchback
@@ -165,7 +167,7 @@ public final class Roads {
                     new BlockPos(4725, 160, -3060), new BlockPos(4712, 160, -3049))),
             // The flank road: every pin between the north road and the pins below, which is the switchback the
             // scout walked up the fall.
-            Map.entry(MOUNTAIN_WAY, List.of(new BlockPos(4818, 157, -2742), new BlockPos(4790, 158, -2768),
+            Map.entry(MOUNTAIN_WAY, List.of(new BlockPos(4810, 157, -2720), new BlockPos(4818, 157, -2742), new BlockPos(4790, 158, -2768),
                     new BlockPos(4811, 157, -2781), new BlockPos(4796, 158, -2812),
                     new BlockPos(4811, 158, -2821), new BlockPos(4799, 158, -2836),
                     new BlockPos(4803, 158, -2854), new BlockPos(4806, 158, -2860),
