@@ -1563,6 +1563,55 @@ public final class RoadCommands {
                     height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
                 }
             }
+            // A recorded bend is a mark the scout stood on, and it carries the level they stood at. Only its x and
+            // z were read until now, so a mark under the grade - a shelf the scout walked and the road was about to
+            // pass over - could not pull the road down to itself: the switchback it pinned was never reached and the
+            // road ran on above it, a shelf with a road over it and no way down. A mark may cut and may not lift: the
+            // grade is brought down to the mark's own level where that is within what this road may cut of the ground
+            // under it, and the stations either side are walked down to meet it a step at a time, which is how the
+            // arms of a switchback reach the shelf they were pinned on instead of passing above it.
+            Map<Integer, Integer> pins = marks(route, line);
+            for (int settle = 0; settle < SETTLE_PASSES && !pins.isEmpty(); settle++) {
+                for (Map.Entry<Integer, Integer> pin : pins.entrySet()) {
+                    int i = pin.getKey();
+                    if (ground[i] == WATER || ground[i] == VOID) continue;
+                    int lowest = ground[i] - Roads.cut(route, CUT_FILL);
+                    int mark = Math.max(pin.getValue(), lowest);
+                    if (mark < height[i] - MAX_STEP) height[i] = mark;
+                }
+                for (int i = 1; i < n; i++) {
+                    if (pins.containsKey(i)) continue;
+                    height[i] = Mth.clamp(height[i], height[i - 1] - MAX_STEP, height[i - 1] + MAX_STEP);
+                }
+                for (int i = n - 2; i >= 0; i--) {
+                    if (pins.containsKey(i)) continue;
+                    height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
+                }
+            }
+        }
+
+        /**
+         * The stations a road's recorded bends stand on, by the level each mark carries.
+         * <p>
+         * A mark is placed on the ground the road is walked along, so its height is the surface that road is meant to
+         * keep. The station is the one nearest the mark: a corner is eased, so the walked line rounds it rather than
+         * passing through the block itself.
+         */
+        private static Map<Integer, Integer> marks(Route route, List<int[]> line) {
+            Map<Integer, Integer> marks = new HashMap<>();
+            for (BlockPos bend : Roads.bends(route)) {
+                int best = -1;
+                double nearest = 4.0D;
+                for (int i = 0; i < line.size(); i++) {
+                    double away = Math.hypot(line.get(i)[0] - bend.getX(), line.get(i)[1] - bend.getZ());
+                    if (away < nearest) {
+                        nearest = away;
+                        best = i;
+                    }
+                }
+                if (best >= 0) marks.putIfAbsent(best, bend.getY());
+            }
+            return marks;
         }
 
         /** A road with no grade yet: the shape a restored one fills its carried heights into. */
