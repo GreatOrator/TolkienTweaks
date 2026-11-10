@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
+- The troll caves' cluster at 4528, -2475 is walked as three roads: the two cave roads that meet there, and the road to the first troll cave, which carries on west through the junction pinned at 4478, -2489 to the crag the ford road leaves by. Every section is five wide, of the country's own surface.
 - The ford road's descent off the massif is cut into the face instead of stepped down it: a route may now name its own cutting, and the section from the crag's line at 4875, -2691 to the pass at 4898, -2697 is allowed sixteen blocks of shelf instead of the ordinary four, so the road descends the fall at an angle on ground that holds it.
 - The wood ruin's road leaves from the foot of the ruin's own stair at 4787, -3064, south to the junction at 4784, -3069 and away west to 4689, -3051, and the ruin's footprint now covers the stair it leaves by: measured short of the stair, the road's band graded the ruin's own steps into road and climbed the tower.
 - The valley's roads are laid from the pins the scout walked: every section five wide, of the country's own surface, with the doubled pins at 4638, -3355, 4804, -2896 and 4824, -3055 read as the junctions they mark.

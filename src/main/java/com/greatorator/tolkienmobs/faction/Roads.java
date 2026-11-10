@@ -49,6 +49,20 @@ public final class Roads {
     /** The road from the crag in the north-west, round the mountain, down the fall to the ford's own road end. */
     public static final String FORD_WAY = "tolkienmobs:roads/ford_way";
 
+    /**
+     * The two cave roads of the troll caves' cluster, and the road that carries them on to the country road.
+     * <p>
+     * Three caves stand close enough together in the north-west that their roads were walked as one place: the scout
+     * pinned the cluster itself at 4528, -2475. Each road is walked from its own cave to that mark rather than from the
+     * mark outward, so the road a hand forgets standing at a cave's mouth is that cave's road: three routes begun on one
+     * block would be three roads a hand could not tell apart. They are named as roads rather than as the caves' own
+     * ways out because a road with no build behind it is exactly what a named route is for - the cluster is a place on
+     * the road, not a build that owns one.
+     */
+    public static final String CAVE_WAY_NORTH = "tolkienmobs:roads/cave_way_north";
+    public static final String CAVE_WAY_EAST = "tolkienmobs:roads/cave_way_east";
+    public static final String TROLL_CAVE_WAY = "tolkienmobs:roads/troll_cave_way";
+
     /** Every build that has a road walked for it. A build missing here gets none. */
     public static final List<Route> ROUTES = List.of(
             // Rivendell: the path's last block at 5200, 134, -3034, down to the crossing the scout pinned on z -3060
@@ -80,10 +94,17 @@ public final class Roads {
             // - the camp's at 4804, -2896 and the ruin's at 4824, -3055 - so those are bends rather than ends.
             new Route.Riverless(MOUNTAIN_WAY, 0, 0, 0, 0, 4789, -2721, 4818, -3115),
             // The road from the crag in the north-west to the ford's own road end: out of the crag at 4460, -2477,
-            // south to the country road at 4411, -2635, east along it to 4887, -2691, and then down the massif's
+            // south to the country road at 4411, -2635, east along it to 4875, -2691, and then down the massif's
             // west fall - 155 to 89 in two switchbacks - to the bridge's west bank at 5003, -3060, so the dry road
             // and the crossing meet end to end on the same ground.
-            new Route.Riverless(FORD_WAY, 0, 0, 0, 0, 4460, -2477, 5003, -3060)
+            new Route.Riverless(FORD_WAY, 0, 0, 0, 0, 4460, -2477, 5003, -3060),
+            // The caves' cluster: three marks where the cave roads meet, so each road is walked out of its own cave to
+            // that junction - the north road from its mouth at 4508, -2429, the east road from 4568, -2511, and the
+            // road to the first troll cave from the crag at 4460, -2477 through the junction pinned at 4478, -2489. The
+            // crag is the same block the ford road leaves by, so the cluster's traffic and the ford's road meet there.
+            new Route.Riverless(CAVE_WAY_NORTH, 0, 0, 0, 0, 4508, -2429, 4528, -2475),
+            new Route.Riverless(CAVE_WAY_EAST, 0, 0, 0, 0, 4568, -2511, 4528, -2475),
+            new Route.Riverless(TROLL_CAVE_WAY, 0, 0, 0, 0, 4460, -2477, 4528, -2475)
     );
 
     /**
@@ -147,7 +168,11 @@ public final class Roads {
                     new BlockPos(4930, 101, -2731), new BlockPos(4955, 96, -2759),
                     new BlockPos(4968, 92, -2779), new BlockPos(4976, 89, -2807),
                     new BlockPos(4957, 89, -2898), new BlockPos(4952, 88, -2928),
-                    new BlockPos(4979, 83, -2997), new BlockPos(4998, 80, -3054)));
+                    new BlockPos(4979, 83, -2997), new BlockPos(4998, 80, -3054)),
+            // The caves' cluster, each road in the order it walks out of the junction it shares with the other two.
+            CAVE_WAY_NORTH, List.of(new BlockPos(4536, 155, -2443), new BlockPos(4543, 155, -2464)),
+            CAVE_WAY_EAST, List.of(new BlockPos(4555, 155, -2517), new BlockPos(4551, 155, -2496)),
+            TROLL_CAVE_WAY, List.of(new BlockPos(4478, 153, -2489)));
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
     public static List<BlockPos> bends(Route route) {
@@ -225,7 +250,10 @@ public final class Roads {
             Sites.BARACHENS_CAMP, Kind.WILD_WIDE,
             Sites.WOOD_RUIN, Kind.WILD_WIDE,
             MOUNTAIN_WAY, Kind.WILD_WIDE,
-            FORD_WAY, Kind.WILD_WIDE
+            FORD_WAY, Kind.WILD_WIDE,
+            CAVE_WAY_NORTH, Kind.WILD_WIDE,
+            CAVE_WAY_EAST, Kind.WILD_WIDE,
+            TROLL_CAVE_WAY, Kind.WILD_WIDE
             );
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
