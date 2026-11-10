@@ -108,7 +108,11 @@ public final class RoadCommands {
 
     /** How many passes of the smoothing filter the profile takes, each reaching one more station either way. */
     private static final int PROFILE_PASSES = 8;
-    /** The deepest cut or tallest fill one column may take before the road is held back to the ground. */
+    /**
+     * The deepest cut or tallest fill one column may take before the road is held back to the ground, where the route
+     * has asked for nothing deeper of its own: see {@link Roads#cut}, which is a surveyor's cutting across a face too
+     * steep to walk and is the only thing that overrides this.
+     */
     private static final int CUT_FILL = 4;
     /**
      * How far a wild track's grade may stand off the ground of its own column, in blocks.
@@ -1516,7 +1520,7 @@ public final class RoadCommands {
                 for (int i = 1; i < n - 1; i++) {
                     boolean dry = ground[i] != WATER && ground[i] != VOID;
                     int base = dry ? ground[i] : relief[i];
-                    int band = grounded && dry ? CUT_FILL : WILD_BAND;
+                    int band = grounded && dry ? Roads.cut(route, CUT_FILL) : WILD_BAND;
                     height[i] = Mth.clamp(height[i], base - band, base + band);
                 }
                 if (startY != VOID && startY != WATER) height[0] = startY;
@@ -1545,7 +1549,7 @@ public final class RoadCommands {
             for (int i = 1; i < n - 1; i++) {
                 boolean dry = ground[i] != WATER && ground[i] != VOID;
                 int base = dry ? ground[i] : relief[i];
-                int band = grounded && dry ? CUT_FILL : WILD_BAND;
+                int band = grounded && dry ? Roads.cut(route, CUT_FILL) : WILD_BAND;
                 height[i] = Mth.clamp(height[i], base - band, base + band);
             }
             // And the steps once more, because the ground's word is a band and not a cliff: wherever the ground under
@@ -1729,6 +1733,9 @@ public final class RoadCommands {
             // into a road climbing the bank in front of it.
             level.getChunk(x >> 4, z >> 4);
             int under = surfaceAt(level, x, z);
+            // How deep this road may cut into the hill it crosses, which is a cutting on a face it was surveyed across
+            // and the ordinary band anywhere else.
+            int cut = Roads.cut(route, CUT_FILL);
             // A grade saved by a pass that read its ground off chunks nobody had made can carry a height that is not a
             // height in this world - the floor of it - and believing that would lay the rest of the road under the
             // surface it never reaches. A station holding one takes the ground under it instead.
@@ -1738,9 +1745,9 @@ public final class RoadCommands {
                 int here = under != VOID && under != WATER ? under : before;
                 retarget(i, known ? Math.min(here, before + (int) MAX_STEP) : here);
             }
-            if (under != VOID && under != WATER && Mth.floor(height[i]) < under - CUT_FILL) {
-                int before = i > 0 ? Mth.floor(height[i - 1]) : under - CUT_FILL;
-                int lifted = Math.min(under - CUT_FILL, before + (int) MAX_STEP);
+            if (under != VOID && under != WATER && Mth.floor(height[i]) < under - cut) {
+                int before = i > 0 ? Mth.floor(height[i - 1]) : under - cut;
+                int lifted = Math.min(under - cut, before + (int) MAX_STEP);
                 if (lifted > Mth.floor(height[i])) retarget(i, lifted);
             }
             int target = Mth.floor(height[i]);
@@ -1805,12 +1812,13 @@ public final class RoadCommands {
                         continue;
                     }
                     int step = target - groundAt;
-                    // Ground above the grade is cut no deeper than CUT_FILL: a hill standing that far over a profile
-                    // is a hill the profile was wrong about, and a road that bores into it is a trench. Ground below
+                    // Ground above the grade is cut no deeper than the road's own allowance: a hill standing that far
+                    // over a profile is a hill the profile was wrong about, and a road that bores into it is a trench.
+                    // A road surveyed to be cut across a face has that much allowance, and uses it. Ground below
                     // the grade is filled up to it however deep the hollow - that is the other half of the same
                     // question, and refusing it was the road stopping at the first hole in the ground, since the
                     // profile had already been carried over that hole and the band's own columns had not.
-                    if (step < -CUT_FILL || step > HOLE_FILL) {
+                    if (step < -cut || step > HOLE_FILL) {
                         open++;
                         continue;
                     }
@@ -1977,7 +1985,7 @@ public final class RoadCommands {
             if (cornerGround == WATER) continue;
             int ground = surfaceAt(level, at[0], at[1]);
             if (ground == WATER) return false;
-            if (Math.abs(ground - cornerGround) > CUT_FILL) return false;
+            if (Math.abs(ground - cornerGround) > Roads.cut(route, CUT_FILL)) return false;
         }
         return true;
     }

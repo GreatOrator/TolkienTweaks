@@ -70,9 +70,11 @@ public final class Roads {
             // Barachen's camp's own way out: its door at 4819, -2886, west and down to the junction pinned at 4804,
             // -2896, which is the road down the mountain's flank.
             new Route.Riverless(Sites.BARACHENS_CAMP, 4812, 4827, -2885, -2870, 4819, -2886, 4804, -2896),
-            // The wood ruin's own way out: out of its south edge at 4787, -3058, round to the junction pinned at
-            // 4824, -3055. Its footprint is measured less the row the road leaves on.
-            new Route.Riverless(Sites.WOOD_RUIN, 4783, 4795, -3057, -3047, 4787, -3058, 4824, -3055),
+            // The wood ruin's own way out: from the foot of its own stair at 4787, -3064, south to the junction the
+            // scout pinned at 4784, -3069, and away west under the ruin to 4689, -3051. Its footprint is the ruin's own
+            // ground, stair and all: measured short of the stair, the road's band reached into it and graded the ruin's
+            // own steps into road, so the road climbed the tower instead of leaving it.
+            new Route.Riverless(Sites.WOOD_RUIN, 4783, 4791, -3064, -3046, 4787, -3064, 4689, -3051),
             // The road down the mountain's west flank: from the bend it takes off the north road at 4789, -2721,
             // down past Barachen's camp and the wood ruin to the pins below at 4818, -3115. It passes two junctions
             // - the camp's at 4804, -2896 and the ruin's at 4824, -3055 - so those are bends rather than ends.
@@ -111,9 +113,10 @@ public final class Roads {
                     new BlockPos(4714, 156, -3355), new BlockPos(4731, 157, -3359)),
             // The camp's track out of its door and onto the junction.
             Sites.BARACHENS_CAMP, List.of(new BlockPos(4819, 158, -2893), new BlockPos(4814, 158, -2896)),
-            // The ruin's track: out of its south edge, round to the north, and east onto the junction.
-            Sites.WOOD_RUIN, List.of(new BlockPos(4787, 159, -3072), new BlockPos(4802, 159, -3063),
-                    new BlockPos(4811, 158, -3058)),
+            // The ruin's track: out of the foot of its stair, south to the junction, and west under the wood.
+            Sites.WOOD_RUIN, List.of(new BlockPos(4784, 159, -3069), new BlockPos(4772, 159, -3070),
+                    new BlockPos(4760, 160, -3070), new BlockPos(4752, 160, -3082),
+                    new BlockPos(4725, 160, -3060), new BlockPos(4712, 160, -3049)),
             // The flank road: every pin between the north road and the pins below, which is the switchback the
             // scout walked up the fall.
             MOUNTAIN_WAY, List.of(new BlockPos(4818, 157, -2742), new BlockPos(4790, 158, -2768),
@@ -139,12 +142,12 @@ public final class Roads {
                     new BlockPos(4743, 156, -2677), new BlockPos(4766, 156, -2672),
                     new BlockPos(4789, 156, -2671), new BlockPos(4791, 156, -2674),
                     new BlockPos(4793, 156, -2688), new BlockPos(4835, 156, -2717),
-                    new BlockPos(4851, 155, -2695), new BlockPos(4887, 155, -2691),
-                    new BlockPos(4910, 108, -2694), new BlockPos(4920, 104, -2713),
+                    new BlockPos(4851, 155, -2695), new BlockPos(4875, 154, -2691),
+                    new BlockPos(4898, 127, -2697), new BlockPos(4920, 104, -2713),
                     new BlockPos(4930, 101, -2731), new BlockPos(4955, 96, -2759),
                     new BlockPos(4968, 92, -2779), new BlockPos(4976, 89, -2807),
                     new BlockPos(4957, 89, -2898), new BlockPos(4952, 88, -2928),
-                    new BlockPos(4979, 83, -2997), new BlockPos(4995, 81, -3034)));
+                    new BlockPos(4979, 83, -2997), new BlockPos(4998, 80, -3054)));
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
     public static List<BlockPos> bends(Route route) {
@@ -228,6 +231,33 @@ public final class Roads {
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {
         return KINDS.get(route.id());
+    }
+
+    /**
+     * How deep a road may be cut into the ground it crosses, by route; the caller's band where it says nothing.
+     * <p>
+     * A road is laid within a few blocks of the ground under it, which is what keeps a track a track: a hollow is a dip
+     * it walks down into, a rise is a rise it climbs over. That rule is wrong on a face too steep to walk, where the
+     * only road there is a shelf cut across the fall. The ground the line crosses there is tens of blocks over it at one
+     * mark and under it at the next, and a band of four cannot hold a grade between them - so the pass lifts the line
+     * onto every shelf the hill has and the road steps down the face instead of descending it. A route that names a
+     * depth here is given a cutting instead: its profile is held to its own smooth descent, the hill above the line is
+     * cut away and the ground below it filled, and the road runs at an angle across the face.
+     * <p>
+     * It is a route's own number rather than a kind's because it is a surveyor's decision, not a country's: the same
+     * cast of road that walks a moor is cut into a fell. Nothing here is a trench through a hill the road was never
+     * meant to cross - the cut is the road's own corridor, five or seven wide, with the hill above it and the fill
+     * below it, and it is only ever as deep as the ground the line stands under.
+     */
+    private static final Map<String, Integer> CUTS = Map.of(
+            // The ford road's descent off the massif's west fall, from the crag's own line at 4875, -2691 down to the
+            // pass at 4898, -2697: twenty-seven blocks of fall in twenty-four of line, which no band of four can grade
+            // without lifting the road onto the shelves between the two marks. Sixteen is the cutting that holds it.
+            FORD_WAY, 16);
+
+    /** How deep a road may be cut into the ground under it: its own allowance, or the caller's band where it has none. */
+    public static int cut(Route route, int ordinary) {
+        return CUTS.getOrDefault(route.id(), ordinary);
     }
 
     /**
