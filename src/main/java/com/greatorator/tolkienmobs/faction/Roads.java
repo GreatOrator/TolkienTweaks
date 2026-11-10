@@ -360,6 +360,22 @@ public final class Roads {
     }
 
     /**
+     * The routes that are roads rather than any build's way out: a name, two ends, and no building to wait for.
+     * <p>
+     * A crossing is usually the city's own business, so it is laid by the dressing that raises the city, and only once
+     * that build is standing - nothing begins it from the ground it crosses. A road that carries traffic between
+     * places has no such owner: the high pass road begins on the ford's own bank and ends in open country, so its
+     * bridge has to be stood the first time somebody walks to it. These are the routes that answer for themselves.
+     */
+    private static final Set<String> ROADS = Set.of(THORENHAD_ROAD, ELLADAN_BRANCH, MOUNTAIN_WAY, FORD_WAY,
+            CAVE_WAY_NORTH, CAVE_WAY_EAST, TROLL_CAVE_WAY, WOOD_RUIN_LINK, HIGH_PASS_WAY, HIGH_PASS_BRIDGE);
+
+    /** Whether a route is a road rather than a build's own way out, and so begins wherever it is first met. */
+    public static boolean road(Route route) {
+        return ROADS.contains(route.id());
+    }
+
+    /**
      * How deep a road may be cut into the ground it crosses, by route; the caller's band where it says nothing.
      * <p>
      * A road is laid within a few blocks of the ground under it, which is what keeps a track a track: a hollow is a dip

@@ -306,9 +306,10 @@ public final class RoadCommands {
      * standing at, and a dry road is walked outward from there rather than from the build the route was written for.
      */
     static RoadJob pass(ServerLevel level, Route route, int x, int z) {
-        // A bridge is not begun from the ground under it: it needs the city's span and abutments first, so the
-        // crossing stays with the dressing and asks for its pass there.
-        if (route instanceof Route.Crossing) return null;
+        // A bridge is not begun from the ground under it: it needs the city's span and abutments first, so a build's
+        // crossing stays with the dressing and asks for its pass there. A crossing on a named road has no city to
+        // wait for, and begins from the ground it crosses like every other section.
+        if (route instanceof Route.Crossing && !Roads.road(route)) return null;
         RoadJob existing = PASSES.get(route.id());
         if (existing != null) return existing;
         if (down(level, route)) return null;
@@ -976,9 +977,13 @@ public final class RoadCommands {
             // columns run from Z - 7 up to Z. The near end and the middles are turned one way and the far end the
             // other, so both abutments face out of the span and the last piece closes it.
             plan.add(new int[]{low, route.endBase(), near, Rotation.COUNTERCLOCKWISE_90.ordinal(), END_PIECE});
+            // A middle turned counterclockwise is anchored on its own high edge along the span, not its low one, so
+            // the cursor is the offset itself: the piece runs from seven below it up to it. It used to be anchored a
+            // piece's length short here, as the ford's plan anchors its own, which stood the middle eight columns too
+            // far along and left eight of open water in front of the far abutment.
             int cursor = near - endWide;
-            while (cursor - far + 1 >= middle.getSize().getX() + endWide) {
-                plan.add(new int[]{low, route.bridgeBase(), cursor - middle.getSize().getX() + 1,
+            while (cursor >= far + endWide) {
+                plan.add(new int[]{low, route.bridgeBase(), cursor,
                         Rotation.COUNTERCLOCKWISE_90.ordinal(), MIDDLE_PIECE});
                 cursor -= middle.getSize().getX();
             }
@@ -991,9 +996,12 @@ public final class RoadCommands {
         // itself and the next free column is one further west. Only middles that leave room for the west end
         // are laid; the end then closes whatever is left.
         int cursor = near - endWide;
-        // Room for one more middle and for the west end behind it: seventeen columns, not eighteen. Asking
-        // for eighteen dropped the last middle and left a gap of open water in front of the far abutment.
-        while (cursor - far + 1 >= middle.getSize().getX() + endWide) {
+        // Middles until the far end has somewhere to stand: the loop used to ask for room for one middle *and* the
+        // far end behind it, so any span that was not nine, eight and nine repeated stopped a piece short and left
+        // open water in front of the far abutment. The ford's span is fifty-three columns - nine, eight times five and
+        // nine is fifty-eight - so the last middle now runs into the far end's own columns instead of stopping short,
+        // and the far end is stood last and closes over the overlap. Boards on boards, and no gap.
+        while (cursor >= far + endWide) {
             plan.add(new int[]{cursor - middle.getSize().getX() + 1, route.bridgeBase(), low,
                     Rotation.NONE.ordinal(), MIDDLE_PIECE});
             cursor -= middle.getSize().getX();

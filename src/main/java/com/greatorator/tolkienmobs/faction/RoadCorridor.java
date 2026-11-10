@@ -34,9 +34,9 @@ import java.util.List;
  * pass is carried on by the tick below for as long as the ground its head stands on is loaded: a road resumed by
  * walking away, and resumed again by coming back, with nothing to type and no build to find first.
  * <p>
- * A crossing is not begun here. A bridge is the city's own business - it needs the span assembled and the city's
- * ground ready for its abutments - so the crossing stays with the dressing, and only a dry road starts from the ground
- * it crosses.
+ * A city's crossing is not begun here. A bridge behind a build is the city's own business - it needs the span
+ * assembled and the city's ground ready for its abutments - so that crossing stays with the dressing. A crossing on a
+ * named road has no city to wait for, and starts from the ground it crosses like every other section.
  */
 @EventBusSubscriber(modid = TolkienMobsMain.MODID)
 public final class RoadCorridor {
@@ -56,7 +56,7 @@ public final class RoadCorridor {
         int lowX = chunk.getPos().getMinBlockX();
         int lowZ = chunk.getPos().getMinBlockZ();
         for (Route route : Roads.ROUTES) {
-            if (route instanceof Route.Crossing) continue;
+            if (route instanceof Route.Crossing && !Roads.road(route)) continue;
             if (!touches(route, lowX, lowZ)) continue;
             RoadCommands.pass(level, route, lowX + 8, lowZ + 8);
         }
@@ -75,7 +75,7 @@ public final class RoadCorridor {
         marks.add(new int[]{route.pathX(), route.pathZ()});
         for (BlockPos bend : Roads.bends(route)) marks.add(new int[]{bend.getX(), bend.getZ()});
         if (route instanceof Route.Riverless dry) marks.add(new int[]{dry.farX(), dry.farZ()});
-        else return false;
+        if (route instanceof Route.Crossing span) marks.add(new int[]{span.farX(), span.farZ()});
         for (int index = 1; index < marks.size(); index++) {
             int[] from = marks.get(index - 1);
             int[] to = marks.get(index);
