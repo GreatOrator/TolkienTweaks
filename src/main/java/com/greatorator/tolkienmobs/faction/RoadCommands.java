@@ -1379,6 +1379,9 @@ public final class RoadCommands {
          * the city's own path ends on its wall and the road still leaves westward from it.
          */
         private static int[] outward(Route route, int x, int z) {
+            // A road with no build has no wall to leave square to. Its footprint is empty, and the walk from its end
+            // begins on the mark the scout stood on rather than sixteen stations out from a corner at the origin.
+            if (route.cityX0() >= route.cityX1() || route.cityZ0() >= route.cityZ1()) return new int[]{0, 0};
             int west = route.cityX0() - x;
             int east = x - route.cityX1();
             int north = route.cityZ0() - z;

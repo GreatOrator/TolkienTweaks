@@ -168,19 +168,18 @@ public final class Roads {
             new Route.Riverless(TROLL_CAVE_WAY, 0, 0, 0, 0, 4460, -2477, 4528, -2475),
             // The crossing the high pass road begins with, where the Bruinen turns east across the line: the same two
             // pieces as the ford's, stood a quarter turn, so the span runs along z from the bank at -3073 to the one
-            // at -3098. The footprint is the small box the road's own start stands in, not the country either side of
-            // the river: a route's box is ground its search may not cross, and a box round the water would forbid the
-            // approach that has to reach the abutment.
-            new Route.Crossing(HIGH_PASS_BRIDGE, 5060, 5074, -3070, -3050, 5067, -3062, 5065, -3073, 5065, -3098,
+            // at -3098. No build stands behind the crossing, so it has no footprint: an empty box, and the approach
+            // walks in from the ground it starts on. The water keeps the walk off the river by itself - a column the
+            // map floods is never a candidate - so there is nothing for a box to guard here.
+            new Route.Crossing(HIGH_PASS_BRIDGE, 0, 0, 0, 0, 5067, -3062, 5065, -3073, 5065, -3098,
                     4, 77, 78, 79, 8, 32, "bridge_end", "bridge_middle"),
             // The dry road north of the crossing, from the block the exit stops on to the scout's mark on the staging
-            // plaza at 5124, -3401. Nothing stands behind either end, so the footprint is again only the block the
-            // road starts in.
-            new Route.Riverless(HIGH_PASS_WAY, 5060, 5074, -3140, -3120, 5065, -3129, 5124, -3401),
-            // The climb out of the plaza, from the mark on its north rim to the last marker at 5187, -3658. Its
-            // footprint is the small box that mark stands in, which also keeps the search from cutting back across the
-            // plaza's own floor to reach the shoulder above it.
-            new Route.Riverless(HIGH_PASS_CLIMB, 5112, 5126, -3430, -3414, 5119, -3422, 5187, -3658)
+            // plaza at 5124, -3401. Nothing stands behind either end, so the footprint is empty: a box round a road's
+            // own start is ground it may not cross, which is the one block its walk has to begin on.
+            new Route.Riverless(HIGH_PASS_WAY, 0, 0, 0, 0, 5065, -3129, 5124, -3401),
+            // The climb out of the plaza, from the mark on its north rim to the last marker at 5187, -3658. Empty
+            // box again: the plaza is drawn ground, and the walk reads it for the ground it is.
+            new Route.Riverless(HIGH_PASS_CLIMB, 0, 0, 0, 0, 5119, -3422, 5187, -3658)
     );
 
     /**
