@@ -43,63 +43,45 @@ public final class Roads {
      */
     public static final String ELLADAN_BRANCH = "tolkienmobs:roads/elledan_branch";
 
+    /** The road down the mountain's west flank, past Barachen's camp and the wood ruin, to the pins below them. */
+    public static final String MOUNTAIN_WAY = "tolkienmobs:roads/mountain_way";
+
+    /** The road from the crag in the north-west, round the mountain, down the fall to the ford's own road end. */
+    public static final String FORD_WAY = "tolkienmobs:roads/ford_way";
+
     /** Every build that has a road walked for it. A build missing here gets none. */
     public static final List<Route> ROUTES = List.of(
-            // Rivendell: the path's last block at 5200, 134, -3034, the banks at 5055 and 5006 on z -3075, the deck
-            // at 78 - the numbers the scouted valley was walked to, 584 pieces of city above the path's end.
-            // The deck clears the water rather than sitting where it was walked. The dale holds the Bruinen at 76
-            // under the east half of the span and 77 under the west, so the scouted deck at 76 was a walking surface
-            // one block under the river, and the crossing in the save stood with its planks awash. Two over the
-            // highest water on the span is a deck - and the bases under it move with it, so the pieces stand the
-            // same bridge, two blocks higher.
-            new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5006, -3075, 4,
-                    76, 77, 78, 16, 32, "bridge_end", "bridge_middle"),
-            // Elladan's camp's own way out, and the only road the camp is given: the block beside its door at 4648, 90,
-            // -3314, down the camp's own paving to the bend at 4648, 89, -3321, and then over to the main road's own
-            // start mark at 4633, 91, -3331 - so the two sections meet end to end, the branch arriving along the line
-            // the main road leaves on rather than running on past the junction into the trees. The camp is a wild
-            // build, so its own track is wild - three blocks wide - however near the seven-wide road it ends.
-            new Route.Riverless(ELLADAN_BRANCH, 4640, 4655, -3313, -3298, 4648, -3314, 4633, -3331),
-            // The Thorenhad road, the valley's main road: its end at the mark 4633, 91, -3331 - the ford being the
-            // other end, so the road is walked towards the ford - down to the ford's own road end at 4978, 97, -3075,
-            // where the crossing's exit road stops, and no further: the road over the water and this dry one are the
-            // two sections of the same road, and one that ran past the meeting point would grade the same country a
-            // second time from the other side. It is a road rather than a build's way out, so it carries its own name
-            // and its own kind: seven wide from the junction to the ford, of the country's own gravel and dirt, which
-            // is what `KINDS` says of it. The bands would have made it a town's street at one end and a track at the
-            // other, and a main road is neither.
-            // The junction is the crossing's own road end rather than the mark the road was walked at. The ground
-            // west of the river stands on the massif's outward fall now, and 4972 - where that mark is - is thirteen
-            // blocks over the exit road's top at 4978. Ending on 4978 puts the two sections of the road down on the
-            // same ground, one block above the ford road's own last slab.
-            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4633, -3331, 4978, -3075),
-            // Barachen's fire to the mark at 4892, 74, -3097, where the Thorenhad road runs past: the road leaves the
-            // camp's own door at 4820, 76, -2886 and ends at the mark, so the two roads meet there instead of each
-            // grading the country the other has already laid. The camp is sixteen by sixteen from its corner pin at
-            // 4812, 77, -2885. A wild build's track, so it is laid wild - three blocks wide - the whole way.
-            new Route.Riverless(Sites.BARACHENS_CAMP, 4812, 4827, -2885, -2870, 4820, -2886, 4892, -3097),
-            // The wood ruin's own way out, walked in Roads 7: out of the ruin's south edge at 4787, 78, -3058, down
-            // through the mark the scout set below it at 4787, 78, -3082, and then east to the mark on Barachen's own
-            // road at 4892, 74, -3044 - so the ruin joins the track the camp's traffic already uses instead of ending
-            // in open country on the pin the crags' roads took for themselves. The ruin was measured at 4783..4795 by
-            // -3058..-3047 of stone brick, spruce fence and trapdoor, so its footprint is that box less the row the
-            // road leaves on: a road that searched through its own walls would find a way round them.
-            new Route.Riverless(Sites.WOOD_RUIN, 4783, 4795, -3057, -3047, 4787, -3058, 4892, -3044),
-            // The four crags, one road each, from the ground a road arriving at a crag meets to the pins the scout
-            // walked in the country between them. A crag's `.end` pin sits twenty-seven or twenty-eight blocks out
-            // from the middle of the rock, which is where a road has to end rather than climbing the crag, so each
-            // footprint here is that middle and twenty-eight either side. Which crag takes which pin is the
-            // walker's distance and not ours: Matuna's lair is the nearest and takes 4741, 81, -3082, Hoklond's cave
-            // is the next and takes 4741, 81, -3086, and Bandrith's and Sholdroth's are the farthest two, which share
-            // 4741, 81, -3092.
-            new Route.Riverless(Sites.TROLL_CAVE, 4432, 4488, -2505, -2449, 4515, -2446, 4741, -3092),
-            new Route.Riverless(Sites.TROLL_CAVE_2, 4540, 4596, -2539, -2483, 4624, -2479, 4741, -3086),
-            new Route.Riverless(Sites.TROLL_CAVE_3, 4480, 4536, -2457, -2401, 4562, -2398, 4741, -3092),
-            new Route.Riverless(Sites.TROLL_CAVE_4, 4605, 4661, -3109, -3053, 4689, -3050, 4741, -3082)
-            // A road with no water on it is the other kind, and is the whole of what a dry road needs: the build's
-            // footprint and its entry point, and the block the road ends at. Nothing is swept, bridged or pillared;
-            // the same search finds the way and the same grade lays it, arriving on the ground at the far end:
-            // new Route.Riverless("<build>", cityX0, cityX1, cityZ0, cityZ1, pathX, pathZ, farX, farZ)
+            // Rivendell: the path's last block at 5200, 134, -3034, down to the crossing the scout pinned on z -3060
+            // between the banks at 5055 and 5003. The river runs 5004 to 5051 on that line and stands at 78 under its
+            // west half and 76 under its east, so the deck is 80 - two over the highest water on the span - with the
+            // abutments' base at 79 and the middles' at 78 under it. The banks read 78 and 80 themselves, so the deck
+            // arrives on them rather than over or under them.
+            new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5003, -3060, 4,
+                    78, 79, 80, 16, 32, "bridge_end", "bridge_middle"),
+            // Elladan's camp's own way out: the block beside its door at 4648, 156, -3314, over the camp's own
+            // paving to the junction pinned at 4638, -3355, where the main road passes. The camp's ground is the
+            // camp's, so the road meets its wall and goes no further in.
+            new Route.Riverless(ELLADAN_BRANCH, 4640, 4655, -3313, -3298, 4648, -3314, 4638, -3355),
+            // The Thorenhad road, from the west of that junction along the shelf to 4745, -3355 - which is as far as
+            // it is marked. It is walked through the junction rather than from it so that the strip the scout pinned
+            // west of the junction at 4617, -3356 is part of the same road and not a stub of its own. The rest of
+            // the road to the ford has still to be walked.
+            new Route.Riverless(THORENHAD_ROAD, 4640, 4655, -3313, -3298, 4617, -3356, 4745, -3355),
+            // Barachen's camp's own way out: its door at 4819, -2886, west and down to the junction pinned at 4804,
+            // -2896, which is the road down the mountain's flank.
+            new Route.Riverless(Sites.BARACHENS_CAMP, 4812, 4827, -2885, -2870, 4819, -2886, 4804, -2896),
+            // The wood ruin's own way out: out of its south edge at 4787, -3058, round to the junction pinned at
+            // 4824, -3055. Its footprint is measured less the row the road leaves on.
+            new Route.Riverless(Sites.WOOD_RUIN, 4783, 4795, -3057, -3047, 4787, -3058, 4824, -3055),
+            // The road down the mountain's west flank: from the bend it takes off the north road at 4789, -2721,
+            // down past Barachen's camp and the wood ruin to the pins below at 4818, -3115. It passes two junctions
+            // - the camp's at 4804, -2896 and the ruin's at 4824, -3055 - so those are bends rather than ends.
+            new Route.Riverless(MOUNTAIN_WAY, 0, 0, 0, 0, 4789, -2721, 4818, -3115),
+            // The road from the crag in the north-west to the ford's own road end: out of the crag at 4460, -2477,
+            // south to the country road at 4411, -2635, east along it to 4887, -2691, and then down the massif's
+            // west fall - 155 to 89 in two switchbacks - to the bridge's west bank at 5003, -3060, so the dry road
+            // and the crossing meet end to end on the same ground.
+            new Route.Riverless(FORD_WAY, 0, 0, 0, 0, 4460, -2477, 5003, -3060)
     );
 
     /**
@@ -114,20 +96,55 @@ public final class Roads {
      * The list is in the order the road meets the marks, since the legs are walked in that order.
      */
     private static final Map<String, List<BlockPos>> BENDS = Map.of(
-            // The Thorenhad road's own line, walked in Roads 3: three marks between the camp and the ford that keep
-            // the road off the hill and out of the crossing, in the order the road meets them.
-            THORENHAD_ROAD, List.of(new BlockPos(4875, 74, -3179),
-                    new BlockPos(4885, 74, -3133), new BlockPos(4903, 74, -3102)),
-            // The camp's branch turns once, where the camp's own stone path ends: the road follows the path out of the
-            // door and then swings onto the main road's start, so it meets the road it was walked for at a junction
-            // rather than carrying straight on past it.
-            ELLADAN_BRANCH, List.of(new BlockPos(4648, 89, -3321)),
-            // Barachen's track, walked in Roads 5: off the camp's own ground through the mark at 4819, 76, -2903,
-            // and then down the shoulder by 4896, 74, -2980 rather than across it in one leg.
-            Sites.BARACHENS_CAMP, List.of(new BlockPos(4819, 76, -2903), new BlockPos(4896, 74, -2980)),
-            // The wood ruin's road turns once, on the mark the scout set below the ruin in Roads 7: it leaves the
-            // ruin southward, then runs east along the country to the camp's road rather than cutting the corner.
-            Sites.WOOD_RUIN, List.of(new BlockPos(4787, 78, -3082)));
+            // The city's road down to the crossing, in the order it is walked: out of the path's end, north-west
+            // round the shoulder, then south-west onto the span's line.
+            "rivendell", List.of(new BlockPos(5186, 132, -3030), new BlockPos(5178, 122, -3025),
+                    new BlockPos(5174, 122, -3004), new BlockPos(5163, 122, -2993),
+                    new BlockPos(5138, 121, -3004), new BlockPos(5116, 111, -3008),
+                    new BlockPos(5115, 100, -3021), new BlockPos(5109, 92, -3031),
+                    new BlockPos(5108, 78, -3054)),
+            // The camp's branch turns once, where the camp's own paving ends.
+            ELLADAN_BRANCH, List.of(new BlockPos(4644, 155, -3346)),
+            // The main road's own line east of the junction, every pin the scout walked.
+            THORENHAD_ROAD, List.of(new BlockPos(4638, 155, -3355), new BlockPos(4651, 155, -3358),
+                    new BlockPos(4664, 156, -3359), new BlockPos(4684, 156, -3355),
+                    new BlockPos(4714, 156, -3355), new BlockPos(4731, 157, -3359)),
+            // The camp's track out of its door and onto the junction.
+            Sites.BARACHENS_CAMP, List.of(new BlockPos(4819, 158, -2893), new BlockPos(4814, 158, -2896)),
+            // The ruin's track: out of its south edge, round to the north, and east onto the junction.
+            Sites.WOOD_RUIN, List.of(new BlockPos(4787, 159, -3072), new BlockPos(4802, 159, -3063),
+                    new BlockPos(4811, 158, -3058)),
+            // The flank road: every pin between the north road and the pins below, which is the switchback the
+            // scout walked up the fall.
+            MOUNTAIN_WAY, List.of(new BlockPos(4818, 157, -2742), new BlockPos(4790, 158, -2768),
+                    new BlockPos(4811, 157, -2781), new BlockPos(4796, 158, -2812),
+                    new BlockPos(4811, 158, -2821), new BlockPos(4799, 158, -2836),
+                    new BlockPos(4803, 158, -2854), new BlockPos(4806, 158, -2860),
+                    new BlockPos(4804, 158, -2890), new BlockPos(4804, 159, -2896),
+                    new BlockPos(4804, 158, -2958), new BlockPos(4804, 158, -2998),
+                    new BlockPos(4811, 158, -3058), new BlockPos(4824, 158, -3055),
+                    new BlockPos(4825, 158, -3069), new BlockPos(4825, 158, -3081),
+                    new BlockPos(4825, 159, -3095)),
+            // The crag road: south out of the crag, east along the country road, and then every pin of the descent
+            // to the ford's own road end.
+            FORD_WAY, List.of(new BlockPos(4447, 152, -2526), new BlockPos(4432, 152, -2548),
+                    new BlockPos(4427, 153, -2564), new BlockPos(4417, 154, -2586),
+                    new BlockPos(4411, 154, -2635), new BlockPos(4409, 155, -2667),
+                    new BlockPos(4427, 155, -2689), new BlockPos(4449, 156, -2705),
+                    new BlockPos(4461, 156, -2722), new BlockPos(4493, 156, -2722),
+                    new BlockPos(4535, 156, -2721), new BlockPos(4577, 157, -2717),
+                    new BlockPos(4610, 157, -2717), new BlockPos(4642, 157, -2714),
+                    new BlockPos(4665, 157, -2708), new BlockPos(4694, 157, -2709),
+                    new BlockPos(4710, 157, -2703), new BlockPos(4735, 157, -2692),
+                    new BlockPos(4743, 156, -2677), new BlockPos(4766, 156, -2672),
+                    new BlockPos(4789, 156, -2671), new BlockPos(4791, 156, -2674),
+                    new BlockPos(4793, 156, -2688), new BlockPos(4835, 156, -2717),
+                    new BlockPos(4851, 155, -2695), new BlockPos(4887, 155, -2691),
+                    new BlockPos(4910, 108, -2694), new BlockPos(4920, 104, -2713),
+                    new BlockPos(4930, 101, -2731), new BlockPos(4955, 96, -2759),
+                    new BlockPos(4968, 92, -2779), new BlockPos(4976, 89, -2807),
+                    new BlockPos(4957, 89, -2898), new BlockPos(4952, 88, -2928),
+                    new BlockPos(4979, 83, -2997), new BlockPos(4995, 81, -3034)));
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
     public static List<BlockPos> bends(Route route) {
@@ -138,6 +155,15 @@ public final class Roads {
     public enum Kind {
         /** A track through open country: three blocks wide, of whatever the country has underfoot. */
         WILD(3),
+        /**
+         * The same track, five blocks wide.
+         * <p>
+         * Wide enough to walk two abreast, and of the country's own gravel, dirt, grass and path the whole way. A road
+         * that is walked out before its country is known is laid at this: five wide is enough to see where a marked
+         * line actually goes, and the surface stays the country's rather than becoming a town's, because a track
+         * across a moor is not a street.
+         */
+        WILD_WIDE(5),
         /** The approach to a settlement, where the paving starts: five blocks. */
         TRANSITION(5),
         /** A settlement's own street: seven blocks, and paved with the town's own stone. */
@@ -188,10 +214,15 @@ public final class Roads {
      * a kind settles both, and {@link Kind#MAIN} is the one that names a width without the paving.
      */
     private static final Map<String, Kind> KINDS = Map.of(
-            // The valley's main road: seven wide from the camp's junction to the ford's road end, and of the
-            // country's own surface the whole way. Laid by the bands it was a road only within a mile of the camp and
-            // a three-wide track for the rest of its length, which is the one thing a main road cannot be.
-            THORENHAD_ROAD, Kind.MAIN
+            // Every road the scout has walked is laid the same way for now: five wide, of the country's own gravel
+            // and dirt, so that the line can be judged by walking it before it is given its proper width.
+            "rivendell", Kind.WILD_WIDE,
+            ELLADAN_BRANCH, Kind.WILD_WIDE,
+            THORENHAD_ROAD, Kind.WILD_WIDE,
+            Sites.BARACHENS_CAMP, Kind.WILD_WIDE,
+            Sites.WOOD_RUIN, Kind.WILD_WIDE,
+            MOUNTAIN_WAY, Kind.WILD_WIDE,
+            FORD_WAY, Kind.WILD_WIDE
             );
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */

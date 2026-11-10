@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+- The valley's roads are laid from the pins the scout walked: every section five wide, of the country's own surface, with the doubled pins at 4638, -3355, 4804, -2896 and 4824, -3055 read as the junctions they mark.
+- The crossing at the ford stands on the line the scout pinned at z -3060 between the banks at 5055 and 5003, so the deck is 80 over water at 78 instead of the scouted 76 on a span that no longer lies there.
+- The four crag roads are no longer walked and are gone from the table until they are marked again.
 - The Thorenhad road ends on the crossing's road end rather than the mark it was walked at, so the two sections of the road meet on the ground the massif now stands on instead of thirteen blocks apart.
 - The crossing at the ford is laid two blocks over the highest water on its span, so the bridge stands above the Bruinen instead of one block under it.
 - The branch falls one block in twenty-four instead of twelve, so the four blocks between the city's water and the ford are carried down the whole course rather than cascaded into the crossing.
