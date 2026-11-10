@@ -108,7 +108,7 @@ public final class Roads {
             // end of that short piece, which is the last length the network was waiting on.
             // down past Barachen's camp and the wood ruin to the pins below at 4818, -3115. It passes two junctions
             // - the camp's at 4804, -2896 and the ruin's at 4824, -3055 - so those are bends rather than ends.
-            new Route.Riverless(MOUNTAIN_WAY, 0, 0, 0, 0, 4820, -2708, 4818, -3115),
+            new Route.Riverless(MOUNTAIN_WAY, 0, 0, 0, 0, 4820, -2708, 4818, -3118),
             // The road from the crag in the north-west to the ford's own road end: out of the crag at 4460, -2477,
             // south to the country road at 4411, -2635, east along it to 4875, -2691, and then down the massif's
             // west fall from 155 to 80 - the switchback at 4885, -2684 with six blocks between its legs, the shoulder north-east, the hairpin at 4937, -2627 where the switchback

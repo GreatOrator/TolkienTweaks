@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
+- The mountain way's south end is folded onto the junction pin at 4818, -3118 rather than the 4818, -3115 it was recorded at, so the Thorenhad road, the mountain way and the wood ruin's link all finish on the one block the scout marked, with no three-block gap between three ends.
 - The mountain way's north end joins the north road at last: the road now begins on the pinned junction at 4820, -2708, where the north road's line passes between 4793, -2688 and 4835, -2717, and runs through its first bend at 4810, -2720 down the flank as before. Those two doubled pins are the junctions at either end of the piece, which was the last length the network was waiting on.
 - The Thorenhad road is walked on from its old end at 4745, -3355 to the junction at 4818, -3118: north along the shelf to 4748, -3292 and then south-east down its long slope through eleven pins, so it meets the mountain way's southern end and the wood ruin's way back there on one block rather than stopping in sight of them.
 - The wood ruin has a second road, out of the foot of its own stair and south-east under its south wall through 4787, -3082 and 4808, -3096 to that same junction at 4818, -3118, which is the ruin's way back to the main road. Its westward way out to 4689, -3051 stays as it was, so the two leave the stair foot on either side and neither borrows the other's line.
