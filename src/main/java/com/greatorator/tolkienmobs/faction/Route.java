@@ -34,10 +34,16 @@ public sealed interface Route {
 
     /**
      * A road that crosses water, which is the bridge.
+     * <p>
+     * The banks are points rather than an x and a z, because a span crosses the water it finds and water does not
+     * always run the way the ford's does: north of the crossing the Bruinen turns east across the road, so the same
+     * two pieces are stood a quarter turn and the span lies along z. A span is on one axis - both banks share a
+     * coordinate - and the coordinate they share is the line both approaches are forced onto.
      *
-     * @param eastBankX   the bank the road arrives on, and the west one it leaves by, with the span between them
-     * @param westBankX   the far bank, where the road leaves the water
-     * @param bridgeZ     the line the span lies on, which both approaches are forced onto
+     * @param bankX       the bank the road arrives on: the near side, where the approach comes in
+     * @param bankZ       the same, along the other axis
+     * @param farX        the bank the road leaves by, across the water
+     * @param farZ        the same, along the other axis
      * @param half        how many blocks the bridge is either side of its line
      * @param bridgeBase  the base a bridge middle is laid at, and the end's own base, one higher
      * @param endBase     the abutments' base, one over the middles' so their slabs meet the planks within half a block
@@ -48,9 +54,46 @@ public sealed interface Route {
      * @param middlePiece the span piece, which is as long as the gap between the two banks allows
      */
     record Crossing(String id, int cityX0, int cityX1, int cityZ0, int cityZ1,
-                    int pathX, int pathZ, int eastBankX, int westBankX, int bridgeZ, int half,
+                    int pathX, int pathZ, int bankX, int bankZ, int farX, int farZ, int half,
                     int bridgeBase, int endBase, int deckY, int runIn, int exitReach,
                     String endPiece, String middlePiece) implements Route {
+        public Crossing {
+            if (bankX != farX && bankZ != farZ) throw new IllegalArgumentException("a span is on one axis: " + id);
+            if (bankX == farX && bankZ == farZ) throw new IllegalArgumentException("a span needs two banks: " + id);
+        }
+
+        /** Whether the span lies along x, which is how the ford's does: the banks differ in x and share a z. */
+        public boolean alongX() {
+            return bankZ == farZ;
+        }
+
+        /** The near bank's coordinate along the span's own axis, and the far bank's. */
+        public int bank() {
+            return alongX() ? bankX : bankZ;
+        }
+
+        public int far() {
+            return alongX() ? farX : farZ;
+        }
+
+        /** The coordinate both banks share: the line the two approaches run in on. */
+        public int line() {
+            return alongX() ? bankZ : bankX;
+        }
+
+        /** One block along the span towards the far bank, which is the direction its pieces are stood in. */
+        public int step() {
+            return Integer.signum(far() - bank());
+        }
+
+        /** A station of the span, from a coordinate along it and an offset across it. */
+        public int x(int along, int across) {
+            return alongX() ? along : line() + across;
+        }
+
+        public int z(int along, int across) {
+            return alongX() ? line() + across : along;
+        }
     }
 
     /**

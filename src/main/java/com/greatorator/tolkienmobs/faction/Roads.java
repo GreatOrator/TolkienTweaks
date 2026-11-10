@@ -53,11 +53,26 @@ public final class Roads {
      * The road north out of the crossing towards the high pass: the section the scout walked from the ford's east
      * bank, up the shoulder above the Bruinen, and on north over the vale's own floor.
      * <p>
-     * It is a road rather than a build's way out, so it is named and carries no footprint: it begins where the
-     * valley's road ends, on the block at 5067, -3062 that the crossing's span arrives at, and walks north to the last
-     * marker at 5124, -3399. Those two are the whole route; every pin between them is a bend.
+     * It is a road rather than a build's way out, so it is named and carries no footprint. North of the ford the
+     * Bruinen turns east across it, so the road is two sections rather than one: the crossing at
+     * {@link #HIGH_PASS_BRIDGE}, which is where the water is, and this, the dry road beyond the far abutment - from
+     * the block the crossing's exit stops on at 5065, -3129 up to the last marker at 5124, -3399. Those two are the
+     * whole route; every pin between them is a bend.
      */
     public static final String HIGH_PASS_WAY = "tolkienmobs:roads/high_pass_way";
+
+    /**
+     * The bridge the high pass road crosses the Bruinen on, a hundred blocks north of the ford.
+     * <p>
+     * The four ammolite blocks the scout laid on the river's line were the crossing's own survey: the shore at -3070,
+     * the water at -3077 and -3090, and the far side at -3105. Read against the ground, the river there runs east to
+     * west across the road, so the span lies along z between the bank at -3073 - the first block the water covers -
+     * and the bank at -3098, past the shallows. Twenty-six columns between the two is the near end, one middle and
+     * the far end exactly, which is why those two blocks rather than the marked ones: a span of nine, eight and nine
+     * is the only length two ends and a middle fit, and a bank chosen two blocks short leaves a gap of open water in
+     * front of the far abutment. The water stands at 76 and 77 under the span, so the deck is 79.
+     */
+    public static final String HIGH_PASS_BRIDGE = "tolkienmobs:roads/high_pass_bridge";
 
     /**
      * The two cave roads of the troll caves' cluster, and the road that carries them on to the country road.
@@ -90,7 +105,7 @@ public final class Roads {
             // west half and 76 under its east, so the deck is 80 - two over the highest water on the span - with the
             // abutments' base at 79 and the middles' at 78 under it. The banks read 78 and 80 themselves, so the deck
             // arrives on them rather than over or under them.
-            new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, 5003, -3060, 4,
+            new Route.Crossing("rivendell", 5200, 5753, -3370, -2859, 5200, -3034, 5055, -3060, 5003, -3060, 4,
                     78, 79, 80, 16, 32, "bridge_end", "bridge_middle"),
             // Elladan's camp's own way out: the block beside its door at 4648, 156, -3314, over the camp's own
             // paving to the junction pinned at 4638, -3355, where the main road passes. The camp's ground is the
@@ -136,11 +151,16 @@ public final class Roads {
             new Route.Riverless(CAVE_WAY_NORTH, 0, 0, 0, 0, 4508, -2429, 4528, -2475),
             new Route.Riverless(CAVE_WAY_EAST, 0, 0, 0, 0, 4568, -2511, 4528, -2475),
             new Route.Riverless(TROLL_CAVE_WAY, 0, 0, 0, 0, 4460, -2477, 4528, -2475),
-            // The road north towards the high pass: out of the crossing's east end at 5067, -3062, up the shoulder
-            // above the river for twelve blocks of climb over two hundred and fifty, and down the vale's north side
-            // to the last marker at 5124, -3399. Nothing stands behind either end, so no footprint is given: the two
-            // marks are the whole route, and the pins between them bend it.
-            new Route.Riverless(HIGH_PASS_WAY, 0, 0, 0, 0, 5067, -3062, 5124, -3399)
+            // The crossing the high pass road begins with, where the Bruinen turns east across the line: the same two
+            // pieces as the ford's, stood a quarter turn, so the span runs along z from the bank at -3073 to the one
+            // at -3098. The footprint is the small box the road's own start stands in, not the country either side of
+            // the river: a route's box is ground its search may not cross, and a box round the water would forbid the
+            // approach that has to reach the abutment.
+            new Route.Crossing(HIGH_PASS_BRIDGE, 5060, 5074, -3070, -3050, 5067, -3062, 5065, -3073, 5065, -3098,
+                    4, 77, 78, 79, 8, 32, "bridge_end", "bridge_middle"),
+            // The dry road north of the crossing, from the block the exit stops on to the last marker at 5124,
+            // -3399. Nothing stands behind either end, so the footprint is again only the block the road starts in.
+            new Route.Riverless(HIGH_PASS_WAY, 5060, 5074, -3140, -3120, 5065, -3129, 5124, -3399)
     );
 
     /**
@@ -233,15 +253,12 @@ public final class Roads {
             Map.entry(CAVE_WAY_NORTH, List.of(new BlockPos(4536, 155, -2443), new BlockPos(4543, 155, -2464))),
             Map.entry(CAVE_WAY_EAST, List.of(new BlockPos(4555, 155, -2517), new BlockPos(4551, 155, -2496))),
             Map.entry(TROLL_CAVE_WAY, List.of(new BlockPos(4478, 153, -2489))),
-            // The high pass road, north from the crossing's east bank. Every pin the scout walked on the way is
-            // here, because the shoulder above the river turns as it climbs and the vale's north side falls away
-            // twenty blocks in less than ninety - legs that long read as a straight line through the country
-            // rather than as the line that was walked. The pins doubled a block apart at -3077 and -3090 are one
-            // mark each: near a city a scout lays two blocks to mean "here", not to mean a junction.
-            Map.entry(HIGH_PASS_WAY, List.of(new BlockPos(5067, 77, -3062), new BlockPos(5065, 76, -3070),
-                    new BlockPos(5065, 76, -3077), new BlockPos(5065, 76, -3090),
-                    new BlockPos(5065, 77, -3105), new BlockPos(5068, 78, -3120),
-                    new BlockPos(5071, 78, -3138), new BlockPos(5077, 79, -3153),
+            // The high pass road north of the crossing. The four blocks the scout laid at -3062 to -3105 are the
+            // bridge's own survey and belong to the crossing, whose banks they mark; these are the pins beyond the far
+            // abutment, every one the scout walked, because the shoulder above the river turns as it climbs and the
+            // vale's north side falls away twenty blocks in less than ninety - legs that long read as a straight line
+            // through the country rather than as the line that was walked.
+            Map.entry(HIGH_PASS_WAY, List.of(new BlockPos(5071, 78, -3138), new BlockPos(5077, 79, -3153),
                     new BlockPos(5076, 80, -3184), new BlockPos(5077, 81, -3209),
                     new BlockPos(5080, 83, -3230), new BlockPos(5080, 84, -3253),
                     new BlockPos(5070, 85, -3272), new BlockPos(5066, 87, -3292),
@@ -332,8 +349,10 @@ public final class Roads {
             Map.entry(TROLL_CAVE_WAY, Kind.WILD_WIDE),
             Map.entry(WOOD_RUIN_LINK, Kind.WILD_WIDE),
             // The high pass road is a section of the wild path, laid five wide like every other walked line, so it
-            // can be judged on foot before it is given a width of its own.
-            Map.entry(HIGH_PASS_WAY, Kind.WILD_WIDE));
+            // can be judged on foot before it is given a width of its own - the bridge included, whose pieces are nine
+            // wide whatever the road either side of it is.
+            Map.entry(HIGH_PASS_WAY, Kind.WILD_WIDE),
+            Map.entry(HIGH_PASS_BRIDGE, Kind.WILD_WIDE));
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {

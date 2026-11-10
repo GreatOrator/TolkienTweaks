@@ -233,8 +233,8 @@ public final class RoadCommands {
             if (route instanceof Route.Crossing crossing) {
                 source.sendSuccess(() -> Component.literal("Road to the valley: " + laid.cleared()
                         + " old timbers cleared, bridge of " + laid.pieces()
-                        + " pieces from " + crossing.eastBankX() + " to " + crossing.westBankX() + " on z "
-                        + crossing.bridgeZ() + ", pillars drawn down " + laid.pillars() + " blocks. Approach "
+                        + " pieces from " + crossing.bankX() + ", " + crossing.bankZ() + " to " + crossing.farX()
+                        + ", " + crossing.farZ() + ", pillars drawn down " + laid.pillars() + " blocks. Approach "
                         + laid.along() + " blocks, " + how
                         + ", steepest graded step " + graded[4] + ": " + surface
                         + " Far side " + far[0] + " columns laid, " + far[1] + " cut, " + far[2]
@@ -408,6 +408,29 @@ public final class RoadCommands {
      */
     private static final int SAVE_EVERY = 8;
 
+    /** The span's own columns, from the near bank to the far one along whichever axis it lies on. */
+    private static int spanLow(Route.Crossing span) {
+        return Math.min(span.bank(), span.far());
+    }
+
+    private static int spanHigh(Route.Crossing span) {
+        return Math.max(span.bank(), span.far());
+    }
+
+    /**
+     * The band the sweep takes an older span's timbers out of: the span and one column past either abutment.
+     * <p>
+     * A pass that only places blocks cannot correct a piece laid in the wrong place, so the sweep reaches past both
+     * ends - the column beyond an abutment is where a mislaid end stands.
+     */
+    private static int sweepLow(Route.Crossing span) {
+        return Math.min(span.far() + span.step(), span.bank() - span.step());
+    }
+
+    private static int sweepHigh(Route.Crossing span) {
+        return Math.max(span.far() + span.step(), span.bank() - span.step());
+    }
+
     /** The stages of a road pass, in the order they have to happen. */
     private enum Stage {
         SWEEP, BRIDGE, PILLARS, SEARCH, GRADE, STEPS
@@ -434,7 +457,7 @@ public final class RoadCommands {
         private int cleared;
         private int pieces;
         private int pillarsDrawn;
-        private int pillarX;
+        private int pillarAt;
         /** The bridge's pieces, east end first; built on the stage's first step and stood one a step after it. */
         private List<int[]> bridge;
         private Descent descent;
@@ -489,8 +512,10 @@ public final class RoadCommands {
             // A road with no water on it has no span to sweep and nothing to bridge, so its first stage is the
             // search and the whole distance between its ends is the alignment.
             this.stage = span == null ? Stage.SEARCH : Stage.SWEEP;
-            this.swept = span == null ? 0 : span.westBankX() - 1;
-            this.pillarX = span == null ? 0 : span.westBankX();
+            // The sweep and the pillars walk the span along its own axis; the sweep starts one column past the
+            // abutment at the end away from the near bank, so a piece an older plan left standing is found too.
+            this.swept = span == null ? 0 : sweepLow(span);
+            this.pillarAt = span == null ? 0 : Math.min(span.far(), span.bank());
             // Which end the ask came from is read along the road's own line rather than as the crow flies: a road
             // bent round a shoulder of hill has its ends nearer each other through the hill than along the road, so
             // a player standing on the bend is placed by the bend they are beside and not by the rock between.
@@ -593,10 +618,10 @@ public final class RoadCommands {
         private boolean stage(ServerLevel level) throws IOException {
             switch (stage) {
                 case SWEEP -> {
-                    int upto = Math.min(span.eastBankX() + 1, swept + COLUMNS_PER_STEP - 1);
+                    int upto = Math.min(sweepHigh(span), swept + COLUMNS_PER_STEP - 1);
                     cleared += sweepColumns(level, span, swept, upto);
                     swept = upto + 1;
-                    if (swept > span.eastBankX() + 1) stage = Stage.BRIDGE;
+                    if (swept > sweepHigh(span)) stage = Stage.BRIDGE;
                 }
                 case BRIDGE -> {
                     if (bridge == null) bridge = bridgePlan(level, span);
@@ -604,10 +629,10 @@ public final class RoadCommands {
                     else stage = Stage.PILLARS;
                 }
                 case PILLARS -> {
-                    int upto = Math.min(span.eastBankX(), pillarX + COLUMNS_PER_STEP - 1);
-                    pillarsDrawn += pillarsColumns(level, span, pillarX, upto);
-                    pillarX = upto + 1;
-                    if (pillarX > span.eastBankX()) stage = Stage.SEARCH;
+                    int upto = Math.min(spanHigh(span), pillarAt + COLUMNS_PER_STEP - 1);
+                    pillarsDrawn += pillarsColumns(level, span, pillarAt, upto);
+                    pillarAt = upto + 1;
+                    if (pillarAt > spanHigh(span)) stage = Stage.SEARCH;
                 }
                 case SEARCH -> {
                     if (!walk(level)) align(level);
@@ -692,7 +717,7 @@ public final class RoadCommands {
             tag.putInt("cleared", cleared);
             tag.putInt("pieces", pieces);
             tag.putInt("pillars", pillarsDrawn);
-            tag.putInt("pillarX", pillarX);
+            tag.putInt("pillarAt", pillarAt);
             tag.putBoolean("searched", searched);
             if (approach != null) tag.putIntArray("approach", flatten(approach));
             if (exit != null) tag.putIntArray("exit", flatten(exit));
@@ -725,7 +750,7 @@ public final class RoadCommands {
             cleared = tag.getIntOr("cleared", 0);
             pieces = tag.getIntOr("pieces", 0);
             pillarsDrawn = tag.getIntOr("pillars", 0);
-            pillarX = tag.getIntOr("pillarX", pillarX);
+            pillarAt = tag.getIntOr("pillarAt", pillarAt);
             searched = tag.getBooleanOr("searched", false);
             List<int[]> carried = unflatten(tag.getIntArray("approach").orElse(new int[0]));
             if (carried.size() < 2) {
@@ -780,8 +805,9 @@ public final class RoadCommands {
                 toZ = bend.getZ();
             } else if (route instanceof Route.Crossing span) {
                 // The approach arrives on the span's own line, a run-in back from the east bank.
-                toX = span.eastBankX() + span.runIn();
-                toZ = span.bridgeZ();
+                int runIn = span.bank() - span.step() * span.runIn();
+                toX = span.x(runIn, 0);
+                toZ = span.z(runIn, 0);
             } else {
                 Route.Riverless dry = (Route.Riverless) route;
                 toX = dry.farX();
@@ -822,20 +848,27 @@ public final class RoadCommands {
             }
             List<int[]> found = walked;
             searched = found != null;
+            int runIn = span.bank() - span.step() * span.runIn();
             if (!searched) {
                 LOGGER.info("Road {}: no walked way to {}, {}, so the straight line is laid instead",
-                        route.id(), span.eastBankX() + span.runIn(), span.bridgeZ());
-                found = straight(route, span.eastBankX() + span.runIn(), span.bridgeZ());
+                        route.id(), span.x(runIn, 0), span.z(runIn, 0));
+                found = straight(route, span.x(runIn, 0), span.z(runIn, 0));
             }
             List<int[]> line = new ArrayList<>(found);
-            for (int x = span.eastBankX() + span.runIn() - 1; x >= span.eastBankX() + 1; x--) {
-                line.add(new int[]{x, span.bridgeZ()});
+            // The last stations before the near abutment, dead straight on the span's own line: a piece is a
+            // straight span with an abutment at one end, so a road arriving at an angle has no junction to arrive on.
+            for (int at = span.bank() - span.step() * (span.runIn() - 1); at != span.bank(); at += span.step()) {
+                line.add(new int[]{span.x(at, 0), span.z(at, 0)});
             }
             approach = hairpins(level, route, simplify(line));
             exit = new ArrayList<>();
-            for (int x = span.westBankX() - 1; x >= span.westBankX() - span.exitReach(); x--) exit.add(new int[]{x, span.bridgeZ()});
+            int off = span.far() + span.step();
+            for (int at = off; at != off + span.step() * span.exitReach(); at += span.step()) {
+                exit.add(new int[]{span.x(at, 0), span.z(at, 0)});
+            }
+            int farOut = span.far() + span.step() * span.exitReach();
             int startY = endGround(level, route.pathX(), route.pathZ());
-            int endY = endGround(level, span.westBankX() - span.exitReach(), span.bridgeZ());
+            int endY = endGround(level, span.x(farOut, 0), span.z(farOut, 0));
             graded = new Graded(level, route, approach, startY, span.deckY());
             far = new Graded(level, route, exit, span.deckY(), endY);
             stage = Stage.GRADE;
@@ -890,13 +923,15 @@ public final class RoadCommands {
      */
     private static int sweepColumns(ServerLevel level, Route.Crossing route, int from, int to) {
         int cleared = 0;
-        int z0 = route.bridgeZ() - route.half() - 8;
-        int z1 = route.bridgeZ() + route.half();
-        for (int x = from; x <= to; x++) {
-            for (int z = z0; z <= z1; z += 8) {
-                level.getChunk(x >> 4, z >> 4);
+        int across0 = -route.half() - 8;
+        int across1 = route.half();
+        for (int along = from; along <= to; along++) {
+            for (int across = across0; across <= across1; across += 8) {
+                level.getChunk(route.x(along, across) >> 4, route.z(along, across) >> 4);
             }
-            for (int z = z0; z <= z1; z++) {
+            for (int across = across0; across <= across1; across++) {
+                int x = route.x(along, across);
+                int z = route.z(along, across);
                 for (int y = route.bridgeBase() - PILLAR_FLOOR; y <= route.bridgeBase() + 7; y++) {
                     BlockPos at = new BlockPos(x, y, z);
                     if (!timber(level.getBlockState(at))) continue;
@@ -928,24 +963,42 @@ public final class RoadCommands {
     private static List<int[]> bridgePlan(ServerLevel level, Route.Crossing route) throws IOException {
         StructureTemplate end = template(level, route.endPiece());
         StructureTemplate middle = template(level, route.middlePiece());
-        int z0 = route.bridgeZ() - route.half();
         int endWide = end.getSize().getX();
+        int near = route.bank();
+        int far = route.far();
+        int low = route.line() - route.half();
+        int high = route.line() + route.half();
         List<int[]> plan = new ArrayList<>();
-        plan.add(new int[]{route.eastBankX(), route.endBase(), route.bridgeZ() + route.half(),
-                Rotation.CLOCKWISE_180.ordinal(), END_PIECE});
+        if (!route.alongX()) {
+            // A span along z is the ford's plan stood on its side. A turned piece is laid about the origin rather
+            // than about its own corner, so COUNTERCLOCKWISE_90 puts a local column at X + z and a local row at Z - x:
+            // a piece anchored on the band's low x covers that column and the eight above it, and a middle's eight
+            // columns run from Z - 7 up to Z. The near end and the middles are turned one way and the far end the
+            // other, so both abutments face out of the span and the last piece closes it.
+            plan.add(new int[]{low, route.endBase(), near, Rotation.COUNTERCLOCKWISE_90.ordinal(), END_PIECE});
+            int cursor = near - endWide;
+            while (cursor - far + 1 >= middle.getSize().getX() + endWide) {
+                plan.add(new int[]{low, route.bridgeBase(), cursor - middle.getSize().getX() + 1,
+                        Rotation.COUNTERCLOCKWISE_90.ordinal(), MIDDLE_PIECE});
+                cursor -= middle.getSize().getX();
+            }
+            plan.add(new int[]{high, route.endBase(), far, Rotation.CLOCKWISE_90.ordinal(), END_PIECE});
+            return plan;
+        }
+        plan.add(new int[]{near, route.endBase(), high, Rotation.CLOCKWISE_180.ordinal(), END_PIECE});
 
         // Each middle is anchored on its own north-east corner too, so the piece's last column is the cursor
         // itself and the next free column is one further west. Only middles that leave room for the west end
         // are laid; the end then closes whatever is left.
-        int cursor = route.eastBankX() - endWide;
+        int cursor = near - endWide;
         // Room for one more middle and for the west end behind it: seventeen columns, not eighteen. Asking
         // for eighteen dropped the last middle and left a gap of open water in front of the far abutment.
-        while (cursor - route.westBankX() + 1 >= middle.getSize().getX() + endWide) {
-            plan.add(new int[]{cursor - middle.getSize().getX() + 1, route.bridgeBase(), z0,
+        while (cursor - far + 1 >= middle.getSize().getX() + endWide) {
+            plan.add(new int[]{cursor - middle.getSize().getX() + 1, route.bridgeBase(), low,
                     Rotation.NONE.ordinal(), MIDDLE_PIECE});
             cursor -= middle.getSize().getX();
         }
-        plan.add(new int[]{route.westBankX(), route.endBase(), z0, Rotation.NONE.ordinal(), END_PIECE});
+        plan.add(new int[]{far, route.endBase(), low, Rotation.NONE.ordinal(), END_PIECE});
         return plan;
     }
 
@@ -983,9 +1036,10 @@ public final class RoadCommands {
      */
     private static int pillarsColumns(ServerLevel level, Route.Crossing route, int from, int to) {
         int drawn = 0;
-        int z0 = route.bridgeZ() - route.half();
-        for (int x = from; x <= to; x++) {
-            for (int z = z0; z <= z0 + route.half() * 2; z++) {
+        for (int along = from; along <= to; along++) {
+            for (int across = -route.half(); across <= route.half(); across++) {
+                int x = route.x(along, across);
+                int z = route.z(along, across);
                 int base = Integer.MIN_VALUE;
                 for (int y = route.bridgeBase() + 6; y >= route.bridgeBase() - 2; y--) {
                     if (level.getBlockState(new BlockPos(x, y, z)).is(Blocks.OAK_LOG)) base = y;
