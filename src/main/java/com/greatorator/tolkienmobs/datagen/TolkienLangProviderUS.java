@@ -1089,6 +1089,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("command.tolkienmobs.scene.stop", "The Company is taken away.");
             this.add("command.tolkienmobs.scene.forget", "The note and the having-seen are cleared for %s.");
             this.add("command.tolkienmobs.scene.skip", "Chapter two is opened for %s.");
+            this.add("command.tolkienmobs.scene.marks", "The plaza's marks, %s of %s:");
+            this.add("command.tolkienmobs.scene.marks.set", "%s at %s");
+            this.add("command.tolkienmobs.scene.marks.missing", "Not marked near you: %s");
+            this.add("command.tolkienmobs.scene.marks.none", "No scene marks within %s blocks of you.");
             this.add("campaign.tolkienmobs.page.departure.closing", "You tell Elrond what came out of the wood, and he is silent a while. \"A servant of the Enemy in the shape of a beast, and old. That is worse news than the creature itself.\"");
             this.add("screen.tolkienmobs.quests.purse.silver", "Pays %s silver");
             this.add("screen.tolkienmobs.quests.purse.bronze", "Pays %s bronze");

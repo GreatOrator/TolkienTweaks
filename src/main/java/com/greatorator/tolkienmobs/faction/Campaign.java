@@ -2350,7 +2350,11 @@ public final class Campaign extends SavedData {
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
         if (valley.centre().distToCenterSqr(player.position()) > VALLEY_REACH * VALLEY_REACH) return;
         int[] spot = VALLEY_STANDS.getOrDefault(tag, VALLEY_STANDS.get(ELROND_TAG));
-        BlockPos post = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]));
+        // Where the owner has marked the plaza for Elrond, that is where he stands: the mithril mark is
+        // the ground the scene arranges itself round, and a keeper off at his old post is not in it.
+        BlockPos marked = ELROND_TAG.equals(tag) ? Departure.markedElrond(level) : null;
+        BlockPos post = floorNear(level, marked != null ? marked
+                : valley.centre().offset(spot[0], 0, spot[1]));
         Entity keeper = keeperWith(level, tag);
         if (keeper != null) {
             if (post != null) recallKeeper(level, keeper, post, VALLEY_REACH, tag);

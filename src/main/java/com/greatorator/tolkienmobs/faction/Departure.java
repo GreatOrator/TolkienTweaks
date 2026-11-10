@@ -14,6 +14,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import javax.annotation.Nullable;
@@ -53,7 +54,7 @@ public final class Departure {
      * city's. Unpinned, the scene gathers at Elrond's own stand in the valley, which is where a player who
      * has just been told to find him is already walking.
      */
-    private static final String GATHER_PIN = "rivendell.scene";
+    public static final String GATHER_PIN = "rivendell.scene";
     /** How near the mark a player has to come for the scene to begin, in blocks. */
     private static final double GATHER_REACH = 24.0D;
     /** How far they may wander once it has begun before it lets them go, in blocks. */
@@ -79,7 +80,7 @@ public final class Departure {
     private enum Kind { MAN, HOBBIT, DWARF }
 
     /** One body: the name it wears, the folk it stands on, and where it stands from the gathering mark. */
-    private record Cast(String name, Kind kind, int dx, int dz) {
+    private record Cast(String name, String slug, Kind kind, int dx, int dz) {
     }
 
     /**
@@ -89,16 +90,16 @@ public final class Departure {
      * without a body of this scene's own.
      */
     private static final List<Cast> CAST = List.of(
-            new Cast("Gandalf", Kind.MAN, -2, 6),
-            new Cast("Bilbo", Kind.HOBBIT, 0, 5),
-            new Cast("Aragorn", Kind.MAN, 6, 6),
-            new Cast("Gimli", Kind.DWARF, 7, 0),
-            new Cast("Legolas", Kind.MAN, 8, 4),
-            new Cast("Boromir", Kind.MAN, 8, 2),
-            new Cast("Merry", Kind.HOBBIT, 5, 1),
-            new Cast("Pippin", Kind.HOBBIT, 5, 4),
-            new Cast("Samwise", Kind.HOBBIT, 5, 2),
-            new Cast("Frodo", Kind.HOBBIT, 5, 3));
+            new Cast("Gandalf", "gandalf", Kind.MAN, -2, 6),
+            new Cast("Bilbo", "bilbo", Kind.HOBBIT, 0, 5),
+            new Cast("Aragorn", "aragorn", Kind.MAN, 6, 6),
+            new Cast("Gimli", "gimli", Kind.DWARF, 7, 0),
+            new Cast("Legolas", "legolas", Kind.MAN, 8, 4),
+            new Cast("Boromir", "boromir", Kind.MAN, 8, 2),
+            new Cast("Merry", "merry", Kind.HOBBIT, 5, 1),
+            new Cast("Pippin", "pippin", Kind.HOBBIT, 5, 4),
+            new Cast("Samwise", "samwise", Kind.HOBBIT, 5, 2),
+            new Cast("Frodo", "frodo", Kind.HOBBIT, 5, 3));
 
     // ---- the script ----
 
@@ -239,7 +240,10 @@ public final class Departure {
     public static void play(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
         stop(player);
-        BlockPos at = player.blockPosition();
+        // A marked plaza is what there is to look at, so a rehearsal shows it; ground nobody has
+        // marked still rehearses at the caller's feet.
+        BlockPos at = Pins.at(level, GATHER_PIN);
+        if (at == null) at = player.blockPosition();
         Show show = new Show(at, level.dimension().identifier().toString(), level.getGameTime(), true);
         stand(level, show, at);
         SHOWS.put(player.getUUID(), show);
@@ -247,9 +251,12 @@ public final class Departure {
 
     /** Stands the cast round a mark. The bodies belong to the show and go when it does. */
     private static void stand(ServerLevel level, Show show, BlockPos at) {
-        float facing = 0.0F;
         for (Cast cast : CAST) {
-            BlockPos spot = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            // A body whose ground the owner has marked stands on the mark itself: the block was set
+            // down for that body, so the old pack's offset is only for ground nobody has marked.
+            BlockPos marked = Pins.at(level, bodyPin(cast.slug()));
+            BlockPos spot = marked != null ? marked
+                    : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                     at.offset(cast.dx(), 0, cast.dz()));
             Entity entity = switch (cast.kind()) {
                 case MAN -> TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
@@ -257,7 +264,7 @@ public final class Departure {
                 case DWARF -> TolkienEntities.ENTITY_TTM_DWARF.get().create(level, EntitySpawnReason.EVENT);
             };
             if (!(entity instanceof Mob body)) continue;
-            body.snapTo(spot.getX() + 0.5D, spot.getY(), spot.getZ() + 0.5D, facing, 0.0F);
+            body.snapTo(spot.getX() + 0.5D, spot.getY(), spot.getZ() + 0.5D, facing(spot, at), 0.0F);
             body.setPersistenceRequired();
             // A body in a scene stands where it was put: no wandering, and nothing in the crowd can be
             // killed out from under the words being spoken over it.
@@ -270,6 +277,25 @@ public final class Departure {
             level.addFreshEntity(body);
             show.bodies.add(body.getUUID());
         }
+    }
+
+    /** The way a body looks: at the gathering mark, so a ring reads as a ring. */
+    private static float facing(BlockPos spot, BlockPos at) {
+        double dx = at.getX() - spot.getX();
+        double dz = at.getZ() - spot.getZ();
+        if (dx == 0.0D && dz == 0.0D) return 0.0F;
+        return (float) Math.toDegrees(Math.atan2(dz, dx)) - 90.0F;
+    }
+
+    /** The pin a marked body stands on: the gathering mark's own key, with the body's slug after it. */
+    public static String bodyPin(String slug) {
+        return GATHER_PIN + "." + slug;
+    }
+
+    /** Where the owner's mithril mark puts Elrond, or null while the plaza has not been read yet. */
+    @Nullable
+    public static BlockPos markedElrond(Level level) {
+        return Pins.at(level, bodyPin("elrond"));
     }
 
     private static void advance(ServerPlayer player, ServerLevel level, Show show) {

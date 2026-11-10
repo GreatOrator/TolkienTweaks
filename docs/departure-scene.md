@@ -201,3 +201,33 @@ chapter two. `/tmscene stop` takes it away early, `/tmscene note` hands over the
 `/tmscene forget` clears the note and the having-seen, `/tmscene skip` answers the seam
 outright, and `/tmscene` alone reports the stage. So placement and pacing can be looked
 at on unpinned ground: what is seen there is what the pinned courtyard will get.
+
+## The plaza is marked - 10 November 2026
+
+Eleven marker blocks, one body each, set down on the plaza; all of them read where they lie,
+none of them typed in:
+
+| Block | Body | Pin |
+| --- | --- | --- |
+| Morgul iron block | Gandalf | `rivendell.scene.gandalf` |
+| Mithril block | Elrond | `rivendell.scene.elrond`, and `rivendell.scene` |
+| Ammolite block | Aragorn | `rivendell.scene.aragorn` |
+| Dwarven stone | Gimli | `rivendell.scene.gimli` |
+| Elven marble | Legolas | `rivendell.scene.legolas` |
+| Mountain stone | Boromir | `rivendell.scene.boromir` |
+| Angainor stone | Bilbo | `rivendell.scene.bilbo` |
+| Culumalda planks | Frodo | `rivendell.scene.frodo` |
+| Lebethron planks | Samwise | `rivendell.scene.samwise` |
+| Deadwood planks | Pippin | `rivendell.scene.pippin` |
+| Dwarven maple planks | Merry | `rivendell.scene.merry` |
+
+`/tmscene marks [radius]` walks the cube round the caller - sixteen blocks unless told otherwise,
+and the nearest block of each kind wins - and pins the first air over each mark, so a block set
+into the floor and a block laid on top of it both give the ground a body stands on. Elrond's mark
+doubles as the gathering mark: it is where the note's scene begins, where a rehearsal is now held,
+and where his keeper is stood in the valley, so he is in the courtyard with the rest rather than
+at his old post forty blocks off.
+
+The old pack's offsets are still there, and are what a body nobody has marked stands on. Nothing
+of this is written into the build: these are world pins, so a mark moved by one block is read
+again by running the command again, and another world keeps its own plaza.
