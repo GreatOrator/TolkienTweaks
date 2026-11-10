@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
+- A trunk standing in the lane of a walked road is felled to its own crown rather than cut off at the tunnel's roof, which would have left a bare pole on the road with the crown it carries hanging above it.
 - A road through a wood is cleared as a tunnel rather than to the sky: five blocks of headroom over the middle and the first column out, four at the second and three at the edge, with the wood left standing above the roof - and the pass and the generated-road clearing now share that one profile, so both kinds of road keep the same way through. A trunk standing in the lane is still taken whole, since a tree cut off at the roof leaves its crown hanging over the road.
 - A recorded bend now carries the level its mark stands at: a mark under the grade cuts the road down to itself, within what that road may cut of the ground under it, and the stations either side walk down to meet it - so a switchback's arms reach the shelves they were pinned on instead of running on above them with a shelf and no way down. A mark above the road still lifts nothing.
 - The switchback on the massif's west fall is walked through the scout's new pins: two lines 28 apart at z -2678 and z -2706, arms running the width of that band and dropping two to five blocks each, from 4867, -2688 to 4907, -2706 - nine turns where there were seventeen, so the grade has a long run into every turn instead of a terrace at each.

@@ -1899,6 +1899,13 @@ public final class RoadCommands {
                     }
                     int base = offset <= half ? target : surfaceAt(level, at, into);
                     if (base == VOID || base == WATER) base = target;
+                    // A trunk standing in the lane goes whole: the tunnel's headroom is not the tree's top, and taking
+                    // only the headroom out of it leaves a bare pole with the crown it carries hanging over the road.
+                    // The column's own top is where that crown ends.
+                    if (offset <= half
+                            && level.getBlockState(new BlockPos(at, base + reach + 1, into)).is(BlockTags.LOGS)) {
+                        reach = Math.max(reach, level.getHeight(Heightmap.Types.MOTION_BLOCKING, at, into) - base);
+                    }
                     cleared += trimCanopy(level, at, into, base, reach, offset <= half);
                 }
             }
