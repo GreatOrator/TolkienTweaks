@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.world.registration;
 
+import com.greatorator.tolkienmobs.faction.Plaza;
 import com.greatorator.tolkienmobs.faction.RoadPaint;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
@@ -171,6 +172,20 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     /**
+     * The top a column takes: the plaza's level where its disc reaches the column, the road's shelf everywhere else.
+     * <p>
+     * The two are asked in one answer rather than one overwriting the other, because the reshape, the surface pass and
+     * both heightmaps each have to agree with the others about where the ground is - a plaza read by the paint and not
+     * by the heightmap is a floor with a cave under it. A plaza is the one place the height is not held within a road's
+     * cut and fill of the column: its disc is flat, and the country it crosses may be six or seven blocks above it at
+     * the rim, which is why the rim is eased rather than clamped.
+     */
+    private static int topAt(ArdaMap.Sample sample, int x, int z, IntBinaryOperator below) {
+        Integer plaza = Plaza.heightAt(x, z, below);
+        return plaza != null ? plaza : roadTop(sample, RoadPaint.heightAt(x, z, below));
+    }
+
+    /**
      * Paints the campaign's generated roads into the dressed ground.
      * <p>
      * A road that stands in every world cannot search for its alignment, because it has to answer for a chunk whose
@@ -194,12 +209,14 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
             for (int z = 0; z < 16; z++) {
                 int blockX = minX + x;
                 int blockZ = minZ + z;
-                BlockState surface = RoadPaint.at(blockX, blockZ);
+                // The plaza's floor is asked first: it is a clearing rather than a road, and a road that ran through
+                // it would pave over the very ground the scene is played on.
+                BlockState surface = Plaza.surface(blockX, blockZ);
+                if (surface == null) surface = RoadPaint.at(blockX, blockZ);
                 if (surface == null) continue;
                 ArdaMap.Sample sample = ArdaMap.sample(blockX, blockZ,
                         randomState.sampler().weirdness(), randomState.sampler().erosion());
-                int top = Math.min(maxY,
-                        Math.max(chunk.getMinY(), roadTop(sample, RoadPaint.heightAt(blockX, blockZ, below))));
+                int top = Math.min(maxY, Math.max(chunk.getMinY(), topAt(sample, blockX, blockZ, below)));
                 if (sample.height() < sample.water() || top <= sample.water()) continue;
                 BlockState ground = chunk.getBlockState(at.set(blockX, top, blockZ));
                 if (ground.isAir() || !ground.getFluidState().isEmpty()) continue;
@@ -282,7 +299,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 // the strip is level across its width and a ramp along its length rather than the hillside's
                 // staircase. A road that would stand in water is left to the map - a crossing is a bridge's or a
                 // ford's business - and nothing outside the corridor is touched.
-                int drawn = roadTop(sample, RoadPaint.heightAt(blockX, blockZ, below));
+                int drawn = topAt(sample, blockX, blockZ, below);
                 int target = Math.max(minY + 1, Math.min(maxY, drawn));
 
                 // The column is made the drawn one outright - air above, rock below - rather than moved
@@ -407,8 +424,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
         ArdaMap.Sample sample = ArdaMap.sample(x, z, randomState.sampler().weirdness(), randomState.sampler().erosion());
         // A road's shelf is ground here too, so a carver, a feature and a structure site all read the surface the road
         // was cut to rather than the hillside it was cut from.
-        int ground = roadTop(sample,
-                RoadPaint.heightAt(x, z, (gx, gz) -> groundAt(gx, gz, randomState)));
+        int ground = topAt(sample, x, z, (gx, gz) -> groundAt(gx, gz, randomState));
         int surface = switch (type) {
             case OCEAN_FLOOR, OCEAN_FLOOR_WG -> ground;
             default -> Math.max(ground, sample.water());
@@ -429,7 +445,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
         Arrays.fill(column, AIR);
 
         ArdaMap.Sample sample = ArdaMap.sample(x, z, randomState.sampler().weirdness(), randomState.sampler().erosion());
-        int top = roadTop(sample, RoadPaint.heightAt(x, z, (gx, gz) -> groundAt(gx, gz, randomState)));
+        int top = topAt(sample, x, z, (gx, gz) -> groundAt(gx, gz, randomState));
         int waterTop = top < sample.water() ? sample.water() : top;
 
         for (int y = minY; y < minY + column.length; y++) {

@@ -34,6 +34,8 @@ import java.util.List;
  * pass is carried on by the tick below for as long as the ground its head stands on is loaded: a road resumed by
  * walking away, and resumed again by coming back, with nothing to type and no build to find first.
  * <p>
+ * The plaza is cleared here too, for the same reason a road's corridor is: it is drawn before the wood grows.
+ * <p>
  * A city's crossing is not begun here. A bridge behind a build is the city's own business - it needs the span
  * assembled and the city's ground ready for its abutments - so that crossing stays with the dressing. A crossing on a
  * named road has no city to wait for, and starts from the ground it crosses like every other section.
@@ -48,6 +50,7 @@ public final class RoadCorridor {
         if (!(event.getLevel() instanceof ServerLevel level)) return;
         if (!level.dimension().equals(TolkienDimensions.ARDA)) return;
         if (!RoadPaint.LINES.isEmpty()) RoadPaint.clear(level, event.getChunk());
+        Plaza.clear(level, event.getChunk());
         start(level, event.getChunk());
     }
 
