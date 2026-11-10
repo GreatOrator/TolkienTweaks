@@ -95,7 +95,7 @@ public final class Roads {
             new Route.Riverless(MOUNTAIN_WAY, 0, 0, 0, 0, 4789, -2721, 4818, -3115),
             // The road from the crag in the north-west to the ford's own road end: out of the crag at 4460, -2477,
             // south to the country road at 4411, -2635, east along it to 4875, -2691, and then down the massif's
-            // west fall from 155 to 80 - the shoulder north-east, the hairpin at 4937, -2627 where the switchback
+            // west fall from 155 to 80 - the switchback at 4885, -2684 with six blocks between its legs, the shoulder north-east, the hairpin at 4937, -2627 where the switchback
             // turns, and the long fall south - to the bridge's west bank at 5003, -3060, so the dry road and the
             // crossing meet end to end on the same ground. The line is the scout's own: the descent is bent through
             // the pins they re-laid a few blocks off the straight shot, sixty-two of them.
@@ -166,8 +166,10 @@ public final class Roads {
                     new BlockPos(4789, 156, -2671), new BlockPos(4791, 156, -2674),
                     new BlockPos(4793, 156, -2688), new BlockPos(4835, 156, -2717),
                     new BlockPos(4851, 155, -2695), new BlockPos(4875, 154, -2691),
-                    new BlockPos(4885, 155, -2684), new BlockPos(4888, 151, -2684), new BlockPos(4890, 147, -2684), new BlockPos(4893, 140, -2684),
-                    new BlockPos(4894, 137, -2684), new BlockPos(4896, 134, -2684), new BlockPos(4898, 131, -2684), new BlockPos(4900, 127, -2684),
+                    new BlockPos(4885, 155, -2684), new BlockPos(4887, 154, -2690), new BlockPos(4888, 151, -2684), new BlockPos(4888, 148, -2690),
+                    new BlockPos(4890, 147, -2684), new BlockPos(4891, 143, -2690), new BlockPos(4893, 140, -2684), new BlockPos(4893, 138, -2690),
+                    new BlockPos(4894, 137, -2684), new BlockPos(4895, 135, -2690), new BlockPos(4896, 134, -2684), new BlockPos(4897, 132, -2690),
+                    new BlockPos(4898, 131, -2684), new BlockPos(4899, 129, -2690), new BlockPos(4900, 127, -2684), new BlockPos(4901, 125, -2690),
                     new BlockPos(4903, 124, -2683), new BlockPos(4910, 124, -2676), new BlockPos(4913, 121, -2669), new BlockPos(4914, 120, -2659),
                     new BlockPos(4921, 120, -2652), new BlockPos(4924, 115, -2646), new BlockPos(4930, 115, -2632), new BlockPos(4932, 114, -2628),
                     new BlockPos(4935, 110, -2632), new BlockPos(4937, 107, -2627), new BlockPos(4937, 106, -2636), new BlockPos(4932, 112, -2636),
