@@ -492,8 +492,12 @@ public final class Campaign extends SavedData {
     private static final String GLOIN_TAG = "tolkienmobs:campaign_gloin";
     /** How far from the middle of the camp a player has to be for him to be stood at it, in blocks. */
     private static final double GLOIN_REACH = 96.0D;
-    /** Where he stands, from the middle of the camp's footprint: south of the door, on the way in. */
-    private static final int[] GLOIN_STAND = {0, 6};
+    /**
+     * Where he stands, from the middle of the camp's footprint: the block the scout marked inside the camp at 8233,
+     * -3664 - four east of the middle and one north of it, beside the barrels in the camp's own room rather than out
+     * in the doorway.
+     */
+    private static final int[] GLOIN_STAND = {4, -1};
     private static final String TOCAMP_TITLE = "campaign.tolkienmobs.page.tocamp";
     private static final String TOCAMP_PLACE = "campaign.tolkienmobs.page.tocamp.place";
     private static final String TOCAMP_CLOSING = "campaign.tolkienmobs.page.tocamp.closing";

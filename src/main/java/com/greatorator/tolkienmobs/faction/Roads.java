@@ -90,6 +90,33 @@ public final class Roads {
     public static final String HIGH_PASS_BRIDGE = "tolkienmobs:roads/high_pass_bridge";
 
     /**
+     * The road east of the climb: from the top of the pass at 5187, -3658 out over the shoulder and through the
+     * mountains to the near end of the stream crossing at 6418, -3662.
+     * <p>
+     * It is a road of its own rather than the tail of {@link #HIGH_PASS_CLIMB} because the climb ends on the pass's
+     * own last mark and this one carries on east where the vale gives way to the range. The scout walked it as one
+     * line with two marks on it, 5194, -3672 at the shoulder and the crossing's own banks at 6434 and 6477, so the
+     * section is two ends and one bend.
+     */
+    public static final String GLOIN_ROAD = "tolkienmobs:roads/gloin_road";
+
+    /**
+     * The stream the road crosses up in the mountains, forty-three columns between the scout's bank markers.
+     * <p>
+     * The four ammolite blocks at 6434, -3662 and 6477, -3662 are that survey: the water runs 6438 to 6470 on that
+     * line and stands at 185 under its middle and 186 at its edges, while the banks read 187 and 189, so the deck is
+     * 188 - two over the highest water, as the Bruinen's span is - with the abutments' base at 187 and the middles' at
+     * 186. Nine wide, the width the pieces come in, though the road either side of it is five.
+     */
+    public static final String GLOIN_BRIDGE = "tolkienmobs:roads/gloin_bridge";
+
+    /**
+     * The road on from the stream to the end of the scout's walk: 6493, -3662 east along the range's north side and
+     * down to 8234, -3590, through the junction at 8211, -3594 where Gloin's camp track comes up onto it.
+     */
+    public static final String GLOIN_ROAD_EAST = "tolkienmobs:roads/gloin_road_east";
+
+    /**
      * The two cave roads of the troll caves' cluster, and the road that carries them on to the country road.
      * <p>
      * Three caves stand close enough together in the north-west that their roads were walked as one place: the scout
@@ -179,7 +206,21 @@ public final class Roads {
             new Route.Riverless(HIGH_PASS_WAY, 0, 0, 0, 0, 5065, -3129, 5124, -3401),
             // The climb out of the plaza, from the mark on its north rim to the last marker at 5187, -3658. Empty
             // box again: the plaza is drawn ground, and the walk reads it for the ground it is.
-            new Route.Riverless(HIGH_PASS_CLIMB, 0, 0, 0, 0, 5119, -3422, 5187, -3658)
+            new Route.Riverless(HIGH_PASS_CLIMB, 0, 0, 0, 0, 5119, -3422, 5187, -3658),
+            // The road east of the climb, from the pass's last mark to the near end of the stream crossing. Empty box,
+            // as every road with no build behind it is: the walk begins on the mark it is given.
+            new Route.Riverless(GLOIN_ROAD, 0, 0, 0, 0, 5187, -3658, 6418, -3662),
+            // The span over the mountain stream. The near bank is the east one, which is how the pieces are stood -
+            // they run from the bank down to the far side - so the crossing is walked from its east approach at 6493
+            // to the west abutment at 6434, and the road either side of it meets it on the two ends' own blocks.
+            new Route.Crossing(GLOIN_BRIDGE, 0, 0, 0, 0, 6493, -3662, 6477, -3662, 6434, -3662,
+                    4, 186, 187, 188, 8, 16, "bridge_end", "bridge_middle"),
+            // The road on from the crossing to the scout's end point, through the junction the camp track leaves.
+            new Route.Riverless(GLOIN_ROAD_EAST, 0, 0, 0, 0, 6493, -3662, 8234, -3590),
+            // Gloin's camp's own track: out of the door at 8229, -3652 and south-east up to the junction at 8211,
+            // -3594 where the road east of the pass passes. The box is the camp's own ground, 28 by 22 from the
+            // corner the pin names, so the track meets its wall and goes no further in.
+            new Route.Riverless(Sites.GLOIN_CAMP, 8215, 8242, -3674, -3653, 8229, -3652, 8211, -3594)
     );
 
     /**
@@ -306,7 +347,16 @@ public final class Roads {
                     new BlockPos(5169, 141, -3606), new BlockPos(5169, 146, -3612),
                     new BlockPos(5169, 153, -3623), new BlockPos(5169, 155, -3628),
                     new BlockPos(5179, 157, -3628), new BlockPos(5184, 160, -3636),
-                    new BlockPos(5185, 161, -3649)))
+                    new BlockPos(5185, 161, -3649))),
+            // The road east of the climb: the shoulder mark at 5194, -3672 is its one bend, and the crossing's banks
+            // are the route's own ends rather than marks to be walked through.
+            Map.entry(GLOIN_ROAD, List.of(new BlockPos(5194, 161, -3672))),
+            // The road east of the crossing, every mark the scout walked after it: the two on the range's north side
+            // and the two either side of the junction, with the end point at 8234, -3590 behind them.
+            Map.entry(GLOIN_ROAD_EAST, List.of(new BlockPos(8124, 233, -3593), new BlockPos(8177, 227, -3593),
+                    new BlockPos(8201, 225, -3594), new BlockPos(8211, 224, -3594))),
+            // The camp's track, out of the door and up onto the junction: the two marks between are its bends.
+            Map.entry(Sites.GLOIN_CAMP, List.of(new BlockPos(8224, 222, -3633), new BlockPos(8211, 224, -3609)))
     );
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
@@ -395,7 +445,13 @@ public final class Roads {
             // wide whatever the road either side of it is.
             Map.entry(HIGH_PASS_WAY, Kind.WILD_WIDE),
             Map.entry(HIGH_PASS_CLIMB, Kind.WILD_WIDE),
-            Map.entry(HIGH_PASS_BRIDGE, Kind.WILD_WIDE));
+            Map.entry(HIGH_PASS_BRIDGE, Kind.WILD_WIDE),
+            // Chapter two's road east of the pass, its span and the camp's own track, five wide like every other
+            // walked line so the country's line can be judged on foot before it is given a width of its own.
+            Map.entry(GLOIN_ROAD, Kind.WILD_WIDE),
+            Map.entry(GLOIN_BRIDGE, Kind.WILD_WIDE),
+            Map.entry(GLOIN_ROAD_EAST, Kind.WILD_WIDE),
+            Map.entry(Sites.GLOIN_CAMP, Kind.WILD_WIDE));
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {
@@ -412,7 +468,7 @@ public final class Roads {
      */
     private static final Set<String> ROADS = Set.of(THORENHAD_ROAD, ELLADAN_BRANCH, MOUNTAIN_WAY, FORD_WAY,
             CAVE_WAY_NORTH, CAVE_WAY_EAST, TROLL_CAVE_WAY, WOOD_RUIN_LINK, HIGH_PASS_WAY, HIGH_PASS_CLIMB,
-            HIGH_PASS_BRIDGE);
+            HIGH_PASS_BRIDGE, GLOIN_ROAD, GLOIN_BRIDGE, GLOIN_ROAD_EAST);
 
     /** Whether a route is a road rather than a build's own way out, and so begins wherever it is first met. */
     public static boolean road(Route route) {

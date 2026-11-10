@@ -119,7 +119,13 @@ public final class Pins extends SavedData {
             Map.entry(Sites.TROLL_CAVE + ".end", new BlockPos(4515, 121, -2446)),
             Map.entry(Sites.TROLL_CAVE_2 + ".end", new BlockPos(4624, 107, -2479)),
             Map.entry(Sites.TROLL_CAVE_3 + ".end", new BlockPos(4562, 120, -2398)),
-            Map.entry(Sites.TROLL_CAVE_4 + ".end", new BlockPos(4689, 86, -3050))
+            Map.entry(Sites.TROLL_CAVE_4 + ".end", new BlockPos(4689, 86, -3050)),
+            // Chapter two's camp, walked at the High Pass's east mouth: 8215, -3674 is the corner the 28 by 22 camp
+            // is laid from, so its south wall stands on the doorway the scout marked at 8229, -3652 and its floor runs
+            // twelve blocks north of it, where he stood inside it at 8233, -3664. The .end is that doorway's road
+            // block, the ground outside the wall the camp's own track leaves from.
+            Map.entry(Sites.GLOIN_CAMP, new BlockPos(8215, 224, -3674)),
+            Map.entry(Sites.GLOIN_CAMP + ".end", new BlockPos(8229, 223, -3652))
             // Chapter one is all of it. What is left is chapter two's four and the last act's two.
     ));
 
