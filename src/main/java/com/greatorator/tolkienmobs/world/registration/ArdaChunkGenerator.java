@@ -334,6 +334,13 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
         }
     }
 
+    /**
+     * How far under a drawn bed the rock is put back, so a carver cannot open the floor of a channel and let
+     * its water run away into the caves. Eight is deeper than a cave's own throat is wide, so a pit under the
+     * bed stops at the plug rather than draining the river above it.
+     */
+    private static final int SEAL_DEPTH = 8;
+
     /** Lays the map's water and the drawn bed it stands on back over every column the map floods. */
     private void seal(ChunkAccess chunk, RandomState randomState) {
         BlockPos.MutableBlockPos position = new BlockPos.MutableBlockPos();
@@ -353,8 +360,16 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                     continue;
                 }
 
-                if (chunk.getBlockState(position.set(blockX, bed, blockZ)).isAir()) {
-                    chunk.setBlockState(position, STONE);
+                // A cave under the bed is what drains a river. The water is laid on the drawn bed, and one
+                // column of that bed open to a cave below lets the channel run out: the water goes down, the
+                // surface falls to the bed and what is left reads as a dry pit of bed showing through the
+                // water - the hole north of Rivendell, with the aquifer's water sixteen blocks under it. The
+                // floor is therefore plugged under every column the map floods, so the channel stands on rock
+                // rather than on whatever the carver left, and a cave below it stays a cave.
+                for (int y = Math.max(chunk.getMinY(), bed - SEAL_DEPTH); y <= bed; y++) {
+                    if (chunk.getBlockState(position.set(blockX, y, blockZ)).isAir()) {
+                        chunk.setBlockState(position, STONE);
+                    }
                 }
                 for (int y = bed + 1; y <= surface; y++) {
                     if (chunk.getBlockState(position.set(blockX, y, blockZ)).isAir()) {
