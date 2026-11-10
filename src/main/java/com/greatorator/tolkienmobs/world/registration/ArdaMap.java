@@ -304,11 +304,13 @@ public final class ArdaMap {
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
     private static final int BRUINEN_STEPS = 256;
     /**
-     * How gently the river may fall, in blocks of run to one block of fall. The city's water stands eight over
-     * the vale and the ground under the outlet is already the vale's, so a surface read off the ground fell all
-     * eight at the first block of the course - a waterfall at the city's own mouth.
+     * How far along the course the branch falls one block. Twelve put the city's water four blocks over the
+     * river it feeds on a course of a hundred and fifty, and spent the fall in the first third of it - a
+     * cascade every twelve blocks, which the save at the ford showed as a run of stepped plates. Twenty-four
+     * is the rate the dale holds the drawn river at, so the branch and the river it joins are one gradient,
+     * and the same fall is carried down the whole course instead of into the crossing.
      */
-    private static final int BRUINEN_GRADE = 12;
+    private static final int BRUINEN_GRADE = 24;
     /**
      * How far out from water the ground climbs back to the city's crown, in blocks.
      * <p>
@@ -1788,6 +1790,17 @@ public final class ArdaMap {
             return height;
         }
         double limit = mouthRise(level, Math.max(0.0D, run));
+        // The cut is a function of how far the column stands from the water, so every contour on it runs
+        // parallel to the river and the bench beside it comes out as plates: the bank at the ford showed a
+        // mile of them, one block a plate, all following the channel. The ribs the gorge's wall already has
+        // break those contours into spurs and hollows, faded in from the water so the foot of the slope is
+        // still the water's own edge - and the cut is never taken under the water, or the bench is pocked
+        // with pools the river never ran into.
+        if (run > 0.0D) {
+            double ribs = (fractal((int) Math.floor(blockX), (int) Math.floor(blockZ), CLIMB_SCALE, 23) - 0.5D)
+                    * 2.0D * CLIMB_ROUGH * Math.min(1.0D, run / CLIMB_EASE);
+            limit = Math.max(level, limit + ribs);
+        }
         return limit >= height ? height : (int) Math.round(limit);
     }
 

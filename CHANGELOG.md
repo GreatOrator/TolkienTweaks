@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+- The branch falls one block in twenty-four instead of twelve, so the four blocks between the city's water and the ford are carried down the whole course rather than cascaded into the crossing.
+- The massif's bench beside the river gets the gorge wall's ribs, so the ground that comes down to the water is broken into spurs and hollows instead of ringing it in plates.
 - The dale follows the Bruinen on both halves of the river and reads the water's level from the run, so the drawn channel beside the vale no longer tilts across its own width or steps into the ford.
 - **The dale's bank grades the massif's outward fall, not only the drawn country.** The Bruinen crosses
   that band on its way past the vale, and the bank skipped it: the valley answers before the bank does, so
