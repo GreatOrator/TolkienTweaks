@@ -50,6 +50,16 @@ public final class Roads {
     public static final String FORD_WAY = "tolkienmobs:roads/ford_way";
 
     /**
+     * The road north out of the crossing towards the high pass: the section the scout walked from the ford's east
+     * bank, up the shoulder above the Bruinen, and on north over the vale's own floor.
+     * <p>
+     * It is a road rather than a build's way out, so it is named and carries no footprint: it begins where the
+     * valley's road ends, on the block at 5067, -3062 that the crossing's span arrives at, and walks north to the last
+     * marker at 5124, -3399. Those two are the whole route; every pin between them is a bend.
+     */
+    public static final String HIGH_PASS_WAY = "tolkienmobs:roads/high_pass_way";
+
+    /**
      * The two cave roads of the troll caves' cluster, and the road that carries them on to the country road.
      * <p>
      * Three caves stand close enough together in the north-west that their roads were walked as one place: the scout
@@ -125,7 +135,12 @@ public final class Roads {
             // crag is the same block the ford road leaves by, so the cluster's traffic and the ford's road meet there.
             new Route.Riverless(CAVE_WAY_NORTH, 0, 0, 0, 0, 4508, -2429, 4528, -2475),
             new Route.Riverless(CAVE_WAY_EAST, 0, 0, 0, 0, 4568, -2511, 4528, -2475),
-            new Route.Riverless(TROLL_CAVE_WAY, 0, 0, 0, 0, 4460, -2477, 4528, -2475)
+            new Route.Riverless(TROLL_CAVE_WAY, 0, 0, 0, 0, 4460, -2477, 4528, -2475),
+            // The road north towards the high pass: out of the crossing's east end at 5067, -3062, up the shoulder
+            // above the river for twelve blocks of climb over two hundred and fifty, and down the vale's north side
+            // to the last marker at 5124, -3399. Nothing stands behind either end, so no footprint is given: the two
+            // marks are the whole route, and the pins between them bend it.
+            new Route.Riverless(HIGH_PASS_WAY, 0, 0, 0, 0, 5067, -3062, 5124, -3399)
     );
 
     /**
@@ -217,7 +232,22 @@ public final class Roads {
             // The caves' cluster, each road in the order it walks out of the junction it shares with the other two.
             Map.entry(CAVE_WAY_NORTH, List.of(new BlockPos(4536, 155, -2443), new BlockPos(4543, 155, -2464))),
             Map.entry(CAVE_WAY_EAST, List.of(new BlockPos(4555, 155, -2517), new BlockPos(4551, 155, -2496))),
-            Map.entry(TROLL_CAVE_WAY, List.of(new BlockPos(4478, 153, -2489)))
+            Map.entry(TROLL_CAVE_WAY, List.of(new BlockPos(4478, 153, -2489))),
+            // The high pass road, north from the crossing's east bank. Every pin the scout walked on the way is
+            // here, because the shoulder above the river turns as it climbs and the vale's north side falls away
+            // twenty blocks in less than ninety - legs that long read as a straight line through the country
+            // rather than as the line that was walked. The pins doubled a block apart at -3077 and -3090 are one
+            // mark each: near a city a scout lays two blocks to mean "here", not to mean a junction.
+            Map.entry(HIGH_PASS_WAY, List.of(new BlockPos(5067, 77, -3062), new BlockPos(5065, 76, -3070),
+                    new BlockPos(5065, 76, -3077), new BlockPos(5065, 76, -3090),
+                    new BlockPos(5065, 77, -3105), new BlockPos(5068, 78, -3120),
+                    new BlockPos(5071, 78, -3138), new BlockPos(5077, 79, -3153),
+                    new BlockPos(5076, 80, -3184), new BlockPos(5077, 81, -3209),
+                    new BlockPos(5080, 83, -3230), new BlockPos(5080, 84, -3253),
+                    new BlockPos(5070, 85, -3272), new BlockPos(5066, 87, -3292),
+                    new BlockPos(5081, 88, -3317), new BlockPos(5080, 86, -3328),
+                    new BlockPos(5094, 79, -3347), new BlockPos(5097, 76, -3361),
+                    new BlockPos(5113, 74, -3385), new BlockPos(5124, 76, -3399)))
     );
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
@@ -300,7 +330,10 @@ public final class Roads {
             Map.entry(CAVE_WAY_NORTH, Kind.WILD_WIDE),
             Map.entry(CAVE_WAY_EAST, Kind.WILD_WIDE),
             Map.entry(TROLL_CAVE_WAY, Kind.WILD_WIDE),
-            Map.entry(WOOD_RUIN_LINK, Kind.WILD_WIDE));
+            Map.entry(WOOD_RUIN_LINK, Kind.WILD_WIDE),
+            // The high pass road is a section of the wild path, laid five wide like every other walked line, so it
+            // can be judged on foot before it is given a width of its own.
+            Map.entry(HIGH_PASS_WAY, Kind.WILD_WIDE));
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {
