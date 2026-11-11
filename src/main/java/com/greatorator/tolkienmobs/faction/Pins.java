@@ -143,7 +143,20 @@ public final class Pins extends SavedData {
             Map.entry(Departure.bodyPin("frodo"), new BlockPos(5116, 77, -3410)),
             Map.entry(Departure.bodyPin("samwise"), new BlockPos(5118, 77, -3410)),
             Map.entry(Departure.bodyPin("pippin"), new BlockPos(5114, 77, -3410)),
-            Map.entry(Departure.bodyPin("merry"), new BlockPos(5120, 77, -3410))
+            Map.entry(Departure.bodyPin("merry"), new BlockPos(5120, 77, -3410)),
+            // The walk out's column, read off the nine ammolite markers laid on the road's first blocks on
+            // 10 November 2026: Gandalf alone in the middle and furthest out, then four pairs abreast, every
+            // body on the side of the column it stood on in the courtyard. The marks are block tops at 77 and
+            // the ground is read again where the walk goes, so this is a line of places, not a step height.
+            Map.entry(Departure.walkPin("gandalf"), new BlockPos(5117, 77, -3417)),
+            Map.entry(Departure.walkPin("aragorn"), new BlockPos(5116, 77, -3416)),
+            Map.entry(Departure.walkPin("boromir"), new BlockPos(5118, 77, -3416)),
+            Map.entry(Departure.walkPin("frodo"), new BlockPos(5116, 77, -3415)),
+            Map.entry(Departure.walkPin("samwise"), new BlockPos(5118, 77, -3415)),
+            Map.entry(Departure.walkPin("pippin"), new BlockPos(5116, 77, -3414)),
+            Map.entry(Departure.walkPin("merry"), new BlockPos(5118, 77, -3414)),
+            Map.entry(Departure.walkPin("gimli"), new BlockPos(5116, 77, -3413)),
+            Map.entry(Departure.walkPin("legolas"), new BlockPos(5118, 77, -3413))
             // Chapter one is all of it. What is left is chapter two's four and the last act's two.
     ));
 

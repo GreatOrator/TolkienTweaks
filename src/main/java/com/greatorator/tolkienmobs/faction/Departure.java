@@ -397,6 +397,11 @@ public final class Departure {
         return GATHER_PIN + ".walk." + n;
     }
 
+    /** The pin for a body's own place in the walk out's column, if the owner has marked one for it. */
+    public static String walkPin(String slug) {
+        return GATHER_PIN + ".walk." + slug;
+    }
+
     /**
      * Where the walk out begins, read off the plaza's own marks: the ring's open side, a few blocks past
      * the outermost body, on the bearing from Elrond through the Company. No mark of its own is needed -
@@ -493,8 +498,9 @@ public final class Departure {
     }
 
     /**
-     * Sets the nine who go walking: each is given a lane of its own, abreast across the bearing, from the
-     * gathering mark out past the courtyard. Nothing moves here - the lanes are written down and stepped on
+     * Sets the nine who go walking: each keeps the place the owner marked for it in the column, or is spaced
+     * abreast across the bearing if nobody has marked the route, and walks out from there. Nothing moves
+     * here - the lanes are written down and stepped on
      * the ticks after - so a scene stopped mid-sentence never leaves a body halfway out of the plaza.
      */
     private static void beginWalk(ServerLevel level, Show show) {
@@ -527,10 +533,21 @@ public final class Departure {
             lane++;
             UUID id = bySeat.get(seat);
             if (id == null) continue;
-            // Lanes run across the bearing, so the eight go abreast rather than in single file.
-            double side = (lane - (leavers - 1) / 2.0D) * 1.1D;
-            double tx = exit.getX() + 0.5D + bx * GONE - bz * side;
-            double tz = exit.getZ() + 0.5D + bz * GONE + bx * side;
+            // A marked column keeps the shape it was laid in - the leader alone, then pairs abreast - and the
+            // bearing only says how far out the walk goes. A plaza nobody has marked spaces them instead.
+            BlockPos mark = Pins.at(level, walkPin(cast.slug()));
+            double startX;
+            double startZ;
+            if (mark != null) {
+                startX = mark.getX() + 0.5D;
+                startZ = mark.getZ() + 0.5D;
+            } else {
+                double side = (lane - (leavers - 1) / 2.0D) * 1.1D;
+                startX = exit.getX() + 0.5D - bz * side;
+                startZ = exit.getZ() + 0.5D + bx * side;
+            }
+            double tx = startX + bx * GONE;
+            double tz = startZ + bz * GONE;
             BlockPos column = new BlockPos((int) Math.floor(tx), exit.getY(), (int) Math.floor(tz));
             int ty = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column).getY();
             show.targets.put(id, new double[]{tx, ty, tz});

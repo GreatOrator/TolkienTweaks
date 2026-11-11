@@ -388,3 +388,28 @@ The order, once the script is running: lines one to twenty-three with the whole 
 then the nine out along the road's bearing for forty-eight blocks, then lines twenty-four and
 twenty-five said to their backs, then Elrond and Bilbo in, then the alley empty and the page handed
 over once the tail has run out.
+
+## The marked column - 10 November 2026
+
+Nine ammolite markers were laid on the road's first blocks and read back out of the save with
+`tools/ammolite_markers.py --world "run/saves/Road Test" --dim tolkienmobs:arda`. They are a formation,
+not a route: the column heads north from the courtyard, Gandalf alone at its head 
+and four pairs abreast
+behind him, and the bearing carries the walk forty-eight blocks on from wherever each of them stands.
+
+| mark | body | block |
+| --- | --- | --- |
+| 5117, 76, -3417 | Gandalf | lead |
+| 5116, 76, -3416 | Aragorn | west |
+| 5118, 76, -3416 | Boromir | east |
+| 5116, 76, -3415 | Frodo | west |
+| 5118, 76, -3415 | Samwise | east |
+| 5116, 76, -3414 | Pippin | west |
+| 5118, 76, -3414 | Merry | east |
+| 5116, 76, -3413 | Gimli | west |
+| 5118, 76, -3413 | Legolas | east |
+
+The sides are the sides they stood on in the courtyard, so nobody crosses over on the way out; the pairs
+are otherwise in the order they were named. Each is pinned as `rivendell.scene.walk.<slug>` at the block
+top, 77, and the ground is read again on every step, so a marker taken up afterwards leaves the column
+walking on the road rather than a block above it.
