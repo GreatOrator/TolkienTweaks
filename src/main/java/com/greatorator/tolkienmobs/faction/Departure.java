@@ -39,9 +39,9 @@ import java.util.UUID;
  * second scene for Elrond's last words - so this class is the same shape: a tick-driven beat list, the
  * cast placed on the ground the plaza's own marks give, and the lines spoken in order.
  * <p>
- * When Gandalf's sending is said the courtyard empties: the eight who go walk off it in lanes of their own
- * on the bearing the ring itself gives - the open side, away from Elrond - and Elrond, Gandalf and Bilbo
- * stay for the last five lines and are taken away with the scene. Where the road runs past the plaza's rim
+ * When Gandalf's sending is said the courtyard empties: the nine who go walk off it in lanes of their own
+ * on the bearing the ring itself gives - the open side, away from Elrond - and Elrond and Bilbo stay for
+ * the last five lines and are taken away with the scene. Where the road runs past the plaza's rim
  * is not this class's business yet: the walk ends where the courtyard does. The old script's walk mark and
  * its spawn layout are in {@code docs/departure-scene.md}.
  * <p>
@@ -69,7 +69,7 @@ public final class Departure {
     private static final int GAP = 60;
     /** Ticks kept after the last line before the company is taken away and the page is handed over. */
     private static final int TAIL = 60;
-    /** The line after which the eight who go turn and leave: Gandalf's sending is the twentieth. */
+    /** The line after which the nine who go turn and leave: Gandalf's sending is the twentieth. */
     private static final int LEAVE_AFTER = 20;
     /** How far past the gathering mark a leaver walks before it is out of the courtyard, in blocks. */
     private static final double GONE = 24.0D;
@@ -338,10 +338,9 @@ public final class Departure {
         return (float) Math.toDegrees(Math.atan2(dz, dx)) - 90.0F;
     }
 
-    /** Whether this body is one of the eight who go: all of them but Elrond, Gandalf and Bilbo. */
+    /** Whether this body is one of the nine who go: all of them but Elrond and Bilbo. */
     private static boolean leaves(Cast cast) {
-        return !cast.slug().equals("elrond") && !cast.slug().equals("gandalf")
-                && !cast.slug().equals("bilbo");
+        return !cast.slug().equals("elrond") && !cast.slug().equals("bilbo");
     }
 
     /** The pin a marked body stands on: the gathering mark's own key, with the body's slug after it. */
@@ -404,7 +403,7 @@ public final class Departure {
             player.sendSystemMessage(Component.literal(line.who() + ": ").withStyle(line.colour())
                     .append(Component.translatable(line.key()).withStyle(style)));
         }
-        // The eighth who go leave on Gandalf's sending, so Elrond's five lines are said over the walking.
+        // The nine who go leave on Gandalf's sending, so Elrond's five lines are said over the walking.
         if (show.sent >= LEAVE_AFTER) beginWalk(level, show);
         if (show.sent < LINES.size()) return;
         if (elapsed < (long) GAP * LINES.size() + TAIL) return;
@@ -412,7 +411,7 @@ public final class Departure {
     }
 
     /**
-     * Sets the eight who go walking: each is given a lane of its own, abreast across the bearing, from the
+     * Sets the nine who go walking: each is given a lane of its own, abreast across the bearing, from the
      * gathering mark out past the courtyard. Nothing moves here - the lanes are written down and stepped on
      * the ticks after - so a scene stopped mid-sentence never leaves a body halfway out of the plaza.
      */

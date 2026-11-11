@@ -288,10 +288,10 @@ north of Elrond, three past the outermost body, on the plaza's north rim where t
 
 ## How they leave - 10 November 2026
 
-Gandalf's sending is the twentieth line, and there the courtyard empties: the eight who go - Aragorn,
-Boromir, Legolas, Gimli, Frodo, Samwise, Merry and Pippin - turn and walk off the plaza in lanes of
-their own, abreast across the bearing the ring gives, while Elrond speaks the last five lines. Elrond,
-Gandalf and Bilbo stay until the scene ends and are taken away with it.
+Gandalf's sending is the twentieth line, and there the courtyard empties: Gandalf goes with the eight -
+Aragorn, Boromir, Legolas, Gimli, Frodo, Samwise, Merry and Pippin - and the nine turn and walk off the
+plaza in lanes of their own, abreast across the bearing the ring gives, while Elrond speaks the last five
+lines. Elrond and Bilbo stay until the scene ends and are taken away with it.
 
 The walk is driven by the scene, not navigated by the bodies: a body standing in a cutscene has no AI
 worth asking, and nothing of its own should take it somewhere the courtyard did not say. Each is stepped
