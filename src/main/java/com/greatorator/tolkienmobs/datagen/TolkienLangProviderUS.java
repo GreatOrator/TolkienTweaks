@@ -1182,6 +1182,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("place.tolkienmobs.barachen", "Barachen's Camp");
         this.add("place.tolkienmobs.gloin", "Glóin's Camp");
         this.add("place.tolkienmobs.gloin.line", "a dwarf camp at the east end of the High Pass");
+        this.add("place.tolkienmobs.goblins", "The Goblin Fires");
+        this.add("place.tolkienmobs.goblins.line", "Ulmug's fires in the caves of the Pinnath Fenui");
         this.add("place.tolkienmobs.gundabad", "Gundabad");
         this.add("place.tolkienmobs.gundabad.line", "the old dwarf-fortress the Dourhands hold");
         this.add("place.tolkienmobs.vault", "Gundabad's Vault");

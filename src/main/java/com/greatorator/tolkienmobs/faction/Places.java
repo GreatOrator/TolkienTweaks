@@ -149,6 +149,10 @@ public final class Places extends SavedData {
             // source of the Bruinen where the key-stone was hidden, and the Witch-king's capital in Angmar
             // where the chapter ends.
             new Name("gloin", Alliance.WEST, false),
+            // Page 27's ground, and the one place in the two chapters that had no name: the goblin caves a
+            // walk north-east of the camp. A name rather than a build, since its cave is cut rather than
+            // placed - but a name all the same, so a scout can stand at its door and /tmpin can be told.
+            new Name("goblins", Alliance.WEST, false),
             new Name("gundabad", Alliance.WEST, false),
             new Name("vault", Alliance.WEST, false),
             new Name("keystone", Alliance.WEST, false),
@@ -179,6 +183,8 @@ public final class Places extends SavedData {
             // Glóin's camp, Gundabad and its vault are all Misty Mountain ground: the pass out of the
             // valley and the fortress the notes put far north of it, in the same range.
             "gloin", ArdaMap.Country.HITHAEGLIR,
+            // The goblin caves are the pass's own country, north-east along the same range the camp is in.
+            "goblins", ArdaMap.Country.HITHAEGLIR,
             "gundabad", ArdaMap.Country.HITHAEGLIR,
             "vault", ArdaMap.Country.HITHAEGLIR,
             // The key-stone's vault is at the source of the Bruinen, in the hills below the valley.
