@@ -265,7 +265,9 @@ def main(argv):
                              % (args.pin, world))
         source = str(where.relative_to(world))
 
-    patch = ground(world, (door[0], door[2]), 48)
+    # The hillside read has to reach past the far wall, or the rooms beyond the radius are skipped as
+    # ground nobody has looked at: the cave is as long as its own plan says, not as long as a guess.
+    patch = ground(world, (door[0], door[2]), HALL_FRONT + 8)
     here = height(patch, door[0], door[2])
     if here is None:
         raise SystemExit("no ground under the pin - are the chunks around it generated?")
