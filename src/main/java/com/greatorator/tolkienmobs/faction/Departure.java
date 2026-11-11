@@ -90,8 +90,10 @@ public final class Departure {
     private static final int DEPART_AT = 23;
     /** How far off the courtyard the nine have to be before the parting words are said, in blocks. */
     private static final double CLEAR = 8.0D;
-    /** How far Elrond and Bilbo walk in off the road once the Company is gone, in blocks. */
-    private static final double HOME = 7.0D;
+    /** How far Elrond and Bilbo walk back down the road once the Company is gone, in blocks. */
+    private static final double HOME = 24.0D;
+    /** How many marks of the owner's route are read, at most. */
+    private static final int ROUTE_MARKS = 32;
     /** How far a body steps in one tick: a walking player's pace, so the legs keep their own rhythm. */
     private static final double WALK_STEP = 0.2D;
     /** Ticks after which a walk that has not finished is given up on and the bodies are taken away. */
@@ -226,8 +228,8 @@ public final class Departure {
         private final List<UUID> bodies = new ArrayList<>();
         /** Which seat of the cast a body took, so it is not confused with a body that failed to stand. */
         private final Map<UUID, Integer> seats = new HashMap<>();
-        /** Where a leaver is walking to, by body: the far end of its lane off the courtyard. */
-        private final Map<UUID, double[]> targets = new LinkedHashMap<>();
+        /** Where a leaver is walking, by body: the points it has still to pass, nearest first. */
+        private final Map<UUID, Path> walking = new LinkedHashMap<>();
         /** The yaw a body was stood at, which is what its idle sway moves around. */
         private final Map<UUID, Float> facing = new HashMap<>();
         private final boolean rehearsal;
@@ -243,6 +245,21 @@ public final class Departure {
             this.dim = dim;
             this.start = start;
             this.rehearsal = rehearsal;
+        }
+    }
+
+    /** One body's walk: the points it has still to pass, in the order the line was marked. */
+    private static final class Path {
+        private final List<double[]> points;
+        private int at;
+
+        private Path(List<double[]> points) {
+            this.points = points;
+        }
+
+        /** The point the body is walking at, or null once it has passed the last of them. */
+        private double[] next() {
+            return at < points.size() ? points.get(at) : null;
         }
     }
 
@@ -397,11 +414,6 @@ public final class Departure {
         return GATHER_PIN + ".walk." + n;
     }
 
-    /** The pin for a body's own place in the walk out's column, if the owner has marked one for it. */
-    public static String walkPin(String slug) {
-        return GATHER_PIN + ".walk." + slug;
-    }
-
     /**
      * Where the walk out begins, read off the plaza's own marks: the ring's open side, a few blocks past
      * the outermost body, on the bearing from Elrond through the Company. No mark of its own is needed -
@@ -468,7 +480,7 @@ public final class Departure {
         if (elapsed < (long) GAP * LINES.size() + TAIL) return;
         // The walk out is the end of the scene rather than a thing happening beside it, so Elrond and Bilbo
         // are not taken away until the nine who go are off the plaza.
-        if (!show.targets.isEmpty()) return;
+        if (!show.walking.isEmpty()) return;
         // Then they go in themselves, so the courtyard is left empty rather than with two bodies standing at
         // the edge of it watching nothing.
         if (!show.home) {
@@ -483,10 +495,10 @@ public final class Departure {
      * already been taken away counts as gone, so a short route cannot hold the script for good.
      */
     private static boolean clearOf(ServerLevel level, Show show) {
-        if (show.targets.isEmpty()) return true;
+        if (show.walking.isEmpty()) return true;
         BlockPos from = Pins.at(level, GATHER_PIN);
         if (from == null) return true;
-        for (UUID id : show.targets.keySet()) {
+        for (UUID id : show.walking.keySet()) {
             Entity body = level.getEntity(id);
             if (body == null) continue;
             if (body.blockPosition().distToCenterSqr(from.getX() + 0.5D, from.getY(), from.getZ() + 0.5D)
@@ -498,20 +510,22 @@ public final class Departure {
     }
 
     /**
-     * Sets the nine who go walking: each keeps the place the owner marked for it in the column, or is spaced
-     * abreast across the bearing if nobody has marked the route, and walks out from there. Nothing moves
-     * here - the lanes are written down and stepped on
+     * Sets the nine who go walking: each walks the line the owner marked, from the mark nearest the courtyard
+     * out to the last of them, a little to its own side of the line. A plaza nobody has marked falls back on
+     * a straight walk along the courtyard's open side. Nothing moves here - the lanes are written down and
+     * stepped on the ticks after - so a scene stopped mid-sentence never leaves a body halfway out.
      * the ticks after - so a scene stopped mid-sentence never leaves a body halfway out of the plaza.
      */
     private static void beginWalk(ServerLevel level, Show show) {
         if (show.walkAt != 0L) return;
         BlockPos exit = exitStart(level);
-        if (exit == null) return;
+        List<BlockPos> line = route(level);
+        if (exit == null && line.isEmpty()) return;
         BlockPos host = Pins.at(level, bodyPin("elrond"));
         if (host == null) host = Pins.at(level, GATHER_PIN);
         double bx = 0.0D;
         double bz = 1.0D;
-        if (host != null) {
+        if (host != null && exit != null) {
             double dx = exit.getX() - host.getX();
             double dz = exit.getZ() - host.getZ();
             double length = Math.sqrt(dx * dx + dz * dz);
@@ -533,30 +547,62 @@ public final class Departure {
             lane++;
             UUID id = bySeat.get(seat);
             if (id == null) continue;
-            // A marked column keeps the shape it was laid in - the leader alone, then pairs abreast - and the
-            // bearing only says how far out the walk goes. A plaza nobody has marked spaces them instead.
-            BlockPos mark = Pins.at(level, walkPin(cast.slug()));
-            double startX;
-            double startZ;
-            if (mark != null) {
-                startX = mark.getX() + 0.5D;
-                startZ = mark.getZ() + 0.5D;
-            } else {
-                double side = (lane - (leavers - 1) / 2.0D) * 1.1D;
-                startX = exit.getX() + 0.5D - bz * side;
-                startZ = exit.getZ() + 0.5D + bx * side;
-            }
-            double tx = startX + bx * GONE;
-            double tz = startZ + bz * GONE;
-            BlockPos column = new BlockPos((int) Math.floor(tx), exit.getY(), (int) Math.floor(tz));
-            int ty = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column).getY();
-            show.targets.put(id, new double[]{tx, ty, tz});
+            // Each keeps a little of its own across the line, so nine bodies on one path read as a column
+            // rather than as one body drawn over and over.
+            double side = (lane - (leavers - 1) / 2.0D) * 0.9D;
+            show.walking.put(id, line.isEmpty() ? straight(level, exit, bx, bz, side)
+                    : along(level, line, side));
         }
         show.walkAt = level.getGameTime();
     }
 
+    /** The marks the walk follows, in order: the line the owner walked, or nothing if it was not marked. */
+    private static List<BlockPos> route(Level level) {
+        List<BlockPos> points = new ArrayList<>();
+        for (int n = 1; n <= ROUTE_MARKS; n++) {
+            BlockPos at = Pins.at(level, walkPin(n));
+            if (at == null) break;
+            points.add(at);
+        }
+        return points;
+    }
+
     /**
-     * Turns Elrond and Bilbo back in off the road. The nine went out through the courtyard's open side, so
+     * One body's walk along a marked line: the same points, each moved a little to the body's own side. The
+     * side is taken across the line where the body will be, so a bend turns the formation with the road
+     * instead of leaving nine bodies walking into the inside of a corner.
+     */
+    private static Path along(Level level, List<BlockPos> line, double side) {
+        List<double[]> points = new ArrayList<>(line.size());
+        for (int n = 0; n < line.size(); n++) {
+            BlockPos at = line.get(n);
+            BlockPos before = line.get(Math.max(0, n - 1));
+            BlockPos after = line.get(Math.min(line.size() - 1, n + 1));
+            double dx = after.getX() - before.getX();
+            double dz = after.getZ() - before.getZ();
+            double length = Math.sqrt(dx * dx + dz * dz);
+            double offX = length < 0.5D ? 0.0D : -dz / length * side;
+            double offZ = length < 0.5D ? 0.0D : dx / length * side;
+            double x = at.getX() + 0.5D + offX;
+            double z = at.getZ() + 0.5D + offZ;
+            int y = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    new BlockPos((int) Math.floor(x), at.getY(), (int) Math.floor(z))).getY();
+            points.add(new double[]{x, y, z});
+        }
+        return new Path(points);
+    }
+
+    /** One body's walk when nobody has marked a route: straight out along the courtyard's open side. */
+    private static Path straight(Level level, BlockPos exit, double bx, double bz, double side) {
+        double x = exit.getX() + 0.5D + bx * GONE - bz * side;
+        double z = exit.getZ() + 0.5D + bz * GONE + bx * side;
+        int y = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                new BlockPos((int) Math.floor(x), exit.getY(), (int) Math.floor(z))).getY();
+        return new Path(List.of(new double[]{x, y, z}));
+    }
+
+    /**
+     * Turns Elrond and Bilbo back down the road. The nine went out through the courtyard's open side, so
      * these two go the other way, pair abreast, and are taken away when they arrive - the walk itself is the
      * same driven one the company uses, so nothing has to know how to navigate.
      */
@@ -564,14 +610,22 @@ public final class Departure {
         show.home = true;
         BlockPos host = Pins.at(level, bodyPin("elrond"));
         if (host == null) host = Pins.at(level, GATHER_PIN);
-        BlockPos exit = exitStart(level);
-        if (host == null || exit == null) return;
-        double dx = host.getX() - exit.getX();
-        double dz = host.getZ() - exit.getZ();
-        double length = Math.sqrt(dx * dx + dz * dz);
-        if (length < 0.5D) return;
-        double bx = dx / length;
-        double bz = dz / length;
+        if (host == null) return;
+        // Back down the road rather than up it: the Company left by the courtyard's open side, so these two
+        // walk the other way, twenty-four blocks, and are gone before anyone could turn round to look.
+        List<BlockPos> line = route(level);
+        BlockPos away = line.isEmpty() ? exitStart(level) : line.get(0);
+        double bx = 0.0D;
+        double bz = 1.0D;
+        if (away != null) {
+            double dx = host.getX() - away.getX();
+            double dz = host.getZ() - away.getZ();
+            double length = Math.sqrt(dx * dx + dz * dz);
+            if (length > 0.5D) {
+                bx = dx / length;
+                bz = dz / length;
+            }
+        }
         Map<Integer, UUID> bySeat = new HashMap<>();
         for (Map.Entry<UUID, Integer> row : show.seats.entrySet()) bySeat.put(row.getValue(), row.getKey());
         int lane = -1;
@@ -586,7 +640,7 @@ public final class Departure {
             double tz = host.getZ() + 0.5D + bz * HOME + bx * side;
             BlockPos column = new BlockPos((int) Math.floor(tx), host.getY(), (int) Math.floor(tz));
             int ty = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column).getY();
-            show.targets.put(id, new double[]{tx, ty, tz});
+            show.walking.put(id, new Path(List.of(new double[]{tx, ty, tz})));
         }
         show.walkAt = level.getGameTime();
     }
@@ -617,7 +671,7 @@ public final class Departure {
         for (UUID id : List.copyOf(show.facing.keySet())) {
             // A body on its way out is steered by the walk, and a body already taken away has nothing to
             // steer.
-            if (show.targets.containsKey(id)) continue;
+            if (show.walking.containsKey(id)) continue;
             Entity body = level.getEntity(id);
             if (body == null) continue;
             float base = show.facing.get(id);
@@ -637,21 +691,27 @@ public final class Departure {
 
     public static void walkTick(ServerPlayer player) {
         Show show = SHOWS.get(player.getUUID());
-        if (show == null || show.targets.isEmpty()) return;
+        if (show == null || show.walking.isEmpty()) return;
         if (!(player.level() instanceof ServerLevel level)) return;
-        for (UUID id : List.copyOf(show.targets.keySet())) {
+        for (UUID id : List.copyOf(show.walking.keySet())) {
             Entity body = level.getEntity(id);
-            double[] to = show.targets.get(id);
+            Path path = show.walking.get(id);
+            double[] to = path == null ? null : path.next();
             if (body == null || to == null) {
-                show.targets.remove(id);
+                show.walking.remove(id);
                 continue;
             }
             double dx = to[0] - body.getX();
             double dz = to[2] - body.getZ();
             double gap = Math.sqrt(dx * dx + dz * dz);
             if (gap <= WALK_STEP || level.getGameTime() - show.walkAt > WALK_LIMIT) {
-                body.discard();
-                show.targets.remove(id);
+                // A point passed is a point behind: on to the next mark, or gone if that was the last of the
+                // line - which is the whole point of the line running out of sight.
+                path.at++;
+                if (path.at >= path.points.size() || level.getGameTime() - show.walkAt > WALK_LIMIT) {
+                    body.discard();
+                    show.walking.remove(id);
+                }
                 continue;
             }
             double nx = body.getX() + dx / gap * WALK_STEP;
@@ -685,7 +745,7 @@ public final class Departure {
             if (body != null) body.discard();
         }
         show.bodies.clear();
-        show.targets.clear();
+        show.walking.clear();
     }
 
     /** Whether a show is running for this player, for the commands that poke at it. */

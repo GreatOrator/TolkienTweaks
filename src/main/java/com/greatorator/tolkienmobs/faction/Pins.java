@@ -144,19 +144,21 @@ public final class Pins extends SavedData {
             Map.entry(Departure.bodyPin("samwise"), new BlockPos(5118, 77, -3410)),
             Map.entry(Departure.bodyPin("pippin"), new BlockPos(5114, 77, -3410)),
             Map.entry(Departure.bodyPin("merry"), new BlockPos(5120, 77, -3410)),
-            // The walk out's column, read off the nine ammolite markers laid on the road's first blocks on
-            // 10 November 2026: Gandalf alone in the middle and furthest out, then four pairs abreast, every
-            // body on the side of the column it stood on in the courtyard. The marks are block tops at 77 and
-            // the ground is read again where the walk goes, so this is a line of places, not a step height.
-            Map.entry(Departure.walkPin("gandalf"), new BlockPos(5117, 77, -3417)),
-            Map.entry(Departure.walkPin("aragorn"), new BlockPos(5116, 77, -3416)),
-            Map.entry(Departure.walkPin("boromir"), new BlockPos(5118, 77, -3416)),
-            Map.entry(Departure.walkPin("frodo"), new BlockPos(5116, 77, -3415)),
-            Map.entry(Departure.walkPin("samwise"), new BlockPos(5118, 77, -3415)),
-            Map.entry(Departure.walkPin("pippin"), new BlockPos(5116, 77, -3414)),
-            Map.entry(Departure.walkPin("merry"), new BlockPos(5118, 77, -3414)),
-            Map.entry(Departure.walkPin("gimli"), new BlockPos(5116, 77, -3413)),
-            Map.entry(Departure.walkPin("legolas"), new BlockPos(5118, 77, -3413))
+            // The walk out's route, read off the ten ammolite marks laid on the road north of the courtyard
+            // on 10 November 2026, the nearest to the plaza first: the Company lines up on the first and
+            // walks the rest, which carry them out of sight round the shoulder of the hill. The y is the
+            // surface a mark was laid on; the ground is read again on every step, so this is a line of
+            // places rather than a set of step heights.
+            Map.entry(Departure.walkPin(1), new BlockPos(5117, 77, -3420)),
+            Map.entry(Departure.walkPin(2), new BlockPos(5116, 80, -3425)),
+            Map.entry(Departure.walkPin(3), new BlockPos(5113, 81, -3428)),
+            Map.entry(Departure.walkPin(4), new BlockPos(5110, 82, -3431)),
+            Map.entry(Departure.walkPin(5), new BlockPos(5108, 83, -3434)),
+            Map.entry(Departure.walkPin(6), new BlockPos(5103, 85, -3438)),
+            Map.entry(Departure.walkPin(7), new BlockPos(5101, 91, -3446)),
+            Map.entry(Departure.walkPin(8), new BlockPos(5100, 94, -3451)),
+            Map.entry(Departure.walkPin(9), new BlockPos(5096, 95, -3455)),
+            Map.entry(Departure.walkPin(10), new BlockPos(5095, 95, -3464))
             // Chapter one is all of it. What is left is chapter two's four and the last act's two.
     ));
 
