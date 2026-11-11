@@ -363,6 +363,14 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .save(pRecipeOutput);
 
         // Special Blocks
+        shaped(RecipeCategory.DECORATIONS, TolkienBlocks.LOG_BENCH, 1)
+                .pattern("LLL")
+                .pattern("S S")
+                .define('L', ItemTags.LOGS)
+                .define('S', Items.STICK)
+                .unlockedBy("has_logs", has(ItemTags.LOGS))
+                .save(pRecipeOutput);
+
         shaped(RecipeCategory.DECORATIONS, TolkienBlocks.COOKING_RACK, 1)
                 .pattern(" S ")
                 .pattern("SBS")

@@ -101,27 +101,29 @@ carve cannot do. `tools/hall_structure.py` reads the same `hall()` the cut uses 
 which is kept in step with `GoblinCave`) and writes
 `src/main/resources/data/tolkienmobs/structure/goblin_hall.nbt`.
 
-It is the room, not an empty box: the hall's hollow is air and the other 2,343 cells of its box are stone,
-so loading it anywhere builds a hewn hall you can walk into and decorate. An all-air file would change
-nothing in a world that had already been carved and could not be decorated at all. **19 wide, 13 tall, 43
-deep, 10,621 cells**, gzipped vanilla structure NBT at `DataVersion` 4790 — the version the shipped
-`ch2_hall.nbt` carries, read from it rather than guessed. Both `grab_build.read_nbt` and a separate
-checker read the file back to its last byte.
+It is the room, not an empty box: the hall's hollow is air, the course beneath it is a floor, and the
+other 3,160 cells of its box are stone, so loading it anywhere builds a hewn hall you can walk into and
+decorate. An all-air file would change nothing in a world that had already been carved and could not be
+decorated at all. **19 wide, 14 tall, 43 deep, 11,438 cells**, gzipped vanilla structure NBT at
+`DataVersion` 4790 — the version the shipped `ch2_hall.nbt` carries, read from it rather than guessed.
+Both `grab_build.read_nbt` and a separate checker read the file back to its last byte.
 
 | step | |
 |---|---|
 | put it where a structure block looks | `<world>/generated/minecraft/structures/goblin_hall.nbt`, or a datapack's `data/tolkienmobs/structure/` |
-| load it | a structure block in LOAD mode, name `goblin_hall`. Its axes are x across the hill, y up, z into the hill, and the hall's floor is y 0, so a block set to CORNER stands its bottom course on the floor |
+| load it | a structure block in LOAD mode, name `goblin_hall`. Its axes are x across the hill, y up, z into the hill, and the file's bottom course is the hall's floor, so a block set to CORNER stands that floor under the room |
 | decorate it | by hand, in the world |
 | save it back | SAVE from a structure block over the furnished hall, and the mod has a decorated hall to place after the carve |
 
-At the test pin that corner is **x 5619, y 157, z −3535**, and the room it builds runs x 5619..5637 and
+At the test pin that corner is **x 5619, y 156, z −3535**, and the room it builds runs x 5619..5637 and
 z −3535..−3493 — the near end is where the landing comes in. It needs no rotation: the file's x and z run
 the same way as the world's, so loading it over the hall the cut already made puts its worn faces where
 they already are instead of mirroring them.
 
-The floor is deliberately not in the file: the cut leaves the hill's own floor under the hall and a
-structure block's corner stands on it, so the same file sits right on whatever ground it is loaded onto.
+The floor is in the file: the bottom course is stone from wall to wall, so loading it on bare ground builds
+a floor instead of leaving the room to sit on whatever happens to be there. That is why the file is one
+course taller than the room, and why a structure block's corner goes one block lower than the hall's own
+floor - at the test pin, y 156.
 
 ## Where it stands
 
