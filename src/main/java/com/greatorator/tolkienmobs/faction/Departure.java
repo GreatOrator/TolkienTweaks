@@ -95,6 +95,8 @@ public final class Departure {
     private static final double HOME = 24.0D;
     /** How long Bilbo stands and watches the Company before he turns for the door, in ticks. */
     private static final int LINGER = 80;
+    /** Ticks after the blessing before the scroll is taken back: long enough for the arm carrying it to drop. */
+    private static final int PUT_AWAY = 8;
     /** How many marks of the owner's route are read, at most. */
     private static final int ROUTE_MARKS = 32;
     /** How far a body steps in one tick: a walking player's pace, so the legs keep their own rhythm. */
@@ -240,6 +242,8 @@ public final class Departure {
         private long walkAt;
         /** Whether Elrond and Bilbo have started in: the company's own walk is over by then. */
         private boolean home;
+        /** Whether the scroll has been taken back yet, so it is put away once rather than every tick. */
+        private boolean stowed;
         /** Ticks the script has been held back, so a pause does not bring the next line early. */
         private long hold;
 
@@ -523,9 +527,6 @@ public final class Departure {
             Style style = Style.EMPTY.withColor(line.colour()).withItalic(line.italic());
             player.sendSystemMessage(Component.literal(line.who() + ": ").withStyle(line.colour())
                     .append(Component.translatable(line.key()).withStyle(style)));
-            // The scroll is stowed on his last line rather than carried out of the courtyard: it is in his
-            // hand for the whole reading and gone by the time he turns for the road.
-            if (line.who().equals("Elrond") && show.sent >= LINES.size()) stow(level, show, "Elrond");
         }
         // The Company goes on the twenty-third line, and Elrond's last two are said over their backs - but
         // not until they are a few blocks gone, so the script is held where it stands until they are.
@@ -535,6 +536,13 @@ public final class Departure {
             return;
         }
         if (show.sent < LINES.size()) return;
+        // The scroll is closed at his side rather than taken out of the air: it goes once the arm carrying it
+        // has finished coming down, which is one line's worth of ticks after the last word and the few ticks
+        // the raise takes to ease away.
+        if (!show.stowed && elapsed >= (long) GAP * (LINES.size() + 1) + PUT_AWAY) {
+            stow(level, show, "Elrond");
+            show.stowed = true;
+        }
         if (elapsed < (long) GAP * LINES.size() + TAIL) return;
         // The walk out is the end of the scene rather than a thing happening beside it, so Elrond and Bilbo
         // are not taken away until the nine who go are off the plaza.
@@ -735,12 +743,13 @@ public final class Departure {
         if (show == null || show.facing.isEmpty()) return;
         if (!(player.level() instanceof ServerLevel level)) return;
         long now = level.getGameTime();
-        // A line is being said from the tick it lands until one line's worth of ticks has passed - which is
-        // when the next line lands - so an arm comes down of its own accord as the blessing ends instead of
-        // staying up through the walk out. The clock is the script's own, so a hold holds the arm with it.
+        // A line is being said from the tick it lands until the script reaches the next line's turn, which is
+        // what the script's own bookkeeping already means by its turn: the clock passes GAP times the line
+        // number. So an arm comes up as a line lands, stays up through a speaker's run of lines, and comes
+        // down of its own accord when the blessing ends. The clock is the script's own, so a hold holds it.
         long elapsed = now - show.start - show.hold;
-        long since = show.sent > 0 ? elapsed - (long) GAP * (show.sent - 1) : Long.MAX_VALUE;
-        Line speaking = since >= 0 && since < GAP ? LINES.get(show.sent - 1) : null;
+        Line speaking = show.sent > 0 && elapsed < (long) GAP * (show.sent + 1)
+                ? LINES.get(show.sent - 1) : null;
         for (UUID id : List.copyOf(show.facing.keySet())) {
             // A body on its way out is steered by the walk, and a body already taken away has nothing to
             // steer.

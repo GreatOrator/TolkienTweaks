@@ -485,26 +485,16 @@ away mid-sentence. The item is resolved by name from `TolkienItems` (a scroll if
 note's letter if not), and the hand lookup goes through the scene's own seats, since the line's speaker
 is a name and the body is a UUID.
 
-## The scroll and the arm - 10 November 2026
-
-Elrond's scroll is dressed at `stand()` with the rest of the cast's gear, so it is in his hand from the
-courtyard filling to the last line of the blessing, when `stow` takes it back and he turns for the road
-empty-handed.
-
-The arm that lifts while a body speaks was written against the wrong side of the clock - the test asked
-whether the script was *behind* the line it had just said, which is never true - so no arm ever rose.
-It now asks whether a line's worth of ticks has passed since the line landed, on the script's own clock
-(the one the pause is written into), so an arm comes up as a line lands and comes down as the next one
-does, and Elrond's last one lowers three seconds after "Let us go back, Adventurer".
+## The scroll, the arm, and putting it away - 10 November 2026
 
-## Reading, not greeting - 10 November 2026
-
-The arm raise was one gesture for every speaking body: eighty degrees forward, which is a greeting held
-in the air. A body with `ITEM_SCROLL` in its main hand is drawn differently - `sceneReading` is set
-during extraction off the synched item - and takes `READ_RAISE` (44 degrees) with `READ_ACROSS` (-20
-across the body) so the paper comes up in front of the face, and `READ_PITCH` (-12) drops the head
-towards it. Everyone else keeps the greeting.
-
-Both numbers are eased by the same `armRaise`, so the lift and the turn arrive together and leave
-together. The side the arm turns to, and the sign of the head's pitch, are the two guesses here: either
-one may need its sign flipped once it is seen, and both are single constants next to `HEAD_SIGN`.
+Elrond carries `ITEM_SCROLL` from the courtyard filling, reads his blessing off it with the reading pose
+(44 degrees up, 20 across, head 12 down), and the scroll is taken back one line's worth of ticks after
+his last word plus the ticks the raise takes to ease away - so it is lowered to his side and only then
+put away, rather than pulled out of the air at full height.
+
+The speaking window is the script's own arithmetic: a line is being said from the tick it lands until
+the clock reaches the next line's turn, `GAP * (line + 1)`. Two earlier attempts got this wrong - the
+first tested the window from the wrong end (never true), the second measured from the line before it
+(a line early, and never for the last line). With the right test a speaker's run of lines holds one
+continuous pose, and the window closes a line's worth after the last one, which is when the arm comes
+down and the scroll is put away.
