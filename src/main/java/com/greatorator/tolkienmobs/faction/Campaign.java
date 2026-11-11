@@ -1209,6 +1209,29 @@ public final class Campaign extends SavedData {
      */
     public static void startChapterTwo(ServerPlayer player) {
         handOnward(player, Alliance.WEST);
+        // A page that came into the book without being asked for leaves the player holding work and nowhere
+        // to take it: the book says what the page is, and the one thing it cannot say is who wants it and
+        // where they keep their fire. Said in the moment the Company goes, by the seam that handed it over.
+        sayWhereThePageGoes(player, Alliance.WEST);
+    }
+
+    /**
+     * Names the body the page in the book has to be carried to, and the ground they keep it on. Written for
+     * the handover at the end of chapter one, where the page is already in the player's hands and there is
+     * nobody to walk back to and ask - a page taken from a giver is handed over face to face and needs no
+     * telling.
+     */
+    private static void sayWhereThePageGoes(ServerPlayer player, Alliance alliance) {
+        ensureLoaded(player.level());
+        List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
+        int stage = stage(player, alliance);
+        if (stage >= line.size()) return;
+        Page page = line.get(stage);
+        // A page with no place line is one whose ground the book already names some other way, and saying
+        // half of it would read worse than saying nothing.
+        if (page.turnIn().isEmpty() || page.place().isEmpty()) return;
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.page.carry", page.turnIn(),
+                Component.translatable(page.place())).withStyle(ChatFormatting.GOLD));
     }
 
     public static void announceNext(ServerPlayer player) {

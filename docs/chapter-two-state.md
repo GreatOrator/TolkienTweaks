@@ -100,3 +100,15 @@ the mountains rather than at the camp.
 | The plan and its reasoning | `docs/chapter-two-last-refuge.md` |
 | Page text | `assets/tolkienmobs/lang/en_us.json` under `campaign.tolkienmobs.page.*` |
 | Commands for poking at it | `docs/commands.md` (`/tmquest`) |
+
+## The seam, now staged - 11 November 2026
+
+Open decision 3 is answered: between page 25 and page 26 there is now a scene. The courtyard is named,
+the Company is spoken over and walked out along a marked line, Elrond reads his blessing off a scroll
+that he then rolls up, and he and Bilbo go back down the road. The player keeps what they came for -
+page 26 falls into the book as the courtyard empties - and `Campaign.sayWhereThePageGoes` says, once, the
+one thing an unasked-for handover cannot: `Glóin holds the next page, at the dwarf camp at the east end
+of the High Pass.`
+
+So chapter two's first page no longer needs Elrond to be walked back to. What chapter two still wants is
+the walk itself: pages 26 to 36 have never been played, and the four things to watch are listed above.
