@@ -129,6 +129,12 @@ public final class Sites extends SavedData {
      */
     public static final String GLOIN_CAMP = "tolkienmobs:key_structures/gloin_camp";
     /**
+     * The camp at the goblin cave: a shelter cut into the rock beside the way in. It is a template like the
+     * rest, but nothing surveys for it and nothing raises it on its own, so it stands only where a scout
+     * stood and pinned it - which is why it is kept out of {@link #SCENERY}.
+     */
+    public static final String SHELTER_CAMP = "tolkienmobs:key_structures/shelter_cave";
+    /**
      * The dwarven hold the chapter walks to, assembled from the geomorph sheet by
      * {@code tools/gundabad_keep.py}: 122 by 183 by 26, six rooms on one floor over an inner keep of
      * three more. It is ground the campaign pitches rather than ground the world generator makes, so

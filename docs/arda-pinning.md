@@ -17,7 +17,7 @@ placement, so an overworld coordinate would mean nothing.
 | command | what it does |
 | --- | --- |
 | `/tmpin place <id>` | Pins a catalogue **name** at the caller's feet: `rivendell`, `thorenhad`, `barachen`, `ford`, `keystone`, `carndum`, or any of the sixteen place ids. |
-| `/tmpin build <name>` | Pins a **building** at the caller's feet: `camp` / `elledancamp`, `tent`, `ruin`, `cave` / `cave1`, `cave2`, `cave3`, `gloincamp`, `gundabad` / `keep`, `weathertop`, `castle`, `arena`, or a full template id. |
+| `/tmpin build <name>` | Pins a **building** at the caller's feet: `camp` / `elledancamp`, `tent`, `ruin`, `cave` / `cave1`, `cave2`, `cave3`, `gloincamp`, `sheltercave`, `gundabad` / `keep`, `weathertop`, `castle`, `arena`, or a full template id. |
 | `/tmpin list`, or no argument | What this world has pinned, and what the build pins for every world. |
 | `/tmpin checklist` | The sixteen locations the two chapters ask for, each marked `this world`, `every world` or `not pinned`, with a count at the top. Places nothing. |
 | `/tmpin remove <name>` | Forgets this world's pin for that name. A pin written into the build is in the jar, not the world, and this does not touch it. |
