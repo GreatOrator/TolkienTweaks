@@ -258,3 +258,30 @@ It is derived rather than surveyed, so it costs no twelfth block and cannot go s
 and the road's start moves with it. Moving Elrond's mark moves it too, because the bearing is his. A
 plaza with fewer than two marked bodies has no bearing to read and reports nothing - one body beside
 Elrond is not a direction.
+
+## The plaza's numbers - 10 November 2026
+
+Read off the marker blocks on the staging plaza - 5117, -3409, the thirteen-block disc at the north end
+of the high pass road - on the evening of 10 November 2026, all eleven found at y=77:
+
+| Body | Standing spot |
+| --- | --- |
+| Elrond | 5117, 77, -3407 |
+| Gandalf | 5117, 77, -3412 |
+| Aragorn | 5115, 77, -3413 |
+| Boromir | 5119, 77, -3413 |
+| Gimli | 5113, 77, -3411 |
+| Legolas | 5121, 77, -3411 |
+| Bilbo | 5115, 77, -3407 |
+| Frodo | 5116, 77, -3410 |
+| Samwise | 5118, 77, -3410 |
+| Pippin | 5114, 77, -3410 |
+| Merry | 5120, 77, -3410 |
+
+These are written into `Pins.SOURCE` as `rivendell.scene` (Elrond's, which is also the gathering mark)
+and `rivendell.scene.<name>`, so a map that has never held a mithril block stands the Company in exactly
+this courtyard. The blocks themselves were a survey: they were for reading the plaza once, and no map
+needs them again. A world that lays its own and runs `/tmscene marks` still overrules the build.
+
+With the ring as it stands, the walk out's first waypoint derives to column 5117, -3416 - nine blocks
+north of Elrond, three past the outermost body, on the plaza's north rim where the climb leaves.

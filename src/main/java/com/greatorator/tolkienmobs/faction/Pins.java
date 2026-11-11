@@ -125,7 +125,25 @@ public final class Pins extends SavedData {
             // twelve blocks north of it, where he stood inside it at 8233, -3664. The .end is that doorway's road
             // block, the ground outside the wall the camp's own track leaves from.
             Map.entry(Sites.GLOIN_CAMP, new BlockPos(8215, 224, -3674)),
-            Map.entry(Sites.GLOIN_CAMP + ".end", new BlockPos(8229, 223, -3652))
+            Map.entry(Sites.GLOIN_CAMP + ".end", new BlockPos(8229, 223, -3652)),
+            // The departure's own courtyard, read off eleven marker blocks laid on the staging plaza at
+            // 5117, -3409 on 10 November 2026 - one block per body, the mithril one Elrond's. The blocks were
+            // a survey and are not wanted again: they stand in the world they were laid in and in no other, so
+            // the ground they gave is written here and every world stands the Company on it. Elrond's own is
+            // also the gathering mark - where the note's scene begins and where a rehearsal is held - and the
+            // walk out's first waypoint is derived from the ring rather than pinned.
+            Map.entry(Departure.GATHER_PIN, new BlockPos(5117, 77, -3407)),
+            Map.entry(Departure.bodyPin("elrond"), new BlockPos(5117, 77, -3407)),
+            Map.entry(Departure.bodyPin("gandalf"), new BlockPos(5117, 77, -3412)),
+            Map.entry(Departure.bodyPin("aragorn"), new BlockPos(5115, 77, -3413)),
+            Map.entry(Departure.bodyPin("gimli"), new BlockPos(5113, 77, -3411)),
+            Map.entry(Departure.bodyPin("legolas"), new BlockPos(5121, 77, -3411)),
+            Map.entry(Departure.bodyPin("boromir"), new BlockPos(5119, 77, -3413)),
+            Map.entry(Departure.bodyPin("bilbo"), new BlockPos(5115, 77, -3407)),
+            Map.entry(Departure.bodyPin("frodo"), new BlockPos(5116, 77, -3410)),
+            Map.entry(Departure.bodyPin("samwise"), new BlockPos(5118, 77, -3410)),
+            Map.entry(Departure.bodyPin("pippin"), new BlockPos(5114, 77, -3410)),
+            Map.entry(Departure.bodyPin("merry"), new BlockPos(5120, 77, -3410))
             // Chapter one is all of it. What is left is chapter two's four and the last act's two.
     ));
 
