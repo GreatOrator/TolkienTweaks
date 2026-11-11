@@ -485,16 +485,21 @@ away mid-sentence. The item is resolved by name from `TolkienItems` (a scroll if
 note's letter if not), and the hand lookup goes through the scene's own seats, since the line's speaker
 is a name and the body is a UUID.
 
-## The scroll, the arm, and putting it away - 10 November 2026
+## Rolling the scroll up - 10 November 2026
 
-Elrond carries `ITEM_SCROLL` from the courtyard filling, reads his blessing off it with the reading pose
-(44 degrees up, 20 across, head 12 down), and the scroll is taken back one line's worth of ticks after
-his last word plus the ticks the raise takes to ease away - so it is lowered to his side and only then
-put away, rather than pulled out of the air at full height.
+Both sprites already exist: `item_scroll` is the tied, rolled tube and `item_scroll2` is the open page
+with its seal. Elrond carries the open one, and the roll-up is a swap of the stack rather than an
+animation of a single model: six ticks after the reading window closes - which is when the arm has come
+down to his side - the stack becomes the rolled scroll, and thirty ticks after that it is put away.
 
-The speaking window is the script's own arithmetic: a line is being said from the tick it lands until
-the clock reaches the next line's turn, `GAP * (line + 1)`. Two earlier attempts got this wrong - the
-first tested the window from the wrong end (never true), the second measured from the line before it
-(a line early, and never for the last line). With the right test a speaker's run of lines holds one
-continuous pose, and the window closes a line's worth after the last one, which is when the arm comes
-down and the scroll is put away.
+The reading pose is detected from either sprite, so if the swap lands while the arm is still easing the
+pose holds rather than flickering back to the greeting.
+
+## The speaking window
+
+A line is being said from the tick it lands until the script's clock reaches the next line's turn,
+`GAP * (line + 1)`. Two earlier attempts got this wrong: the first tested the window from the wrong end
+(never true, so no arm ever rose), the second measured from the line before it (a line early, and never
+for the last line). With the right test a speaker's run of lines holds one continuous pose, and the
+window closes a line's worth after the last one - which is when the arm comes down and the scroll rolls
+up.

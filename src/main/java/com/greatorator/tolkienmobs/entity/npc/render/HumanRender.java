@@ -249,7 +249,9 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         renderState.sceneStride = body.tickCount + partialTick;
         // Reading is not speaking with a hand up: a body holding paper brings it to its face. The item is
         // synched with the body, so the client can see which of the two it is doing.
-        renderState.sceneReading = body.getMainHandItem().is(TolkienItems.ITEM_SCROLL.get());
+        ItemStack inHand = body.getMainHandItem();
+        renderState.sceneReading = inHand.is(TolkienItems.ITEM_SCROLL2.get())
+                || inHand.is(TolkienItems.ITEM_SCROLL.get());
         float want = 0.0F;
         Player player = Minecraft.getInstance().player;
         if (player != null) {

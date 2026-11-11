@@ -95,8 +95,10 @@ public final class Departure {
     private static final double HOME = 24.0D;
     /** How long Bilbo stands and watches the Company before he turns for the door, in ticks. */
     private static final int LINGER = 80;
-    /** Ticks after the blessing before the scroll is taken back: long enough for the arm carrying it to drop. */
-    private static final int PUT_AWAY = 8;
+    /** Ticks after the reading window closes before the scroll is rolled up, which lets the arm come down. */
+    private static final int CLOSE_AFTER = 6;
+    /** Ticks the rolled scroll is held at his side before it is put away. */
+    private static final int LOWERED = 30;
     /** How many marks of the owner's route are read, at most. */
     private static final int ROUTE_MARKS = 32;
     /** How far a body steps in one tick: a walking player's pace, so the legs keep their own rhythm. */
@@ -242,7 +244,8 @@ public final class Departure {
         private long walkAt;
         /** Whether Elrond and Bilbo have started in: the company's own walk is over by then. */
         private boolean home;
-        /** Whether the scroll has been taken back yet, so it is put away once rather than every tick. */
+        /** Whether the scroll has been rolled up yet, and whether it has been put away since. */
+        private boolean closed;
         private boolean stowed;
         /** Ticks the script has been held back, so a pause does not bring the next line early. */
         private long hold;
@@ -350,21 +353,25 @@ public final class Departure {
         SHOWS.put(player.getUUID(), show);
     }
 
-    /** The scroll Elrond reads his blessing from, which is the pack's own paper. */
-    private static ItemStack scroll() {
-        return new ItemStack(TolkienItems.ITEM_SCROLL.get());
+    /**
+     * Elrond's scroll, open or rolled. The pack has a sprite for each - the tied tube and the open page with its
+     * seal - so the roll-up is a swap of what he is holding rather than an animation of one thing.
+     */
+    private static ItemStack scroll(boolean open) {
+        return new ItemStack(open ? TolkienItems.ITEM_SCROLL2.get() : TolkienItems.ITEM_SCROLL.get());
     }
 
     /**
-     * Takes back what a named body of the cast is holding, and nothing else about it. A scene's bodies are its
-     * own, so the way from a line's speaker to the body saying it is the seats the show wrote down.
+     * Puts something different in a named body's hand, replacing whatever was there - which for a stow is
+     * nothing at all. A scene's bodies are its own, so the way from a line's speaker to the body saying it is
+     * the seats the show wrote down.
      */
-    private static void stow(ServerLevel level, Show show, String name) {
+    private static void hold(ServerLevel level, Show show, String name, ItemStack stack) {
         for (Map.Entry<UUID, Integer> row : show.seats.entrySet()) {
             Cast cast = CAST.get(row.getValue());
             if (!cast.name().equals(name)) continue;
             Entity body = level.getEntity(row.getKey());
-            if (body instanceof Mob mob) mob.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            if (body instanceof Mob mob) mob.setItemSlot(EquipmentSlot.MAINHAND, stack);
             return;
         }
     }
@@ -385,7 +392,7 @@ public final class Departure {
             case "boromir" -> new ItemStack(TolkienItems.SWORD_AMMOLITE.get());
             case "gimli" -> new ItemStack(TolkienItems.AXE_MITHRIL.get());
             case "legolas" -> new ItemStack(TolkienItems.ELVEN_BOW.get());
-            case "elrond" -> scroll();
+            case "elrond" -> scroll(true);
             default -> ItemStack.EMPTY;
         };
     }
@@ -536,11 +543,15 @@ public final class Departure {
             return;
         }
         if (show.sent < LINES.size()) return;
-        // The scroll is closed at his side rather than taken out of the air: it goes once the arm carrying it
-        // has finished coming down, which is one line's worth of ticks after the last word and the few ticks
-        // the raise takes to ease away.
-        if (!show.stowed && elapsed >= (long) GAP * (LINES.size() + 1) + PUT_AWAY) {
-            stow(level, show, "Elrond");
+        // The scroll is rolled up at his side rather than taken out of the air: once the arm carrying it has
+        // come down, what he holds is swapped for the rolled sprite, and put away a moment after that.
+        long rolledAt = (long) GAP * (LINES.size() + 1) + CLOSE_AFTER;
+        if (!show.closed && elapsed >= rolledAt) {
+            hold(level, show, "Elrond", scroll(false));
+            show.closed = true;
+        }
+        if (show.closed && !show.stowed && elapsed >= rolledAt + LOWERED) {
+            hold(level, show, "Elrond", ItemStack.EMPTY);
             show.stowed = true;
         }
         if (elapsed < (long) GAP * LINES.size() + TAIL) return;
