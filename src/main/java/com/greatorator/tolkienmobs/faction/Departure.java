@@ -44,7 +44,8 @@ import java.util.UUID;
  * <p>
  * When the last line of the script is said the courtyard empties: the nine who go walk off it in lanes of
  * their own on the bearing the ring itself gives - the open side, away from Elrond - and Elrond and Bilbo
- * stay where they were stood until the nine are off the plaza, then go with the scene. Where the road runs past the plaza's rim
+ * watch the nine out of the courtyard and then walk in off the road themselves, and the scene ends with the
+ * courtyard empty. Where the road runs past the plaza's rim
  * is not this class's business yet: the walk ends where the courtyard does. The old script's walk mark and
  * its spawn layout are in {@code docs/departure-scene.md}.
  * <p>
@@ -89,6 +90,8 @@ public final class Departure {
     private static final int DEPART_AT = 23;
     /** How far off the courtyard the nine have to be before the parting words are said, in blocks. */
     private static final double CLEAR = 8.0D;
+    /** How far Elrond and Bilbo walk in off the road once the Company is gone, in blocks. */
+    private static final double HOME = 7.0D;
     /** How far a body steps in one tick: a walking player's pace, so the legs keep their own rhythm. */
     private static final double WALK_STEP = 0.2D;
     /** Ticks after which a walk that has not finished is given up on and the bodies are taken away. */
@@ -230,6 +233,8 @@ public final class Departure {
         private final boolean rehearsal;
         private int sent;
         private long walkAt;
+        /** Whether Elrond and Bilbo have started in: the company's own walk is over by then. */
+        private boolean home;
         /** Ticks the script has been held back, so a pause does not bring the next line early. */
         private long hold;
 
@@ -459,6 +464,12 @@ public final class Departure {
         // The walk out is the end of the scene rather than a thing happening beside it, so Elrond and Bilbo
         // are not taken away until the nine who go are off the plaza.
         if (!show.targets.isEmpty()) return;
+        // Then they go in themselves, so the courtyard is left empty rather than with two bodies standing at
+        // the edge of it watching nothing.
+        if (!show.home) {
+            sendHome(level, show);
+            return;
+        }
         finish(player, level, show);
     }
 
@@ -521,6 +532,42 @@ public final class Departure {
             double tx = exit.getX() + 0.5D + bx * GONE - bz * side;
             double tz = exit.getZ() + 0.5D + bz * GONE + bx * side;
             BlockPos column = new BlockPos((int) Math.floor(tx), exit.getY(), (int) Math.floor(tz));
+            int ty = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column).getY();
+            show.targets.put(id, new double[]{tx, ty, tz});
+        }
+        show.walkAt = level.getGameTime();
+    }
+
+    /**
+     * Turns Elrond and Bilbo back in off the road. The nine went out through the courtyard's open side, so
+     * these two go the other way, pair abreast, and are taken away when they arrive - the walk itself is the
+     * same driven one the company uses, so nothing has to know how to navigate.
+     */
+    private static void sendHome(ServerLevel level, Show show) {
+        show.home = true;
+        BlockPos host = Pins.at(level, bodyPin("elrond"));
+        if (host == null) host = Pins.at(level, GATHER_PIN);
+        BlockPos exit = exitStart(level);
+        if (host == null || exit == null) return;
+        double dx = host.getX() - exit.getX();
+        double dz = host.getZ() - exit.getZ();
+        double length = Math.sqrt(dx * dx + dz * dz);
+        if (length < 0.5D) return;
+        double bx = dx / length;
+        double bz = dz / length;
+        Map<Integer, UUID> bySeat = new HashMap<>();
+        for (Map.Entry<UUID, Integer> row : show.seats.entrySet()) bySeat.put(row.getValue(), row.getKey());
+        int lane = -1;
+        for (int seat = 0; seat < CAST.size(); seat++) {
+            Cast cast = CAST.get(seat);
+            if (leaves(cast)) continue;
+            UUID id = bySeat.get(seat);
+            if (id == null) continue;
+            lane++;
+            double side = (lane - 0.5D) * 1.4D;
+            double tx = host.getX() + 0.5D + bx * HOME - bz * side;
+            double tz = host.getZ() + 0.5D + bz * HOME + bx * side;
+            BlockPos column = new BlockPos((int) Math.floor(tx), host.getY(), (int) Math.floor(tz));
             int ty = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column).getY();
             show.targets.put(id, new double[]{tx, ty, tz});
         }

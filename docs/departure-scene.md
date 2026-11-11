@@ -377,3 +377,14 @@ skipped, since one of them is ammolite as well: the numbers that come back are t
 The numbers are the order the marks read in from the courtyard. A route that doubles back or runs round
 the plaza's edge will not sort the way it was laid, so the printed coordinates are worth checking against
 the legend before they are baked into the build.
+
+## The courtyard empties - 10 November 2026
+
+Elrond watches the nine out and then leaves himself: seven blocks in off the road, the way the company
+did not go, pair abreast, taken away when they arrive. The pair use the same driven walk the company
+does, so there is no navigation to go wrong and no AI to trust.
+
+The order, once the script is running: lines one to twenty-three with the whole cast standing there,
+then the nine out along the road's bearing for forty-eight blocks, then lines twenty-four and
+twenty-five said to their backs, then Elrond and Bilbo in, then the alley empty and the page handed
+over once the tail has run out.
