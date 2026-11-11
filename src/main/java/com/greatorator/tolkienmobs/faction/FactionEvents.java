@@ -102,7 +102,9 @@ public final class FactionEvents {
             FactionGuards.tick(player);
             QuestGivers.tick(player);
             Campaign.tick(player);
-            // The walk out is stepped on every tick: the campaign's own tick is once a second.
+            // The bodies breathe and turn, and the walk out is stepped, on every tick: the campaign's own
+            // tick is once a second, which is too coarse for either.
+            Departure.poseTick(player);
             Departure.walkTick(player);
             Places.tick(player);
         }

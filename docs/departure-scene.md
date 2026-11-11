@@ -302,3 +302,26 @@ arrived, so no showing can leave one standing about.
 
 What the walk does not do yet is leave the plaza: it ends where the courtyard does, twenty-four blocks
 out on the open side. Where the road runs after that is a mark of its own and a separate step.
+
+## Facing and small movements - 10 November 2026
+
+The cast used to be turned to the gathering mark, which was right for the ring and wrong for the two
+at its edge: Elrond's own mark is the gathering mark, so he faced out of his own scene, and Bilbo,
+standing level with him, faced Elrond's shoulder rather than the Company. Everybody now turns to the
+mean of the eleven marks - the middle of the courtyard - which puts Elrond and Bilbo among the rest
+and leaves the ring looking inward as before.
+
+On top of the standing yaw, two small movements, both stepped on every tick by the scene:
+
+- **A breath.** Four degrees of sway on a six-second cycle, each body on its own phase, so eleven of
+  them are never in step. Nobody stands like a signpost.
+
+- **A turn to the player.** While a body's own line is being said, that body turns to whoever is being
+  spoken to, clamped to seventy degrees either side of where it stands so nobody spins on the spot if
+  the player walks behind him. The sway resumes when the line passes.
+
+Both are made on the body's own yaw. That is deliberate: the head follows the body through
+`adjustModelBonesForRender`, so a body that turns is a body that looks, and it needs nothing from the
+rigs. A head that turns on its own while the body stays put, or an arm raised as if to shake hands, is
+work inside `HumanModel`, `HobbitModel` and `DwarfModel` - a bone moved from the render state, or an
+animation controller and its file - and is the next piece rather than this one.

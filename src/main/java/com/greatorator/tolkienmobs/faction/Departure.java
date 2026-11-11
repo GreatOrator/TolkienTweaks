@@ -205,6 +205,8 @@ public final class Departure {
         private final Map<UUID, Integer> seats = new HashMap<>();
         /** Where a leaver is walking to, by body: the far end of its lane off the courtyard. */
         private final Map<UUID, double[]> targets = new LinkedHashMap<>();
+        /** The yaw a body was stood at, which is what its idle sway moves around. */
+        private final Map<UUID, Float> facing = new HashMap<>();
         private final boolean rehearsal;
         private int sent;
         private long walkAt;
@@ -274,6 +276,25 @@ public final class Departure {
 
     /** Stands the cast round a mark. The bodies belong to the show and go when it does. */
     private static void stand(ServerLevel level, Show show, BlockPos at) {
+        // The middle of the courtyard, which is what everybody turns to: not the gathering mark, because
+        // Elrond's own mark is that mark and he would be left facing out of his own scene.
+        double centreX = 0.0D;
+        double centreZ = 0.0D;
+        int counted = 0;
+        for (Cast cast : CAST) {
+            BlockPos seat = Pins.at(level, bodyPin(cast.slug()));
+            if (seat == null) continue;
+            centreX += seat.getX();
+            centreZ += seat.getZ();
+            counted++;
+        }
+        if (counted == 0) {
+            centreX = at.getX();
+            centreZ = at.getZ();
+        } else {
+            centreX /= counted;
+            centreZ /= counted;
+        }
         for (int seat = 0; seat < CAST.size(); seat++) {
             Cast cast = CAST.get(seat);
             // A body whose ground the owner has marked stands on the mark itself: the block was set
@@ -288,7 +309,10 @@ public final class Departure {
                 case DWARF -> TolkienEntities.ENTITY_TTM_DWARF.get().create(level, EntitySpawnReason.EVENT);
             };
             if (!(entity instanceof Mob body)) continue;
-            body.snapTo(spot.getX() + 0.5D, spot.getY(), spot.getZ() + 0.5D, facing(spot, at), 0.0F);
+            double lookX = centreX - spot.getX();
+            double lookZ = centreZ - spot.getZ();
+            float yaw = lookX * lookX + lookZ * lookZ < 0.25D ? 0.0F : yawTowards(lookX, lookZ);
+            body.snapTo(spot.getX() + 0.5D, spot.getY(), spot.getZ() + 0.5D, yaw, 0.0F);
             body.setPersistenceRequired();
             // A body in a scene stands where it was put: no wandering, and nothing in the crowd can be
             // killed out from under the words being spoken over it.
@@ -301,15 +325,8 @@ public final class Departure {
             level.addFreshEntity(body);
             show.bodies.add(body.getUUID());
             show.seats.put(body.getUUID(), seat);
+            show.facing.put(body.getUUID(), yaw);
         }
-    }
-
-    /** The way a body looks: at the gathering mark, so a ring reads as a ring. */
-    private static float facing(BlockPos spot, BlockPos at) {
-        double dx = at.getX() - spot.getX();
-        double dz = at.getZ() - spot.getZ();
-        if (dx == 0.0D && dz == 0.0D) return 0.0F;
-        return yawTowards(dx, dz);
     }
 
     /** The yaw that faces along a step, in the game's own reckoning: nought is south, ninety is west. */
@@ -442,6 +459,48 @@ public final class Departure {
      * own should be able to take it somewhere the courtyard did not say. Its ground is read again on every
      * step, so the rim's easing never leaves it walking in air.
      */
+    /**
+     * The bodies' own small movements: a slow sway so nobody stands like a signpost, and a turn to the
+     * player while that body's line is being said.
+     * <p>
+     * Both are made on the body's own yaw, which is the one thing every rig of the pack draws - the head
+     * follows it through the renderer, so a body that turns is a body that looks. A head that moves on its
+     * own, or an arm raised as if to shake hands, is work inside each model rather than in the scene, and
+     * is the next thing to be done rather than this.
+     */
+    public static void poseTick(ServerPlayer player) {
+        Show show = SHOWS.get(player.getUUID());
+        if (show == null || show.facing.isEmpty()) return;
+        if (!(player.level() instanceof ServerLevel level)) return;
+        long now = level.getGameTime();
+        Line speaking = show.sent > 0 && show.sent <= LINES.size() ? LINES.get(show.sent - 1) : null;
+        for (UUID id : List.copyOf(show.facing.keySet())) {
+            // A body on its way out is steered by the walk, and a body already taken away has nothing to
+            // steer.
+            if (show.targets.containsKey(id)) continue;
+            Entity body = level.getEntity(id);
+            if (body == null) continue;
+            float base = show.facing.get(id);
+            Integer seat = show.seats.get(id);
+            Cast cast = seat == null ? null : CAST.get(seat);
+            float yaw;
+            if (cast != null && speaking != null && speaking.who().equals(cast.name())) {
+                // The speaker turns to the player for the length of the line - not the whole way round,
+                // so nobody spins on the spot when the player has walked behind him.
+                float off = yawTowards(player.getX() - body.getX(), player.getZ() - body.getZ()) - base;
+                while (off > 180.0F) off -= 360.0F;
+                while (off < -180.0F) off += 360.0F;
+                yaw = base + Math.max(-70.0F, Math.min(70.0F, off));
+            } else {
+                // A slow breath on each body's own beat, so eleven of them are never in time.
+                yaw = base + (float) Math.sin(now * 0.05D + (seat == null ? 0 : seat) * 1.7D) * 4.0F;
+            }
+            body.setYRot(yaw);
+            body.setYBodyRot(yaw);
+            body.setYHeadRot(yaw);
+        }
+    }
+
     public static void walkTick(ServerPlayer player) {
         Show show = SHOWS.get(player.getUUID());
         if (show == null || show.targets.isEmpty()) return;
