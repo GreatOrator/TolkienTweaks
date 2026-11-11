@@ -91,6 +91,7 @@ public class DwarfRender extends GeoEntityRenderer<DwarfEntity, TolkienGeoRender
 
     public DwarfRender(EntityRendererProvider.Context context) {
         super(context, new DwarfModel());
+        HumanRender.holdItem(this, context);
         this.shadowRadius = 0.3f;
     }
 

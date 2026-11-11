@@ -447,3 +447,16 @@ renderer eases into an eighty-degree arm raise. So the farewell is the greeting'
 hand comes up as the Company goes and comes down as soon as he takes his first step, because the walk
 clears the flag when it starts. No new flag, no new bone work - the pause and the line were already the
 two things that put a hand up, and now they are one thing with two causes.
+
+## A staff in a hand - 10 November 2026
+
+Items sit in an entity's hand slot for free - a villager is a mob, and the equipment slot is synched -
+but nothing draws them: the mod's folk renderers are GeckoLib renderers with no item layer, so the
+staff would be in the body and seen by nobody. `HumanRender.holdItem` gives the human, hobbit and dwarf
+renderers the same `BlockAndItemGeoLayer` the guards and barrow-wights already have, drawing whatever is
+in the main hand at the `rightArm` bone with the fist's translation from the guard's blade.
+
+`Departure.beginWalk` hands Gandalf `TolkienItems.ARDA_STAFF` as his walk begins, so the staff appears as
+he turns for the road rather than through the whole scene. It is kept out of his hand until then because
+the cast is stood up empty-handed; anything else a scene wants carried can be set the same way, by
+slug, before the path is given.

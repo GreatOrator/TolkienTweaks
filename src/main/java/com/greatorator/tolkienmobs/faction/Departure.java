@@ -14,6 +14,7 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -557,6 +558,15 @@ public final class Departure {
             lane++;
             UUID id = bySeat.get(seat);
             if (id == null) continue;
+            // Gandalf takes his staff as he turns for the road. A scene stands its cast out of nothing, so a
+            // body with something in its hand is given it here, and the hand draws it through the layer the
+            // folk renderers now carry.
+            if (cast.slug().equals("gandalf")) {
+                Entity body = level.getEntity(id);
+                if (body instanceof Mob mob) {
+                    mob.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TolkienItems.ARDA_STAFF.get()));
+                }
+            }
             // Each keeps a little of its own across the line, so nine bodies on one path read as a column
             // rather than as one body drawn over and over.
             double side = (lane - (leavers - 1) / 2.0D) * 0.9D;

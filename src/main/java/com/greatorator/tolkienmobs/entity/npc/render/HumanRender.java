@@ -1,24 +1,33 @@
 package com.greatorator.tolkienmobs.entity.npc.render;
 
+import com.geckolib.cache.model.GeoBone;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.renderer.GeoEntityRenderer;
 import com.geckolib.renderer.base.BoneSnapshots;
 import com.geckolib.renderer.base.RenderPassInfo;
+import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
+import com.geckolib.util.RenderUtil;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.TolkienVillagerEntity;
 import com.greatorator.tolkienmobs.entity.npc.HumanEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.HumanModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.text.Normalizer;
 import java.util.concurrent.ConcurrentHashMap;
@@ -279,8 +288,53 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         return (float) Math.toDegrees(Math.atan2(dz, dx)) - 90.0F;
     }
 
+    /**
+     * The hand: whatever one of the mod's folk is holding is drawn at its right arm. The monsters have had
+     * this layer all along - a guard's blade, a wight's sword - but a villager never held anything, so the
+     * three folk renderers had no layer to draw it with, and an item in a villager's hand was in the entity
+     * and seen by nobody.
+     * <p>
+     * The pose is the fist by the numbers the guard's blade sits in. An item's own third-person transform is
+     * what turns it in the hand, so a staff hangs the way its model was drawn to hang, and a blade sits
+     * forward of the arm the way the guard's does.
+     */
+    static <E extends TolkienVillagerEntity> void holdItem(GeoEntityRenderer<E, TolkienGeoRenderState> renderer,
+                                                          EntityRendererProvider.Context context) {
+        renderer.withRenderLayer(new BlockAndItemGeoLayer<E, Void, TolkienGeoRenderState>(context, renderer) {
+            @Override
+            protected List<RenderData> getRelevantBones(E animatable, @Nullable Void relatedObject,
+                                                        TolkienGeoRenderState renderState, float partialTick) {
+                ItemStack held = animatable.getMainHandItem();
+                if (held.isEmpty()) return List.of();
+                ItemDisplayContext hand = ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                return List.of(RenderData.item("rightArm", hand, RenderUtil.createRenderStateForItem(held,
+                        this.itemModelResolver, hand, animatable)));
+            }
+
+            @Override
+            public void addRenderData(E animatable, @Nullable Void relatedObject,
+                                      TolkienGeoRenderState renderState, float partialTick) {
+                renderState.addGeckolibData(CONTENTS,
+                        getRelevantBones(animatable, relatedObject, renderState, partialTick));
+            }
+
+            @Override
+            protected void submitItemStackRender(PoseStack poseStack, GeoBone bone, ItemStackRenderState stackState,
+                                                 ItemDisplayContext displayContext,
+                                                 TolkienGeoRenderState renderState,
+                                                 SubmitNodeCollector renderTasks, int packedLight) {
+                poseStack.pushPose();
+                poseStack.translate(0.45D, -0.4D, 0.0D);
+                super.submitItemStackRender(poseStack, bone, stackState, displayContext, renderState, renderTasks,
+                        packedLight);
+                poseStack.popPose();
+            }
+        });
+    }
+
     public HumanRender(EntityRendererProvider.Context context) {
         super(context, new HumanModel());
+        holdItem(this, context);
         this.shadowRadius = 0.3f;
     }
 

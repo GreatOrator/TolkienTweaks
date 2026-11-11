@@ -60,6 +60,7 @@ public class HobbitRender extends GeoEntityRenderer<HobbitEntity, TolkienGeoRend
 
     public HobbitRender(EntityRendererProvider.Context context) {
         super(context, new HobbitModel());
+        HumanRender.holdItem(this, context);
         this.shadowRadius = 0.3f;
     }
 
