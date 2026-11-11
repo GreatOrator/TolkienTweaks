@@ -51,8 +51,8 @@ Measured from the door's own ground `g`:
 
 | part | numbers |
 |---|---|
-| mouth | 3 wide, 4 tall, at `g`; one block cleared in front of it |
-| way in | falls **40** blocks, one block down in two, so **80** blocks of ramp |
+| mouth | **5 wide, 7 tall**, at `g`; one block cleared in front of it |
+| way in | **5 wide, 7 tall**, falls **40** blocks, one block down in two, so **80** blocks of ramp |
 | landing | 7 wide, 5 tall, floor `g-40`, runs into the hall's back wall |
 | hall | **17 wide, 18 long, 13 tall** - floor `g-40`, ceiling `g-28` |
 | passages | 7 wide, 7 tall: one out of each side of the hall to a flank chamber, one on through its far wall to the back chamber |

@@ -78,6 +78,8 @@ BACK = (
 )
 OPEN = 4            # the way in's own blocks, cut through the surface
 OUTSIDE = 1         # blocks cut in front of the door, so it is not walled in
+MOUTH_SIDE = 2      # half the mouth's width, and the way in's
+MOUTH_HEIGHT = 7    # and how tall both are
 SPUR_TOP = 16       # of 256: how often a column of cavern keeps a stalactite
 SPUR_LOW = 14       # and how often a stalagmite
 SPUR_LONG = 5       # the longest of either, in blocks
@@ -169,11 +171,12 @@ class Plan:
     def void(self, a, s, y):
         """Whether the plan puts cave air at one cell, before the hill is consulted."""
         sideways = abs(s)
-        if 0 <= a <= 2 and sideways <= 1 and self.door_floor <= y <= self.door_floor + 3:
+        if (0 <= a <= 2 and sideways <= MOUTH_SIDE
+                and self.door_floor <= y <= self.door_floor + MOUTH_HEIGHT - 1):
             return True
-        if 1 <= a <= RAMP and sideways <= 1:
+        if 1 <= a <= RAMP and sideways <= MOUTH_SIDE:
             low = self.ramp_floor(a)
-            if low <= y <= low + 3:
+            if low <= y <= low + MOUTH_HEIGHT - 1:
                 return True
         if (RAMP - 2 <= a <= HALL_BACK and sideways <= LANDING_SIDE
                 and self.floor <= y <= self.floor + LANDING_HEIGHT - 1):
@@ -268,7 +271,7 @@ class Plan:
                 if top is None:
                     continue
                 spur = self.spur(a, s)
-                for y in range(self.floor, self.door_floor + 4):
+                for y in range(self.floor, self.door_floor + MOUTH_HEIGHT):
                     if not self.void(a, s, y):
                         continue
                     if self.standing(a, s, y, spur):

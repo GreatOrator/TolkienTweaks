@@ -83,6 +83,8 @@ public final class GoblinCave {
     private static final int ROOF = 3;            // rock kept between the cave and the sky above it
     private static final int OPEN = 4;            // the way in's own blocks, cut through the surface
     private static final int OUTSIDE = 1;         // blocks cut in front of the door, so it is not walled in
+    private static final int MOUTH_SIDE = 2;      // half the mouth's width, and the way in's
+    private static final int MOUTH_HEIGHT = 7;    // and how tall both are
     private static final int SPUR_TOP = 16;       // of 256: how often a column of cavern keeps a stalactite
     private static final int SPUR_LOW = 14;       // and how often a stalagmite
     private static final int SPUR_LONG = 5;       // the longest of either, in blocks
@@ -130,7 +132,7 @@ public final class GoblinCave {
                 Integer top = ground(level, x, z, ground);
                 if (top == null) continue;
                 Spur spur = spur(a, s, floor);
-                for (int y = floor; y <= surface + 3; y++) {
+                for (int y = floor; y <= surface + MOUTH_HEIGHT - 1; y++) {
                     if (!carve(a, s, y, surface, floor, spur)) continue;
                     // The mouth's own few blocks are the one place the cave is meant to open: they are cut
                     // through the surface, which is what makes a mouth a mouth rather than a buried room.
@@ -152,10 +154,13 @@ public final class GoblinCave {
     /** Whether the plan puts cave air at one door-relative cell, before the hill is consulted. */
     private static boolean carve(int a, int s, int y, int doorFloor, int floor, Spur spur) {
         int sideways = Math.abs(s);
-        if (a >= 0 && a <= 2 && sideways <= 1 && y >= doorFloor && y <= doorFloor + 3) return true;
-        if (a >= 1 && a <= RAMP && sideways <= 1) {
+        if (a >= 0 && a <= 2 && sideways <= MOUTH_SIDE
+                && y >= doorFloor && y <= doorFloor + MOUTH_HEIGHT - 1) {
+            return true;
+        }
+        if (a >= 1 && a <= RAMP && sideways <= MOUTH_SIDE) {
             int low = floor + DROP - (a - 1) * DROP / (RAMP - 1);
-            if (y >= low && y <= low + 3) return true;
+            if (y >= low && y <= low + MOUTH_HEIGHT - 1) return true;
         }
         if (a >= RAMP - 2 && a <= HALL_BACK && sideways <= LANDING_SIDE
                 && y >= floor && y <= floor + LANDING_HEIGHT - 1) {
