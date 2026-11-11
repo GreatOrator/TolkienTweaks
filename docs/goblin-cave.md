@@ -152,9 +152,13 @@ is the point: the fires are the page's quarry, and a hall of hostiles is not put
 holds a page for.
 
 Ulmug is the pack's goblin king wearing his name. The bench is found by walking the room rather than by an
-offset written into the code, so a hall furnished a second time moves him with the furniture. The page
-counts a *goblin* and not the king, so any one of the five settles it - which is how the chapter was
-written, with the fires as the quarry and Ulmug's name carried by the prose.
+offset written into the code, so a hall furnished a second time moves him with the furniture.
+
+**The page asks for six.** Page 27 counts the five folk and the king: `GOBLINS_GOAL` is `GoblinCave.FOLK`
+plus one, and the kills that answer it are the hall's - a goblin wearing the fires' tag counts, a goblin
+met in the wild does not, and Ulmug counts by his own tag although the page names a goblin by kind. Kill
+the king first and the page still wants the five; clear the five first and it wants him. The hall's dead
+are topped up while the page is in hand, so the six are always there to be finished.
 
 ## Where it stands
 

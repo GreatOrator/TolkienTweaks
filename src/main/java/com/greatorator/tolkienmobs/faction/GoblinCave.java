@@ -69,14 +69,20 @@ public final class GoblinCave {
      * spoken finds the room and nobody home.
      */
     public static final String ULMUG = "Ulmug";
-    /** The tag Ulmug wears, so a second look at the hall does not stand a second king in it. */
-    private static final String ULMUG_TAG = "tolkienmobs:goblin_hall_ulmug";
-    /** The tag the hall's goblins wear, so the fire is topped up rather than multiplied. */
-    private static final String FOLK_TAG = "tolkienmobs:goblin_hall_folk";
+    /**
+     * The tag Ulmug wears, so a second look at the hall does not stand a second king in it - and so page 27
+     * knows him: the page names a goblin, and he is a goblin king, so only the tag makes his death count.
+     */
+    public static final String ULMUG_TAG = "tolkienmobs:goblin_hall_ulmug";
+    /** The tag the hall's goblins wear: the fires the page counts, told from any goblin in the wild. */
+    public static final String FOLK_TAG = "tolkienmobs:goblin_hall_folk";
     /** The page whose asking the fires answer: the pack's goblin, killed once in Ulmug's hall. */
     private static final String GOBLINS_TARGET = "tolkienmobs:entityttmgoblin";
-    /** How many goblins the fires are worth: enough to be a fire, few enough to walk out of. */
-    private static final int FOLK = 5;
+    /**
+     * How many goblins the fires are worth: enough to be a fire, few enough to walk out of. Page 27 asks
+     * for these and the king beside them, so the number is the page's goal less one.
+     */
+    public static final int FOLK = 5;
     /** How near the door a player has to be for the hall's folk to be stood, in blocks. */
     private static final double FOLK_WAY = 64.0D;
 

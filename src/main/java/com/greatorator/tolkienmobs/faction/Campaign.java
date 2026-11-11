@@ -376,6 +376,14 @@ public final class Campaign extends SavedData {
     private static final String GOBLINS_PLACE = "campaign.tolkienmobs.page.goblins.place";
     private static final String GOBLINS_CLOSING = "campaign.tolkienmobs.page.goblins.closing";
     /**
+     * What page 27 asks for: the hall's five folk and the king they are named after, six kills in all.
+     * <p>
+     * The count is the fires' own - {@link GoblinCave#FOLK} goblins and Ulmug - and so are the kills that
+     * answer it: a goblin in the hall counts, a goblin met in the wild is a goblin and not the fires. That
+     * is what makes the king the sixth rather than a body a player may walk past on the way to a number.
+     */
+    private static final int GOBLINS_GOAL = GoblinCave.FOLK + 1;
+    /**
      * 2-3 - Return to Gundabad I. The page is the hold itself: {@link Sites} pitches the assembled keep
      * in the Misty Mountains as the page is taken and builds it as the player comes within sight of it,
      * so "go to Gundabad" is ground that is standing when they arrive.
@@ -610,7 +618,7 @@ public final class Campaign extends SavedData {
                     // the pass through himself and which the notes put north-east of the camp. The quarry is
                     // the pack's goblin: the fires are a camp of them rather than one creature, so the page
                     // counts a kill in Ulmug's fires and lets the prose carry his name.
-                    new Page(Quest.Kind.HUNT, GOBLINS_TARGET, 1, 50, 3,
+                    new Page(Quest.Kind.HUNT, GOBLINS_TARGET, GOBLINS_GOAL, 50, 3,
                             GLOIN, GLOIN, GOBLINS_TITLE, GOBLINS_PLACE, GOBLINS_CLOSING),
                     // 2-3 - Return to Gundabad I. The hold, pitched by the campaign in the Misty Mountains
                     // when the page is taken and built as the player comes up to it. The notes send them
@@ -2836,8 +2844,26 @@ public final class Campaign extends SavedData {
      * stood up, and a troll met in a cave is a troll rather than the page's quarry.
      */
     public static boolean namesBody(Quest quest, Entity victim) {
-        return quest.kind() == Quest.Kind.HUNT && MATUNA.equals(quest.target())
-                && victim.entityTags().contains(MATUNA_TAG);
+        if (quest.kind() != Quest.Kind.HUNT) return false;
+        if (MATUNA.equals(quest.target())) return victim.entityTags().contains(MATUNA_TAG);
+        // Page 27's king. The page names a goblin and Ulmug is a goblin king, so an ordinary goblin is not
+        // him by kind: the tag the hall put on him is what makes his death one of the fires' deaths.
+        if (GOBLINS_TARGET.equals(quest.target())) return victim.entityTags().contains(GoblinCave.ULMUG_TAG);
+        return false;
+    }
+
+    /**
+     * Whether a kill of a page's own kind is one of the kills it is counting.
+     * <p>
+     * Only page 27 has a rule, and it is the reason the page can ask for the king at all: its quarry is
+     * Ulmug's fires rather than goblins as a kind, so the goblins that count are the ones standing in his
+     * hall. Without it the six could be six goblins met anywhere in the Misty Mountains and the king the
+     * page is named after could be walked past on the way.
+     */
+    public static boolean countsKill(Quest quest, Entity victim) {
+        if (!GOBLINS_TARGET.equals(quest.target())) return true;
+        return victim.entityTags().contains(GoblinCave.FOLK_TAG)
+                || victim.entityTags().contains(GoblinCave.ULMUG_TAG);
     }
 
     /**

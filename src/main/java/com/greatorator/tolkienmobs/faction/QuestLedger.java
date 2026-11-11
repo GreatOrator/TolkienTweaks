@@ -598,7 +598,10 @@ public final class QuestLedger extends SavedData {
             Alliance alliance = Alliance.byId(quest.target());
             return victim.getType().builtInRegistryHolder().is(alliance.soldiers());
         }
-        return BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType()).toString().equals(quest.target());
+        if (!BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType()).toString().equals(quest.target())) return false;
+        // A page whose quarry is one camp of a kind counts that camp and not the kind: page 27's six are the
+        // goblins in Ulmug's hall, so a goblin met in the wild does not pay it off (see Campaign).
+        return Campaign.countsKill(quest, victim);
     }
 
     // ---- handing work in ----
