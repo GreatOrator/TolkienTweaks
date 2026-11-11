@@ -5,6 +5,7 @@ import com.geckolib.renderer.GeoEntityRenderer;
 import com.geckolib.renderer.base.BoneSnapshots;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.google.common.collect.Maps;
+import com.greatorator.tolkienmobs.entity.TolkienVillagerEntity;
 import com.greatorator.tolkienmobs.entity.npc.HumanEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.HumanModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
@@ -15,6 +16,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -199,6 +201,62 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         return skinIsLoaded(id, false);
     }
 
+    /** How far a body of a scene will look for the player before it stops turning. */
+    private static final double SCENE_LOOK = 24.0D;
+    /** Which way a positive head-bone rotation turns a face. Flip to -1 if a head looks away instead. */
+    private static final float HEAD_SIGN = 1.0F;
+
+    /**
+     * The scene's own facts, read off a body as it is extracted: whether it belongs to a scene, which way the
+     * player is from its face, and how far its arm is up.
+     * <p>
+     * The turning and the lifting are eased here rather than on the server, so the only thing the scene ever
+     * has to say is "this body is the one talking" - one synched flag, sixty times a second of smooth motion
+     * on the far side.
+     */
+    public static void sceneData(TolkienVillagerEntity body, TolkienGeoRenderState renderState) {
+        renderState.sceneBody = body.isSceneBody();
+        if (!renderState.sceneBody) return;
+        renderState.sceneSpeaking = body.isSpeaking();
+        float want = 0.0F;
+        Player player = Minecraft.getInstance().player;
+        if (player != null) {
+            double dx = player.getX() - body.getX();
+            double dz = player.getZ() - body.getZ();
+            if (dx * dx + dz * dz < SCENE_LOOK * SCENE_LOOK) {
+                // Relative to the body's own facing, because that is the frame the head bone lives in.
+                want = Mth.wrapDegrees(yawTowards(dx, dz) - body.getYRot());
+                want = Mth.clamp(want, -70.0F, 70.0F);
+            }
+        }
+        renderState.headYaw += (want - renderState.headYaw) * 0.25F;
+        float target = renderState.sceneSpeaking ? 1.0F : 0.0F;
+        renderState.armRaise += (target - renderState.armRaise) * 0.2F;
+    }
+
+    /**
+     * Moves a scene body's bones, and answers whether it did: the head turns to the player while the body
+     * stands where it was put, and the right arm comes up while that body's line is being said. The rigs were
+     * asked what they hold - {@code head}, {@code rightArm} - and the arm's rest pose is no rotation at all,
+     * so a raise is a rotation of its own rather than a correction to one.
+     */
+    public static boolean sceneBones(TolkienGeoRenderState renderState, BoneSnapshots snapshots) {
+        if (!renderState.sceneBody) return false;
+        snapshots.ifPresent("head", bone ->
+                bone.setRotation(0f, renderState.headYaw * HEAD_SIGN * Mth.DEG_TO_RAD, 0f));
+        if (renderState.armRaise > 0.01F) {
+            // The arm comes forward and up rather than out to the side, which reads as a greeting.
+            float raised = -80.0F * renderState.armRaise * Mth.DEG_TO_RAD;
+            snapshots.ifPresent("rightArm", bone -> bone.setRotation(raised, 0f, 0f));
+        }
+        return true;
+    }
+
+    /** The yaw that faces along a direction, in the game's own reckoning: nought is south, ninety is west. */
+    private static float yawTowards(double dx, double dz) {
+        return (float) Math.toDegrees(Math.atan2(dz, dx)) - 90.0F;
+    }
+
     public HumanRender(EntityRendererProvider.Context context) {
         super(context, new HumanModel());
         this.shadowRadius = 0.3f;
@@ -225,6 +283,7 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         // lookup will ever ask about.
         var name = renderState.giverSkin > 0 || renderState.campKeeper ? animatable.getCustomName() : null;
         renderState.giverName = name == null ? "" : name.getString();
+        sceneData(animatable, renderState);
     }
 
     /** A human child is drawn at half size; 5 applies that here rather than in preRender. */
@@ -241,6 +300,9 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
         float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
 
+        // A scene's body is drawn by its own rules: a head that tracks the player and an arm that comes up,
+        // both relative to where it was stood rather than to the world.
+        if (sceneBones(renderState, snapshots)) return;
         snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
     }
 }

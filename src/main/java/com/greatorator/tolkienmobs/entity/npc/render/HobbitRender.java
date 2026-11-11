@@ -95,6 +95,7 @@ public class HobbitRender extends GeoEntityRenderer<HobbitEntity, TolkienGeoRend
         // unnamed villager is not a case worth guarding against - there is no name to read.
         Component name = animatable.getCustomName();
         renderState.giverName = name == null ? "" : name.getString();
+        HumanRender.sceneData(animatable, renderState);
     }
 
     /** The model's own scaling, which 5 applies here rather than in preRender. */
@@ -112,6 +113,7 @@ public class HobbitRender extends GeoEntityRenderer<HobbitEntity, TolkienGeoRend
         float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
         float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
 
+        if (HumanRender.sceneBones(renderState, snapshots)) return;
         snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
     }
 }

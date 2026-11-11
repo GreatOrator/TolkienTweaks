@@ -66,6 +66,18 @@ public class TolkienGeoRenderState extends LivingEntityRenderState implements Ge
      */
     public Set<String> hiddenBones = Set.of();
 
+    /** Whether this body stands in one of the mod's own scenes, set by the renderer during extraction. */
+    public boolean sceneBody;
+
+    /** Whether this body's line is the one being said, set by the renderer during extraction. */
+    public boolean sceneSpeaking;
+
+    /** How far the head is turned from the body's own facing, in degrees, eased between frames. */
+    public float headYaw;
+
+    /** How far the arm is up, nought to one, eased between frames. */
+    public float armRaise;
+
     @Override
     public <D> void addGeckolibData(DataTicket<D> dataTicket, D data) {
         this.geckolibData.put(dataTicket, data);

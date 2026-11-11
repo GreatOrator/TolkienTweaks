@@ -325,3 +325,27 @@ Both are made on the body's own yaw. That is deliberate: the head follows the bo
 rigs. A head that turns on its own while the body stays put, or an arm raised as if to shake hands, is
 work inside `HumanModel`, `HobbitModel` and `DwarfModel` - a bone moved from the render state, or an
 animation controller and its file - and is the next piece rather than this one.
+
+## Heads and hands - 10 November 2026
+
+The whole-body turn to the player is gone: a body now keeps the ground it was stood on and turns its
+head, which is what looking at somebody actually is. The scene's part in it is two synched flags on
+`TolkienVillagerEntity` - `SCENE_BODY` and `SPEAKING` - because tags are a server fact the client never
+sees, and the renderer is where a bone moves.
+
+The renderer's part is in `HumanRender.sceneData` and `HumanRender.sceneBones`, shared by the human,
+hobbit and dwarf rigs:
+
+- **The head.** `headYaw` is the player's bearing taken from the body's own facing, clamped to seventy
+  degrees and eased a quarter of the way per frame, so it is never a snap. That is the frame the bone
+  lives in, which is why the body's yaw is subtracted before the bone is turned.
+
+- **The arm.** `rightArm` comes up to eighty degrees while `SPEAKING` holds, eased in and out. The three
+  rigs were read rather than guessed at: `head`, `rightArm` and `leftArm` are the bone names in
+  `human.geo.json` and `hobbit.geo.json`, `dwarf.geo.json` has the same pair at a lower pivot, and no arm
+  carries a rest rotation, so a raise can be written as a rotation of its own rather than a correction.
+  Every other body in the world keeps the head rule it had.
+
+Two numbers to look at in game: `HEAD_SIGN` in `HumanRender` (flip it to -1 if heads turn away from the
+player rather than toward), and the eighty degrees of arm raise (negative X, forward and up - if the arm
+goes behind the back, the sign of `raised` is what to change).

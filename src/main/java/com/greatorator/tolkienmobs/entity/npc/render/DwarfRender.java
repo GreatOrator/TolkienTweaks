@@ -120,6 +120,7 @@ public class DwarfRender extends GeoEntityRenderer<DwarfEntity, TolkienGeoRender
         // is worth looking for; a village dwarf keeps his folk's clothes.
         Component name = animatable.getCustomName();
         renderState.giverName = name == null ? "" : name.getString();
+        HumanRender.sceneData(animatable, renderState);
     }
 
     /** The model's own scaling, which 5 applies here rather than in preRender. */
@@ -137,6 +138,7 @@ public class DwarfRender extends GeoEntityRenderer<DwarfEntity, TolkienGeoRender
         float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
         float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
 
+        if (HumanRender.sceneBones(renderState, snapshots)) return;
         snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
     }
 }

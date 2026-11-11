@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.entity.TolkienVillagerEntity;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.ChatFormatting;
@@ -326,6 +327,9 @@ public final class Departure {
             show.bodies.add(body.getUUID());
             show.seats.put(body.getUUID(), seat);
             show.facing.put(body.getUUID(), yaw);
+            // The renderer turns a scene body's head and lifts its arm; what it needs to know is only that
+            // this body is one of the scene's own.
+            if (body instanceof TolkienVillagerEntity villager) villager.setSceneBody(true);
         }
     }
 
@@ -460,13 +464,12 @@ public final class Departure {
      * step, so the rim's easing never leaves it walking in air.
      */
     /**
-     * The bodies' own small movements: a slow sway so nobody stands like a signpost, and a turn to the
-     * player while that body's line is being said.
+     * The bodies' own small movements: a slow sway so nobody stands like a signpost, and the flag that tells
+     * a body its own line is being said.
      * <p>
-     * Both are made on the body's own yaw, which is the one thing every rig of the pack draws - the head
-     * follows it through the renderer, so a body that turns is a body that looks. A head that moves on its
-     * own, or an arm raised as if to shake hands, is work inside each model rather than in the scene, and
-     * is the next thing to be done rather than this.
+     * The sway is made on the body's own yaw. The turn to the player and the arm that comes up are not: those
+     * are bones, moved by the renderer from the flag set here, so the body holds the ground it was stood on
+     * and only the head moves - which is what turning to look at somebody actually does.
      */
     public static void poseTick(ServerPlayer player) {
         Show show = SHOWS.get(player.getUUID());
@@ -483,18 +486,12 @@ public final class Departure {
             float base = show.facing.get(id);
             Integer seat = show.seats.get(id);
             Cast cast = seat == null ? null : CAST.get(seat);
-            float yaw;
-            if (cast != null && speaking != null && speaking.who().equals(cast.name())) {
-                // The speaker turns to the player for the length of the line - not the whole way round,
-                // so nobody spins on the spot when the player has walked behind him.
-                float off = yawTowards(player.getX() - body.getX(), player.getZ() - body.getZ()) - base;
-                while (off > 180.0F) off -= 360.0F;
-                while (off < -180.0F) off += 360.0F;
-                yaw = base + Math.max(-70.0F, Math.min(70.0F, off));
-            } else {
-                // A slow breath on each body's own beat, so eleven of them are never in time.
-                yaw = base + (float) Math.sin(now * 0.05D + (seat == null ? 0 : seat) * 1.7D) * 4.0F;
+            if (body instanceof TolkienVillagerEntity villager) {
+                // The one thing the scene says about a body's face: whether its line is the one being said.
+                villager.setSpeaking(cast != null && speaking != null && speaking.who().equals(cast.name()));
             }
+            // A slow breath on each body's own beat, so eleven of them are never in time.
+            float yaw = base + (float) Math.sin(now * 0.05D + (seat == null ? 0 : seat) * 1.7D) * 4.0F;
             body.setYRot(yaw);
             body.setYBodyRot(yaw);
             body.setYHeadRot(yaw);

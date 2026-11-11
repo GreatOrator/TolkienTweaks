@@ -36,9 +36,35 @@ import javax.annotation.Nonnull;
 
 public class TolkienVillagerEntity extends Villager implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(TolkienVillagerEntity.class, EntityDataSerializers.INT);
+    /** Whether this body is standing in one of the mod's own scenes, which the renderer has to know. */
+    private static final EntityDataAccessor<Boolean> SCENE_BODY = SynchedEntityData.defineId(TolkienVillagerEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Whether this body's line is the one being said, which is when its rig lifts an arm. */
+    private static final EntityDataAccessor<Boolean> SPEAKING = SynchedEntityData.defineId(TolkienVillagerEntity.class, EntityDataSerializers.BOOLEAN);
 
     public TolkienVillagerEntity(EntityType<? extends TolkienVillagerEntity> entityType, Level level) {
         super(entityType, level);
+    }
+
+    /**
+     * Whether this body is one of a scene's own. A scene stands its cast out of nothing and takes it away
+     * again, so nothing about the body itself says it is in one; the answer is synched because the renderer,
+     * on the far side, is what turns a head or lifts an arm.
+     */
+    public boolean isSceneBody() {
+        return this.entityData.get(SCENE_BODY);
+    }
+
+    public void setSceneBody(boolean scene) {
+        this.entityData.set(SCENE_BODY, scene);
+    }
+
+    /** Whether this body's own line is the one being said. */
+    public boolean isSpeaking() {
+        return this.entityData.get(SPEAKING);
+    }
+
+    public void setSpeaking(boolean speaking) {
+        this.entityData.set(SPEAKING, speaking);
     }
 
     /** The hall idle: the yaw this body was placed at, captured the first time it is asked. */
@@ -128,6 +154,8 @@ public class TolkienVillagerEntity extends Villager implements GeoEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(VARIANT, 0);
+        builder.define(SCENE_BODY, false);
+        builder.define(SPEAKING, false);
     }
 
     private int getTypeVariant() {
