@@ -476,3 +476,11 @@ slug, before the path is given.
 Everyone else is empty-handed. The gear goes in at `stand()` rather than at the walk, so it is in hand
 for the whole scene and swings with the arm when they leave; it is not dropped, since the bodies are
 discarded rather than killed, and they are invulnerable besides.
+
+## Elrond's scroll - 10 November 2026
+
+Elrond is empty-handed until his first line, when `Departure.hand` puts the pack's paper in his hand. It
+stays there through the blessing and through his walk in, so the scroll appears once and is never taken
+away mid-sentence. The item is resolved by name from `TolkienItems` (a scroll if the pack ships one, the
+note's letter if not), and the hand lookup goes through the scene's own seats, since the line's speaker
+is a name and the body is a UUID.

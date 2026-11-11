@@ -346,6 +346,28 @@ public final class Departure {
         SHOWS.put(player.getUUID(), show);
     }
 
+    /** The scroll Elrond reads his blessing from, which is the pack's own paper. */
+    private static ItemStack scroll() {
+        return new ItemStack(TolkienItems.ITEM_SCROLL.get());
+    }
+
+    /**
+     * Puts something in a cast body's hand while it is still empty, by the name the body wears. A scene's
+     * bodies are its own, so the way from a line's speaker to the body saying it is the seats the show wrote
+     * down; a body that is already holding something keeps it.
+     */
+    private static void hand(ServerLevel level, Show show, String name, ItemStack stack) {
+        for (Map.Entry<UUID, Integer> row : show.seats.entrySet()) {
+            Cast cast = CAST.get(row.getValue());
+            if (!cast.name().equals(name)) continue;
+            Entity body = level.getEntity(row.getKey());
+            if (body instanceof Mob mob && mob.getMainHandItem().isEmpty()) {
+                mob.setItemSlot(EquipmentSlot.MAINHAND, stack);
+            }
+            return;
+        }
+    }
+
     /**
      * What a body of the cast carries in: the gear each of them is known by, so the courtyard has a bow and
      * two blades in it rather than nine pairs of empty hands. A body with nothing here is stood empty-handed,
@@ -501,6 +523,9 @@ public final class Departure {
             Style style = Style.EMPTY.withColor(line.colour()).withItalic(line.italic());
             player.sendSystemMessage(Component.literal(line.who() + ": ").withStyle(line.colour())
                     .append(Component.translatable(line.key()).withStyle(style)));
+            // Elrond reads the blessing off a scroll rather than out of the air: it comes into his hand on his
+            // first line and stays there, so nothing appears and disappears between sentences.
+            if (line.who().equals("Elrond")) hand(level, show, "Elrond", scroll());
         }
         // The Company goes on the twenty-third line, and Elrond's last two are said over their backs - but
         // not until they are a few blocks gone, so the script is held where it stands until they are.
