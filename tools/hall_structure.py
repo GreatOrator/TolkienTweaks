@@ -14,9 +14,16 @@ change nothing in a world and could not be decorated at all.
 
 The file is gzipped NBT in the vanilla structure format, so a structure block reads it: put it in
 `<world>/generated/minecraft/structures/` (or a datapack's `data/tolkienmobs/structure/`), put a
-structure block at the hall's back end with its corner on the wall, and LOAD. The structure's own axes
+structure block at the hall's near end with its corner on the wall, and LOAD. The structure's own axes
 are x across the hill, y up, z into the hill; the hall's floor is y = 0, so a structure block set to
 "corner" there sits its bottom course on the hall's floor.
+
+The axes deliberately run the same way the world's do. The cut reaches a cell at
+`x = doorX - s` and `z = doorZ + a`, so a file written straight from `s` would sit mirrored
+against the hall it came from and its worn faces would land on the wrong side of the room; the x cell
+is written as `HALL_SIDE + 1 - s` instead, which puts the file's +x along the world's +x. Written that
+way, loading it unrotated at the hall's own near corner (x 5619, y 157, z -3535 at the test pin) builds
+the room the cut actually made.
 
 The DataVersion is taken from a template the mod already ships, so the file is written at the version
 this build speaks rather than one guessed at.
@@ -103,8 +110,10 @@ def build(version):
             for s in range(-(cs.HALL_SIDE + 1), cs.HALL_SIDE + 2):
                 open_cell = cs.hall(a, s, level)
                 hollow += open_cell
+                # x runs the way the world's does (the cut reaches x = doorX - s), so an unrotated load
+                # lands the worn faces where the cut leaves them instead of mirroring the room.
                 blocks.append(bare_compound(
-                    list_tag("pos", TAG_INT, ints((s + cs.HALL_SIDE + 1, level, a - cs.HALL_BACK)))
+                    list_tag("pos", TAG_INT, ints(((cs.HALL_SIDE + 1) - s, level, a - cs.HALL_BACK)))
                     + int_tag("state", 0 if open_cell else 1)))
     payload = b"".join([
         int_tag("DataVersion", version),

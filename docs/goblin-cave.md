@@ -115,6 +115,11 @@ checker read the file back to its last byte.
 | decorate it | by hand, in the world |
 | save it back | SAVE from a structure block over the furnished hall, and the mod has a decorated hall to place after the carve |
 
+At the test pin that corner is **x 5619, y 157, z −3535**, and the room it builds runs x 5619..5637 and
+z −3535..−3493 — the near end is where the landing comes in. It needs no rotation: the file's x and z run
+the same way as the world's, so loading it over the hall the cut already made puts its worn faces where
+they already are instead of mirroring them.
+
 The floor is deliberately not in the file: the cut leaves the hill's own floor under the hall and a
 structure block's corner stands on it, so the same file sits right on whatever ground it is loaded onto.
 
