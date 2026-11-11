@@ -68,6 +68,11 @@ public final class Departure {
     public static final String GATHER_PIN = "rivendell.scene";
     /** How near the mark a player has to come for the scene to begin, in blocks. */
     private static final double GATHER_REACH = 24.0D;
+    /**
+     * How near the mark the courtyard is named, in blocks. Wider than the reach that begins the scene, so the
+     * banner lands as the plaza comes into view and has faded again before the Company speaks.
+     */
+    private static final double BANNER_REACH = 40.0D;
     /** How far they may wander once it has begun before it lets them go, in blocks. */
     private static final double STAGE_REACH = 96.0D;
     /** Ticks between two lines: three seconds, which is slow enough to read and quick enough to hold. */
@@ -247,13 +252,11 @@ public final class Departure {
         if (!awaiting(player) || !player.isAlive()) return;
         BlockPos at = gathering(player, level);
         if (at == null) return;
-        if (player.blockPosition().distToCenterSqr(at.getX() + 0.5D, at.getY(), at.getZ() + 0.5D)
-                > GATHER_REACH * GATHER_REACH) {
-            return;
-        }
-        // The courtyard names itself as the player comes to it. Said here rather than in the tick above
-        // because this reach is what "arrived" means: the banner belongs to the step, not to the ground.
-        if (!player.entityTags().contains(NAMED)) name(player);
+        double near = player.blockPosition().distToCenterSqr(at.getX() + 0.5D, at.getY(), at.getZ() + 0.5D);
+        // The courtyard names itself before it says anything: the banner comes from wider out than the reach
+        // that begins the scene, so the title is fading as the Company's first line lands rather than under it.
+        if (near <= BANNER_REACH * BANNER_REACH && !player.entityTags().contains(NAMED)) name(player);
+        if (near > GATHER_REACH * GATHER_REACH) return;
         start(player, level, at);
     }
 

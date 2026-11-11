@@ -357,9 +357,9 @@ with **The Gathering** under it. It uses the packets the places already use - th
 `(15, 50, 20)`, then the subtitle, then the title - and the same bold italic gold the campaign's own
 names are set in, so it reads as a place being named rather than as a scene beginning.
 
-It is sent from the reach that already means "arrived": the same check that starts the scene, so the
-banner and the Company's first breath are the same moment. The words are
-`campaign.tolkienmobs.scene.plaza` and `campaign.tolkienmobs.scene.plaza.line`.
+It is sent from forty blocks out - wider than the twenty-four that begin the scene - so the banner lands
+as the plaza comes into view and is already fading when the Company speaks. The words are
+`campaign.tolkienmobs.scene.plaza` and `campaign.tolkienmobs.scene.plaza.line`.
 
 A tag - `tolkienmobs:plaza_named` - keeps it to one showing, since that check runs once a second and the
 scene would otherwise be introduced to itself on every tick. `/tmscene forget` removes the tag with the
