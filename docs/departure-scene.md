@@ -288,10 +288,12 @@ north of Elrond, three past the outermost body, on the plaza's north rim where t
 
 ## How they leave - 10 November 2026
 
-Nobody leaves until everybody has spoken. The last line of the script is Elrond's, and only then do the
-nine who go - Gandalf, Aragorn, Boromir, Legolas, Gimli, Frodo, Samwise, Merry and Pippin - turn and walk
-off the plaza in lanes of their own, abreast across the bearing the ring gives. Elrond and Bilbo stay
-where they were stood until the nine are off the plaza, and the two of them are taken away with the scene.
+The walk begins on the twenty-third line. Elrond's last two - "And so the Company departs. May the stars
+shine upon their road's end" and "Let us go back, Adventurer" - are the parting words, said over the
+Company's backs, so the script holds on them until the nine are eight blocks off the courtyard and then
+goes on. The hold is written into the clock the script reads rather than into the count of lines said, so
+ending a pause never brings a line in early. The scene closes when they are gone: forty-eight blocks out,
+which is long enough that both lines are said while they are still in sight.
 
 The walk is driven by the scene, not navigated by the bodies: a body standing in a cutscene has no AI
 worth asking, and nothing of its own should take it somewhere the courtyard did not say. Each is stepped

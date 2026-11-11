@@ -84,7 +84,11 @@ public final class Departure {
     private static final int TITLE_STAY = 50;
     private static final int TITLE_OUT = 20;
     /** How far past the gathering mark a leaver walks before it is out of the courtyard, in blocks. */
-    private static final double GONE = 24.0D;
+    private static final double GONE = 48.0D;
+    /** The line the Company leaves on: Elrond's last two are the parting words and wait for them to be gone. */
+    private static final int DEPART_AT = 23;
+    /** How far off the courtyard the nine have to be before the parting words are said, in blocks. */
+    private static final double CLEAR = 8.0D;
     /** How far a body steps in one tick: a walking player's pace, so the legs keep their own rhythm. */
     private static final double WALK_STEP = 0.2D;
     /** Ticks after which a walk that has not finished is given up on and the bodies are taken away. */
@@ -226,6 +230,8 @@ public final class Departure {
         private final boolean rehearsal;
         private int sent;
         private long walkAt;
+        /** Ticks the script has been held back, so a pause does not bring the next line early. */
+        private long hold;
 
         private Show(BlockPos at, String dim, long start, boolean rehearsal) {
             this.at = at;
@@ -333,9 +339,10 @@ public final class Departure {
             // A body whose ground the owner has marked stands on the mark itself: the block was set
             // down for that body, so the old pack's offset is only for ground nobody has marked.
             BlockPos marked = Pins.at(level, bodyPin(cast.slug()));
-            BlockPos spot = marked != null ? marked
-                    : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                    at.offset(cast.dx(), 0, cast.dz()));
+            // A mark is a column rather than a height: the ground under it is read fresh, so a plaza that has
+            // lost the block a mark was laid with puts its body on the floor that is there now.
+            BlockPos spot = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    marked != null ? marked : at.offset(cast.dx(), 0, cast.dz()));
             Entity entity = switch (cast.kind()) {
                 case MAN -> TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
                 case HOBBIT -> TolkienEntities.ENTITY_TTM_HOBBIT.get().create(level, EntitySpawnReason.EVENT);
@@ -433,22 +440,45 @@ public final class Departure {
             abort(player, level, show);
             return;
         }
-        long elapsed = level.getGameTime() - show.start;
+        long elapsed = level.getGameTime() - show.start - show.hold;
         while (show.sent < LINES.size() && elapsed >= (long) GAP * (show.sent + 1)) {
             Line line = LINES.get(show.sent++);
             Style style = Style.EMPTY.withColor(line.colour()).withItalic(line.italic());
             player.sendSystemMessage(Component.literal(line.who() + ": ").withStyle(line.colour())
                     .append(Component.translatable(line.key()).withStyle(style)));
         }
-        // Nobody turns until the last line has been said: Elrond's five are spoken with the whole Company
-        // still standing there, and only then does the courtyard empty.
-        if (show.sent >= LINES.size()) beginWalk(level, show);
+        // The Company goes on the twenty-third line, and Elrond's last two are said over their backs - but
+        // not until they are a few blocks gone, so the script is held where it stands until they are.
+        if (show.sent >= DEPART_AT) beginWalk(level, show);
+        if (show.sent == DEPART_AT && !clearOf(level, show)) {
+            show.hold = level.getGameTime() - show.start - (long) GAP * DEPART_AT;
+            return;
+        }
         if (show.sent < LINES.size()) return;
         if (elapsed < (long) GAP * LINES.size() + TAIL) return;
         // The walk out is the end of the scene rather than a thing happening beside it, so Elrond and Bilbo
         // are not taken away until the nine who go are off the plaza.
         if (!show.targets.isEmpty()) return;
         finish(player, level, show);
+    }
+
+    /**
+     * Whether the Company is far enough off the courtyard for Elrond to speak to their backs. A body that has
+     * already been taken away counts as gone, so a short route cannot hold the script for good.
+     */
+    private static boolean clearOf(ServerLevel level, Show show) {
+        if (show.targets.isEmpty()) return true;
+        BlockPos from = Pins.at(level, GATHER_PIN);
+        if (from == null) return true;
+        for (UUID id : show.targets.keySet()) {
+            Entity body = level.getEntity(id);
+            if (body == null) continue;
+            if (body.blockPosition().distToCenterSqr(from.getX() + 0.5D, from.getY(), from.getZ() + 0.5D)
+                    < CLEAR * CLEAR) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
