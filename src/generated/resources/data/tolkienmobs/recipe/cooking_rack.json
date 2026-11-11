@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:iron_bars",
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    " S ",
+    "SBS",
+    " I "
+  ],
+  "result": {
+    "id": "tolkienmobs:cooking_rack"
+  }
+}
