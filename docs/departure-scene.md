@@ -246,3 +246,15 @@ and in no other. Once `/tmscene marks` has printed the eleven lines it reads, th
 build's own pins, so a map with no mithril block in it still stands the Company in the right places - and
 a world that does its own survey still overrules the build, so a plaza can be nudged in a working map
 without a rebuild.
+
+## The road out - 10 November 2026
+
+The walk off needs a first waypoint, and the courtyard already carries it. Elrond's mark is the middle
+and the other ten are the half-ring in front of him, so the open side of the ring is the way out: the
+bearing from Elrond through the mean of the Company, stepped out to three blocks past the outermost body,
+dropped onto the ground at that column. `/tmscene marks` reports it as `The road out begins at x, y, z`.
+
+It is derived rather than surveyed, so it costs no twelfth block and cannot go stale: move a body's mark
+and the road's start moves with it. Moving Elrond's mark moves it too, because the bearing is his. A
+plaza with fewer than two marked bodies has no bearing to read and reports nothing - one body beside
+Elrond is not a direction.

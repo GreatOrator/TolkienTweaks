@@ -829,6 +829,7 @@
   "command.tolkienmobs.scene.marks.set": "%s at %s",
   "command.tolkienmobs.scene.marks.missing": "Not marked near you: %s",
   "command.tolkienmobs.scene.marks.none": "No scene marks within %s blocks of you.",
+  "command.tolkienmobs.scene.marks.exit": "The road out begins at %s.",
   "campaign.tolkienmobs.page.dugorim": "Last Refuge II",
   "campaign.tolkienmobs.page.dugorim.closing": "Dugorim was the Dourhands' captain, and he did not give the keep up quietly. Gimli hears it out from the top of the stair, and then says the thing neither of you wanted said aloud: a captain does not hold a cellar on his own word. Something above him gave the order, and it has not been down here in a long time.",
   "campaign.tolkienmobs.page.dugorim.place": "the inner keep beneath Gundabad's hall",

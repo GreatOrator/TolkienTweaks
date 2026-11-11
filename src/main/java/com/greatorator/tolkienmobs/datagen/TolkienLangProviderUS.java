@@ -1093,6 +1093,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("command.tolkienmobs.scene.marks.set", "%s at %s");
             this.add("command.tolkienmobs.scene.marks.missing", "Not marked near you: %s");
             this.add("command.tolkienmobs.scene.marks.none", "No scene marks within %s blocks of you.");
+            this.add("command.tolkienmobs.scene.marks.exit", "The road out begins at %s.");
             this.add("campaign.tolkienmobs.page.departure.closing", "You tell Elrond what came out of the wood, and he is silent a while. \"A servant of the Enemy in the shape of a beast, and old. That is worse news than the creature itself.\"");
             this.add("screen.tolkienmobs.quests.purse.silver", "Pays %s silver");
             this.add("screen.tolkienmobs.quests.purse.bronze", "Pays %s bronze");

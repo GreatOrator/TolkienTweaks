@@ -222,6 +222,12 @@ public final class SceneCommands {
                     "command.tolkienmobs.scene.marks.missing",
                     Component.literal(String.join(", ", missing))), false);
         }
+        // The walk out needs no mark of its own: the ring has an open side, and that side is the road.
+        BlockPos roadStart = Departure.exitStart(level);
+        if (roadStart != null) {
+            context.getSource().sendSuccess(() -> Component.translatable(
+                    "command.tolkienmobs.scene.marks.exit", where(roadStart)), false);
+        }
         return found.size();
     }
 

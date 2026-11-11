@@ -297,6 +297,45 @@ public final class Departure {
         return GATHER_PIN + "." + slug;
     }
 
+    /**
+     * Where the walk out begins, read off the plaza's own marks: the ring's open side, a few blocks past
+     * the outermost body, on the bearing from Elrond through the Company. No mark of its own is needed -
+     * the courtyard already says which way out is - and a body moved by a block or a number moves the
+     * road's start with it.
+     */
+    @Nullable
+    public static BlockPos exitStart(Level level) {
+        BlockPos host = Pins.at(level, bodyPin("elrond"));
+        if (host == null) host = Pins.at(level, GATHER_PIN);
+        if (host == null) return null;
+        double sumX = 0.0D;
+        double sumZ = 0.0D;
+        double far = 0.0D;
+        int found = 0;
+        for (Cast cast : CAST) {
+            if (cast.slug().equals("elrond")) continue;
+            BlockPos at = Pins.at(level, bodyPin(cast.slug()));
+            if (at == null) continue;
+            double dx = at.getX() - host.getX();
+            double dz = at.getZ() - host.getZ();
+            sumX += dx;
+            sumZ += dz;
+            far = Math.max(far, Math.sqrt(dx * dx + dz * dz));
+            found++;
+        }
+        // Half a ring is enough to have a side, but a single body beside the host is not a bearing.
+        if (found < 2) return null;
+        double dx = sumX / found;
+        double dz = sumZ / found;
+        double length = Math.sqrt(dx * dx + dz * dz);
+        if (length < 0.5D) return null;
+        double out = Math.floor(far) + 3.0D;
+        BlockPos column = new BlockPos(
+                host.getX() + (int) Math.round(dx / length * out), host.getY(),
+                host.getZ() + (int) Math.round(dz / length * out));
+        return level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
+    }
+
     private static void advance(ServerPlayer player, ServerLevel level, Show show) {
         // A rehearsal is not a showing: the caller may fly off to look at the ground from above and the
         // words go on being said, since nothing is waiting on them.
