@@ -22,10 +22,11 @@ import java.util.Map;
  * out of it.
  * <p>
  * Two kinds of room, on purpose. The hall is squared: it is the worked part, cut and floored by whoever
- * holds the pass. The caverns either side are not - a flat floor, a wall that swells and pinches round
- * the compass, a ceiling that domes over, and an alcove or two off each - because a goblin hall is a room
- * somebody made and the caves behind it are not. The sine terms below are the shape; they are the same
- * ones {@code tools/cave_section.py} draws with, so the drawing and the cut agree.
+ * holds the pass. The caverns either side are not - a wall that swells and pinches round the compass, a
+ * ceiling that domes over, an alcove or two off each, then rock left standing in it: rubble on the floor,
+ * stalactites hanging and stalagmites standing wherever the cell hash puts them. A goblin hall is a room
+ * somebody made and the caves behind it are not. The sine terms and the hash are the shape; they are the
+ * same ones {@code tools/cave_section.py} draws with, so the drawing and the cut agree.
  * <p>
  * The one rule the plan keeps is that the cave never opens where nobody cut a mouth: every cell is held
  * {@link #ROOF} blocks under the ground above it, except the way in's own first few blocks, which are cut
@@ -56,6 +57,11 @@ public final class GoblinCave {
     private static final int ROOF = 3;            // rock kept between the cave and the sky above it
     private static final int OPEN = 4;            // the way in's own blocks, cut through the surface
     private static final int OUTSIDE = 1;         // blocks cut in front of the door, so it is not walled in
+    private static final int SPUR_TOP = 16;       // of 256: how often a column of cavern keeps a stalactite
+    private static final int SPUR_LOW = 14;       // and how often a stalagmite
+    private static final int SPUR_LONG = 5;       // the longest of either, in blocks
+    private static final double COARSE = 0.16;    // how far a wall wanders, as a share of its reach
+    private static final double FINE = 0.06;      // and how much of that is per two blocks
 
     /** What one cut came to, for the command to say. */
     public record Result(BlockPos door, Direction into, int floor, int ceiling, int cells, int dropped) {
@@ -97,8 +103,9 @@ public final class GoblinCave {
                 int z = doorZ + stepZ * a + acrossZ * s;
                 Integer top = ground(level, x, z, ground);
                 if (top == null) continue;
+                Spur spur = spur(a, s, floor);
                 for (int y = floor; y <= surface + 3; y++) {
-                    if (!carve(a, s, y, surface, floor)) continue;
+                    if (!carve(a, s, y, surface, floor, spur)) continue;
                     // The mouth's own few blocks are the one place the cave is meant to open: they are cut
                     // through the surface, which is what makes a mouth a mouth rather than a buried room.
                     if (a > OPEN && y > top - ROOF) {
@@ -117,7 +124,7 @@ public final class GoblinCave {
     }
 
     /** Whether the plan puts cave air at one door-relative cell, before the hill is consulted. */
-    private static boolean carve(int a, int s, int y, int doorFloor, int floor) {
+    private static boolean carve(int a, int s, int y, int doorFloor, int floor, Spur spur) {
         int sideways = Math.abs(s);
         if (a >= 0 && a <= 2 && sideways <= 1 && y >= doorFloor && y <= doorFloor + 3) return true;
         if (a >= 1 && a <= RAMP && sideways <= 1) {
@@ -136,12 +143,17 @@ public final class GoblinCave {
                 && y >= floor && y <= floor + PASSAGE_HEIGHT - 1) {
             return true;
         }
-        return cavern(a, s, y, floor);
+        if (!cavern(a, s, y, floor)) return false;
+        // A stalactite or a stalagmite is rock the cut leaves standing rather than a block it places:
+        // the hillside's own material comes down from the ceiling and up off the floor.
+        return spur == null || !spur.covers(y);
     }
 
     /** A cavern: a flat floor, a wall that swells and pinches, a ceiling that domes over. */
     private static boolean cavern(int a, int s, int y, int floor) {
         if (y < floor || y >= floor + CHAMBER_HEIGHT) return false;
+        // Rubble on the floor, so a cavern's bottom is not a poured slab.
+        if (y == floor && hash(a >> 1, s >> 1, 505) < 40) return false;
         for (int sign : new int[]{-1, 1}) {
             int centreS = CHAMBER_SIDE * sign;
             if (swell(a, s, y, floor, CHAMBER_AT, centreS, CHAMBER_RA, CHAMBER_RS,
@@ -175,7 +187,52 @@ public final class GoblinCave {
         double ra = reachA * shrink;
         double rs = reachS * shrink;
         if (ra <= 0 || rs <= 0) return false;
-        return da * da / (ra * ra) + ds * ds / (rs * rs) <= 1.0;
+        // The wall wanders: one wobble over four blocks and a finer one over two, so it is rock rather
+        // than a swept surface. The hash is the same number in the drawing tool, so the shapes agree.
+        double wander = (hash(a >> 2, s >> 2, y >> 2) - 128) / 128.0 * COARSE
+                + (hash(a >> 1, s >> 1, y >> 1) - 128) / 128.0 * FINE;
+        return da * da / (ra * ra) + ds * ds / (rs * rs) <= 1.0 + wander;
+    }
+
+    /**
+     * A deterministic 0..255 from a cell. Integer arithmetic only and no state, because
+     * {@code tools/cave_section.py} has to compute the same number: the drawing is only evidence of the
+     * cut while both sides agree, so a mismatch here is a silent lie in the plan.
+     */
+    private static int hash(int a, int s, int y) {
+        int h = a * 0x27D4EB2D ^ s * 0x165667B1 ^ y * 0x9E3779B1;
+        h ^= h >>> 15;
+        h *= 0x85EBCA6B;
+        h ^= h >>> 13;
+        h *= 0xC2B2AE35;
+        h ^= h >>> 16;
+        return h & 0xFF;
+    }
+
+    /** What one column of a cavern keeps: how far a stalactite hangs, how far a stalagmite stands. */
+    private record Spur(int low, int high, int hang, int stand) {
+        boolean covers(int y) {
+            return (hang > 0 && y >= high - hang) || (stand > 0 && y < low + stand);
+        }
+    }
+
+    /**
+     * The spur this column keeps, or null for most columns. Only rock is taken out, so a stalactite is
+     * ceiling left hanging and a stalagmite is floor left standing - no material to pick, and nothing to
+     * place. Both are chosen off the column's own hash, so the same cave grows the same spurs.
+     */
+    @Nullable
+    private static Spur spur(int a, int s, int floor) {
+        int hang = hash(a >> 1, s >> 1, 101) < SPUR_TOP
+                ? 1 + hash(a >> 1, s >> 1, 202) % SPUR_LONG : 0;
+        int stand = hash(a >> 1, s >> 1, 303) < SPUR_LOW
+                ? 1 + hash(a >> 1, s >> 1, 404) % SPUR_LONG : 0;
+        if (hang == 0 && stand == 0) return null;
+        int low = floor;
+        while (low < floor + CHAMBER_HEIGHT && !cavern(a, s, low, floor)) low++;
+        int high = low;
+        while (high < floor + CHAMBER_HEIGHT && cavern(a, s, high, floor)) high++;
+        return high > low ? new Spur(low, high, hang, stand) : null;
     }
 
     /** The way into the hill: the compass direction whose ground rises most over the next stretch. */

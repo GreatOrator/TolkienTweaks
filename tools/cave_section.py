@@ -18,9 +18,11 @@ Three things are drawn, each of them a slice through the plan:
 `#` is rock, `.` is cave air, `M` the doorway, `o` the ground's own surface, and a blank is sky.
 
 Two kinds of room, on purpose. The hall is squared: it is the worked part, cut and floored by whoever
-holds the pass. The chambers are caverns - a flat floor, walls that swell and pinch round the compass,
-a ceiling that domes over, and an alcove or two off each - because a goblin hall is a room somebody
-made and the caves behind it are not. Both are the same plan in `GoblinCave`, down to the sines.
+holds the pass. The chambers are caverns - a wall that swells and pinches round the compass, a ceiling
+that domes over, an alcove or two off each, and then rock left standing in it: rubble on the floor,
+stalactites hanging and stalagmites standing wherever the cell hash puts them - because a goblin hall is
+a room somebody made and the caves behind it are not. Both are the same plan in `GoblinCave`, down to
+the sines and the hash.
 
 The one rule the plan keeps is that the cave never opens where nobody cut a mouth: every cell is
 dropped if it comes within ROOF of the ground above it. The number of cells that rule took is
@@ -61,7 +63,24 @@ FAR = CHAMBER_AT + CHAMBER_RA + 6        # the plan's own far wall
 FAR_SIDE = CHAMBER_SIDE + CHAMBER_RS + 6  # and how wide it reaches
 OPEN = 4            # the way in's own blocks, cut through the surface
 OUTSIDE = 1         # blocks cut in front of the door, so it is not walled in
+SPUR_TOP = 16       # of 256: how often a column of cavern keeps a stalactite
+SPUR_LOW = 14       # and how often a stalagmite
+SPUR_LONG = 5       # the longest of either, in blocks
+COARSE = 0.16       # how far a wall wanders, as a share of its reach
+FINE = 0.06         # and how much of that is per two blocks
 DIRECTIONS = {"north": (0, -1), "south": (0, 1), "west": (-1, 0), "east": (1, 0)}
+MASK = 0xFFFFFFFF
+
+
+def noise(a, s, y):
+    """A deterministic 0..255 from a cell, the same number `GoblinCave`'s hash gives."""
+    h = ((a * 0x27D4EB2D) & MASK) ^ ((s * 0x165667B1) & MASK) ^ ((y * 0x9E3779B1) & MASK)
+    h ^= h >> 15
+    h = (h * 0x85EBCA6B) & MASK
+    h ^= h >> 13
+    h = (h * 0xC2B2AE35) & MASK
+    h ^= h >> 16
+    return h & 0xFF
 
 
 def pin_at(world, key):
@@ -121,6 +140,7 @@ class Plan:
         self.dx, self.dz = DIRECTIONS[direction]
         self.sx, self.sz = -self.dz, self.dx
         self.cells = {}
+        self._spurs = {}
         self.dropped = 0
         self.cut()
 
@@ -155,6 +175,9 @@ class Plan:
         """A cavern: a flat floor, a wall that swells and pinches, a ceiling that domes over."""
         if not (self.floor <= y < self.floor + CHAMBER_HEIGHT):
             return False
+        # Rubble on the floor, so a cavern's bottom is not a poured slab.
+        if y == self.floor and noise(a >> 1, s >> 1, 505) < 40:
+            return False
         t = (y - self.floor) / float(CHAMBER_HEIGHT - 1)
         for sign in (-1, 1):
             centre_s = CHAMBER_SIDE * sign
@@ -184,7 +207,38 @@ class Plan:
         ra, rs = reach_a * shrink, reach_s * shrink
         if ra <= 0 or rs <= 0:
             return False
-        return (da * da) / (ra * ra) + (ds * ds) / (rs * rs) <= 1.0
+        # The wall wanders: one wobble over four blocks and a finer one over two.
+        wander = ((noise(a >> 2, s >> 2, y >> 2) - 128) / 128.0) * COARSE \
+            + ((noise(a >> 1, s >> 1, y >> 1) - 128) / 128.0) * FINE
+        return (da * da) / (ra * ra) + (ds * ds) / (rs * rs) <= 1.0 + wander
+
+    def spur(self, a, s):
+        """What one column keeps: how far a stalactite hangs, how far a stalagmite stands."""
+        key = (a, s)
+        if key not in self._spurs:
+            hang = 1 + noise(a >> 1, s >> 1, 202) % SPUR_LONG \
+                if noise(a >> 1, s >> 1, 101) < SPUR_TOP else 0
+            stand = 1 + noise(a >> 1, s >> 1, 404) % SPUR_LONG \
+                if noise(a >> 1, s >> 1, 303) < SPUR_LOW else 0
+            found = None
+            if hang or stand:
+                low = self.floor
+                while low < self.floor + CHAMBER_HEIGHT and not self.cavern(a, s, low):
+                    low += 1
+                high = low
+                while high < self.floor + CHAMBER_HEIGHT and self.cavern(a, s, high):
+                    high += 1
+                if high > low:
+                    found = (low, high, hang, stand)
+            self._spurs[key] = found
+        return self._spurs[key]
+
+    def standing(self, a, s, y, spur):
+        """Whether rock is left standing at a cell, rather than taken out of it."""
+        if not spur or not self.cavern(a, s, y):
+            return False
+        low, high, hang, stand = spur
+        return bool((hang and y >= high - hang) or (stand and y < low + stand))
 
     def cut(self):
         for a in range(-OUTSIDE, FAR):
@@ -193,8 +247,11 @@ class Plan:
                 top = height(self.patch, x, z)
                 if top is None:
                     continue
+                spur = self.spur(a, s)
                 for y in range(self.floor, self.door_floor + 4):
                     if not self.void(a, s, y):
+                        continue
+                    if self.standing(a, s, y, spur):
                         continue
                     # The mouth's own few blocks are the one place the cave is meant to open.
                     if a > OPEN and y > top - ROOF:

@@ -59,7 +59,18 @@ Measured from the door's own ground `g`:
 | caverns | centred 24 blocks either side of the hall's middle, reach 15 along / 12 across, 13 tall, flat floor, domed ceiling, two sine terms of swell, two alcoves each |
 | far wall | 117 blocks past the door |
 
-The hall is squared on purpose — it is the room somebody made — and the caverns are not. About **15,960
+Then rock is left standing in the caverns rather than taken out of them: the wall wanders off its own
+reach by two hash terms (a wobble over four blocks, a finer one over two), the floor carries rubble, and
+about one column in eight keeps a stalactite hanging from the ceiling or a stalagmite rising off the
+floor, up to five blocks. **Nothing is placed and no material is chosen** - only rock is taken out, so the
+hillside's own stone is what stays standing. The hash is an integer hash of the cell, computed the same
+way in `GoblinCave` and `cave_section.py`, so the spurs sit in the same place every cut; if the two ever
+disagree the drawing stops being evidence and becomes a lie.
+
+The hall and the landing are deliberately untouched by all of that: they are the worked rooms, and the
+roughness is what the caves behind them have instead.
+
+The hall is squared on purpose — it is the room somebody made — and the caverns are not. About **15,350
 cells** at the test pin, with **none dropped** by the roof rule.
 
 Two rules hold the shape together:
