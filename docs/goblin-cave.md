@@ -54,8 +54,8 @@ Measured from the door's own ground `g`:
 | mouth | **5 wide, 7 tall**, at `g`; one block cleared in front of it |
 | way in | **5 wide, 7 tall**, falls **40** blocks, one block down in two, so **80** blocks of ramp |
 | landing | 7 wide, 5 tall, floor `g-40`, runs into the hall's back wall |
-| hall | **17 wide, 18 long, 13 tall** - floor `g-40`, ceiling `g-28` |
-| passages | 7 wide, 7 tall, one out of each side of the hall to a flank chamber. The hall's far wall is solid: the back chamber is not reached through the hall |
+| hall | **19 wide, 43 long, 13 tall** - floor `g-40`, ceiling `g-28`, squared in plan and hewn in section |
+| tunnels | a cave tunnel out of the hall's back wall and out of either side, so each chamber is reached through rock the way the rest of the cave is: overlapping balls wandering 3-5 blocks across, not a driven passage |
 | flank tunnels | a string of overlapping balls from each flank chamber into the back one, wandering 3-5 blocks across, so it is a tunnel rather than a corridor |
 | flank chambers | four overlapping lobes each, about 63 blocks along the way in by 44 across and up to 16 tall, mirrored either side of the hall |
 | back chamber | four lobes, about 76 by 69 and up to 20 tall - the largest of the three |
@@ -69,19 +69,21 @@ hillside's own stone is what stays standing. The hash is an integer hash of the 
 way in `GoblinCave` and `cave_section.py`, so the spurs sit in the same place every cut; if the two ever
 disagree the drawing stops being evidence and becomes a lie.
 
-The hall and the landing are deliberately untouched by all of that: they are the worked rooms, and the
-roughness is what the caves behind them have instead.
+The landing is deliberately untouched by all of that, and the hall is worked but not machined. It is squared
+in plan and hewn in section: its four corners are cut at 45 degrees three blocks in, its ceiling is
+vaulted - set in two blocks from every wall above the eighth course - and its faces wander a block either
+way on the same cell hash the caves use, so no two stretches of its wall are quite alike. Standing rock is
+kept two blocks clear of it, so the hall is a room with rock round it; the only thing that pierces its
+wall is the round head of a tunnel.
 
-The hall is squared on purpose — it is the room somebody made — and the chambers are not. About **95,616
-cells** at the test pin, with **7 dropped** where the roof rule refused: every one of those is at the
-mouth, where a 7-tall way in comes within 3 blocks of the ground, so the rest of the plan is under the
-hill. That is six times what the two-chamber cave came to.
+The hall is squared on purpose — it is the room somebody made — and the chambers are not. About **99,320
+cells** at the test pin, with **none dropped**: on this plan the hill is deep enough to roof all of it.
 
-Flood filling the plan from its mouth reaches 95,539 of those cells. The 77 it cannot reach are pockets
-the noise shut inside the rock: no opening on any side, and nothing to see from the cave itself. The
-same fill shows the flank chambers' own swell reaching across the hall's line between about `a` 106 and
-144, so the hall's far end opens straight into both flanks as well as through the 7-wide passages out of
-its sides - the passages are the narrow way in, the merge is the wide one.
+The flood fill that used to be quoted here was measured on the plan before the hall was extended, so it no
+longer describes this one: it reached 95,539 of 95,616 cells, and the 77 it could not reach were pockets
+the noise shut inside the rock. With the hall 25 blocks longer and the chambers held clear of it, that
+count wants taking again, and the drawing tool cannot be pointed at the save at the moment: the last chunk
+trim took the door's own chunk back out, so `cave_section.py` exits with no ground under the pin.
 
 Two rules hold the shape together:
 
@@ -91,6 +93,30 @@ Two rules hold the shape together:
 - **The two implementations must agree.** `faction/GoblinCave.java` cuts it and `tools/cave_section.py`
   draws it, and they are the same numbers, the same integer division on the ramp and the same sines on
   the swell. Change one and the drawing stops being evidence.
+
+## The hall as a structure
+
+The hall is also written out as a vanilla structure file, so it can be furnished by hand — the one thing a
+carve cannot do. `tools/hall_structure.py` reads the same `hall()` the cut uses (from `cave_section.py`,
+which is kept in step with `GoblinCave`) and writes
+`src/main/resources/data/tolkienmobs/structure/goblin_hall.nbt`.
+
+It is the room, not an empty box: the hall's hollow is air and the other 2,343 cells of its box are stone,
+so loading it anywhere builds a hewn hall you can walk into and decorate. An all-air file would change
+nothing in a world that had already been carved and could not be decorated at all. **19 wide, 13 tall, 43
+deep, 10,621 cells**, gzipped vanilla structure NBT at `DataVersion` 4790 — the version the shipped
+`ch2_hall.nbt` carries, read from it rather than guessed. Both `grab_build.read_nbt` and a separate
+checker read the file back to its last byte.
+
+| step | |
+|---|---|
+| put it where a structure block looks | `<world>/generated/minecraft/structures/goblin_hall.nbt`, or a datapack's `data/tolkienmobs/structure/` |
+| load it | a structure block in LOAD mode, name `goblin_hall`. Its axes are x across the hill, y up, z into the hill, and the hall's floor is y 0, so a block set to CORNER stands its bottom course on the floor |
+| decorate it | by hand, in the world |
+| save it back | SAVE from a structure block over the furnished hall, and the mod has a decorated hall to place after the carve |
+
+The floor is deliberately not in the file: the cut leaves the hill's own floor under the hall and a
+structure block's corner stands on it, so the same file sits right on whatever ground it is loaded onto.
 
 ## Where it stands
 
@@ -108,6 +134,8 @@ from the door's ground either way, so the shape does not move with it. **That pi
 
 ## What is not built
 
+- **The decorated hall being placed.** The craft is there — carve, furnish by hand, save the structure back
+  — but nothing in `GoblinCave` loads `goblin_hall.nbt` yet; the carve puts no blocks down at all.
 - **The camp outside the door.** The old cave had one; the cut is only the cave. A camp is a template
   `Sites` could place by its door (`DOORWAYS` carries a sill and a facing), or a new small build.
 - **Ulmug and his folk.** `/tmcave cut` places no blocks and no bodies: the cave is empty. Page 27's

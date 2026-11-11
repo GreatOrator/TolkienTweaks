@@ -44,16 +44,17 @@ ROOF = 3            # blocks of rock kept between a cave and the sky above it
 DROP = 40           # how far the way in falls, from the door's own ground
 RAMP = DROP * 2     # one block down in two, so the way in runs twice as far as it falls
 HALL_BACK = RAMP + 6          # where the hall starts, in blocks past the door
-HALL_FRONT = HALL_BACK + 18   # and where it ends
+HALL_FRONT = HALL_BACK + 42   # and where it ends
 HALL_SIDE = 8       # half its width
 HALL_HEIGHT = 13    # the hall's own headroom
 LANDING_HEIGHT = 5  # the landing's
 LANDING_SIDE = 3    # half the landing's width
-PASSAGE_NEAR = HALL_SIDE + 1     # the way out of the hall to each flank
-PASSAGE_FAR = HALL_SIDE + 13
-PASSAGE_HEIGHT = 7
-FLANK_PASS_BACK = HALL_BACK + 10   # where that passage leaves the hall
-FLANK_PASS_FRONT = HALL_BACK + 22  # and where it arrives
+DOOR_BACK = 96      # where the cave tunnels out of the hall's sides
+DOOR_FRONT = 116    # and where they are into the chambers
+HALL_VAULT = 8      # the hall's courses below this are its full width
+HALL_INSET = 2      # and above it the ceiling is set in this far
+HALL_CUT = 3        # its corners are cut at 45 degrees, this far in
+HALL_CLEAR = 2      # rock kept between the hall's wall and a chamber
 TUNNEL_BACK = 134   # where a flank tunnel leaves its own chamber
 TUNNEL_FRONT = 184  # and where it is well into the back one
 TUNNEL_INSIDE = 22  # and how far it stays off the hall's own line
@@ -75,6 +76,13 @@ BACK = (
     (196, -18, 15, 16, 15),
     (200, 20, 14, 15, 14),
     (150, 13, 13, 13, 13),
+)
+# The ways out of the hall's sides, as cave tunnels rather than doorways, mirrored left and right.
+DOORWAY = (
+    (98, 8, 3, 3, 7),
+    (103, 11, 3, 3, 6),
+    (108, 14, 3, 4, 6),
+    (113, 17, 4, 4, 6),
 )
 # The way from each flank chamber into the back one: a string of small balls whose centres wander, so it
 # is a tunnel rather than a bored corridor. Mirrored with the flank.
@@ -158,6 +166,22 @@ def height(patch, x, z):
     return patch.get((x, z))
 
 
+def hall(a, s, level):
+    """The hall: squared in plan, but hewn - corners cut, ceiling vaulted, faces worn by the hash."""
+    if not (HALL_BACK <= a <= HALL_FRONT) or not (0 <= level < HALL_HEIGHT):
+        return False
+    wear = noise(a >> 1, s >> 1, level >> 1)
+    side = HALL_SIDE + (1 if wear < 40 else 0) - (1 if wear > 236 else 0)
+    inset = HALL_INSET if level >= HALL_VAULT else 0
+    if abs(s) > side - inset:
+        return False
+    along = min(a - HALL_BACK, HALL_FRONT - a) - inset
+    if along < 0:
+        return False
+    # Corners cut at 45 degrees, three blocks in, so the room is not a box in plan.
+    return along + (side - abs(s)) >= HALL_CUT
+
+
 class Plan:
     """The cave as a set of cells, in door-relative coordinates: `a` into the hill, `s` across."""
 
@@ -193,12 +217,7 @@ class Plan:
         if (RAMP - 2 <= a <= HALL_BACK and sideways <= LANDING_SIDE
                 and self.floor <= y <= self.floor + LANDING_HEIGHT - 1):
             return True
-        if (HALL_BACK <= a <= HALL_FRONT and sideways <= HALL_SIDE
-                and self.floor <= y <= self.floor + HALL_HEIGHT - 1):
-            return True
-        # The way out of the hall to each flank chamber.
-        if (FLANK_PASS_BACK <= a <= FLANK_PASS_FRONT and PASSAGE_NEAR <= sideways <= PASSAGE_FAR
-                and self.floor <= y <= self.floor + PASSAGE_HEIGHT - 1):
+        if HALL_BACK <= a <= HALL_FRONT and hall(a, s, y - self.floor):
             return True
         return self.cavern(a, s, y)
 
@@ -209,14 +228,23 @@ class Plan:
         # Rubble on the floor, so a cavern's bottom is not a poured slab.
         if y == self.floor and noise(a >> 1, s >> 1, 505) < 40:
             return False
-        for centre_a, centre_s, ra, rs, height in FLANK:
-            if self.blob(a, s, y, centre_a, centre_s, ra, rs, height):
-                return True
-            if self.blob(a, s, y, centre_a, -centre_s, ra, rs, height):
-                return True
-        for centre_a, centre_s, ra, rs, height in BACK:
-            if self.blob(a, s, y, centre_a, centre_s, ra, rs, height):
-                return True
+        # The hall's own walls win: a chamber may not break into the room, only a tunnel may.
+        if a < HALL_BACK - 2 or a > HALL_FRONT + 2 or abs(s) > HALL_SIDE + HALL_CLEAR:
+            for centre_a, centre_s, ra, rs, height in FLANK:
+                if self.blob(a, s, y, centre_a, centre_s, ra, rs, height):
+                    return True
+                if self.blob(a, s, y, centre_a, -centre_s, ra, rs, height):
+                    return True
+            for centre_a, centre_s, ra, rs, height in BACK:
+                if self.blob(a, s, y, centre_a, centre_s, ra, rs, height):
+                    return True
+        # And the ways out of the hall, wandering out of its wall rather than punched through it.
+        if DOOR_BACK <= a <= DOOR_FRONT:
+            for centre_a, centre_s, ra, rs, height in DOORWAY:
+                if self.blob(a, s, y, centre_a, centre_s, ra, rs, height):
+                    return True
+                if self.blob(a, s, y, centre_a, -centre_s, ra, rs, height):
+                    return True
         # The flank tunnels are only in one stretch of the plan, so the rest of it never looks at them.
         if TUNNEL_BACK <= a <= TUNNEL_FRONT and abs(s) >= TUNNEL_INSIDE:
             for centre_a, centre_s, ra, rs, height in TUNNEL:

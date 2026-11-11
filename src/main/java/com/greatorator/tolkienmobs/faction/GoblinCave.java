@@ -41,16 +41,17 @@ public final class GoblinCave {
     private static final int DROP = 40;           // how far the way in falls, from the door's ground
     private static final int RAMP = DROP * 2;     // one block down in two, so twice as far as it falls
     private static final int HALL_BACK = RAMP + 6;        // where the hall starts, past the door
-    private static final int HALL_FRONT = HALL_BACK + 18; // and where it ends
+    private static final int HALL_FRONT = HALL_BACK + 42; // and where it ends
     private static final int HALL_SIDE = 8;       // half its width
     private static final int HALL_HEIGHT = 13;    // the hall's own headroom
     private static final int LANDING_HEIGHT = 5;  // the landing's
     private static final int LANDING_SIDE = 3;    // half the landing's width
-    private static final int PASSAGE_NEAR = HALL_SIDE + 1;   // the way out of the hall to each flank
-    private static final int PASSAGE_FAR = HALL_SIDE + 13;
-    private static final int PASSAGE_HEIGHT = 7;
-    private static final int FLANK_PASS_BACK = HALL_BACK + 10;   // where that passage leaves the hall
-    private static final int FLANK_PASS_FRONT = HALL_BACK + 22;  // and where it arrives
+    private static final int DOOR_BACK = 96;      // where the cave tunnels out of the hall's sides
+    private static final int DOOR_FRONT = 116;    // and where they are into the chambers
+    private static final int HALL_VAULT = 8;      // the hall's courses below this are its full width
+    private static final int HALL_INSET = 2;      // and above it the ceiling is set in this far
+    private static final int HALL_CUT = 3;        // its corners are cut at 45 degrees, this far in
+    private static final int HALL_CLEAR = 2;      // rock kept between the hall's wall and a chamber
     private static final int TUNNEL_BACK = 134;   // where a flank tunnel leaves its own chamber
     private static final int TUNNEL_FRONT = 184;  // and where it is well into the back one
     private static final int TUNNEL_INSIDE = 22;  // and how far it stays off the hall's own line
@@ -79,6 +80,17 @@ public final class GoblinCave {
             new Lobe(196, -18, 15, 16, 15),
             new Lobe(200, 20, 14, 15, 14),
             new Lobe(150, 13, 13, 13, 13),
+    };
+
+    /**
+     * The ways out of the hall's sides, as cave tunnels rather than doorways: two balls each, wandering
+     * out of the wall and changing width, mirrored left and right like the chambers.
+     */
+    private static final Lobe[] DOORWAY = {
+            new Lobe(98, 8, 3, 3, 7),
+            new Lobe(103, 11, 3, 3, 6),
+            new Lobe(108, 14, 3, 4, 6),
+            new Lobe(113, 17, 4, 4, 6),
     };
 
     /**
@@ -182,15 +194,7 @@ public final class GoblinCave {
                 && y >= floor && y <= floor + LANDING_HEIGHT - 1) {
             return true;
         }
-        if (a >= HALL_BACK && a <= HALL_FRONT && sideways <= HALL_SIDE
-                && y >= floor && y <= floor + HALL_HEIGHT - 1) {
-            return true;
-        }
-        // The way out of the hall to each flank chamber.
-        if (a >= FLANK_PASS_BACK && a <= FLANK_PASS_FRONT && sideways >= PASSAGE_NEAR
-                && sideways <= PASSAGE_FAR && y >= floor && y <= floor + PASSAGE_HEIGHT - 1) {
-            return true;
-        }
+        if (a >= HALL_BACK && a <= HALL_FRONT && hall(a, s, y - floor)) return true;
         if (!cavern(a, s, y, floor)) return false;
         // A stalactite or a stalagmite is rock the cut leaves standing rather than a block it places:
         // the hillside's own material comes down from the ceiling and up off the floor.
@@ -202,12 +206,22 @@ public final class GoblinCave {
         if (y < floor || y >= floor + CHAMBER_TALL) return false;
         // Rubble on the floor, so a cavern's bottom is not a poured slab.
         if (y == floor && hash(a >> 1, s >> 1, 505) < 40) return false;
-        for (Lobe lobe : FLANK) {
-            if (swell(a, s, y, floor, lobe.a(), lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
-            if (swell(a, s, y, floor, lobe.a(), -lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
+        // The hall's own walls win: a chamber may not break into the room, only a tunnel may.
+        if (a < HALL_BACK - 2 || a > HALL_FRONT + 2 || Math.abs(s) > HALL_SIDE + HALL_CLEAR) {
+            for (Lobe lobe : FLANK) {
+                if (swell(a, s, y, floor, lobe.a(), lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
+                if (swell(a, s, y, floor, lobe.a(), -lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
+            }
+            for (Lobe lobe : BACK) {
+                if (swell(a, s, y, floor, lobe.a(), lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
+            }
         }
-        for (Lobe lobe : BACK) {
-            if (swell(a, s, y, floor, lobe.a(), lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
+        // And the ways out of the hall, wandering out of its wall rather than punched through it.
+        if (a >= DOOR_BACK && a <= DOOR_FRONT) {
+            for (Lobe ball : DOORWAY) {
+                if (swell(a, s, y, floor, ball.a(), ball.s(), ball.ra(), ball.rs(), ball.height())) return true;
+                if (swell(a, s, y, floor, ball.a(), -ball.s(), ball.ra(), ball.rs(), ball.height())) return true;
+            }
         }
         // The flank tunnels are only in one stretch of the plan, so the rest of it never looks at them.
         if (a >= TUNNEL_BACK && a <= TUNNEL_FRONT && Math.abs(s) >= TUNNEL_INSIDE) {
@@ -217,6 +231,23 @@ public final class GoblinCave {
             }
         }
         return false;
+    }
+
+    /**
+     * The hall: squared in plan, because it is the room somebody made, but hewn rather than machined -
+     * the four corners cut at 45 degrees, the ceiling vaulted in from the walls and both ends, and the
+     * faces worn a block either way by the cell hash, so they are dressed rock and not a milled wall.
+     */
+    private static boolean hall(int a, int s, int level) {
+        if (a < HALL_BACK || a > HALL_FRONT || level < 0 || level >= HALL_HEIGHT) return false;
+        int wear = hash(a >> 1, s >> 1, level >> 1);
+        int side = HALL_SIDE + (wear < 40 ? 1 : 0) - (wear > 236 ? 1 : 0);
+        int inset = level >= HALL_VAULT ? HALL_INSET : 0;
+        if (Math.abs(s) > side - inset) return false;
+        int along = Math.min(a - HALL_BACK, HALL_FRONT - a) - inset;
+        if (along < 0) return false;
+        // Corners cut at 45 degrees, three blocks in, so the room is not a box in plan.
+        return along + (side - Math.abs(s)) >= HALL_CUT;
     }
 
     /**
