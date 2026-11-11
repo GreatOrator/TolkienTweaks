@@ -21,11 +21,15 @@ import java.util.Map;
  * same pin in the same world always cuts the same cave and the cave always goes into the hill instead of
  * out of it.
  * <p>
- * The shape is the one {@code tools/cave_section.py} draws, and the two must agree: a mouth at the door,
- * a ramp of one in two down into the hill, a landing that runs into the hall's own back wall, a hall ten
- * blocks tall with a chamber out to either side. Every cell is held {@link #ROOF} blocks under the ground
- * above it, so the mouth is the one place the cave opens - except the mouth's own first few blocks, which
- * are cut through the surface because that is what a mouth is.
+ * Two kinds of room, on purpose. The hall is squared: it is the worked part, cut and floored by whoever
+ * holds the pass. The caverns either side are not - a flat floor, a wall that swells and pinches round
+ * the compass, a ceiling that domes over, and an alcove or two off each - because a goblin hall is a room
+ * somebody made and the caves behind it are not. The sine terms below are the shape; they are the same
+ * ones {@code tools/cave_section.py} draws with, so the drawing and the cut agree.
+ * <p>
+ * The one rule the plan keeps is that the cave never opens where nobody cut a mouth: every cell is held
+ * {@link #ROOF} blocks under the ground above it, except the way in's own first few blocks, which are cut
+ * through the surface because that is what a mouth is.
  */
 public final class GoblinCave {
     /** The pin the door is read from. A place name, so /tmpin, /tmtp and the catalogue all know it. */
@@ -37,16 +41,21 @@ public final class GoblinCave {
     private static final int HALL_FRONT = HALL_BACK + 16; // and where it ends
     private static final int HALL_SIDE = 7;       // half its width
     private static final int HALL_HEIGHT = 10;    // the hall's own headroom
-    private static final int LANDING_HEIGHT = 5;  // the landing's, and the passages' to the chambers
+    private static final int LANDING_HEIGHT = 5;  // the landing's
     private static final int LANDING_SIDE = 3;    // half the landing's width
-    private static final int CHAMBER_NEAR = 12;   // how far out the chambers start
-    private static final int CHAMBER_FAR = 20;    // and how far they reach
-    private static final int CHAMBER_BACK = 2;    // past the hall's wall
-    private static final int CHAMBER_FRONT = 11;
-    private static final int CHAMBER_HEIGHT = 6;  // the chambers' own headroom
-    private static final int ROOF = 3;           // rock kept between the cave and the sky above it
-    private static final int OPEN = 4;           // the way in's own blocks, cut through the surface
-    private static final int OUTSIDE = 1;        // blocks cut in front of the door, so it is not walled in
+    private static final int CHAMBER_AT = 94;     // the caverns' middle, down the way in
+    private static final int CHAMBER_SIDE = 24;   // and how far out to either side
+    private static final int CHAMBER_RA = 15;     // their reach along the way in
+    private static final int CHAMBER_RS = 12;     // and across
+    private static final int CHAMBER_HEIGHT = 13;
+    private static final int PASSAGE_NEAR = HALL_SIDE + 1;  // the way out of the hall to each cavern
+    private static final int PASSAGE_FAR = 14;
+    private static final int PASSAGE_HEIGHT = 5;
+    private static final int FAR = CHAMBER_AT + CHAMBER_RA + 6;           // the plan's own far wall
+    private static final int FAR_SIDE = CHAMBER_SIDE + CHAMBER_RS + 6;    // and how wide it reaches
+    private static final int ROOF = 3;            // rock kept between the cave and the sky above it
+    private static final int OPEN = 4;            // the way in's own blocks, cut through the surface
+    private static final int OUTSIDE = 1;         // blocks cut in front of the door, so it is not walled in
 
     /** What one cut came to, for the command to say. */
     public record Result(BlockPos door, Direction into, int floor, int ceiling, int cells, int dropped) {
@@ -82,23 +91,20 @@ public final class GoblinCave {
         int floor = surface - DROP;
         int cells = 0;
         int dropped = 0;
-        for (int a = -OUTSIDE; a <= HALL_FRONT; a++) {
-            for (int s = -CHAMBER_FAR - 1; s <= CHAMBER_FAR + 1; s++) {
-                int[] want = want(a, s, floor);
-                if (want == null) continue;
+        for (int a = -OUTSIDE; a <= FAR; a++) {
+            for (int s = -FAR_SIDE; s <= FAR_SIDE; s++) {
                 int x = doorX + stepX * a + acrossX * s;
                 int z = doorZ + stepZ * a + acrossZ * s;
                 Integer top = ground(level, x, z, ground);
                 if (top == null) continue;
-                // The mouth's own few blocks are the one place the cave is meant to open: they are cut
-                // through the surface, which is what makes a mouth a mouth rather than a buried room.
-                int ceiling = a <= OPEN ? want[1] : Math.min(want[1], top - ROOF);
-                if (ceiling < want[0]) {
-                    dropped += want[1] - want[0] + 1;
-                    continue;
-                }
-                dropped += want[1] - ceiling;
-                for (int y = want[0]; y <= ceiling; y++) {
+                for (int y = floor; y <= surface + 3; y++) {
+                    if (!carve(a, s, y, surface, floor)) continue;
+                    // The mouth's own few blocks are the one place the cave is meant to open: they are cut
+                    // through the surface, which is what makes a mouth a mouth rather than a buried room.
+                    if (a > OPEN && y > top - ROOF) {
+                        dropped++;
+                        continue;
+                    }
                     BlockPos at = new BlockPos(x, y, z);
                     BlockState state = level.getBlockState(at);
                     if (state.isAir() || state.getFluidState().is(Fluids.WATER)) continue;
@@ -110,34 +116,66 @@ public final class GoblinCave {
         return new Result(pin, into, floor, floor + HALL_HEIGHT - 1, cells, dropped);
     }
 
-    /** The plan's own void at one door-relative cell: {@code {bottom, top}}, or null for rock. */
-    @Nullable
-    private static int[] want(int a, int s, int floor) {
+    /** Whether the plan puts cave air at one door-relative cell, before the hill is consulted. */
+    private static boolean carve(int a, int s, int y, int doorFloor, int floor) {
         int sideways = Math.abs(s);
-        if (a <= 2 && sideways <= 1) return new int[]{floor + DROP, floor + DROP + 3};
+        if (a >= 0 && a <= 2 && sideways <= 1 && y >= doorFloor && y <= doorFloor + 3) return true;
         if (a >= 1 && a <= RAMP && sideways <= 1) {
-            int low = rampFloor(a, floor);
-            return new int[]{low, low + 3};
+            int low = floor + DROP - (a - 1) * DROP / (RAMP - 1);
+            if (y >= low && y <= low + 3) return true;
         }
-        if (a >= RAMP - 2 && a <= HALL_BACK && sideways <= LANDING_SIDE) {
-            return new int[]{floor, floor + LANDING_HEIGHT - 1};
+        if (a >= RAMP - 2 && a <= HALL_BACK && sideways <= LANDING_SIDE
+                && y >= floor && y <= floor + LANDING_HEIGHT - 1) {
+            return true;
         }
-        if (a >= HALL_BACK && a <= HALL_FRONT && sideways <= HALL_SIDE) {
-            return new int[]{floor, floor + HALL_HEIGHT - 1};
+        if (a >= HALL_BACK && a <= HALL_FRONT && sideways <= HALL_SIDE
+                && y >= floor && y <= floor + HALL_HEIGHT - 1) {
+            return true;
         }
-        if (a >= HALL_BACK + 4 && a <= HALL_BACK + 6 && sideways <= CHAMBER_FAR) {
-            return new int[]{floor, floor + LANDING_HEIGHT - 1};
+        if (a >= CHAMBER_AT - 2 && a <= CHAMBER_AT + 2 && sideways >= PASSAGE_NEAR && sideways <= PASSAGE_FAR
+                && y >= floor && y <= floor + PASSAGE_HEIGHT - 1) {
+            return true;
         }
-        if (a >= HALL_BACK + CHAMBER_BACK && a <= HALL_BACK + CHAMBER_FRONT
-                && sideways >= CHAMBER_NEAR && sideways <= CHAMBER_FAR) {
-            return new int[]{floor, floor + CHAMBER_HEIGHT - 1};
-        }
-        return null;
+        return cavern(a, s, y, floor);
     }
 
-    /** The way in falls from the door's own ground to the floor, one block in two. */
-    private static int rampFloor(int a, int floor) {
-        return floor + DROP - (a - 1) * DROP / (RAMP - 1);
+    /** A cavern: a flat floor, a wall that swells and pinches, a ceiling that domes over. */
+    private static boolean cavern(int a, int s, int y, int floor) {
+        if (y < floor || y >= floor + CHAMBER_HEIGHT) return false;
+        for (int sign : new int[]{-1, 1}) {
+            int centreS = CHAMBER_SIDE * sign;
+            if (swell(a, s, y, floor, CHAMBER_AT, centreS, CHAMBER_RA, CHAMBER_RS,
+                    CHAMBER_HEIGHT, true)) {
+                return true;
+            }
+            // An alcove or two, so the room is not one swept shape.
+            if (swell(a, s, y, floor, CHAMBER_AT + 8, centreS + 7, 7, 6, 9, false)) return true;
+            if (swell(a, s, y, floor, CHAMBER_AT - 9, centreS - 3, 6, 5, 9, false)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * One rounded lump of a cavern. With a share given, its wall swells and pinches round the compass;
+     * without one - an alcove - it is a plain dome, so an alcove reads as a pocket in the wall.
+     */
+    private static boolean swell(int a, int s, int y, int floor, double centreA, double centreS,
+                                 double reachA, double reachS, int height, boolean lumpy) {
+        if (y < floor || y >= floor + height) return false;
+        double share = (y - floor) / (double) (height - 1);
+        double flat = lumpy ? 0.4 : 0.5;
+        double pinch = lumpy ? 0.5 : 0.55;
+        double shrink = share <= flat ? 1.0 : 1.0 - pinch * ((share - flat) / (1.0 - flat));
+        double da = a - centreA;
+        double ds = s - centreS;
+        if (lumpy) {
+            double angle = Math.atan2(ds, da);
+            shrink *= 1.0 + 0.20 * Math.sin(3.0 * angle + 0.6) + 0.11 * Math.sin(5.0 * angle - 1.3);
+        }
+        double ra = reachA * shrink;
+        double rs = reachS * shrink;
+        if (ra <= 0 || rs <= 0) return false;
+        return da * da / (ra * ra) + ds * ds / (rs * rs) <= 1.0;
     }
 
     /** The way into the hill: the compass direction whose ground rises most over the next stretch. */
@@ -173,8 +211,8 @@ public final class GoblinCave {
         int lowZ = Integer.MAX_VALUE;
         int highX = Integer.MIN_VALUE;
         int highZ = Integer.MIN_VALUE;
-        for (int a : new int[]{-OUTSIDE, HALL_FRONT}) {
-            for (int s : new int[]{-CHAMBER_FAR - 1, CHAMBER_FAR + 1}) {
+        for (int a : new int[]{-OUTSIDE, FAR}) {
+            for (int s : new int[]{-FAR_SIDE, FAR_SIDE}) {
                 int px = x + stepX * a + acrossX * s;
                 int pz = z + stepZ * a + acrossZ * s;
                 lowX = Math.min(lowX, px);
