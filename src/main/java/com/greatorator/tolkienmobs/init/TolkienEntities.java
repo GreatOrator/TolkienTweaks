@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.entity.SeatEntity;
 import com.greatorator.tolkienmobs.entity.ambient.*;
 import com.greatorator.tolkienmobs.entity.boss.*;
 import com.greatorator.tolkienmobs.entity.item.*;
@@ -36,6 +37,17 @@ public class TolkienEntities {
 
     /** Colours of each spawn egg; the 1.21.4 item model definition carries them as tints. */
     public static final Map<DeferredItem<Item>, SpawnEggColors> SPAWN_EGG_COLORS = new LinkedHashMap<>();
+
+    /**
+     * A bench's seat. Not a mob: it has no model, no egg and nothing to save, and the block that spawns
+     * it kills it again the moment its rider gets off. It is declared here so that it is registered
+     * with the rest, and so that nothing spawns it by accident - a seat nobody is sitting on is not a
+     * thing that should exist.
+     */
+    public static final Supplier<EntityType<SeatEntity>> ENTITY_TTM_SEAT =
+            registerEntity("entityttmseat", () -> EntityType.Builder.of(SeatEntity::new, MobCategory.MISC)
+                    .sized(0.0F, 0.0F)
+                    .noSummon());
 
         /** Entities */
         // Ambient

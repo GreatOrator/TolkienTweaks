@@ -79,6 +79,9 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
 
     @Override
     public void generate() {
+        // A seat is furniture and dies with its rider, so it never leaves anything to pick up.
+        add(TolkienEntities.ENTITY_TTM_SEAT.get(), emptyLootTable());
+
         // ---- Ambient ---------------------------------------------------------------------
 
         add(TolkienEntities.ENTITY_TTM_RAT.get(), emptyLootTable());

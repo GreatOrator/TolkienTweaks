@@ -944,6 +944,10 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         // The workbench item model is written by hand under /models/item: it draws the two blocks of
         // bench at half the size of a block item, which data generation has no way to say.
 
+        // The log bench is one block and drawn from its own model, its back along the north edge.
+        horizontalBlock(TolkienBlocks.LOG_BENCH.get(), models().getExistingFile(modLoc("block/log_bench")), 180);
+        blockItem(TolkienBlocks.LOG_BENCH);
+
         blockItem(TolkienBlocks.TRINKET_TABLE);
         simpleBlockItem(TolkienBlocks.FIREPLACE.get(), models().getExistingFile(modLoc("block/fireplace_active")));
         blockItem(TolkienBlocks.PIGGYBANK);

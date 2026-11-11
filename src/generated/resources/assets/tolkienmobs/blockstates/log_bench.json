@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tolkienmobs:block/log_bench",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "tolkienmobs:block/log_bench"
+    },
+    "facing=south": {
+      "model": "tolkienmobs:block/log_bench",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tolkienmobs:block/log_bench",
+      "y": 270
+    }
+  }
+}
