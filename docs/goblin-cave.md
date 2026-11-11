@@ -172,6 +172,14 @@ uses, reusable), so the key always fits the chest in the room it was taken from 
 with a new code moves both together. A hall that has given its key up arms no second carrier that
 session, and a hall with no chest in it gives none up at all.
 
+**The key is stocked from the table its code names.** The code is not only a lock: `GoblinCave.stock`
+reads it as a loot table's name - `DungeonKey` names `tolkienmobs:chests/dungeonkey`, and a full id names
+a table anywhere in the pack - and rolls that table into the key's own fifteen slots as the key is made.
+So the goblin's key carries the hoard as well as the lock, and several chests set to the same code are one
+lock with one hoard behind it: that is what lets a single key serve more than one chest. A code that names
+no table leaves the key empty and the lock still works. The shipped `dungeonkey` table is a starter -
+replace it and every key cut to that code follows it.
+
 ## Where it stands
 
 -Cut and drawn at the test pin **5628, 196, -3621** in `run/saves/Serious Test`: ground 197 as the save

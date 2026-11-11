@@ -1,17 +1,22 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
+import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -20,6 +25,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,12 +33,16 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -354,9 +364,45 @@ public final class GoblinCave {
         if (code.isEmpty()) return;
         ItemStack key = new ItemStack(TolkienItems.MASTER_KEY.get());
         KeyItem.setKeyData(key, code, 3, true);
+        stock(level, key, code);
         ItemEntity drop = new ItemEntity(level, goblin.getX(), goblin.getY() + 0.5D, goblin.getZ(), key);
         drop.setDefaultPickUpDelay();
         level.addFreshEntity(drop);
+    }
+
+    /**
+     * Fills the key's own slots from the table its code names, so the key a goblin gives up carries the hoard
+     * as well as the lock: a key coded DungeonKey is stocked from tolkienmobs:chests/dungeonkey.
+     * <p>
+     * The code is the table's name, and that is what lets one key serve more than one chest: several chests
+     * set to the same code are one lock, and the table the code names is one hoard behind them. A full id
+     * names a table anywhere; a bare name names one under the pack's own chests folder.
+     * <p>
+     * The roll happens as the key is made rather than as a chest is opened, because the drop is one moment
+     * and a key that is already stocked cannot be rolled a second time - which is the whole guard needed,
+     * where rolling on open would want a flag to tell an emptied key from a key nobody has opened yet. A code
+     * that names no table leaves the key empty rather than failing: the lock still works without a hoard.
+     */
+    private static void stock(ServerLevel level, ItemStack key, String code) {
+        LootParams params = new LootParams.Builder(level).create(LootContextParamSets.EMPTY);
+        List<ItemStack> rolled = level.getServer().reloadableRegistries()
+                .getLootTable(tableFor(code))
+                .getRandomItems(params);
+        if (rolled.isEmpty()) return;
+        NonNullList<ItemStack> slots = NonNullList.withSize(KeyItemContainer.SLOTS, ItemStack.EMPTY);
+        for (int slot = 0; slot < Math.min(slots.size(), rolled.size()); slot++) {
+            slots.set(slot, rolled.get(slot));
+        }
+        key.set(TolkienDataComponents.ITEMSTACK_HANDLER.get(), ItemContainerContents.fromItems(slots));
+    }
+
+    /** The table a code names: the id itself where one is written, and the chests folder otherwise. */
+    private static ResourceKey<LootTable> tableFor(String code) {
+        Identifier id = code.contains(":")
+                ? Identifier.tryParse(code)
+                : Identifier.fromNamespaceAndPath("tolkienmobs", "chests/" + code.toLowerCase(Locale.ROOT));
+        if (id == null) id = Identifier.fromNamespaceAndPath("tolkienmobs", "chests/dungeonkey");
+        return ResourceKey.create(Registries.LOOT_TABLE, id);
     }
 
     /** The code the hall's lockable chest is set to, or an empty string when the hall has none set. */
