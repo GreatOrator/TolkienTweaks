@@ -48,12 +48,15 @@ def main(argv):
     args = parser.parse_args(argv[1:])
 
     folder = pathlib.Path(args.world)
-    data = folder / "data"
-    if not data.is_dir():
-        raise SystemExit("%s has no data folder - has the world been saved since it was pinned?" % folder)
+    if not folder.is_dir():
+        raise SystemExit("no world at %s" % folder)
 
+    # The store is written under a `data` folder, and which one depends on the level that asked for
+    # it: the overworld's lands at dimensions/minecraft/overworld/data, not at the world's own root.
     seen = 0
-    for path in sorted(data.rglob("*.dat")):
+    for path in sorted(folder.rglob("*.dat")):
+        if "data" not in path.parts:
+            continue
         try:
             root = gb.read_nbt(path.read_bytes())
         except Exception:
