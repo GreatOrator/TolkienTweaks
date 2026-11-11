@@ -3,9 +3,11 @@
   "category": "misc",
   "key": {
     "L": "#minecraft:logs",
-    "S": "minecraft:stick"
+    "S": "minecraft:stick",
+    "T": "#minecraft:wooden_trapdoors"
   },
   "pattern": [
+    " T ",
     "LLL",
     "S S"
   ],

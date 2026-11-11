@@ -364,8 +364,10 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
 
         // Special Blocks
         shaped(RecipeCategory.DECORATIONS, TolkienBlocks.LOG_BENCH, 1)
+                .pattern(" T ")
                 .pattern("LLL")
                 .pattern("S S")
+                .define('T', ItemTags.WOODEN_TRAPDOORS)
                 .define('L', ItemTags.LOGS)
                 .define('S', Items.STICK)
                 .unlockedBy("has_logs", has(ItemTags.LOGS))
