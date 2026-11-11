@@ -32,6 +32,7 @@ to a new spot rather than by editing code.
 | name the ground | `/tmpin place goblins` | in Arda, creative or op 2. Writes the caller's feet into the world's pins and prints the `Pins.SOURCE` line. |
 | find the door | `/tmtp goblins` | the pin, if the world has one. |
 | cut the cave | `/tmcave cut` (or bare `/tmcave`) | asks for the chunks, reads the ground, cuts, reports the count. |
+| lay the hall again | `/tmcave dress` | puts `goblin_hall.nbt` back over the hall the cut made, without cutting - for a hall furnished since. |
 | read a pin offline | `python tools/pins.py --world "run/saves/<world>"` | the store is under `dimensions/minecraft/overworld/data/tolkienmobs/pins.dat`, not the world's own `data/`. |
 | draw before cutting | `python tools/cave_section.py --world "run/saves/<world>" --pin goblins` | two vertical sections and a plan, against the save's real ground. |
 
@@ -125,6 +126,12 @@ a floor instead of leaving the room to sit on whatever happens to be there. That
 course taller than the room, and why a structure block's corner goes one block lower than the hall's own
 floor - at the test pin, y 156.
 
+**The cut lays it.** `GoblinCave.dress` places the file into the hollow the carve has just made, turned to
+face whichever way the hill runs, so a cut cave comes out a floored hall rather than a bare hole. `/tmcave
+cut` reports where it was laid; `/tmcave dress` lays it again without cutting, which is the way a hall
+furnished by hand gets back in - save the decorated room over `goblin_hall.nbt`, ask for it, and every
+world's cave has it. What lands today is only what the file holds now: a floor and the hewn walls.
+
 ## Where it stands
 
 -Cut and drawn at the test pin **5628, 196, -3621** in `run/saves/Serious Test`: ground 197 as the save
@@ -141,8 +148,6 @@ from the door's ground either way, so the shape does not move with it. **That pi
 
 ## What is not built
 
-- **The decorated hall being placed.** The craft is there — carve, furnish by hand, save the structure back
-  — but nothing in `GoblinCave` loads `goblin_hall.nbt` yet; the carve puts no blocks down at all.
 - **The camp outside the door.** The old cave had one; the cut is only the cave. A camp is a template
   `Sites` could place by its door (`DOORWAYS` carries a sill and a facing), or a new small build.
 - **Ulmug and his folk.** `/tmcave cut` places no blocks and no bodies: the cave is empty. Page 27's

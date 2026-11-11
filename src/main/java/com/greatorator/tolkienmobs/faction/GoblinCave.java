@@ -3,9 +3,14 @@ package com.greatorator.tolkienmobs.faction;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.material.Fluids;
 
 import javax.annotation.Nullable;
@@ -37,6 +42,14 @@ import java.util.Map;
 public final class GoblinCave {
     /** The pin the door is read from. A place name, so /tmpin, /tmtp and the catalogue all know it. */
     public static final String PIN = "goblins";
+
+    /**
+     * The hall's own structure, which is the same room this cut leaves written out as a template so it can
+     * be lived in: what the cut can do is take rock out, and a room somebody holds is floored, walled and
+     * furnished. Laid over the hollow the cut has already made, its bottom course is the hall's floor and
+     * its sides are the rock round it.
+     */
+    public static final String HALL = "tolkienmobs:goblin_hall";
 
     private static final int DROP = 40;           // how far the way in falls, from the door's ground
     private static final int RAMP = DROP * 2;     // one block down in two, so twice as far as it falls
@@ -120,7 +133,8 @@ public final class GoblinCave {
     private static final double FINE = 0.06;      // and how much of that is per two blocks
 
     /** What one cut came to, for the command to say. */
-    public record Result(BlockPos door, Direction into, int floor, int ceiling, int cells, int dropped) {
+    public record Result(BlockPos door, Direction into, int floor, int ceiling, int cells, int dropped,
+                         @Nullable BlockPos hall) {
     }
 
     private GoblinCave() {
@@ -176,7 +190,66 @@ public final class GoblinCave {
                 }
             }
         }
-        return new Result(pin, into, floor, floor + HALL_HEIGHT - 1, cells, dropped);
+        BlockPos hall = dress(level, pin, into, floor);
+        return new Result(pin, into, floor, floor + HALL_HEIGHT - 1, cells, dropped, hall);
+    }
+
+    /**
+     * Lays the hall's structure into the room the cut has just made, so the hall is a room somebody made
+     * rather than bare rock: the file carries the floor course the cut leaves to whatever the hill had, and
+     * whatever has been saved into it since - a hall furnished by hand is a hall that gets placed.
+     * <p>
+     * The file is the same {@code hall()} this cut uses, written out by {@code tools/hall_structure.py}, so
+     * it lands over the hollow rather than beside it. Its own axes are x across the way in and z into the
+     * hill; here that is turned to face the way this world's hill happens to rise, because which way the
+     * cave runs is read from the ground rather than given.
+     */
+    @Nullable
+    public static BlockPos dress(ServerLevel level, BlockPos door, Direction into, int floor) {
+        StructureTemplate hall = level.getStructureManager().get(Identifier.parse(HALL)).orElse(null);
+        if (hall == null) return null;
+        StructurePlaceSettings settings = new StructurePlaceSettings()
+                .setRotation(rotationFor(into))
+                .setIgnoreEntities(false);
+        // The corner the file is laid from is the near corner of the hall's floor course - one course below
+        // the hall's own floor, which is the floor the file carries - and not the door, which is the ramp's
+        // far end. The file's x runs from the far side of the room back towards the near one, so the corner
+        // is taken across the way in rather than along it.
+        BlockPos corner = door.relative(into, HALL_BACK)
+                .relative(into.getClockWise(), HALL_SIDE + 1)
+                .atY(floor - 1);
+        // The template's own box is not anchored at (0,0,0) once it is turned, so the corner the caller
+        // wants is the minimum of the turned box rather than the position handed to the placing.
+        BoundingBox box = hall.getBoundingBox(settings, BlockPos.ZERO);
+        BlockPos anchor = corner.offset(-box.minX(), -box.minY(), -box.minZ());
+        hall.placeInWorld(level, anchor, anchor, settings, level.getRandom(), 2);
+        return corner;
+    }
+
+    /**
+     * Lays the hall again at this world's goblin pin, for a hall that has been furnished since it was cut:
+     * save the decorated room over {@code goblin_hall.nbt} and this puts it back in, without cutting the cave
+     * again.
+     */
+    @Nullable
+    public static BlockPos dress(ServerLevel level) {
+        BlockPos pin = Pins.at(level, PIN);
+        if (pin == null || !TolkienDimensions.ARDA.equals(level.dimension())) return null;
+        Map<Long, Integer> ground = new HashMap<>();
+        Integer surface = ground(level, pin.getX(), pin.getZ(), ground);
+        if (surface == null) return null;
+        Direction into = steepest(level, pin.getX(), pin.getZ(), surface, ground);
+        return dress(level, pin, into, surface - DROP);
+    }
+
+    /** The quarter turn that puts the file's plus-z, which is south, along the way into this hill. */
+    private static Rotation rotationFor(Direction into) {
+        return switch (into) {
+            case SOUTH -> Rotation.NONE;
+            case WEST -> Rotation.CLOCKWISE_90;
+            case NORTH -> Rotation.CLOCKWISE_180;
+            default -> Rotation.COUNTERCLOCKWISE_90;
+        };
     }
 
     /** Whether the plan puts cave air at one door-relative cell, before the hill is consulted. */

@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.faction;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -31,7 +32,8 @@ public final class CaveCommands {
         dispatcher.register(Commands.literal("tmcave")
                 .requires(source -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source))
                 .executes(CaveCommands::cut)
-                .then(Commands.literal("cut").executes(CaveCommands::cut)));
+                .then(Commands.literal("cut").executes(CaveCommands::cut))
+                .then(Commands.literal("dress").executes(CaveCommands::dress)));
     }
 
     /** Cuts the goblin cave behind this world's pin, and reports the cut. */
@@ -50,7 +52,32 @@ public final class CaveCommands {
         source.sendSuccess(() -> Component.literal("Cut the goblin cave at " + result.door().toShortString()
                 + ", entered towards " + result.into().getName() + ": " + result.cells() + " blocks out, "
                 + result.dropped() + " dropped where the hill was too shallow to roof them, floor "
-                + result.floor() + " to ceiling " + result.ceiling() + "."), true);
+                + result.floor() + " to ceiling " + result.ceiling()
+                + (result.hall() != null
+                ? ", hall laid from " + result.hall().toShortString() + "."
+                : ", no hall: tolkienmobs:goblin_hall is not in the pack.")), true);
         return result.cells();
+    }
+
+    /**
+     * Lays the hall's structure over the hall the cut made, without cutting the cave again: the way a hall
+     * furnished by hand gets back into the world, by saving the decorated room over its template and asking
+     * for it here.
+     */
+    private static int dress(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getLevel() instanceof ServerLevel level)) {
+            source.sendFailure(Component.literal("A cave is dressed in Arda - stand where the door is first."));
+            return 0;
+        }
+        BlockPos hall = GoblinCave.dress(level);
+        if (hall == null) {
+            source.sendFailure(Component.literal("No goblin cave to dress at: /tmpin place " + GoblinCave.PIN
+                    + " first, or tolkienmobs:goblin_hall is not in the pack."));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal("Dressed the goblin hall from its structure, laid from "
+                + hall.toShortString() + "."), true);
+        return 1;
     }
 }
