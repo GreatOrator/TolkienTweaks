@@ -31,17 +31,19 @@ public final class GoblinCave {
     /** The pin the door is read from. A place name, so /tmpin, /tmtp and the catalogue all know it. */
     public static final String PIN = "goblins";
 
-    private static final int RAMP = 16;          // blocks the way in runs before the landing
-    private static final int DROP = 8;           // blocks it falls over that run, so one in two
-    private static final int HALL_BACK = 22;     // where the hall starts, past the door
-    private static final int HALL_FRONT = 38;    // and where it ends
-    private static final int HALL_SIDE = 7;      // half its width
-    private static final int HALL_UP = 1;        // its ceiling, against the door's own ground
-    private static final int CHAMBER_NEAR = 12;  // how far out the chambers start
-    private static final int CHAMBER_FAR = 20;   // and how far they reach
-    private static final int CHAMBER_BACK = 2;   // past the hall's wall
+    private static final int DROP = 40;           // how far the way in falls, from the door's ground
+    private static final int RAMP = DROP * 2;     // one block down in two, so twice as far as it falls
+    private static final int HALL_BACK = RAMP + 6;        // where the hall starts, past the door
+    private static final int HALL_FRONT = HALL_BACK + 16; // and where it ends
+    private static final int HALL_SIDE = 7;       // half its width
+    private static final int HALL_HEIGHT = 10;    // the hall's own headroom
+    private static final int LANDING_HEIGHT = 5;  // the landing's, and the passages' to the chambers
+    private static final int LANDING_SIDE = 3;    // half the landing's width
+    private static final int CHAMBER_NEAR = 12;   // how far out the chambers start
+    private static final int CHAMBER_FAR = 20;    // and how far they reach
+    private static final int CHAMBER_BACK = 2;    // past the hall's wall
     private static final int CHAMBER_FRONT = 11;
-    private static final int CHAMBER_UP = -3;    // their ceiling, against the door's own ground
+    private static final int CHAMBER_HEIGHT = 6;  // the chambers' own headroom
     private static final int ROOF = 3;           // rock kept between the cave and the sky above it
     private static final int OPEN = 4;           // the way in's own blocks, cut through the surface
     private static final int OUTSIDE = 1;        // blocks cut in front of the door, so it is not walled in
@@ -105,7 +107,7 @@ public final class GoblinCave {
                 }
             }
         }
-        return new Result(pin, into, floor, floor + DROP + HALL_UP, cells, dropped);
+        return new Result(pin, into, floor, floor + HALL_HEIGHT - 1, cells, dropped);
     }
 
     /** The plan's own void at one door-relative cell: {@code {bottom, top}}, or null for rock. */
@@ -117,16 +119,18 @@ public final class GoblinCave {
             int low = rampFloor(a, floor);
             return new int[]{low, low + 3};
         }
-        if (a >= RAMP - 2 && a <= HALL_BACK && sideways <= 3) return new int[]{floor, floor + 4};
+        if (a >= RAMP - 2 && a <= HALL_BACK && sideways <= LANDING_SIDE) {
+            return new int[]{floor, floor + LANDING_HEIGHT - 1};
+        }
         if (a >= HALL_BACK && a <= HALL_FRONT && sideways <= HALL_SIDE) {
-            return new int[]{floor, floor + DROP + HALL_UP};
+            return new int[]{floor, floor + HALL_HEIGHT - 1};
         }
         if (a >= HALL_BACK + 4 && a <= HALL_BACK + 6 && sideways <= CHAMBER_FAR) {
-            return new int[]{floor, floor + 4};
+            return new int[]{floor, floor + LANDING_HEIGHT - 1};
         }
         if (a >= HALL_BACK + CHAMBER_BACK && a <= HALL_BACK + CHAMBER_FRONT
                 && sideways >= CHAMBER_NEAR && sideways <= CHAMBER_FAR) {
-            return new int[]{floor, floor + DROP + CHAMBER_UP};
+            return new int[]{floor, floor + CHAMBER_HEIGHT - 1};
         }
         return null;
     }

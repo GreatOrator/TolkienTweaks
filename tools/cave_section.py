@@ -34,15 +34,19 @@ import world_height as wh
 
 ARDA = "tolkienmobs:arda"
 ROOF = 3          # blocks of rock kept between a cave and the sky above it
-RAMP = 16         # blocks the way in runs before the landing
-DROP = 8          # blocks it falls over that run
-HALL_BACK = 22    # where the hall starts, in blocks past the door
-HALL_FRONT = 38   # and where it ends
-HALL_SIDE = 7     # half its width
-HALL_UP = 1       # its ceiling, relative to the door's own ground
-FLOOR = -DROP     # every floor stands this far under the door
+DROP = 40          # how far the way in falls, from the door's own ground
+RAMP = DROP * 2    # one block down in two, so the way in runs twice as far as it falls
+HALL_BACK = RAMP + 6          # where the hall starts, in blocks past the door
+HALL_FRONT = HALL_BACK + 16   # and where it ends
+HALL_SIDE = 7      # half its width
+HALL_HEIGHT = 10   # the hall's own headroom
+LANDING_HEIGHT = 5 # the landing's, and the passages' out to the chambers
+LANDING_SIDE = 3   # half the landing's width
+FLOOR = -DROP      # every floor stands this far under the door
 CHAMBER_SIDE = (12, 20)
-CHAMBER_UP = -3
+CHAMBER_BACK = 2
+CHAMBER_FRONT = 11
+CHAMBER_HEIGHT = 6
 DIRECTIONS = {"north": (0, -1), "south": (0, 1), "west": (-1, 0), "east": (1, 0)}
 
 
@@ -124,15 +128,16 @@ class Plan:
             return low, low + 3
         # The landing runs to the hall's own back wall rather than stopping short of it: a cave whose
         # rooms are each closed off by a block of rock is a cave with no way through.
-        if RAMP - 2 <= a <= HALL_BACK and abs(s) <= 3:
-            return self.floor, self.floor + 4
+        if RAMP - 2 <= a <= HALL_BACK and abs(s) <= LANDING_SIDE:
+            return self.floor, self.floor + LANDING_HEIGHT - 1
         if HALL_BACK <= a <= HALL_FRONT and abs(s) <= HALL_SIDE:
-            return self.floor, self.floor + DROP + HALL_UP
+            return self.floor, self.floor + HALL_HEIGHT - 1
         # A passage out to each side chamber, or the chambers are two sealed rooms beside a hall.
         if HALL_BACK + 4 <= a <= HALL_BACK + 6 and abs(s) <= CHAMBER_SIDE[1]:
-            return self.floor, self.floor + 4
-        if HALL_BACK + 2 <= a <= HALL_BACK + 11 and CHAMBER_SIDE[0] <= abs(s) <= CHAMBER_SIDE[1]:
-            return self.floor, self.floor + DROP + CHAMBER_UP
+            return self.floor, self.floor + LANDING_HEIGHT - 1
+        if (HALL_BACK + CHAMBER_BACK <= a <= HALL_BACK + CHAMBER_FRONT
+                and CHAMBER_SIDE[0] <= abs(s) <= CHAMBER_SIDE[1]):
+            return self.floor, self.floor + CHAMBER_HEIGHT - 1
         return None
 
     def cut(self):
@@ -185,11 +190,18 @@ def uphill(patch, door, floor):
 
 
 def section(plan, title, fixed, span, along, ys):
-    """One vertical slice: `along` is the axis that runs across the page, `fixed` the other."""
-    print("\n%s" % title)
-    for y in range(ys[1], ys[0] - 1, -1):
+    """One vertical slice: `along` is the axis that runs across the page, `fixed` the other.
+
+    A cave deeper or longer than the page is drawn coarsely rather than off its edge: the slice takes
+    every second or third block when it has to, and says what it took.
+    """
+    across = max(1, (span[1] - span[0] + 1) // 56)
+    down = max(1, (ys[1] - ys[0] + 1) // 26)
+    print("\n%s  (every %d block%s across, %d down)"
+          % (title, across, "" if across == 1 else "s", down))
+    for y in range(ys[1], ys[0] - 1, -down):
         row = []
-        for step in range(span[0], span[1] + 1):
+        for step in range(span[0], span[1] + 1, across):
             a, s = (step, fixed) if along == "a" else (fixed, step)
             x, z = plan.at(a, s)
             top = height(plan.patch, x, z)
@@ -211,10 +223,13 @@ def section(plan, title, fixed, span, along, ys):
 
 
 def plan_view(plan, y, span_a, span_s):
-    print("\nthe plan, at y %d:" % y)
-    for s in range(span_s[0], span_s[1] + 1):
+    across = max(1, (span_a[1] - span_a[0] + 1) // 56)
+    rows = max(1, (span_s[1] - span_s[0] + 1) // 30)
+    print("\nthe plan, at y %d  (every %d block%s in, %d across):"
+          % (y, across, "" if across == 1 else "s", rows))
+    for s in range(span_s[0], span_s[1] + 1, rows):
         row = []
-        for a in range(span_a[0], span_a[1] + 1):
+        for a in range(span_a[0], span_a[1] + 1, across):
             x, z = plan.at(a, s)
             top = height(plan.patch, x, z)
             if top is None:
@@ -262,11 +277,11 @@ def main(argv):
 
     plan = Plan(door, here, direction, patch)
     floor = here + FLOOR
-    ceiling = here + HALL_UP
+    ceiling = floor + HALL_HEIGHT - 1
     print("\nthe cut: mouth at the door on %d, landing at %d, hall floor %d to ceiling %d"
           % (here, floor, floor, ceiling))
-    print("         the grade falls %d blocks over %d, one in %.1f"
-          % (DROP, RAMP, RAMP / float(DROP)))
+    print("         the way in falls %d blocks over %d at the walk, one block down in two"
+          % (DROP, RAMP))
     print("         %s cells of cave, %d dropped where the hill was too shallow to roof them"
           % (format(len(plan.cells), ","), plan.dropped))
     far = plan.at(HALL_FRONT, 0)
