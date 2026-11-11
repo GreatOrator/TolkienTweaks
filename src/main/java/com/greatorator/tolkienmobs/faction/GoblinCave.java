@@ -1,7 +1,10 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -15,6 +18,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,8 +31,10 @@ import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The goblin cave page 27 hunts Ulmug in, cut into the hill behind a pinned door.
@@ -85,6 +92,14 @@ public final class GoblinCave {
     public static final int FOLK = 5;
     /** How near the door a player has to be for the hall's folk to be stood, in blocks. */
     private static final double FOLK_WAY = 64.0D;
+    /** The tag one of the hall's goblins wears, so exactly one of them is carrying the key. */
+    public static final String KEY_TAG = "tolkienmobs:goblin_hall_key";
+    /**
+     * The halls that have already given up their key, so a hall hands over one key and not a key per goblin
+     * that takes the carrier's place. Kept for the session: a world restarted after the key was taken can arm
+     * a carrier again if the hall is stood afresh, which is the one case this does not remember.
+     */
+    private static final Set<Long> KEYED = new HashSet<>();
 
     private static final int DROP = 40;           // how far the way in falls, from the door's ground
     private static final int RAMP = DROP * 2;     // one block down in two, so twice as far as it falls
@@ -294,13 +309,7 @@ public final class GoblinCave {
         if (!(player.level() instanceof ServerLevel level)) return;
         if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
         if (!onGoblinPage(player)) return;
-        BlockPos door = Pins.at(level, PIN);
-        if (door == null || !level.hasChunkAt(door)) return;
-        Map<Long, Integer> ground = new HashMap<>();
-        Integer surface = ground(level, door.getX(), door.getZ(), ground);
-        if (surface == null) return;
-        Direction into = steepest(level, door.getX(), door.getZ(), surface, ground);
-        AABB hall = hallBox(level, door, into, surface - DROP);
+        AABB hall = hallAt(level);
         if (hall == null || !hall.inflate(FOLK_WAY).contains(player.position())) return;
         List<Entity> kings = level.getEntities((Entity) null, hall.inflate(4.0D),
                 found -> found.entityTags().contains(ULMUG_TAG));
@@ -312,11 +321,77 @@ public final class GoblinCave {
             if (bench == null) return;
             stand(level, TolkienEntities.ENTITY_TTM_GOBLINKING.get(), beside(level, bench), ULMUG_TAG, ULMUG);
         }
+        // One of the fires carries the key to the hall's own chest, and only one. The carrier is marked as the
+        // folk are stood, and a hall that has already given its key up arms nobody else - so the key is one
+        // body's, not a purse every goblin in the room is holding.
+        boolean keyed = KEYED.contains(keyOf(hall));
         for (int stood = folk.size(); stood < FOLK; stood++) {
             BlockPos spot = floor(level, hall);
             if (spot == null) continue;
-            stand(level, TolkienEntities.ENTITY_TTM_GOBLIN.get(), spot, FOLK_TAG, null);
+            Mob goblin = stand(level, TolkienEntities.ENTITY_TTM_GOBLIN.get(), spot, FOLK_TAG, null);
+            if (goblin != null && !keyed) {
+                goblin.addTag(KEY_TAG);
+                keyed = true;
+            }
         }
+    }
+
+    /**
+     * Drops the hall's key from the one goblin carrying it, cut to the code the hall's own chest is set to.
+     * <p>
+     * The code is read off the chest rather than written here, which is the whole point: the template carries
+     * the chest and the chest carries the code, so a hall furnished and saved again moves both together and
+     * the key still opens the chest it was found in. A hall with no lockable chest in it has nothing to cut a
+     * key to, and gives none up.
+     */
+    public static void dropKey(ServerLevel level, Mob goblin) {
+        if (!goblin.entityTags().contains(KEY_TAG)) return;
+        AABB hall = hallAt(level);
+        if (hall == null) return;
+        // Asked before the code is looked for: one key a hall, whether or not this one finds a chest to fit.
+        if (!KEYED.add(keyOf(hall))) return;
+        String code = chestCode(level, hall);
+        if (code.isEmpty()) return;
+        ItemStack key = new ItemStack(TolkienItems.MASTER_KEY.get());
+        KeyItem.setKeyData(key, code, 3, true);
+        ItemEntity drop = new ItemEntity(level, goblin.getX(), goblin.getY() + 0.5D, goblin.getZ(), key);
+        drop.setDefaultPickUpDelay();
+        level.addFreshEntity(drop);
+    }
+
+    /** The code the hall's lockable chest is set to, or an empty string when the hall has none set. */
+    private static String chestCode(ServerLevel level, AABB hall) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int y = (int) hall.minY; y < (int) hall.maxY; y++) {
+            for (int x = (int) hall.minX; x < (int) hall.maxX; x++) {
+                for (int z = (int) hall.minZ; z < (int) hall.maxZ; z++) {
+                    cursor.set(x, y, z);
+                    if (!(level.getBlockEntity(cursor) instanceof LockableChestBlockEntity chest)) continue;
+                    String code = chest.getKeyCode();
+                    // The attachment's own default is a prompt rather than a code, and a chest nobody has set
+                    // is a chest a key cannot be cut for.
+                    if (code != null && !code.isEmpty() && !code.equals("Enter Code")) return code;
+                }
+            }
+        }
+        return "";
+    }
+
+    /** The hall as it stands in this world, or null when there is no door to measure it from. */
+    @Nullable
+    private static AABB hallAt(ServerLevel level) {
+        BlockPos door = Pins.at(level, PIN);
+        if (door == null || !level.hasChunkAt(door)) return null;
+        Map<Long, Integer> ground = new HashMap<>();
+        Integer surface = ground(level, door.getX(), door.getZ(), ground);
+        if (surface == null) return null;
+        Direction into = steepest(level, door.getX(), door.getZ(), surface, ground);
+        return hallBox(level, door, into, surface - DROP);
+    }
+
+    /** One hall, as a number, for the set of halls that have already given their key up. */
+    private static long keyOf(AABB hall) {
+        return BlockPos.containing(hall.minX, hall.minY, hall.minZ).asLong();
     }
 
     /** Whether this player is carrying page 27's hunt, which is the only reason the fires are lit. */
@@ -413,11 +488,12 @@ public final class GoblinCave {
     }
 
     /** Stands one body at a spot, named when it is somebody, tagged so the next look finds it. */
-    private static void stand(ServerLevel level, EntityType<? extends Mob> type, @Nullable BlockPos spot,
-                              String tag, @Nullable String name) {
-        if (spot == null) return;
+    @Nullable
+    private static Mob stand(ServerLevel level, EntityType<? extends Mob> type, @Nullable BlockPos spot,
+                             String tag, @Nullable String name) {
+        if (spot == null) return null;
         Mob body = type.create(level, EntitySpawnReason.EVENT);
-        if (body == null) return;
+        if (body == null) return null;
         body.snapTo(spot.getX() + 0.5D, spot.getY(), spot.getZ() + 0.5D,
                 level.getRandom().nextFloat() * 360.0F, 0.0F);
         body.setPersistenceRequired();
@@ -427,6 +503,7 @@ public final class GoblinCave {
             body.setCustomNameVisible(true);
         }
         level.addFreshEntity(body);
+        return body;
     }
 
     /** The quarter turn that puts the file's plus-z, which is south, along the way into this hill. */

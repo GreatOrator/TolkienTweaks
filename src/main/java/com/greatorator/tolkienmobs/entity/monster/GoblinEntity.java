@@ -9,6 +9,7 @@ import com.greatorator.tolkienmobs.entity.ai.goal.GoblinPanicOnFlockDeathGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
+import com.greatorator.tolkienmobs.faction.GoblinCave;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -90,6 +91,17 @@ public class GoblinEntity extends TolkienMonsterEntity implements GeoEntity {
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TolkienItems.AXE_MORGULIRON.get()));
+    }
+
+    /**
+     * The one goblin in Ulmug's hall who carries the key gives it up when it falls. Which one that is is the
+     * hall's business rather than this class's: the goblin only asks, and a goblin anywhere else in the world
+     * asks and is told no.
+     */
+    @Override
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
+        super.dropCustomDeathLoot(level, source, recentlyHit);
+        GoblinCave.dropKey(level, this);
     }
 
     /**

@@ -165,6 +165,13 @@ The book says his name. The story leaf draws `Campaign.aside(story)` under the c
 6 Goblin* counted a king it never named. It is a line and not a second counter: the six are one count, and
 a page showing five goblins and a king apart would be asking for two things where the chapter asks one.
 
+**One of the folk carries the key.** The hall's chest is set to `DungeonKey`, and one of the five goblins is
+tagged as its carrier as the hall stands them - one body, not a purse each. When the carrier falls,
+`GoblinCave.dropKey` reads the code off the hall's own lockable chest and cuts a `master_key` to it (3
+uses, reusable), so the key always fits the chest in the room it was taken from and a hall saved again
+with a new code moves both together. A hall that has given its key up arms no second carrier that
+session, and a hall with no chest in it gives none up at all.
+
 ## Where it stands
 
 -Cut and drawn at the test pin **5628, 196, -3621** in `run/saves/Serious Test`: ground 197 as the save
