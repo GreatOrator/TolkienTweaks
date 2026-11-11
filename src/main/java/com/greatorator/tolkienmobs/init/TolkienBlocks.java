@@ -2095,6 +2095,10 @@ public class TolkienBlocks {
             properties -> new LogBenchBlock(properties),
             BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(2.0F)
                     .noOcclusion());
+    public static final DeferredBlock<Block> COOKING_RACK = registerBlock("cooking_rack",
+            properties -> new CookingRackBlock(properties),
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(1.0F)
+                    .noCollision().noOcclusion());
     public static final DeferredBlock<Block> ARDA_PORTAL = registerBlockWithoutBlockItem("arda_portal", properties -> new ArdaPortalBlock(properties),
             BlockBehaviour.Properties.of().strength(-1F).noCollision().lightLevel((state) -> 10).noLootTable());
     public static final DeferredBlock<Block> ANCIENT_WATCHER = registerBlock("ancient_watcher",

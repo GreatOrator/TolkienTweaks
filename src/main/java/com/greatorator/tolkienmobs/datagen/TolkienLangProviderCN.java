@@ -838,6 +838,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("block.tolkienmobs.notice_board", "告示板");
         this.add("block.tolkienmobs.workbench", "工作台");
         this.add("block.tolkienmobs.log_bench", "原木长椅");
+        this.add("block.tolkienmobs.cooking_rack", "烹饪架");
         this.add("item.tolkienmobs.mercenary_contract", "佣兵契约");
         this.add("item.tolkienmobs.mercenary_contract.blank", "上面还没有写任何内容。");
         this.add("item.tolkienmobs.mercenary_contract.named", "契约：%s 名%s士兵");

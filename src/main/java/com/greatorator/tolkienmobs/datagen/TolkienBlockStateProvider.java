@@ -948,6 +948,11 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         horizontalBlock(TolkienBlocks.LOG_BENCH.get(), models().getExistingFile(modLoc("block/log_bench")), 180);
         blockItem(TolkienBlocks.LOG_BENCH);
 
+        // The cooking rack is drawn from its own model: a tripod standing with its fire beneath it,
+        // its poles reaching down into the block below and up past the one above.
+        simpleBlock(TolkienBlocks.COOKING_RACK.get(), models().getExistingFile(modLoc("block/cooking_rack")));
+        blockItem(TolkienBlocks.COOKING_RACK);
+
         blockItem(TolkienBlocks.TRINKET_TABLE);
         simpleBlockItem(TolkienBlocks.FIREPLACE.get(), models().getExistingFile(modLoc("block/fireplace_active")));
         blockItem(TolkienBlocks.PIGGYBANK);
