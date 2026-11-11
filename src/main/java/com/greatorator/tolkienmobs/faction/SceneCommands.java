@@ -18,10 +18,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -77,6 +80,11 @@ public final class SceneCommands {
                         .executes(context -> marks(context, 16))
                         .then(Commands.argument("radius", IntegerArgumentType.integer(2, 64))
                                 .executes(context -> marks(context,
+                                        IntegerArgumentType.getInteger(context, "radius")))))
+                .then(Commands.literal("route")
+                        .executes(context -> route(context, 64))
+                        .then(Commands.argument("radius", IntegerArgumentType.integer(2, 128))
+                                .executes(context -> route(context,
                                         IntegerArgumentType.getInteger(context, "radius"))))));
     }
 
@@ -229,6 +237,63 @@ public final class SceneCommands {
                     "command.tolkienmobs.scene.marks.exit", where(roadStart)), false);
         }
         return found.size();
+    }
+
+    /**
+     * Reads the walk out's own marks: ammolite laid along the route, numbered outwards from the courtyard.
+     * A body's standing spot is not a place on the road, so the plaza's own cast marks are skipped rather than
+     * counted - the same stone can be both - and the rest are written as {@code rivendell.scene.walk.<n>} and
+     * reported in the order they were found in.
+     */
+    private static int route(CommandContext<CommandSourceStack> context, int radius)
+            throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        if (!(player.level() instanceof ServerLevel level)) return 0;
+        BlockPos middle = player.blockPosition();
+        BlockPos from = Pins.at(level, Departure.GATHER_PIN);
+        if (from == null) from = middle;
+        Set<Long> castColumns = new HashSet<>();
+        for (Mark mark : MARKS) {
+            BlockPos at = Pins.at(level, Departure.bodyPin(mark.slug()));
+            if (at != null) castColumns.add(column(at.getX(), at.getZ()));
+        }
+        Block stone = TolkienBlocks.BLOCK_AMMOLITE.get();
+        List<BlockPos> found = new ArrayList<>();
+        for (BlockPos pos : BlockPos.betweenClosed(middle.offset(-radius, -radius, -radius),
+                middle.offset(radius, radius, radius))) {
+            if (level.getBlockState(pos).getBlock() != stone) continue;
+            BlockPos at = pos.immutable();
+            // The standing spot a cast mark gives is the air above its block, so the column is what matches.
+            if (castColumns.contains(column(at.getX(), at.getZ()))) continue;
+            found.add(at);
+        }
+        if (found.isEmpty()) {
+            context.getSource().sendFailure(Component.translatable("command.tolkienmobs.scene.route.none",
+                    Component.literal(Integer.toString(radius))));
+            return 0;
+        }
+        double fromX = from.getX() + 0.5D;
+        double fromY = from.getY();
+        double fromZ = from.getZ() + 0.5D;
+        // Numbered outwards from the courtyard, which is the order they read in if the route leads away.
+        found.sort(Comparator.comparingDouble(at -> at.distToCenterSqr(fromX, fromY, fromZ)));
+        context.getSource().sendSuccess(() -> Component.translatable("command.tolkienmobs.scene.route",
+                Component.literal(Integer.toString(found.size()))), false);
+        int index = 0;
+        for (BlockPos at : found) {
+            index++;
+            int n = index;
+            BlockPos stand = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at);
+            Pins.set(level, Departure.walkPin(n), stand);
+            context.getSource().sendSuccess(() -> Component.translatable("command.tolkienmobs.scene.route.set",
+                    Component.literal(Integer.toString(n)), where(stand)), false);
+        }
+        return index;
+    }
+
+    /** Two coordinates as one key, so a block can be matched to the column above it. */
+    private static long column(int x, int z) {
+        return ((long) x << 32) ^ (z & 0xFFFFFFFFL);
     }
 
     /** A block as a player reads it, for a report line. */

@@ -380,6 +380,11 @@ public final class Departure {
         return GATHER_PIN + "." + slug;
     }
 
+    /** The pin for one mark of the walk out, numbered outwards from the courtyard. */
+    public static String walkPin(int n) {
+        return GATHER_PIN + ".walk." + n;
+    }
+
     /**
      * Where the walk out begins, read off the plaza's own marks: the ring's open side, a few blocks past
      * the outermost body, on the bearing from Elrond through the Company. No mark of its own is needed -

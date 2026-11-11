@@ -364,3 +364,14 @@ as the plaza comes into view and is already fading when the Company speaks. The 
 A tag - `tolkienmobs:plaza_named` - keeps it to one showing, since that check runs once a second and the
 scene would otherwise be introduced to itself on every tick. `/tmscene forget` removes the tag with the
 note and the having-seen, so a re-walk of the seam gets the banner again.
+
+## Reading the route - 10 November 2026
+
+`/tmscene route [radius]` reads ammolite laid along the walk out - sixty-four blocks unless told
+otherwise - and numbers it outwards from the gathering mark, pinning each mark as
+`rivendell.scene.walk.<n>` at the ground above it. The plaza's own cast marks are matched by column and
+skipped, since one of them is ammolite as well: the numbers that come back are the road's.
+
+The numbers are the order the marks read in from the courtyard. A route that doubles back or runs round
+the plaza's edge will not sort the way it was laid, so the printed coordinates are worth checking against
+the legend before they are baked into the build.
