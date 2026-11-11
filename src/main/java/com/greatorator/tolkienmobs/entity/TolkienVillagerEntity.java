@@ -40,6 +40,8 @@ public class TolkienVillagerEntity extends Villager implements GeoEntity {
     private static final EntityDataAccessor<Boolean> SCENE_BODY = SynchedEntityData.defineId(TolkienVillagerEntity.class, EntityDataSerializers.BOOLEAN);
     /** Whether this body's line is the one being said, which is when its rig lifts an arm. */
     private static final EntityDataAccessor<Boolean> SPEAKING = SynchedEntityData.defineId(TolkienVillagerEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Whether this body is walking out in one of the mod's scenes, which is when its rig takes strides. */
+    private static final EntityDataAccessor<Boolean> WALKING = SynchedEntityData.defineId(TolkienVillagerEntity.class, EntityDataSerializers.BOOLEAN);
 
     public TolkienVillagerEntity(EntityType<? extends TolkienVillagerEntity> entityType, Level level) {
         super(entityType, level);
@@ -65,6 +67,18 @@ public class TolkienVillagerEntity extends Villager implements GeoEntity {
 
     public void setSpeaking(boolean speaking) {
         this.entityData.set(SPEAKING, speaking);
+    }
+
+    /**
+     * Whether this body is walking. A body on its way out of a scene is moved rather than navigating, so the
+     * client never sees it walk: this is the one fact the renderer needs to draw a stride of its own.
+     */
+    public boolean isSceneWalking() {
+        return this.entityData.get(WALKING);
+    }
+
+    public void setSceneWalking(boolean walking) {
+        this.entityData.set(WALKING, walking);
     }
 
     /** The hall idle: the yaw this body was placed at, captured the first time it is asked. */
@@ -156,6 +170,7 @@ public class TolkienVillagerEntity extends Villager implements GeoEntity {
         builder.define(VARIANT, 0);
         builder.define(SCENE_BODY, false);
         builder.define(SPEAKING, false);
+        builder.define(WALKING, false);
     }
 
     private int getTypeVariant() {

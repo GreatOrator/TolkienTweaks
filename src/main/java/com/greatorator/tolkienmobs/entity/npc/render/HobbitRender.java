@@ -95,7 +95,7 @@ public class HobbitRender extends GeoEntityRenderer<HobbitEntity, TolkienGeoRend
         // unnamed villager is not a case worth guarding against - there is no name to read.
         Component name = animatable.getCustomName();
         renderState.giverName = name == null ? "" : name.getString();
-        HumanRender.sceneData(animatable, renderState);
+        HumanRender.sceneData(animatable, renderState, partialTick);
     }
 
     /** The model's own scaling, which 5 applies here rather than in preRender. */

@@ -701,6 +701,8 @@ public final class Departure {
                 show.walking.remove(id);
                 continue;
             }
+            // The renderer draws the walk; what it needs to know is only that this body is on its way.
+            if (body instanceof TolkienVillagerEntity villager) villager.setSceneWalking(true);
             double dx = to[0] - body.getX();
             double dz = to[2] - body.getZ();
             double gap = Math.sqrt(dx * dx + dz * dz);

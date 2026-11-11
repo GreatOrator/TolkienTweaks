@@ -416,3 +416,15 @@ length of the road the owner marked, not a fixed forty-eight blocks.
 
 Elrond and Bilbo go the other way: twenty-four blocks back down the road towards the valley, pair
 abreast, and gone there - far enough that nobody vanishes inside the courtyard.
+
+## The stride - 10 November 2026
+
+A body walking out is stepped by the scene, not driven by AI, so its position changes but nothing the
+client sees says it is walking: no limb swing, and nine people gliding up the road. One synched flag
+(`WALKING` on the villager, read as `sceneWalking`) says a body is on its way, and `HumanRender.sceneBones`
+swings `rightLeg` and `leftLeg` either way by twenty-six degrees with the arms against them, off the
+body's own `tickCount` with the partial tick folded in. Nothing is shared between bodies, so they are
+never in step; nothing is sent except the one flag, so the walk costs no packets.
+
+The hobbit and dwarf renderers get it through the same `sceneBones` call, and each body's own model
+supplies the bones - the three rigs all carry `leftLeg` and `rightLeg`.

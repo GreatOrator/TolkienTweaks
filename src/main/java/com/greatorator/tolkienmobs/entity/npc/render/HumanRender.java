@@ -205,6 +205,12 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
     private static final double SCENE_LOOK = 24.0D;
     /** Which way a positive head-bone rotation turns a face. Flip to -1 if a head looks away instead. */
     private static final float HEAD_SIGN = 1.0F;
+    /** Radians of stride per tick: a step every six ticks, which is the pace the walk is stepped at. */
+    private static final double STRIDE_RATE = 0.52D;
+    /** How far a walking leg swings either way, in degrees. */
+    private static final float STRIDE_SWING = 26.0F;
+    /** How much of the legs' swing the arms take up, which is less because a swinging arm reads as a march. */
+    private static final float ARM_SWING = 0.55F;
 
     /**
      * The scene's own facts, read off a body as it is extracted: whether it belongs to a scene, which way the
@@ -214,10 +220,15 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
      * has to say is "this body is the one talking" - one synched flag, sixty times a second of smooth motion
      * on the far side.
      */
-    public static void sceneData(TolkienVillagerEntity body, TolkienGeoRenderState renderState) {
+    public static void sceneData(TolkienVillagerEntity body, TolkienGeoRenderState renderState, float partialTick) {
         renderState.sceneBody = body.isSceneBody();
         if (!renderState.sceneBody) return;
         renderState.sceneSpeaking = body.isSpeaking();
+        // A body on its way out of the scene is moved rather than navigating, so nothing about its motion
+        // reaches the client. The stride is made in the renderer off the body's own age instead, which also
+        // means nine of them are never in step with each other.
+        renderState.sceneWalking = body.isSceneWalking();
+        renderState.sceneStride = body.tickCount + partialTick;
         float want = 0.0F;
         Player player = Minecraft.getInstance().player;
         if (player != null) {
@@ -244,10 +255,21 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         if (!renderState.sceneBody) return false;
         snapshots.ifPresent("head", bone ->
                 bone.setRotation(0f, renderState.headYaw * HEAD_SIGN * Mth.DEG_TO_RAD, 0f));
+        // The legs carry the walk: hips forward and back on the body's own beat, arms against them. Nothing
+        // else about the body moves, so the ground it was stood on stays where it was put.
+        float swing = renderState.sceneWalking
+                ? (float) Math.sin(renderState.sceneStride * STRIDE_RATE) * STRIDE_SWING * Mth.DEG_TO_RAD : 0.0F;
+        if (renderState.sceneWalking) {
+            snapshots.ifPresent("rightLeg", bone -> bone.setRotation(swing, 0f, 0f));
+            snapshots.ifPresent("leftLeg", bone -> bone.setRotation(-swing, 0f, 0f));
+            snapshots.ifPresent("leftArm", bone -> bone.setRotation(swing * ARM_SWING, 0f, 0f));
+        }
         if (renderState.armRaise > 0.01F) {
             // The arm comes forward and up rather than out to the side, which reads as a greeting.
             float raised = -80.0F * renderState.armRaise * Mth.DEG_TO_RAD;
             snapshots.ifPresent("rightArm", bone -> bone.setRotation(raised, 0f, 0f));
+        } else if (renderState.sceneWalking) {
+            snapshots.ifPresent("rightArm", bone -> bone.setRotation(-swing * ARM_SWING, 0f, 0f));
         }
         return true;
     }
@@ -283,7 +305,7 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         // lookup will ever ask about.
         var name = renderState.giverSkin > 0 || renderState.campKeeper ? animatable.getCustomName() : null;
         renderState.giverName = name == null ? "" : name.getString();
-        sceneData(animatable, renderState);
+        sceneData(animatable, renderState, partialTick);
     }
 
     /** A human child is drawn at half size; 5 applies that here rather than in preRender. */

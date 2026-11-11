@@ -78,6 +78,12 @@ public class TolkienGeoRenderState extends LivingEntityRenderState implements Ge
     /** How far the arm is up, nought to one, eased between frames. */
     public float armRaise;
 
+    /** Whether this body is walking in one of the mod's scenes, set by the renderer during extraction. */
+    public boolean sceneWalking;
+
+    /** Where in its stride a walking body is, in ticks, with the frame's part of a tick folded in. */
+    public float sceneStride;
+
     @Override
     public <D> void addGeckolibData(DataTicket<D> dataTicket, D data) {
         this.geckolibData.put(dataTicket, data);

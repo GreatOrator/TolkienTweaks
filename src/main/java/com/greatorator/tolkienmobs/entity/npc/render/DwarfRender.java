@@ -120,7 +120,7 @@ public class DwarfRender extends GeoEntityRenderer<DwarfEntity, TolkienGeoRender
         // is worth looking for; a village dwarf keeps his folk's clothes.
         Component name = animatable.getCustomName();
         renderState.giverName = name == null ? "" : name.getString();
-        HumanRender.sceneData(animatable, renderState);
+        HumanRender.sceneData(animatable, renderState, partialTick);
     }
 
     /** The model's own scaling, which 5 applies here rather than in preRender. */
