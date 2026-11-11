@@ -112,7 +112,8 @@ class Plan:
 
     def ramp_floor(self, a):
         """The way in falls from the door's own ground to the floor, over the ramp's length."""
-        return self.door_floor - round((a - 1) * DROP / (RAMP - 1))
+        # Integer division, as GoblinCave.rampFloor does it, so the drawing and the cut agree exactly.
+        return self.door_floor - (a - 1) * DROP // (RAMP - 1)
 
     def want(self, a, s):
         """The plan's own void, before the hill is consulted: (bottom, top) or None."""
