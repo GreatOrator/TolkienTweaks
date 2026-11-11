@@ -8,6 +8,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -54,6 +57,8 @@ public final class Departure {
     private static final String SUMMONS = "tolkienmobs:summons_courtyard";
     /** The scene has been watched, so the note is answered and page 26 may be handed over. */
     private static final String SEEN = "tolkienmobs:departure_seen";
+    /** The courtyard's name has been shown for this visit to the seam. */
+    private static final String NAMED = "tolkienmobs:plaza_named";
 
     /**
      * Where the company gathers, if the owner has marked it: the courtyard, as a pin of its own beside the
@@ -69,6 +74,10 @@ public final class Departure {
     private static final int GAP = 60;
     /** Ticks kept after the last line before the company is taken away and the page is handed over. */
     private static final int TAIL = 60;
+    /** The banner's timing in ticks: in, held, out - the numbers the command blocks use. */
+    private static final int TITLE_IN = 15;
+    private static final int TITLE_STAY = 50;
+    private static final int TITLE_OUT = 20;
     /** How far past the gathering mark a leaver walks before it is out of the courtyard, in blocks. */
     private static final double GONE = 24.0D;
     /** How far a body steps in one tick: a walking player's pace, so the legs keep their own rhythm. */
@@ -82,6 +91,9 @@ public final class Departure {
     private static final String SUMMON_SAID = "campaign.tolkienmobs.scene.summon";
     /** The line keys the scene speaks, numbered as the beat list reads them. */
     private static final String LINE = "campaign.tolkienmobs.scene.departure.";
+    /** The name the courtyard gives itself as the player comes to it. */
+    private static final String PLAZA_NAME = "campaign.tolkienmobs.scene.plaza";
+    private static final String PLAZA_LINE = "campaign.tolkienmobs.scene.plaza.line";
 
     /** The shows running, by player. A scene is one player's, since it is spoken to the one who came. */
     private static final Map<UUID, Show> SHOWS = new HashMap<>();
@@ -239,7 +251,26 @@ public final class Departure {
                 > GATHER_REACH * GATHER_REACH) {
             return;
         }
+        // The courtyard names itself as the player comes to it. Said here rather than in the tick above
+        // because this reach is what "arrived" means: the banner belongs to the step, not to the ground.
+        if (!player.entityTags().contains(NAMED)) name(player);
         start(player, level, at);
+    }
+
+    /**
+     * Says the courtyard's name over the player's screen, once. The packets are the ones the places already
+     * use - a title, its line under it, and the command blocks' own timing - so a banner here looks like a
+     * banner anywhere else in the campaign.
+     */
+    private static void name(ServerPlayer player) {
+        player.addTag(NAMED);
+        Component title = Component.translatable(PLAZA_NAME)
+                .withStyle(ChatFormatting.BOLD, ChatFormatting.ITALIC, ChatFormatting.GOLD);
+        Component line = Component.translatable(PLAZA_LINE)
+                .withStyle(ChatFormatting.BOLD, ChatFormatting.ITALIC);
+        player.connection.send(new ClientboundSetTitlesAnimationPacket(TITLE_IN, TITLE_STAY, TITLE_OUT));
+        player.connection.send(new ClientboundSetSubtitleTextPacket(line));
+        player.connection.send(new ClientboundSetTitleTextPacket(title));
     }
 
     /** Where the company is waiting: the owner's mark if there is one, and Elrond's own stand if not. */
@@ -584,5 +615,7 @@ public final class Departure {
         stop(player);
         player.removeTag(SUMMONS);
         player.removeTag(SEEN);
+        // The name goes with them, so walking the seam again is introduced to the courtyard again.
+        player.removeTag(NAMED);
     }
 }
