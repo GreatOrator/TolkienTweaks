@@ -53,6 +53,16 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.RECORD_FUMBLE.get())
                 .add(TolkienItems.RECORD_EDORAS.get())
                 .add(TolkienItems.RECORD_WBATTLE.get());
+        // The bench asks for a wooden trapdoor as its back, so the mod's own woods have to be in the
+        // item tag too - the block tag lists them, but nothing copies a block tag to the item side.
+        tag(ItemTags.WOODEN_TRAPDOORS)
+                .add(TolkienBlocks.TRAPDOOR_MALLORN.get().asItem())
+                .add(TolkienBlocks.TRAPDOOR_MIRKWOOD.get().asItem())
+                .add(TolkienBlocks.TRAPDOOR_CULUMALDA.get().asItem())
+                .add(TolkienBlocks.TRAPDOOR_LEBETHRON.get().asItem())
+                .add(TolkienBlocks.TRAPDOOR_FANGORNOAK.get().asItem())
+                .add(TolkienBlocks.TRAPDOOR_DEADWOOD.get().asItem())
+                .add(TolkienBlocks.TRAPDOOR_DWARVEN_MAPLE.get().asItem());
         tag(ItemTags.ARROWS)
                 .add(TolkienItems.GALADHRIM_ARROW.get())
                 .add(TolkienItems.UTUMNO_ARROW.get());
