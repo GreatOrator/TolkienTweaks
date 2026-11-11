@@ -92,6 +92,8 @@ public final class Departure {
     private static final double CLEAR = 8.0D;
     /** How far Elrond and Bilbo walk back down the road once the Company is gone, in blocks. */
     private static final double HOME = 24.0D;
+    /** How long Bilbo stands and watches the Company before he turns for the door, in ticks. */
+    private static final int LINGER = 80;
     /** How many marks of the owner's route are read, at most. */
     private static final int ROUTE_MARKS = 32;
     /** How far a body steps in one tick: a walking player's pace, so the legs keep their own rhythm. */
@@ -252,9 +254,17 @@ public final class Departure {
     private static final class Path {
         private final List<double[]> points;
         private int at;
+        /** Ticks this body stands still before it takes its first step: a body with something to watch. */
+        private int wait;
 
         private Path(List<double[]> points) {
             this.points = points;
+        }
+
+        /** Holds this walk for a while before it begins, for a body that has something to watch first. */
+        private Path lingering(int ticks) {
+            this.wait = ticks;
+            return this;
         }
 
         /** The point the body is walking at, or null once it has passed the last of them. */
@@ -640,7 +650,11 @@ public final class Departure {
             double tz = host.getZ() + 0.5D + bz * HOME + bx * side;
             BlockPos column = new BlockPos((int) Math.floor(tx), host.getY(), (int) Math.floor(tz));
             int ty = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column).getY();
-            show.walking.put(id, new Path(List.of(new double[]{tx, ty, tz})));
+            Path path = new Path(List.of(new double[]{tx, ty, tz}));
+            // Elrond turns for the door as the courtyard empties; Bilbo holds a moment longer and watches
+            // them go before he follows him in.
+            if (cast.slug().equals("bilbo")) path.lingering(LINGER);
+            show.walking.put(id, path);
         }
         show.walkAt = level.getGameTime();
     }
@@ -699,6 +713,15 @@ public final class Departure {
             double[] to = path == null ? null : path.next();
             if (body == null || to == null) {
                 show.walking.remove(id);
+                continue;
+            }
+            if (path.wait > 0) {
+                // A body held here is watching something go: it stands where it is, facing the way it
+                // watched, and takes its first step when its own time is up.
+                path.wait--;
+                float watching = yawTowards(body.getX() - to[0], body.getZ() - to[2]);
+                body.setYRot(watching);
+                body.setYBodyRot(watching);
                 continue;
             }
             // The renderer draws the walk; what it needs to know is only that this body is on its way.

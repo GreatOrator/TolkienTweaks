@@ -428,3 +428,14 @@ never in step; nothing is sent except the one flag, so the walk costs no packets
 
 The hobbit and dwarf renderers get it through the same `sceneBones` call, and each body's own model
 supplies the bones - the three rigs all carry `leftLeg` and `rightLeg`.
+
+## Bilbo's last look - 10 November 2026
+
+The two who stay behind do not leave together. Elrond turns for the door as soon as the courtyard is
+empty; Bilbo is given the same walk with a wait on it - `Path.lingering(80)` - so he stands where he is,
+facing the way the Company went, for four seconds, and only then turns and follows. The wait is counted
+in the walk itself rather than in another clock, so a body held this way keeps its place in the same
+stepped walk every other leaver uses.
+
+While he waits he is not walking, so the walking flag stays off and his legs do not swing; his head
+still turns to the player, since that is the renderer's own business and not the walk's.
