@@ -160,6 +160,11 @@ met in the wild does not, and Ulmug counts by his own tag although the page name
 the king first and the page still wants the five; clear the five first and it wants him. The hall's dead
 are topped up while the page is in hand, so the six are always there to be finished.
 
+The book says his name. The story leaf draws `Campaign.aside(story)` under the count - one gold line,
+"Ulmug, king of the fires: kill him too, and the fires are out" - because a leaf that only ever said *Slay
+6 Goblin* counted a king it never named. It is a line and not a second counter: the six are one count, and
+a page showing five goblins and a king apart would be asking for two things where the chapter asks one.
+
 ## Where it stands
 
 -Cut and drawn at the test pin **5628, 196, -3621** in `run/saves/Serious Test`: ground 197 as the save

@@ -993,6 +993,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.goblins", "Troublesome Goblins");
         this.add("campaign.tolkienmobs.page.goblins.place", "the goblin fires of the Pinnath Fenui, north-east of the pass");
         this.add("campaign.tolkienmobs.page.goblins.closing", "I crossed the mountains with Thorin once, and goblins beset us in the dark the way weather does. Ulmug keeps a fire in the Pinnath Fenui now, and his folk have been troubling what little traffic the pass still has. Put the fire out - not the creatures only, the fire - and the road north will be mine again.");
+        this.add("campaign.tolkienmobs.page.goblins.king", "Ulmug, king of the fires: kill him too, and the fires are out.");
         this.add("campaign.tolkienmobs.page.gundabad", "Return to Gundabad I");
         this.add("campaign.tolkienmobs.page.gundabad.place", "Gundabad, in the Hithaeglir");
         this.add("campaign.tolkienmobs.page.gundabad.closing", "The hold stands where the dwarves left it, and the vault under its floor has not been opened since. Find the cornerstone and the plans the masons drew, and bring them out whole - a hold is a thing made twice, once in a mason's head and once in the rock.");

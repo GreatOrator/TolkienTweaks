@@ -519,6 +519,13 @@ public class FactionLedgerScreen extends Screen {
             y = wrapped(graphics, x, y + 2, w, story.objective().getString(), INK, 2) + 4;
         }
 
+        // A page that counts one body among others names it under the count: page 27's six finish on a king,
+        // and a leaf that only ever said "Slay 6 Goblin" never told the player who the sixth was.
+        Component aside = Campaign.aside(story);
+        if (aside != null) {
+            y = wrapped(graphics, x, y, w, aside.getString(), INK_GOLD, 2) + 2;
+        }
+
         y = wrapped(graphics, x, y, w, story.summary().getString(), INK_DIM, 6) + 2;
         if (!place.getString().isEmpty()) {
             // Where the step happens is a sentence too, and it is written down because it can be read:

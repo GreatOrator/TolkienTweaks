@@ -2866,6 +2866,24 @@ public final class Campaign extends SavedData {
                 || victim.entityTags().contains(GoblinCave.ULMUG_TAG);
     }
 
+    /** What the book says under page 27's count, so the king among the six is a name and not a surprise. */
+    private static final String GOBLINS_KING = "campaign.tolkienmobs.page.goblins.king";
+
+    /**
+     * The line a page names beside its count, or null for a page that names nobody.
+     * <p>
+     * Page 27 is the one that needs it: its six are a number the leaf counts and a king the leaf would
+     * otherwise never say, so the player is told whose fires they are before they walk into them rather
+     * than after. It is a line and not a second counter because the count is one count - the king is one of
+     * the six, and a page that showed five goblins and a king separately would be asking for two things
+     * where the chapter asks for one.
+     */
+    @Nullable
+    public static Component aside(Quest quest) {
+        if (quest.kind() != Quest.Kind.HUNT || !GOBLINS_TARGET.equals(quest.target())) return null;
+        return Component.translatable(GOBLINS_KING);
+    }
+
     /**
      * The ground a hunt page names, for the needle: the creature while he stands, or the lair he was
      * stood in when he does not.
