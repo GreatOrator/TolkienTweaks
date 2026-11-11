@@ -20,6 +20,10 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * ground under it is being made the way a structure's pieces are: the ground has to exist first. So the
  * cut is a hand rather than worldgen, and this is it - it reads the world's goblin pin, cuts the cave
  * behind it, and says what came out, leaving the design and the pin the only two things to change.
+ * <p>
+ * A world cut by players does not need this: {@link GoblinCave#raised} cuts and dresses the cave from the
+ * campaign clock as a player comes near the pin, because the map is walked by players who have no commands.
+ * The command stays for walking a cave a world has not made yet, and for the report it prints.
  */
 @EventBusSubscriber(modid = MODID)
 public final class CaveCommands {

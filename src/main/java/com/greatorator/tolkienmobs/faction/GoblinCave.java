@@ -110,6 +110,13 @@ public final class GoblinCave {
      * a carrier again if the hall is stood afresh, which is the one case this does not remember.
      */
     private static final Set<Long> KEYED = new HashSet<>();
+    /**
+     * The caves this world has already cut, so a player walking the hill cuts one and not one a pass. Kept for
+     * the session: a restarted world asks the hall's own bench whether the room is there before cutting again.
+     */
+    private static final Set<Long> RAISED = new HashSet<>();
+    /** How near the door a player has to be for the world to cut the cave, in blocks. */
+    private static final double RAISE_WAY = 96.0D;
 
     private static final int DROP = 40;           // how far the way in falls, from the door's ground
     private static final int RAMP = DROP * 2;     // one block down in two, so twice as far as it falls
@@ -301,6 +308,33 @@ public final class GoblinCave {
         if (surface == null) return null;
         Direction into = steepest(level, pin.getX(), pin.getZ(), surface, ground);
         return dress(level, pin, into, surface - DROP);
+    }
+
+    /**
+     * Cuts the cave and lays the hall in it as a player comes near, so the cave is ground the world has rather
+     * than something somebody has to run a command to make.
+     * <p>
+     * The camps and Rivendell are raised the same way - a clock check per player, a reach, and a chunk that has
+     * to be loaded before a block is written into it - because the map is walked by players who have no commands
+     * and no reason to be told a cave is about to exist. The cut is one pass over eleven thousand cells, so it is
+     * done once and remembered; the hall's own bench is the record that the room is already there, which is also
+     * what catches a world cut by hand before this existed. Nothing is said in chat: a player walks into the hill
+     * and the cave and hall are simply there.
+     */
+    public static void raised(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
+        BlockPos pin = Pins.at(level, PIN);
+        if (pin == null) return;
+        if (player.distanceToSqr(pin.getX() + 0.5D, pin.getY(), pin.getZ() + 0.5D) > RAISE_WAY * RAISE_WAY) return;
+        if (!level.hasChunkAt(pin)) return;
+        if (RAISED.contains(pin.asLong())) return;
+        AABB hall = hallAt(level);
+        if (hall != null && bench(level, hall) != null) {
+            RAISED.add(pin.asLong());
+            return;
+        }
+        if (cut(level) != null) RAISED.add(pin.asLong());
     }
 
     /**

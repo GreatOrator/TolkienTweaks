@@ -46,6 +46,22 @@ git:
   names what is left of the war (`Campaign.sayWhatIsLeft`). The long form of the rule, with the reasons,
   is in `docs/war-of-the-three-fronts.md`; check a new page against it before committing.
 
+## Everything built for the map is automated
+
+- **A build a player is meant to find reaches the world without a command.** The players who walk the map do
+  not have commands and must never need them, so a cave, a camp, a hall or a quest scene is raised by the
+  campaign clock on approach: a reach in blocks and a chunk that has to be loaded before a block is written
+  into it. `Sites.scenery` is the model - it plants what the pins name and stands each build as a player comes
+  near - and `GoblinCave.raised` cuts and dresses the goblin cave the same way. Commands such as `/tmcave` and
+  `/tmpin` stay as development tools, for walking something a world has not made yet; nothing may depend on
+  them, and a new feature is not finished until it reaches a world on its own.
+- **A raise happens once, and the world is the record.** The ground outranks a flag: a build that already
+  stands is found by asking the world rather than by trusting saved state - the goblin hall by its own log
+  bench - so a rolled-back or regenerated world puts the build back on the next approach. A session set is
+  there only to stop the clock paying for the same cut twice.
+- **Nothing is announced.** The build is simply there when the ground opens; a message saying a cave has been
+  cut is a message about the code rather than about the world.
+
 ## Scouting markers are ammolite blocks
 
 - **A location is scouted by placing one `tolkienmobs:block_ammolite` on the ground where the thing belongs**,

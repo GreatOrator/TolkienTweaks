@@ -180,6 +180,18 @@ lock with one hoard behind it: that is what lets a single key serve more than on
 no table leaves the key empty and the lock still works. The shipped `dungeonkey` table is a starter -
 replace it and every key cut to that code follows it.
 
+## The cave the world cuts
+
+No player is asked to run anything. `GoblinCave.raised` is called from the campaign clock for every player in
+Arda; once one comes within ninety-six blocks of the goblin pin, with the chunk loaded, it cuts the cave and
+lays the hall in it. It is the same `cut` the command makes, so the design has one home; `/tmcave` remains a
+development tool for walking a cave a world has not made yet, and for the report it prints.
+
+A hall that is already there is recognised by its own log bench, which is the room's record rather than a flag:
+a world cut by hand before this existed is never cut twice, and a world whose hall is missing gets it back on
+the next approach. The pin is remembered for the session in `RAISED`, so a player walking the hill pays for one
+cut, not one a tick. Nothing is announced in chat - the cave is simply there when the hill opens.
+
 ## Where it stands
 
 -Cut and drawn at the test pin **5628, 196, -3621** in `run/saves/Serious Test`: ground 197 as the save

@@ -3039,6 +3039,8 @@ public final class Campaign extends SavedData {
         keepGlorfindel(player);
         keepCaveOpen(player);
         keepCaveTroll(player);
+        // The cave is the world's rather than a command's: it is cut and dressed as a player comes near it.
+        GoblinCave.raised(player);
         GoblinCave.keep(player);
         keepElladan(player);
         keepBarachen(player);
