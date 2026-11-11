@@ -722,10 +722,17 @@ public final class Departure {
                 float watching = yawTowards(body.getX() - to[0], body.getZ() - to[2]);
                 body.setYRot(watching);
                 body.setYBodyRot(watching);
+                // A hand up while it watches: the same raised arm a speaking body gets, so a farewell and a
+                // greeting are one gesture rather than two.
+                if (body instanceof TolkienVillagerEntity villager) villager.setSpeaking(true);
                 continue;
             }
             // The renderer draws the walk; what it needs to know is only that this body is on its way.
-            if (body instanceof TolkienVillagerEntity villager) villager.setSceneWalking(true);
+            if (body instanceof TolkienVillagerEntity villager) {
+                villager.setSceneWalking(true);
+                // Any hand that was up comes down as the walk starts.
+                villager.setSpeaking(false);
+            }
             double dx = to[0] - body.getX();
             double dz = to[2] - body.getZ();
             double gap = Math.sqrt(dx * dx + dz * dz);

@@ -439,3 +439,11 @@ stepped walk every other leaver uses.
 
 While he waits he is not walking, so the walking flag stays off and his legs do not swing; his head
 still turns to the player, since that is the renderer's own business and not the walk's.
+
+## The hand up - 10 November 2026
+
+A body held at the start of its walk has the speaking flag set while it waits, which is the same flag the
+renderer eases into an eighty-degree arm raise. So the farewell is the greeting's own gesture: Bilbo's
+hand comes up as the Company goes and comes down as soon as he takes his first step, because the walk
+clears the flag when it starts. No new flag, no new bone work - the pause and the line were already the
+two things that put a hand up, and now they are one thing with two causes.
