@@ -62,6 +62,13 @@ public final class Pins extends SavedData {
             // low corner goes on, at the surface the scout stood on. /tmcity plants the corner here, so
             // the city covers x 5200..5753 by z -3370..-2859, with the crown at 318.
             Map.entry("rivendell", new BlockPos(5200, 75, -3370)),
+            // The goblin cave page 27 is fought in, settled along the road at the door the scout walked: the
+            // mountain rises south of it, so the cut runs into the hill there. The shelter camp beyond the way in
+            // is pinned beside it, so the fires have a camp outside them in every world rather than only in the
+            // one they were scouted in - a pin under a template's own name is what Sites raises, and the two of
+            // these are the pair the chapter walks up to.
+            Map.entry(GoblinCave.PIN, new BlockPos(5628, 196, -3621)),
+            Map.entry(Sites.SHELTER_CAMP, new BlockPos(5595, 196, -3621)),
             // Chapter one, walked in the scouting world: the names on the ground their pages are spoken on, and
             // the camps and the four crags on the hillsides they were found on. The y is where the scout stood;
             // the laying measures the ground under a footprint and seats it, so the block is a target and not a

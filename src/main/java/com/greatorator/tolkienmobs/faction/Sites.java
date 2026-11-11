@@ -130,8 +130,10 @@ public final class Sites extends SavedData {
     public static final String GLOIN_CAMP = "tolkienmobs:key_structures/gloin_camp";
     /**
      * The camp at the goblin cave: a shelter cut into the rock beside the way in. It is a template like the
-     * rest, but nothing surveys for it and nothing raises it on its own, so it stands only where a scout
-     * stood and pinned it - which is why it is kept out of {@link #SCENERY}.
+     * rest and nothing surveys for it - a cave has no country of its own to be surveyed in - so it is raised
+     * from its pin, which is written beside the door's in {@link Pins}. It is kept out of {@link #SCENERY}
+     * because a build that only ever stands beside another build wants the pin and not a country of its own,
+     * and a pinned structure is raised whether or not it is named there.
      */
     public static final String SHELTER_CAMP = "tolkienmobs:key_structures/shelter_cave";
     /**

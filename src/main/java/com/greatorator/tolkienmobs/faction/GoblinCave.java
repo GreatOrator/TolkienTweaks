@@ -1,11 +1,20 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,9 +22,11 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,6 +62,23 @@ public final class GoblinCave {
      * its sides are the rock round it.
      */
     public static final String HALL = "tolkienmobs:goblin_hall";
+
+    /**
+     * Ulmug, the goblin king page 27 hunts, and the folk who keep the fires with him. The hall is ground
+     * the world raises; the bodies in it are the campaign's, so a player who walks in before Gloin has
+     * spoken finds the room and nobody home.
+     */
+    public static final String ULMUG = "Ulmug";
+    /** The tag Ulmug wears, so a second look at the hall does not stand a second king in it. */
+    private static final String ULMUG_TAG = "tolkienmobs:goblin_hall_ulmug";
+    /** The tag the hall's goblins wear, so the fire is topped up rather than multiplied. */
+    private static final String FOLK_TAG = "tolkienmobs:goblin_hall_folk";
+    /** The page whose asking the fires answer: the pack's goblin, killed once in Ulmug's hall. */
+    private static final String GOBLINS_TARGET = "tolkienmobs:entityttmgoblin";
+    /** How many goblins the fires are worth: enough to be a fire, few enough to walk out of. */
+    private static final int FOLK = 5;
+    /** How near the door a player has to be for the hall's folk to be stood, in blocks. */
+    private static final double FOLK_WAY = 64.0D;
 
     private static final int DROP = 40;           // how far the way in falls, from the door's ground
     private static final int RAMP = DROP * 2;     // one block down in two, so twice as far as it falls
@@ -219,12 +247,7 @@ public final class GoblinCave {
         // is taken across the way in rather than along it. The width is read from the file rather than from
         // the room's own figures, so a hall saved back a course wider or narrower still lands centred on the
         // way in instead of overhanging the wall it was measured from.
-        Vec3i size = hall.getSize();
-        int wide = rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90
-                ? size.getZ() : size.getX();
-        BlockPos corner = door.relative(into, HALL_BACK)
-                .relative(into.getClockWise(), (wide - 1) / 2)
-                .atY(floor - 1);
+        BlockPos corner = hallCorner(door, into, floor, wide(rotation, hall.getSize()));
         // The template's own box is not anchored at (0,0,0) once it is turned, so the corner the caller
         // wants is the minimum of the turned box rather than the position handed to the placing.
         BoundingBox box = hall.getBoundingBox(settings, BlockPos.ZERO);
@@ -247,6 +270,157 @@ public final class GoblinCave {
         if (surface == null) return null;
         Direction into = steepest(level, pin.getX(), pin.getZ(), surface, ground);
         return dress(level, pin, into, surface - DROP);
+    }
+
+    /**
+     * Stands Ulmug and his folk in the hall while page 27 is being carried.
+     * <p>
+     * The fires are the page's quarry, so they are the campaign's bodies rather than the world's scenery:
+     * the hall stands in every world, and the goblins in it are only there for a player who has been sent
+     * to put them out. A player who walks in before Gloin has spoken finds the room and nobody home, which
+     * is also what keeps a hall of hostiles off a road nobody holds a page for.
+     * <p>
+     * Ulmug stands beside the hall's own log bench rather than at a fixed offset in the template, so a hall
+     * furnished a second time moves him with the furniture. The rest are stood on the hall's floor and left
+     * to wander it. Both are found again by tag rather than counted in memory, so nothing multiplies them.
+     */
+    public static void keep(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
+        if (!onGoblinPage(player)) return;
+        BlockPos door = Pins.at(level, PIN);
+        if (door == null || !level.hasChunkAt(door)) return;
+        Map<Long, Integer> ground = new HashMap<>();
+        Integer surface = ground(level, door.getX(), door.getZ(), ground);
+        if (surface == null) return;
+        Direction into = steepest(level, door.getX(), door.getZ(), surface, ground);
+        AABB hall = hallBox(level, door, into, surface - DROP);
+        if (hall == null || !hall.inflate(FOLK_WAY).contains(player.position())) return;
+        List<Entity> kings = level.getEntities((Entity) null, hall.inflate(4.0D),
+                found -> found.entityTags().contains(ULMUG_TAG));
+        List<Entity> folk = level.getEntities((Entity) null, hall.inflate(4.0D),
+                found -> found.entityTags().contains(FOLK_TAG));
+        if (!kings.isEmpty() && folk.size() >= FOLK) return;
+        if (kings.isEmpty()) {
+            BlockPos bench = bench(level, hall);
+            if (bench == null) return;
+            stand(level, TolkienEntities.ENTITY_TTM_GOBLINKING.get(), beside(level, bench), ULMUG_TAG, ULMUG);
+        }
+        for (int stood = folk.size(); stood < FOLK; stood++) {
+            BlockPos spot = floor(level, hall);
+            if (spot == null) continue;
+            stand(level, TolkienEntities.ENTITY_TTM_GOBLIN.get(), spot, FOLK_TAG, null);
+        }
+    }
+
+    /** Whether this player is carrying page 27's hunt, which is the only reason the fires are lit. */
+    private static boolean onGoblinPage(ServerPlayer player) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (quest.complete()) continue;
+            if (GOBLINS_TARGET.equals(quest.target())) return true;
+        }
+        return false;
+    }
+
+    /** The hall's own box in the world, or null when its structure will not load. */
+    @Nullable
+    private static AABB hallBox(ServerLevel level, BlockPos door, Direction into, int floor) {
+        StructureTemplate hall = level.getStructureManager().get(Identifier.parse(HALL)).orElse(null);
+        if (hall == null) return null;
+        Rotation rotation = rotationFor(into);
+        Vec3i size = hall.getSize();
+        int wide = wide(rotation, size);
+        boolean turned = rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90;
+        int deep = turned ? size.getX() : size.getZ();
+        // The corner the hall was laid from is the minimum of its turned box, so the box is that corner
+        // carried out by the file's own size: the room the folk are looked for in is the room as built.
+        BlockPos corner = hallCorner(door, into, floor, wide);
+        return new AABB(corner.getX(), corner.getY(), corner.getZ(),
+                corner.getX() + wide, corner.getY() + size.getY(), corner.getZ() + deep);
+    }
+
+    /** How wide the hall is once it is turned: the file's x unless it is lying on its side. */
+    private static int wide(Rotation rotation, Vec3i size) {
+        return rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90
+                ? size.getZ() : size.getX();
+    }
+
+    /** The near corner of the hall's floor course: one course below the hall's floor, at its near edge. */
+    private static BlockPos hallCorner(BlockPos door, Direction into, int floor, int wide) {
+        return door.relative(into, HALL_BACK)
+                .relative(into.getClockWise(), (wide - 1) / 2)
+                .atY(floor - 1);
+    }
+
+    /**
+     * The hall's log bench, found by walking the room it was saved in rather than by an offset written
+     * here: the hall is furnished by hand, so where its bench is is the file's business and not this
+     * class's, and a second save that moves it moves Ulmug with it.
+     */
+    @Nullable
+    private static BlockPos bench(ServerLevel level, AABB hall) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int y = (int) hall.minY; y < (int) hall.maxY; y++) {
+            for (int x = (int) hall.minX; x < (int) hall.maxX; x++) {
+                for (int z = (int) hall.minZ; z < (int) hall.maxZ; z++) {
+                    cursor.set(x, y, z);
+                    if (level.getBlockState(cursor).is(TolkienBlocks.LOG_BENCH.get())) return cursor.immutable();
+                }
+            }
+        }
+        return null;
+    }
+
+    /** A spot beside a seat a body can stand in, or null when the bench is against a wall on every side. */
+    @Nullable
+    private static BlockPos beside(ServerLevel level, BlockPos seat) {
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            for (int lift = 0; lift <= 2; lift++) {
+                BlockPos spot = seat.relative(side).above(lift);
+                if (open(level, spot)) return spot;
+            }
+        }
+        return null;
+    }
+
+    /** A spot on the hall's own floor for one of the folk, or null when the room is odd all over. */
+    @Nullable
+    private static BlockPos floor(ServerLevel level, AABB hall) {
+        int y = (int) hall.minY + 1;
+        int wide = Math.max(1, (int) hall.maxX - (int) hall.minX - 2);
+        int deep = Math.max(1, (int) hall.maxZ - (int) hall.minZ - 2);
+        for (int tries = 0; tries < 24; tries++) {
+            BlockPos spot = new BlockPos(
+                    (int) hall.minX + 1 + level.getRandom().nextInt(wide), y,
+                    (int) hall.minZ + 1 + level.getRandom().nextInt(deep));
+            if (open(level, spot)) return spot;
+        }
+        return null;
+    }
+
+    /** Whether a body can stand here: air in the spot and over it, and something solid under it. */
+    private static boolean open(ServerLevel level, BlockPos spot) {
+        if (!level.getBlockState(spot).isAir()) return false;
+        if (!level.getBlockState(spot.above()).isAir()) return false;
+        BlockState under = level.getBlockState(spot.below());
+        return !under.isAir() && !under.getFluidState().is(Fluids.WATER);
+    }
+
+    /** Stands one body at a spot, named when it is somebody, tagged so the next look finds it. */
+    private static void stand(ServerLevel level, EntityType<? extends Mob> type, @Nullable BlockPos spot,
+                              String tag, @Nullable String name) {
+        if (spot == null) return;
+        Mob body = type.create(level, EntitySpawnReason.EVENT);
+        if (body == null) return;
+        body.snapTo(spot.getX() + 0.5D, spot.getY(), spot.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        body.setPersistenceRequired();
+        body.addTag(tag);
+        if (name != null) {
+            body.setCustomName(Component.literal(name).withStyle(ChatFormatting.GOLD));
+            body.setCustomNameVisible(true);
+        }
+        level.addFreshEntity(body);
     }
 
     /** The quarter turn that puts the file's plus-z, which is south, along the way into this hill. */

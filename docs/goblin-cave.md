@@ -141,6 +141,21 @@ course, which is why the corner above still lands it exactly over the carved roo
 file's own width rather than the room's figure, so a hall saved back a course wider or narrower than the
 room still lands centred on the way in instead of overhanging the wall it was measured from.
 
+## The fires
+
+The hall is ground the world raises; the bodies in it are the campaign's. `GoblinCave.keep` runs on the
+same clock as the other keepers and does one thing: while a player is carrying page 27's hunt and is
+within **64 blocks** of the door, it stands **Ulmug** beside the hall's log bench and **five goblins** on
+its floor - once each, found again by tag, so the next look tops up what was killed instead of standing a
+second king. A player who walks in before Glóin has spoken finds the room furnished and nobody home, which
+is the point: the fires are the page's quarry, and a hall of hostiles is not put down on a road nobody
+holds a page for.
+
+Ulmug is the pack's goblin king wearing his name. The bench is found by walking the room rather than by an
+offset written into the code, so a hall furnished a second time moves him with the furniture. The page
+counts a *goblin* and not the king, so any one of the five settles it - which is how the chapter was
+written, with the fires as the quarry and Ulmug's name carried by the prose.
+
 ## Where it stands
 
 -Cut and drawn at the test pin **5628, 196, -3621** in `run/saves/Serious Test`: ground 197 as the save
@@ -157,11 +172,11 @@ from the door's ground either way, so the shape does not move with it. **That pi
 
 ## What is not built
 
-- **The camp outside the door.** The old cave had one; the cut is only the cave. A camp is a template
-  `Sites` could place by its door (`DOORWAYS` carries a sill and a facing), or a new small build.
-- **Ulmug and his folk.** `/tmcave cut` lays the hall but places no bodies: the hall is furnished and the
-  cave is empty. Page 27's quarry is counted in prose, so this is not a blocker, but a hunt in an empty
-  cave is not a fight.
+- **The camp outside the door.** It is the shelter, and it is raised: `Sites.SHELTER_CAMP` stands 33 blocks
+  west of the door, and its pin is in `Pins.SOURCE` beside the door's own, so every world gets both. The
+  cut does nothing for it - a camp is a building, and the cut is the cave.
+- **A camp of bodies in the chambers.** The hall's fires stand while page 27 is carried; the tunnels
+  behind the hall have nobody in them.
 - **The fire.** "Put the fire out" is figurative — it means Ulmug — so no fire block is required. A camp
   fire outside the door would still read right.
 - **A road to it.** None exists from the camp north-east yet; chapter two's line ("the road north will be

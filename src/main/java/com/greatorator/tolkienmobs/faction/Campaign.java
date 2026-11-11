@@ -2995,6 +2995,7 @@ public final class Campaign extends SavedData {
         keepGlorfindel(player);
         keepCaveOpen(player);
         keepCaveTroll(player);
+        GoblinCave.keep(player);
         keepElladan(player);
         keepBarachen(player);
         keepElrond(player);
