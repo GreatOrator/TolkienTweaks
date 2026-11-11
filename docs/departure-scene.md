@@ -484,3 +484,15 @@ stays there through the blessing and through his walk in, so the scroll appears 
 away mid-sentence. The item is resolved by name from `TolkienItems` (a scroll if the pack ships one, the
 note's letter if not), and the hand lookup goes through the scene's own seats, since the line's speaker
 is a name and the body is a UUID.
+
+## The scroll and the arm - 10 November 2026
+
+Elrond's scroll is dressed at `stand()` with the rest of the cast's gear, so it is in his hand from the
+courtyard filling to the last line of the blessing, when `stow` takes it back and he turns for the road
+empty-handed.
+
+The arm that lifts while a body speaks was written against the wrong side of the clock - the test asked
+whether the script was *behind* the line it had just said, which is never true - so no arm ever rose.
+It now asks whether a line's worth of ticks has passed since the line landed, on the script's own clock
+(the one the pause is written into), so an arm comes up as a line lands and comes down as the next one
+does, and Elrond's last one lowers three seconds after "Let us go back, Adventurer".

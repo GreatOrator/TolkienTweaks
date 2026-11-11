@@ -352,18 +352,15 @@ public final class Departure {
     }
 
     /**
-     * Puts something in a cast body's hand while it is still empty, by the name the body wears. A scene's
-     * bodies are its own, so the way from a line's speaker to the body saying it is the seats the show wrote
-     * down; a body that is already holding something keeps it.
+     * Takes back what a named body of the cast is holding, and nothing else about it. A scene's bodies are its
+     * own, so the way from a line's speaker to the body saying it is the seats the show wrote down.
      */
-    private static void hand(ServerLevel level, Show show, String name, ItemStack stack) {
+    private static void stow(ServerLevel level, Show show, String name) {
         for (Map.Entry<UUID, Integer> row : show.seats.entrySet()) {
             Cast cast = CAST.get(row.getValue());
             if (!cast.name().equals(name)) continue;
             Entity body = level.getEntity(row.getKey());
-            if (body instanceof Mob mob && mob.getMainHandItem().isEmpty()) {
-                mob.setItemSlot(EquipmentSlot.MAINHAND, stack);
-            }
+            if (body instanceof Mob mob) mob.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
             return;
         }
     }
@@ -371,7 +368,9 @@ public final class Departure {
     /**
      * What a body of the cast carries in: the gear each of them is known by, so the courtyard has a bow and
      * two blades in it rather than nine pairs of empty hands. A body with nothing here is stood empty-handed,
-     * and Gandalf's staff is his own case - he takes it up as he turns for the road, not before.
+     * and Gandalf's staff is his own case - he takes it up as he turns for the road, not before. Elrond's
+     * scroll is the other way round: it is in his hand from his first word to his last, and stowed when the
+     * blessing is finished.
      * <p>
      * Only the main hand is dressed. Aragorn carries mithril and Gimli a mithril axe, which is the dwarves'
      * own metal; Boromir's blade is ammolite, the stone of Gondor's smiths; Legolas carries the elven bow.
@@ -382,6 +381,7 @@ public final class Departure {
             case "boromir" -> new ItemStack(TolkienItems.SWORD_AMMOLITE.get());
             case "gimli" -> new ItemStack(TolkienItems.AXE_MITHRIL.get());
             case "legolas" -> new ItemStack(TolkienItems.ELVEN_BOW.get());
+            case "elrond" -> scroll();
             default -> ItemStack.EMPTY;
         };
     }
@@ -523,9 +523,9 @@ public final class Departure {
             Style style = Style.EMPTY.withColor(line.colour()).withItalic(line.italic());
             player.sendSystemMessage(Component.literal(line.who() + ": ").withStyle(line.colour())
                     .append(Component.translatable(line.key()).withStyle(style)));
-            // Elrond reads the blessing off a scroll rather than out of the air: it comes into his hand on his
-            // first line and stays there, so nothing appears and disappears between sentences.
-            if (line.who().equals("Elrond")) hand(level, show, "Elrond", scroll());
+            // The scroll is stowed on his last line rather than carried out of the courtyard: it is in his
+            // hand for the whole reading and gone by the time he turns for the road.
+            if (line.who().equals("Elrond") && show.sent >= LINES.size()) stow(level, show, "Elrond");
         }
         // The Company goes on the twenty-third line, and Elrond's last two are said over their backs - but
         // not until they are a few blocks gone, so the script is held where it stands until they are.
@@ -735,10 +735,12 @@ public final class Departure {
         if (show == null || show.facing.isEmpty()) return;
         if (!(player.level() instanceof ServerLevel level)) return;
         long now = level.getGameTime();
-        // A line is being said from the tick it lands until the next one does, so an arm comes down of its
-        // own accord when the script moves on, and the last line's does not stay up through the walk out.
-        Line speaking = show.sent > 0 && now - show.start < (long) GAP * show.sent
-                ? LINES.get(show.sent - 1) : null;
+        // A line is being said from the tick it lands until one line's worth of ticks has passed - which is
+        // when the next line lands - so an arm comes down of its own accord as the blessing ends instead of
+        // staying up through the walk out. The clock is the script's own, so a hold holds the arm with it.
+        long elapsed = now - show.start - show.hold;
+        long since = show.sent > 0 ? elapsed - (long) GAP * (show.sent - 1) : Long.MAX_VALUE;
+        Line speaking = since >= 0 && since < GAP ? LINES.get(show.sent - 1) : null;
         for (UUID id : List.copyOf(show.facing.keySet())) {
             // A body on its way out is steered by the walk, and a body already taken away has nothing to
             // steer.
