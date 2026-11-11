@@ -102,6 +102,8 @@ public final class FactionEvents {
             FactionGuards.tick(player);
             QuestGivers.tick(player);
             Campaign.tick(player);
+            // The walk out is stepped on every tick: the campaign's own tick is once a second.
+            Departure.walkTick(player);
             Places.tick(player);
         }
     }

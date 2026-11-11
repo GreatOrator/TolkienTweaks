@@ -20,6 +20,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -35,9 +36,13 @@ import java.util.UUID;
  * That is the old pack's own order of events, recovered from its customNPCs scenes. There the whole thing
  * was one NPC scene - ten bodies spawned, lines spoken on a tick, the eight walk scenes started, and a
  * second scene for Elrond's last words - so this class is the same shape: a tick-driven beat list, the
- * cast placed round one spot, and the lines spoken in order. What it does not carry yet is the exit: the
- * company speaks and then goes, rather than walking off, because the ground they walk to has not been
- * marked. The old script's walk mark and its spawn layout are in {@code docs/departure-scene.md}.
+ * cast placed on the ground the plaza's own marks give, and the lines spoken in order.
+ * <p>
+ * When Gandalf's sending is said the courtyard empties: the eight who go walk off it in lanes of their own
+ * on the bearing the ring itself gives - the open side, away from Elrond - and Elrond, Gandalf and Bilbo
+ * stay for the last five lines and are taken away with the scene. Where the road runs past the plaza's rim
+ * is not this class's business yet: the walk ends where the courtyard does. The old script's walk mark and
+ * its spawn layout are in {@code docs/departure-scene.md}.
  * <p>
  * Two player tags are the whole of the state, so the seam survives a reload: the summons, and having seen
  * the scene. A world that had the note and logged out comes back to the same courtyard and the same scene.
@@ -63,6 +68,14 @@ public final class Departure {
     private static final int GAP = 60;
     /** Ticks kept after the last line before the company is taken away and the page is handed over. */
     private static final int TAIL = 60;
+    /** The line after which the eight who go turn and leave: Gandalf's sending is the twentieth. */
+    private static final int LEAVE_AFTER = 20;
+    /** How far past the gathering mark a leaver walks before it is out of the courtyard, in blocks. */
+    private static final double GONE = 24.0D;
+    /** How far a body steps in one tick: a walking player's pace, so the legs keep their own rhythm. */
+    private static final double WALK_STEP = 0.2D;
+    /** Ticks after which a walk that has not finished is given up on and the bodies are taken away. */
+    private static final long WALK_LIMIT = 600L;
 
     /** The two messages the note speaks, and the note's own two lines. */
     private static final String NOTE_NAME = "campaign.tolkienmobs.scene.note";
@@ -188,8 +201,13 @@ public final class Departure {
         private final String dim;
         private final long start;
         private final List<UUID> bodies = new ArrayList<>();
+        /** Which seat of the cast a body took, so it is not confused with a body that failed to stand. */
+        private final Map<UUID, Integer> seats = new HashMap<>();
+        /** Where a leaver is walking to, by body: the far end of its lane off the courtyard. */
+        private final Map<UUID, double[]> targets = new LinkedHashMap<>();
         private final boolean rehearsal;
         private int sent;
+        private long walkAt;
 
         private Show(BlockPos at, String dim, long start, boolean rehearsal) {
             this.at = at;
@@ -256,7 +274,8 @@ public final class Departure {
 
     /** Stands the cast round a mark. The bodies belong to the show and go when it does. */
     private static void stand(ServerLevel level, Show show, BlockPos at) {
-        for (Cast cast : CAST) {
+        for (int seat = 0; seat < CAST.size(); seat++) {
+            Cast cast = CAST.get(seat);
             // A body whose ground the owner has marked stands on the mark itself: the block was set
             // down for that body, so the old pack's offset is only for ground nobody has marked.
             BlockPos marked = Pins.at(level, bodyPin(cast.slug()));
@@ -281,6 +300,7 @@ public final class Departure {
             body.setCustomNameVisible(true);
             level.addFreshEntity(body);
             show.bodies.add(body.getUUID());
+            show.seats.put(body.getUUID(), seat);
         }
     }
 
@@ -289,7 +309,18 @@ public final class Departure {
         double dx = at.getX() - spot.getX();
         double dz = at.getZ() - spot.getZ();
         if (dx == 0.0D && dz == 0.0D) return 0.0F;
+        return yawTowards(dx, dz);
+    }
+
+    /** The yaw that faces along a step, in the game's own reckoning: nought is south, ninety is west. */
+    private static float yawTowards(double dx, double dz) {
         return (float) Math.toDegrees(Math.atan2(dz, dx)) - 90.0F;
+    }
+
+    /** Whether this body is one of the eight who go: all of them but Elrond, Gandalf and Bilbo. */
+    private static boolean leaves(Cast cast) {
+        return !cast.slug().equals("elrond") && !cast.slug().equals("gandalf")
+                && !cast.slug().equals("bilbo");
     }
 
     /** The pin a marked body stands on: the gathering mark's own key, with the body's slug after it. */
@@ -352,9 +383,90 @@ public final class Departure {
             player.sendSystemMessage(Component.literal(line.who() + ": ").withStyle(line.colour())
                     .append(Component.translatable(line.key()).withStyle(style)));
         }
+        // The eighth who go leave on Gandalf's sending, so Elrond's five lines are said over the walking.
+        if (show.sent >= LEAVE_AFTER) beginWalk(level, show);
         if (show.sent < LINES.size()) return;
         if (elapsed < (long) GAP * LINES.size() + TAIL) return;
         finish(player, level, show);
+    }
+
+    /**
+     * Sets the eight who go walking: each is given a lane of its own, abreast across the bearing, from the
+     * gathering mark out past the courtyard. Nothing moves here - the lanes are written down and stepped on
+     * the ticks after - so a scene stopped mid-sentence never leaves a body halfway out of the plaza.
+     */
+    private static void beginWalk(ServerLevel level, Show show) {
+        if (show.walkAt != 0L) return;
+        BlockPos exit = exitStart(level);
+        if (exit == null) return;
+        BlockPos host = Pins.at(level, bodyPin("elrond"));
+        if (host == null) host = Pins.at(level, GATHER_PIN);
+        double bx = 0.0D;
+        double bz = 1.0D;
+        if (host != null) {
+            double dx = exit.getX() - host.getX();
+            double dz = exit.getZ() - host.getZ();
+            double length = Math.sqrt(dx * dx + dz * dz);
+            if (length > 0.5D) {
+                bx = dx / length;
+                bz = dz / length;
+            }
+        }
+        int leavers = 0;
+        for (Cast cast : CAST) {
+            if (leaves(cast)) leavers++;
+        }
+        Map<Integer, UUID> bySeat = new HashMap<>();
+        for (Map.Entry<UUID, Integer> row : show.seats.entrySet()) bySeat.put(row.getValue(), row.getKey());
+        int lane = -1;
+        for (int seat = 0; seat < CAST.size(); seat++) {
+            Cast cast = CAST.get(seat);
+            if (!leaves(cast)) continue;
+            lane++;
+            UUID id = bySeat.get(seat);
+            if (id == null) continue;
+            // Lanes run across the bearing, so the eight go abreast rather than in single file.
+            double side = (lane - (leavers - 1) / 2.0D) * 1.1D;
+            double tx = exit.getX() + 0.5D + bx * GONE - bz * side;
+            double tz = exit.getZ() + 0.5D + bz * GONE + bx * side;
+            BlockPos column = new BlockPos((int) Math.floor(tx), exit.getY(), (int) Math.floor(tz));
+            int ty = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column).getY();
+            show.targets.put(id, new double[]{tx, ty, tz});
+        }
+        show.walkAt = level.getGameTime();
+    }
+
+    /**
+     * Steps the leavers toward their lanes a tick at a time, and takes a body away when it arrives. The walk
+     * is driven rather than navigated: a body standing in a scene has no AI worth asking, and nothing of its
+     * own should be able to take it somewhere the courtyard did not say. Its ground is read again on every
+     * step, so the rim's easing never leaves it walking in air.
+     */
+    public static void walkTick(ServerPlayer player) {
+        Show show = SHOWS.get(player.getUUID());
+        if (show == null || show.targets.isEmpty()) return;
+        if (!(player.level() instanceof ServerLevel level)) return;
+        for (UUID id : List.copyOf(show.targets.keySet())) {
+            Entity body = level.getEntity(id);
+            double[] to = show.targets.get(id);
+            if (body == null || to == null) {
+                show.targets.remove(id);
+                continue;
+            }
+            double dx = to[0] - body.getX();
+            double dz = to[2] - body.getZ();
+            double gap = Math.sqrt(dx * dx + dz * dz);
+            if (gap <= WALK_STEP || level.getGameTime() - show.walkAt > WALK_LIMIT) {
+                body.discard();
+                show.targets.remove(id);
+                continue;
+            }
+            double nx = body.getX() + dx / gap * WALK_STEP;
+            double nz = body.getZ() + dz / gap * WALK_STEP;
+            int ny = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    new BlockPos((int) Math.floor(nx), (int) to[1], (int) Math.floor(nz))).getY();
+            body.snapTo(nx, ny, nz, yawTowards(dx, dz), 0.0F);
+        }
     }
 
     /** Takes the company away and opens chapter two: the line's next page falls into the book. */
@@ -380,6 +492,7 @@ public final class Departure {
             if (body != null) body.discard();
         }
         show.bodies.clear();
+        show.targets.clear();
     }
 
     /** Whether a show is running for this player, for the commands that poke at it. */

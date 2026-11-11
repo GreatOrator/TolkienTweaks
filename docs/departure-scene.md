@@ -285,3 +285,20 @@ needs them again. A world that lays its own and runs `/tmscene marks` still over
 
 With the ring as it stands, the walk out's first waypoint derives to column 5117, -3416 - nine blocks
 north of Elrond, three past the outermost body, on the plaza's north rim where the climb leaves.
+
+## How they leave - 10 November 2026
+
+Gandalf's sending is the twentieth line, and there the courtyard empties: the eight who go - Aragorn,
+Boromir, Legolas, Gimli, Frodo, Samwise, Merry and Pippin - turn and walk off the plaza in lanes of
+their own, abreast across the bearing the ring gives, while Elrond speaks the last five lines. Elrond,
+Gandalf and Bilbo stay until the scene ends and are taken away with it.
+
+The walk is driven by the scene, not navigated by the bodies: a body standing in a cutscene has no AI
+worth asking, and nothing of its own should take it somewhere the courtyard did not say. Each is stepped
+a walking player's pace - 0.2 blocks a tick - toward the far end of its lane, twenty-four blocks out
+from the gathering mark, and its ground is re-read from the heightmap on every step so the rim's easing
+never leaves it walking in air. A body is taken away on arrival, or after thirty seconds if it has not
+arrived, so no showing can leave one standing about.
+
+What the walk does not do yet is leave the plaza: it ends where the courtyard does, twenty-four blocks
+out on the open side. Where the road runs after that is a mark of its own and a separate step.
