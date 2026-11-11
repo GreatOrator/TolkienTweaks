@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.faction;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -208,15 +209,21 @@ public final class GoblinCave {
     public static BlockPos dress(ServerLevel level, BlockPos door, Direction into, int floor) {
         StructureTemplate hall = level.getStructureManager().get(Identifier.parse(HALL)).orElse(null);
         if (hall == null) return null;
+        Rotation rotation = rotationFor(into);
         StructurePlaceSettings settings = new StructurePlaceSettings()
-                .setRotation(rotationFor(into))
+                .setRotation(rotation)
                 .setIgnoreEntities(false);
         // The corner the file is laid from is the near corner of the hall's floor course - one course below
         // the hall's own floor, which is the floor the file carries - and not the door, which is the ramp's
         // far end. The file's x runs from the far side of the room back towards the near one, so the corner
-        // is taken across the way in rather than along it.
+        // is taken across the way in rather than along it. The width is read from the file rather than from
+        // the room's own figures, so a hall saved back a course wider or narrower still lands centred on the
+        // way in instead of overhanging the wall it was measured from.
+        Vec3i size = hall.getSize();
+        int wide = rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90
+                ? size.getZ() : size.getX();
         BlockPos corner = door.relative(into, HALL_BACK)
-                .relative(into.getClockWise(), HALL_SIDE + 1)
+                .relative(into.getClockWise(), (wide - 1) / 2)
                 .atY(floor - 1);
         // The template's own box is not anchored at (0,0,0) once it is turned, so the corner the caller
         // wants is the minimum of the turned box rather than the position handed to the placing.

@@ -127,10 +127,19 @@ course taller than the room, and why a structure block's corner goes one block l
 floor - at the test pin, y 156.
 
 **The cut lays it.** `GoblinCave.dress` places the file into the hollow the carve has just made, turned to
-face whichever way the hill runs, so a cut cave comes out a floored hall rather than a bare hole. `/tmcave
+face whichever way the hill runs, so a cut cave comes out a furnished hall rather than a bare hole. `/tmcave
 cut` reports where it was laid; `/tmcave dress` lays it again without cutting, which is the way a hall
 furnished by hand gets back in - save the decorated room over `goblin_hall.nbt`, ask for it, and every
-world's cave has it. What lands today is only what the file holds now: a floor and the hewn walls.
+world's cave has it.
+
+**It is furnished now.** The file in the pack is the hall after decoration: **15 palette entries** where it
+had two - spruce and dark oak slabs for benches and shelves, spruce wood for posts, cobwebs in the corners,
+the log bench, the cooking rack and a lit soul campfire - and it carries its block entities rather than
+dropping them, so the lockable chest loads with its `chest_code` and the campfire with its cooking times.
+The box is unchanged at **19 × 14 × 43, 11,438 cells**, with the same 3,160 stone and the same bottom
+course, which is why the corner above still lands it exactly over the carved room. The placement reads the
+file's own width rather than the room's figure, so a hall saved back a course wider or narrower than the
+room still lands centred on the way in instead of overhanging the wall it was measured from.
 
 ## Where it stands
 
@@ -150,8 +159,9 @@ from the door's ground either way, so the shape does not move with it. **That pi
 
 - **The camp outside the door.** The old cave had one; the cut is only the cave. A camp is a template
   `Sites` could place by its door (`DOORWAYS` carries a sill and a facing), or a new small build.
-- **Ulmug and his folk.** `/tmcave cut` places no blocks and no bodies: the cave is empty. Page 27's
-  quarry is counted in prose, so this is not a blocker, but a hunt in an empty cave is not a fight.
+- **Ulmug and his folk.** `/tmcave cut` lays the hall but places no bodies: the hall is furnished and the
+  cave is empty. Page 27's quarry is counted in prose, so this is not a blocker, but a hunt in an empty
+  cave is not a fight.
 - **The fire.** "Put the fire out" is figurative — it means Ulmug — so no fire block is required. A camp
   fire outside the door would still read right.
 - **A road to it.** None exists from the camp north-east yet; chapter two's line ("the road north will be
@@ -162,5 +172,7 @@ from the door's ground either way, so the shape does not move with it. **That pi
 - The cut only takes blocks out. Making the design **smaller** later leaves the old air standing; a
   smaller cave wants a fresh spot or a fill.
 - Re-running `/tmcave cut` at the same pin is safe and gives the same cave.
+- The template is the hall, not a copy of it: saving a decorated room back over `goblin_hall.nbt` changes
+  every world's cave at its next cut or `/tmcave dress`, so what is in that file is what the pack ships.
 - The cut asks for its chunks, so it will generate ground that nobody has walked — intentional for
   looking at a cave, not something to do near a player's builds by accident.
