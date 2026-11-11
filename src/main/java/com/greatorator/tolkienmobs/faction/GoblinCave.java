@@ -17,6 +17,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -234,6 +236,9 @@ public final class GoblinCave {
         int floor = surface - DROP;
         int cells = 0;
         int dropped = 0;
+        // Every cell the cut opens, kept so the wear is done after the carving rather than during it: a patch
+        // set into a wall the next row up has not been cut yet is a patch the cut takes back out again.
+        List<BlockPos> opened = new ArrayList<>();
         for (int a = -OUTSIDE; a <= FAR; a++) {
             for (int s = -FAR_SIDE; s <= FAR_SIDE; s++) {
                 int x = doorX + stepX * a + acrossX * s;
@@ -253,12 +258,62 @@ public final class GoblinCave {
                     BlockState state = level.getBlockState(at);
                     if (state.isAir() || state.getFluidState().is(Fluids.WATER)) continue;
                     level.setBlock(at, Blocks.CAVE_AIR.defaultBlockState(), 2);
+                    opened.add(at);
                     cells++;
                 }
             }
         }
+        // The hill weathers the cave before the hall is laid in it, so the hall's own room is the room somebody
+        // made and the caves around it are the ones the hill has been hollow in for an age.
+        wear(level, opened, hallBox(level, pin, into, floor));
         BlockPos hall = dress(level, pin, into, floor);
         return new Result(pin, into, floor, floor + HALL_HEIGHT - 1, cells, dropped, hall);
+    }
+
+    /** The four ways a wall can stand from a cell, picked by the cell's own hash so it is the same wall each time. */
+    private static final Direction[] SIDES = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+
+    /**
+     * Ages the cave the cut has just opened: cobble where a floor has broken, moss on the stone that has been
+     * wet, and the odd block of glowstone set into a ceiling - so a hill that has been hollow for an age does not
+     * read as a corridor somebody drove.
+     * <p>
+     * Everything is taken off the cell's own hash rather than from the world's random, so the same plan wears the
+     * same way in every world and a save re-cut from the same seed is the same cave. Only the hill's own material
+     * is worn - {@link BlockTags#BASE_STONE_OVERWORLD} - because anything else is somebody's work rather than the
+     * hill's, and the hall's own box is left alone entirely: its floor is the template's.
+     */
+    private static void wear(ServerLevel level, List<BlockPos> opened, @Nullable AABB hall) {
+        for (BlockPos air : opened) {
+            if (hall != null && hall.inflate(1.0D).contains(air.getX() + 0.5D, air.getY() + 0.5D,
+                    air.getZ() + 0.5D)) continue;
+            int roll = hash(air.getX(), air.getY(), air.getZ());
+            if (roll < 3) {
+                BlockPos ceiling = air.above();
+                if (hill(level.getBlockState(ceiling))) {
+                    level.setBlock(ceiling, Blocks.GLOWSTONE.defaultBlockState(), 2);
+                }
+            } else if (roll < 46) {
+                BlockPos under = air.below();
+                if (hill(level.getBlockState(under))) {
+                    level.setBlock(under, (roll & 2) == 0
+                            ? Blocks.MOSSY_COBBLESTONE.defaultBlockState()
+                            : Blocks.COBBLESTONE.defaultBlockState(), 2);
+                }
+            } else if (roll < 64) {
+                BlockPos wall = air.relative(SIDES[(roll >> 3) & 3]);
+                if (hill(level.getBlockState(wall))) {
+                    level.setBlock(wall, (roll & 4) == 0
+                            ? Blocks.MOSSY_COBBLESTONE.defaultBlockState()
+                            : Blocks.COBBLESTONE.defaultBlockState(), 2);
+                }
+            }
+        }
+    }
+
+    /** The hill's own material, which is the only thing the wear may change. */
+    private static boolean hill(BlockState state) {
+        return state.is(BlockTags.BASE_STONE_OVERWORLD);
     }
 
     /**
