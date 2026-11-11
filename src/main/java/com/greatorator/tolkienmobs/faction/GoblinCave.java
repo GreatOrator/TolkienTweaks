@@ -22,11 +22,13 @@ import java.util.Map;
  * out of it.
  * <p>
  * Two kinds of room, on purpose. The hall is squared: it is the worked part, cut and floored by whoever
- * holds the pass. The caverns either side are not - a wall that swells and pinches round the compass, a
- * ceiling that domes over, an alcove or two off each, then rock left standing in it: rubble on the floor,
- * stalactites hanging and stalagmites standing wherever the cell hash puts them. A goblin hall is a room
- * somebody made and the caves behind it are not. The sine terms and the hash are the shape; they are the
- * same ones {@code tools/cave_section.py} draws with, so the drawing and the cut agree.
+ * holds the pass. The chambers are not - they are built out of overlapping lobes, so their walls have
+ * shoulders and recesses rather than one clean sweep, they swell and pinch round the compass and dome
+ * over, and then rock is left standing in them: rubble on the floor, stalactites hanging and stalagmites
+ * standing wherever the cell hash puts them. Two chambers flank the hall and a third, larger, sits
+ * behind its far wall. A goblin hall is a room somebody made and the caves behind it are not. The sines
+ * and the hash are the shape; they are the same ones {@code tools/cave_section.py} draws with, so the
+ * drawing and the cut agree.
  * <p>
  * The one rule the plan keeps is that the cave never opens where nobody cut a mouth: every cell is held
  * {@link #ROOF} blocks under the ground above it, except the way in's own first few blocks, which are cut
@@ -39,21 +41,45 @@ public final class GoblinCave {
     private static final int DROP = 40;           // how far the way in falls, from the door's ground
     private static final int RAMP = DROP * 2;     // one block down in two, so twice as far as it falls
     private static final int HALL_BACK = RAMP + 6;        // where the hall starts, past the door
-    private static final int HALL_FRONT = HALL_BACK + 16; // and where it ends
-    private static final int HALL_SIDE = 7;       // half its width
-    private static final int HALL_HEIGHT = 10;    // the hall's own headroom
+    private static final int HALL_FRONT = HALL_BACK + 18; // and where it ends
+    private static final int HALL_SIDE = 8;       // half its width
+    private static final int HALL_HEIGHT = 13;    // the hall's own headroom
     private static final int LANDING_HEIGHT = 5;  // the landing's
     private static final int LANDING_SIDE = 3;    // half the landing's width
-    private static final int CHAMBER_AT = 94;     // the caverns' middle, down the way in
-    private static final int CHAMBER_SIDE = 24;   // and how far out to either side
-    private static final int CHAMBER_RA = 15;     // their reach along the way in
-    private static final int CHAMBER_RS = 12;     // and across
-    private static final int CHAMBER_HEIGHT = 13;
-    private static final int PASSAGE_NEAR = HALL_SIDE + 1;  // the way out of the hall to each cavern
-    private static final int PASSAGE_FAR = 14;
-    private static final int PASSAGE_HEIGHT = 5;
-    private static final int FAR = CHAMBER_AT + CHAMBER_RA + 6;           // the plan's own far wall
-    private static final int FAR_SIDE = CHAMBER_SIDE + CHAMBER_RS + 6;    // and how wide it reaches
+    private static final int PASSAGE_NEAR = HALL_SIDE + 1;   // the way out of the hall to each flank
+    private static final int PASSAGE_FAR = HALL_SIDE + 13;
+    private static final int PASSAGE_HEIGHT = 7;
+    private static final int FLANK_PASS_BACK = HALL_BACK + 10;   // where that passage leaves the hall
+    private static final int FLANK_PASS_FRONT = HALL_BACK + 22;  // and where it arrives
+    private static final int BACK_PASS_BACK = HALL_FRONT - 2;     // where the hall's far wall opens
+    private static final int BACK_PASS_FRONT = 152;               // and where the back chamber holds it
+    private static final int BACK_PASS_SIDE = 3;
+    private static final int CHAMBER_TALL = 20;   // the tallest any lobe of a chamber gets
+    private static final int FAR = 220;           // the plan's own far wall
+    private static final int FAR_SIDE = 60;       // and how wide it reaches
+
+    /** One lobe of a chamber: where it sits in the plan, how far it reaches, how tall it is. */
+    private record Lobe(int a, int s, int ra, int rs, int height) {
+    }
+
+    /**
+     * The chamber either side of the hall, as lobes rather than an ellipse: four overlapping ones, so
+     * the outline has shoulders and recesses instead of one clean sweep. Mirrored, so this is one side.
+     */
+    private static final Lobe[] FLANK = {
+            new Lobe(112, 28, 20, 18, 16),
+            new Lobe(136, 36, 12, 11, 12),
+            new Lobe(96, 40, 11, 10, 11),
+            new Lobe(118, 46, 8, 8, 10),
+    };
+
+    /** The chamber behind the hall's far wall, larger than either flank. */
+    private static final Lobe[] BACK = {
+            new Lobe(172, 0, 26, 30, 20),
+            new Lobe(196, -18, 15, 16, 15),
+            new Lobe(200, 20, 14, 15, 14),
+            new Lobe(150, 13, 13, 13, 13),
+    };
     private static final int ROOF = 3;            // rock kept between the cave and the sky above it
     private static final int OPEN = 4;            // the way in's own blocks, cut through the surface
     private static final int OUTSIDE = 1;         // blocks cut in front of the door, so it is not walled in
@@ -139,7 +165,13 @@ public final class GoblinCave {
                 && y >= floor && y <= floor + HALL_HEIGHT - 1) {
             return true;
         }
-        if (a >= CHAMBER_AT - 2 && a <= CHAMBER_AT + 2 && sideways >= PASSAGE_NEAR && sideways <= PASSAGE_FAR
+        // The way out of the hall to each flank chamber.
+        if (a >= FLANK_PASS_BACK && a <= FLANK_PASS_FRONT && sideways >= PASSAGE_NEAR
+                && sideways <= PASSAGE_FAR && y >= floor && y <= floor + PASSAGE_HEIGHT - 1) {
+            return true;
+        }
+        // And on through the hall's far wall to the chamber behind it.
+        if (a >= BACK_PASS_BACK && a <= BACK_PASS_FRONT && sideways <= BACK_PASS_SIDE
                 && y >= floor && y <= floor + PASSAGE_HEIGHT - 1) {
             return true;
         }
@@ -149,41 +181,41 @@ public final class GoblinCave {
         return spur == null || !spur.covers(y);
     }
 
-    /** A cavern: a flat floor, a wall that swells and pinches, a ceiling that domes over. */
+    /** A chamber is several overlapping lobes, so no room is one ellipse with a dome on it. */
     private static boolean cavern(int a, int s, int y, int floor) {
-        if (y < floor || y >= floor + CHAMBER_HEIGHT) return false;
+        if (y < floor || y >= floor + CHAMBER_TALL) return false;
         // Rubble on the floor, so a cavern's bottom is not a poured slab.
         if (y == floor && hash(a >> 1, s >> 1, 505) < 40) return false;
-        for (int sign : new int[]{-1, 1}) {
-            int centreS = CHAMBER_SIDE * sign;
-            if (swell(a, s, y, floor, CHAMBER_AT, centreS, CHAMBER_RA, CHAMBER_RS,
-                    CHAMBER_HEIGHT, true)) {
-                return true;
-            }
-            // An alcove or two, so the room is not one swept shape.
-            if (swell(a, s, y, floor, CHAMBER_AT + 8, centreS + 7, 7, 6, 9, false)) return true;
-            if (swell(a, s, y, floor, CHAMBER_AT - 9, centreS - 3, 6, 5, 9, false)) return true;
+        for (Lobe lobe : FLANK) {
+            if (swell(a, s, y, floor, lobe.a(), lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
+            if (swell(a, s, y, floor, lobe.a(), -lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
+        }
+        for (Lobe lobe : BACK) {
+            if (swell(a, s, y, floor, lobe.a(), lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
         }
         return false;
     }
 
     /**
-     * One rounded lump of a cavern. With a share given, its wall swells and pinches round the compass;
-     * without one - an alcove - it is a plain dome, so an alcove reads as a pocket in the wall.
+     * One lobe: radii pinched near its ceiling, swelling round the compass by three sine terms, then
+     * worn off true by the cell hash. The terms are {@code tools/cave_section.py}'s too.
      */
-    private static boolean swell(int a, int s, int y, int floor, double centreA, double centreS,
-                                 double reachA, double reachS, int height, boolean lumpy) {
+    private static boolean swell(int a, int s, int y, int floor, int centreA, int centreS,
+                                 int reachA, int reachS, int height) {
         if (y < floor || y >= floor + height) return false;
+        // Nothing this far outside a lobe can be inside it however far its wall wanders, so it is turned
+        // away before the trigonometry: the plan is wide and asks this of every cell in it.
+        if (Math.abs(a - centreA) > reachA * 1.8 + 1 || Math.abs(s - centreS) > reachS * 1.8 + 1) {
+            return false;
+        }
         double share = (y - floor) / (double) (height - 1);
-        double flat = lumpy ? 0.4 : 0.5;
-        double pinch = lumpy ? 0.5 : 0.55;
-        double shrink = share <= flat ? 1.0 : 1.0 - pinch * ((share - flat) / (1.0 - flat));
+        double shrink = share <= 0.4 ? 1.0 : 1.0 - 0.5 * ((share - 0.4) / 0.6);
         double da = a - centreA;
         double ds = s - centreS;
-        if (lumpy) {
-            double angle = Math.atan2(ds, da);
-            shrink *= 1.0 + 0.20 * Math.sin(3.0 * angle + 0.6) + 0.11 * Math.sin(5.0 * angle - 1.3);
-        }
+        double angle = Math.atan2(ds, da);
+        shrink *= 1.0 + 0.26 * Math.sin(2.0 * angle + 2.1)
+                + 0.17 * Math.sin(3.0 * angle + 0.6)
+                + 0.09 * Math.sin(5.0 * angle - 1.3);
         double ra = reachA * shrink;
         double rs = reachS * shrink;
         if (ra <= 0 || rs <= 0) return false;
@@ -229,9 +261,9 @@ public final class GoblinCave {
                 ? 1 + hash(a >> 1, s >> 1, 404) % SPUR_LONG : 0;
         if (hang == 0 && stand == 0) return null;
         int low = floor;
-        while (low < floor + CHAMBER_HEIGHT && !cavern(a, s, low, floor)) low++;
+        while (low < floor + CHAMBER_TALL && !cavern(a, s, low, floor)) low++;
         int high = low;
-        while (high < floor + CHAMBER_HEIGHT && cavern(a, s, high, floor)) high++;
+        while (high < floor + CHAMBER_TALL && cavern(a, s, high, floor)) high++;
         return high > low ? new Spur(low, high, hang, stand) : null;
     }
 

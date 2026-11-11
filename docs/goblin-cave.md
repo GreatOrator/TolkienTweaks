@@ -54,10 +54,11 @@ Measured from the door's own ground `g`:
 | mouth | 3 wide, 4 tall, at `g`; one block cleared in front of it |
 | way in | falls **40** blocks, one block down in two, so **80** blocks of ramp |
 | landing | 7 wide, 5 tall, floor `g-40`, runs into the hall's back wall |
-| hall | 15 wide, 17 long, floor `g-40`, ceiling `g-31` (10 tall) |
-| passages | 3+ wide, 5 tall, out of each side of the hall to a cavern |
-| caverns | centred 24 blocks either side of the hall's middle, reach 15 along / 12 across, 13 tall, flat floor, domed ceiling, two sine terms of swell, two alcoves each |
-| far wall | 117 blocks past the door |
+| hall | **17 wide, 18 long, 13 tall** - floor `g-40`, ceiling `g-28` |
+| passages | 7 wide, 7 tall: one out of each side of the hall to a flank chamber, one on through its far wall to the back chamber |
+| flank chambers | four overlapping lobes each, about 63 blocks along the way in by 44 across and up to 16 tall, mirrored either side of the hall |
+| back chamber | four lobes, about 76 by 69 and up to 20 tall - the largest of the three |
+| far wall | 220 blocks past the door |
 
 Then rock is left standing in the caverns rather than taken out of them: the wall wanders off its own
 reach by two hash terms (a wobble over four blocks, a finer one over two), the floor carries rubble, and
@@ -70,8 +71,9 @@ disagree the drawing stops being evidence and becomes a lie.
 The hall and the landing are deliberately untouched by all of that: they are the worked rooms, and the
 roughness is what the caves behind them have instead.
 
-The hall is squared on purpose — it is the room somebody made — and the caverns are not. About **15,350
-cells** at the test pin, with **none dropped** by the roof rule.
+The hall is squared on purpose — it is the room somebody made — and the chambers are not. About **93,716
+cells** at the test pin, with **none dropped** by the roof rule, so the whole plan is still underground.
+That is six times what the two-chamber cave came to.
 
 Two rules hold the shape together:
 
@@ -84,8 +86,11 @@ Two rules hold the shape together:
 
 ## Where it stands
 
-- Cut and drawn at the test pin **5628, 196, -3621** in `run/saves/Serious Test`: ground 195, hill rising
-  south, floor 155, hall ceiling 164, far wall 5628, -3506. **That pin is a test** — it sits ~530 blocks
+-Cut and drawn at the test pin **5628, 196, -3621** in `run/saves/Serious Test`: ground 197 as the save
+reads now, hill rising south, floor 157, hall ceiling 169, far wall 5628, -3401. The cave's own chunks
+have since been taken back out of that save (`tools/chunk_trim.py`), so the ground will be made again
+when it is walked and its exact height may land a block or two from this reading - the cave is measured
+from the door's ground either way, so the shape does not move with it. **That pin is a test** — it sits ~530 blocks
   from the departure plaza and ~2,600 blocks west of Glóin's camp's own pin (8215, 224, -3674), not at
   the pass.
 - The real door is still to be pinned: the plan is a **special pin on the High Pass road**, about 1,200

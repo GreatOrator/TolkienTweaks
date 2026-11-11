@@ -44,23 +44,38 @@ ROOF = 3            # blocks of rock kept between a cave and the sky above it
 DROP = 40           # how far the way in falls, from the door's own ground
 RAMP = DROP * 2     # one block down in two, so the way in runs twice as far as it falls
 HALL_BACK = RAMP + 6          # where the hall starts, in blocks past the door
-HALL_FRONT = HALL_BACK + 16   # and where it ends
-HALL_SIDE = 7       # half its width
-HALL_HEIGHT = 10    # the hall's own headroom
+HALL_FRONT = HALL_BACK + 18   # and where it ends
+HALL_SIDE = 8       # half its width
+HALL_HEIGHT = 13    # the hall's own headroom
 LANDING_HEIGHT = 5  # the landing's
 LANDING_SIDE = 3    # half the landing's width
-CHAMBER_AT = 94     # the caverns' middle, down the way in
-CHAMBER_SIDE = 24   # and how far out to either side
-CHAMBER_RA = 15     # their reach along the way in
-CHAMBER_RS = 12     # and across
-CHAMBER_HEIGHT = 13
-PASSAGE_BACK = CHAMBER_AT - 2   # the way out of the hall to each cavern
-PASSAGE_FRONT = CHAMBER_AT + 2
-PASSAGE_NEAR = HALL_SIDE + 1
-PASSAGE_FAR = 14
-PASSAGE_HEIGHT = 5
-FAR = CHAMBER_AT + CHAMBER_RA + 6        # the plan's own far wall
-FAR_SIDE = CHAMBER_SIDE + CHAMBER_RS + 6  # and how wide it reaches
+PASSAGE_NEAR = HALL_SIDE + 1     # the way out of the hall to each flank
+PASSAGE_FAR = HALL_SIDE + 13
+PASSAGE_HEIGHT = 7
+FLANK_PASS_BACK = HALL_BACK + 10   # where that passage leaves the hall
+FLANK_PASS_FRONT = HALL_BACK + 22  # and where it arrives
+BACK_PASS_BACK = HALL_FRONT - 2    # where the hall's far wall opens
+BACK_PASS_FRONT = 152              # and where the back chamber holds it
+BACK_PASS_SIDE = 3
+CHAMBER_TALL = 20   # the tallest any lobe of a chamber gets
+FAR = 220           # the plan's own far wall
+FAR_SIDE = 60       # and how wide it reaches
+
+# A chamber is several overlapping lobes - (a, s, reach a, reach s, height) - rather than one ellipse, so
+# its outline has shoulders and recesses. FLANK is one side of the hall and is mirrored; BACK is the
+# chamber behind the hall's far wall and is the larger of the three.
+FLANK = (
+    (112, 28, 20, 18, 16),
+    (136, 36, 12, 11, 12),
+    (96, 40, 11, 10, 11),
+    (118, 46, 8, 8, 10),
+)
+BACK = (
+    (172, 0, 26, 30, 20),
+    (196, -18, 15, 16, 15),
+    (200, 20, 14, 15, 14),
+    (150, 13, 13, 13, 13),
+)
 OPEN = 4            # the way in's own blocks, cut through the surface
 OUTSIDE = 1         # blocks cut in front of the door, so it is not walled in
 SPUR_TOP = 16       # of 256: how often a column of cavern keeps a stalactite
@@ -166,51 +181,56 @@ class Plan:
         if (HALL_BACK <= a <= HALL_FRONT and sideways <= HALL_SIDE
                 and self.floor <= y <= self.floor + HALL_HEIGHT - 1):
             return True
-        if (PASSAGE_BACK <= a <= PASSAGE_FRONT and PASSAGE_NEAR <= sideways <= PASSAGE_FAR
+        # The way out of the hall to each flank chamber.
+        if (FLANK_PASS_BACK <= a <= FLANK_PASS_FRONT and PASSAGE_NEAR <= sideways <= PASSAGE_FAR
+                and self.floor <= y <= self.floor + PASSAGE_HEIGHT - 1):
+            return True
+        # And on through the hall's far wall to the chamber behind it.
+        if (BACK_PASS_BACK <= a <= BACK_PASS_FRONT and sideways <= BACK_PASS_SIDE
                 and self.floor <= y <= self.floor + PASSAGE_HEIGHT - 1):
             return True
         return self.cavern(a, s, y)
 
     def cavern(self, a, s, y):
-        """A cavern: a flat floor, a wall that swells and pinches, a ceiling that domes over."""
-        if not (self.floor <= y < self.floor + CHAMBER_HEIGHT):
+        """A chamber is several overlapping lobes, so no room is one ellipse with a dome on it."""
+        if not (self.floor <= y < self.floor + CHAMBER_TALL):
             return False
         # Rubble on the floor, so a cavern's bottom is not a poured slab.
         if y == self.floor and noise(a >> 1, s >> 1, 505) < 40:
             return False
-        t = (y - self.floor) / float(CHAMBER_HEIGHT - 1)
-        for sign in (-1, 1):
-            centre_s = CHAMBER_SIDE * sign
-            if self.blob(a, s, y, CHAMBER_AT, centre_s, CHAMBER_RA, CHAMBER_RS, t):
+        for centre_a, centre_s, ra, rs, height in FLANK:
+            if self.blob(a, s, y, centre_a, centre_s, ra, rs, height):
                 return True
-            # An alcove or two, so the room is not one swept shape.
-            if self.blob(a, s, y, CHAMBER_AT + 8, centre_s + 7, 7, 6, t, height=9):
+            if self.blob(a, s, y, centre_a, -centre_s, ra, rs, height):
                 return True
-            if self.blob(a, s, y, CHAMBER_AT - 9, centre_s - 3, 6, 5, t, height=9):
+        for centre_a, centre_s, ra, rs, height in BACK:
+            if self.blob(a, s, y, centre_a, centre_s, ra, rs, height):
                 return True
         return False
 
-    def blob(self, a, s, y, centre_a, centre_s, reach_a, reach_s, t, height=None):
-        """One rounded lump of a cavern: radii pinched near the ceiling, swelling round the compass."""
-        span = height or CHAMBER_HEIGHT
-        if y >= self.floor + span:
+    def blob(self, a, s, y, centre_a, centre_s, reach_a, reach_s, height):
+        """One lobe: radii pinched near its ceiling, swelling by three sines, worn off true by the hash."""
+        if not (self.floor <= y < self.floor + height):
             return False
-        share = t if height is None else (y - self.floor) / float(span - 1)
+        # Nothing this far outside a lobe can be inside it however far its wall wanders.
+        if abs(a - centre_a) > reach_a * 1.8 + 1 or abs(s - centre_s) > reach_s * 1.8 + 1:
+            return False
+        share = (y - self.floor) / float(height - 1)
         shrink = 1.0 if share <= 0.4 else 1.0 - 0.5 * ((share - 0.4) / 0.6)
         da, ds = a - centre_a, s - centre_s
-        if height is not None:
-            shrink = 1.0 if share <= 0.5 else 1.0 - 0.55 * ((share - 0.5) / 0.5)
-        else:
-            angle = math.atan2(ds, da)
-            swell = 1.0 + 0.20 * math.sin(3.0 * angle + 0.6) + 0.11 * math.sin(5.0 * angle - 1.3)
-            shrink *= swell
+        angle = math.atan2(ds, da)
+        shrink *= (1.0
+                   + 0.26 * math.sin(2.0 * angle + 2.1)
+                   + 0.17 * math.sin(3.0 * angle + 0.6)
+                   + 0.09 * math.sin(5.0 * angle - 1.3))
         ra, rs = reach_a * shrink, reach_s * shrink
         if ra <= 0 or rs <= 0:
             return False
+        q = (da * da) / (ra * ra) + (ds * ds) / (rs * rs)
         # The wall wanders: one wobble over four blocks and a finer one over two.
         wander = ((noise(a >> 2, s >> 2, y >> 2) - 128) / 128.0) * COARSE \
             + ((noise(a >> 1, s >> 1, y >> 1) - 128) / 128.0) * FINE
-        return (da * da) / (ra * ra) + (ds * ds) / (rs * rs) <= 1.0 + wander
+        return q <= 1.0 + wander
 
     def spur(self, a, s):
         """What one column keeps: how far a stalactite hangs, how far a stalagmite stands."""
@@ -223,10 +243,10 @@ class Plan:
             found = None
             if hang or stand:
                 low = self.floor
-                while low < self.floor + CHAMBER_HEIGHT and not self.cavern(a, s, low):
+                while low < self.floor + CHAMBER_TALL and not self.cavern(a, s, low):
                     low += 1
                 high = low
-                while high < self.floor + CHAMBER_HEIGHT and self.cavern(a, s, high):
+                while high < self.floor + CHAMBER_TALL and self.cavern(a, s, high):
                     high += 1
                 if high > low:
                     found = (low, high, hang, stand)
@@ -241,7 +261,7 @@ class Plan:
         return bool((hang and y >= high - hang) or (stand and y < low + stand))
 
     def cut(self):
-        for a in range(-OUTSIDE, FAR):
+        for a in range(-OUTSIDE, FAR + 1):
             for s in range(-FAR_SIDE, FAR_SIDE + 1):
                 x, z = self.at(a, s)
                 top = height(self.patch, x, z)
@@ -373,8 +393,7 @@ def main(argv):
           % (here, plan.floor, plan.floor, plan.floor + HALL_HEIGHT - 1))
     print("         the way in falls %d blocks over %d at the walk, one block down in two"
           % (DROP, RAMP))
-    print("         caverns %d blocks across and %d tall, either side of the hall"
-          % (CHAMBER_SIDE * 2, CHAMBER_HEIGHT))
+    print("         two flank chambers and a larger one behind the hall, built from overlapping lobes")
     print("         %s cells of cave, %d dropped where the hill was too shallow to roof them"
           % (format(len(plan.cells), ","), plan.dropped))
     far = plan.at(FAR, 0)
@@ -385,8 +404,8 @@ def main(argv):
     high_y = here + 12
     section(plan, "down the hill, through the door (fixed s = 0):",
             0, (-4, FAR + 2), "a", (low_y, high_y))
-    section(plan, "across the hall, at a = %d (fixed a):" % CHAMBER_AT,
-            CHAMBER_AT, (-FAR_SIDE - 2, FAR_SIDE + 2), "s", (low_y, high_y))
+    section(plan, "across the hall, at a = %d (fixed a):" % HALL_BACK,
+            HALL_BACK, (-FAR_SIDE - 2, FAR_SIDE + 2), "s", (low_y, high_y))
     plan_view(plan, plan.floor + 1, (-4, FAR + 2), (-FAR_SIDE - 2, FAR_SIDE + 2))
     return 0
 
