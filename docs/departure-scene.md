@@ -460,3 +460,19 @@ in the main hand at the `rightArm` bone with the fist's translation from the gua
 he turns for the road rather than through the whole scene. It is kept out of his hand until then because
 the cast is stood up empty-handed; anything else a scene wants carried can be set the same way, by
 slug, before the path is given.
+
+## What the cast carries - 10 November 2026
+
+`Departure.gear` dresses the main hand as each body is stood:
+
+| body | carried | why |
+| --- | --- | --- |
+| Aragorn | `SWORD_MITHRIL` | a blade of the West |
+| Boromir | `SWORD_AMMOLITE` | Gondor's own stone |
+| Gimli | `AXE_MITHRIL` | the dwarves' metal |
+| Legolas | `ELVEN_BOW` | his own |
+| Gandalf | `ARDA_STAFF`, from the walk | taken up as he turns for the road |
+
+Everyone else is empty-handed. The gear goes in at `stand()` rather than at the walk, so it is in hand
+for the whole scene and swings with the arm when they leave; it is not dropped, since the bodies are
+discarded rather than killed, and they are invulnerable besides.

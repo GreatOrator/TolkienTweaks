@@ -346,6 +346,24 @@ public final class Departure {
         SHOWS.put(player.getUUID(), show);
     }
 
+    /**
+     * What a body of the cast carries in: the gear each of them is known by, so the courtyard has a bow and
+     * two blades in it rather than nine pairs of empty hands. A body with nothing here is stood empty-handed,
+     * and Gandalf's staff is his own case - he takes it up as he turns for the road, not before.
+     * <p>
+     * Only the main hand is dressed. Aragorn carries mithril and Gimli a mithril axe, which is the dwarves'
+     * own metal; Boromir's blade is ammolite, the stone of Gondor's smiths; Legolas carries the elven bow.
+     */
+    private static ItemStack gear(String slug) {
+        return switch (slug) {
+            case "aragorn" -> new ItemStack(TolkienItems.SWORD_MITHRIL.get());
+            case "boromir" -> new ItemStack(TolkienItems.SWORD_AMMOLITE.get());
+            case "gimli" -> new ItemStack(TolkienItems.AXE_MITHRIL.get());
+            case "legolas" -> new ItemStack(TolkienItems.ELVEN_BOW.get());
+            default -> ItemStack.EMPTY;
+        };
+    }
+
     /** Stands the cast round a mark. The bodies belong to the show and go when it does. */
     private static void stand(ServerLevel level, Show show, BlockPos at) {
         // The middle of the courtyard, which is what everybody turns to: not the gathering mark, because
@@ -391,6 +409,10 @@ public final class Departure {
             // killed out from under the words being spoken over it.
             body.setNoAi(true);
             body.setInvulnerable(true);
+            // The gear a body is known by goes into its hand as it is stood, so it is carried through the
+            // whole scene - swung with the arm, drawn by the folk renderers' item layer, and gone with the body.
+            ItemStack carried = gear(cast.slug());
+            if (!carried.isEmpty()) body.setItemSlot(EquipmentSlot.MAINHAND, carried);
             // The keeper tag is what makes a named human wear the face drawn for the name it carries.
             body.addTag(Sites.KEEPER_TAG);
             body.setCustomName(Component.literal(cast.name()).withStyle(ChatFormatting.GOLD));
