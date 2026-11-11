@@ -255,18 +255,25 @@ public final class GoblinCave {
                         continue;
                     }
                     BlockPos at = new BlockPos(x, y, z);
+                    // Every cell the plan opens is kept, whether the cut has to take a block out of it or the world
+                    // already had it open: a cell the hill was hollow at before the cut is as much the cave as the
+                    // rest of it, and it wants the same wear. Cells above the roof were turned away above, so what
+                    // is kept here is cave rather than sky.
+                    opened.add(at);
                     BlockState state = level.getBlockState(at);
                     if (state.isAir() || state.getFluidState().is(Fluids.WATER)) continue;
                     level.setBlock(at, Blocks.CAVE_AIR.defaultBlockState(), 2);
-                    opened.add(at);
                     cells++;
                 }
             }
         }
-        // The hill weathers the cave before the hall is laid in it, so the hall's own room is the room somebody
-        // made and the caves around it are the ones the hill has been hollow in for an age.
-        wear(level, opened, hallBox(level, pin, into, floor));
+        // The hill weathers the cave before the hall is laid in it, and the hall's own walls after: a room cut
+        // in a hill is still a room the hill has been in for an age, and the template's walls are the same stone
+        // the caves round them are made of.
+        AABB box = hallBox(level, pin, into, floor);
+        wear(level, opened, box);
         BlockPos hall = dress(level, pin, into, floor);
+        if (box != null) wearHall(level, box);
         return new Result(pin, into, floor, floor + HALL_HEIGHT - 1, cells, dropped, hall);
     }
 
@@ -314,6 +321,41 @@ public final class GoblinCave {
     /** The hill's own material, which is the only thing the wear may change. */
     private static boolean hill(BlockState state) {
         return state.is(BlockTags.BASE_STONE_OVERWORLD);
+    }
+
+    /**
+     * Wears the hall's own walls once the template is down: the room crops up in a hill like every cave round
+     * it, so its stone breaks into cobble and takes moss where the wall faces the room. The floor course is left
+     * exactly as the template saved it - that is the ground the benches, the fire and the rack stand on, and a
+     * hole worn in it is a hole in the room's own furniture.
+     */
+    private static void wearHall(ServerLevel level, AABB hall) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int y = (int) hall.minY + 1; y < (int) hall.maxY; y++) {
+            for (int x = (int) hall.minX; x < (int) hall.maxX; x++) {
+                for (int z = (int) hall.minZ; z < (int) hall.maxZ; z++) {
+                    cursor.set(x, y, z);
+                    if (!hill(level.getBlockState(cursor))) continue;
+                    if (!facesRoom(level, cursor)) continue;
+                    int roll = hash(x, y, z);
+                    if (roll < 3) {
+                        level.setBlock(cursor, Blocks.GLOWSTONE.defaultBlockState(), 2);
+                    } else if (roll < 40) {
+                        level.setBlock(cursor, (roll & 2) == 0
+                                ? Blocks.MOSSY_COBBLESTONE.defaultBlockState()
+                                : Blocks.COBBLESTONE.defaultBlockState(), 2);
+                    }
+                }
+            }
+        }
+    }
+
+    /** Whether a block stands in the room rather than in the hill: air beside it or over it. */
+    private static boolean facesRoom(ServerLevel level, BlockPos at) {
+        for (Direction side : SIDES) {
+            if (level.getBlockState(at.relative(side)).isAir()) return true;
+        }
+        return level.getBlockState(at.above()).isAir();
     }
 
     /**

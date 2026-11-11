@@ -389,7 +389,12 @@ public final class Sites extends SavedData {
             WOOD_RUIN, new Seat(0, SEAT_SINK, 5, 0, 0, Direction.NORTH),
             WILD_TENT, new Seat(0, SEAT_SINK, 0, 3, 0, Direction.WEST),
             BOSS_CASTLE, new Seat(0, SEAT_SINK, 31, 45, 2, Direction.SOUTH),
-            BOSS_ARENA, new Seat(0, SEAT_SINK, 0, 0, 1, Direction.WEST));
+            BOSS_ARENA, new Seat(0, SEAT_SINK, 0, 0, 1, Direction.WEST),
+            // The shelter camp is an alcove cut into a rock outcrop, its mouth on the file's north face and its floor
+            // the file's own bottom course. Measured from the mouth's own column, the sill comes down level with the
+            // ground a player walks up to it on; seated by its highest column it stood a course or two proud of the
+            // hill it was cut into, which is a camp that has to be climbed onto rather than walked into.
+            SHELTER_CAMP, new Seat(0, SEAT_SINK, 11, 0, 0, Direction.NORTH));
 
     /**
      * What the stone standing at a building's door is called, by template: the name a player reads in the travel
