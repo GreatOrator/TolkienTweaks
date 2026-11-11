@@ -507,6 +507,12 @@ public class FactionLedgerScreen extends Screen {
 
         graphics.item(iconOf(story), x, bodyTop());
         int y = bodyTop();
+        // A page that counts one body among others names that body under the count, so its own line ends in
+        // the comma the next one carries on from: "Slay 6 Goblin," and then "Ulmug, king of the fires ...".
+        // The comma belongs to the leaf and not to the page, because the same objective is said in chat when
+        // the work is taken and nothing follows it there.
+        Component aside = Campaign.aside(story);
+        String counts = aside == null ? story.objective().getString() : story.objective().getString() + ",";
         if (named) {
             graphics.text(this.font, fit(title.getString(), w - 21), x + 21, y, INK_GOLD, FLAT);
             y += 11;
@@ -514,14 +520,10 @@ public class FactionLedgerScreen extends Screen {
             // Haradwaith" does not fit the width of a leaf, so it wraps onto a second line instead of
             // ending in "Slay 12 soldiers of H..." - a page that says what it is only half-read is the
             // same page it was before it had a name.
-            y = wrapped(graphics, x + 21, y, w - 21, story.objective().getString(), INK, 2) + 4;
+            y = wrapped(graphics, x + 21, y, w - 21, counts, INK, 2) + 4;
         } else {
-            y = wrapped(graphics, x, y + 2, w, story.objective().getString(), INK, 2) + 4;
+            y = wrapped(graphics, x, y + 2, w, counts, INK, 2) + 4;
         }
-
-        // A page that counts one body among others names it under the count: page 27's six finish on a king,
-        // and a leaf that only ever said "Slay 6 Goblin" never told the player who the sixth was.
-        Component aside = Campaign.aside(story);
         if (aside != null) {
             y = wrapped(graphics, x, y, w, aside.getString(), INK_GOLD, 2) + 2;
         }
