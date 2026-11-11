@@ -55,7 +55,8 @@ Measured from the door's own ground `g`:
 | way in | **5 wide, 7 tall**, falls **40** blocks, one block down in two, so **80** blocks of ramp |
 | landing | 7 wide, 5 tall, floor `g-40`, runs into the hall's back wall |
 | hall | **17 wide, 18 long, 13 tall** - floor `g-40`, ceiling `g-28` |
-| passages | 7 wide, 7 tall: one out of each side of the hall to a flank chamber, one on through its far wall to the back chamber |
+| passages | 7 wide, 7 tall, one out of each side of the hall to a flank chamber. The hall's far wall is solid: the back chamber is not reached through the hall |
+| flank tunnels | a string of overlapping balls from each flank chamber into the back one, wandering 3-5 blocks across, so it is a tunnel rather than a corridor |
 | flank chambers | four overlapping lobes each, about 63 blocks along the way in by 44 across and up to 16 tall, mirrored either side of the hall |
 | back chamber | four lobes, about 76 by 69 and up to 20 tall - the largest of the three |
 | far wall | 220 blocks past the door |
@@ -71,9 +72,16 @@ disagree the drawing stops being evidence and becomes a lie.
 The hall and the landing are deliberately untouched by all of that: they are the worked rooms, and the
 roughness is what the caves behind them have instead.
 
-The hall is squared on purpose — it is the room somebody made — and the chambers are not. About **93,716
-cells** at the test pin, with **none dropped** by the roof rule, so the whole plan is still underground.
-That is six times what the two-chamber cave came to.
+The hall is squared on purpose — it is the room somebody made — and the chambers are not. About **95,616
+cells** at the test pin, with **7 dropped** where the roof rule refused: every one of those is at the
+mouth, where a 7-tall way in comes within 3 blocks of the ground, so the rest of the plan is under the
+hill. That is six times what the two-chamber cave came to.
+
+Flood filling the plan from its mouth reaches 95,539 of those cells. The 77 it cannot reach are pockets
+the noise shut inside the rock: no opening on any side, and nothing to see from the cave itself. The
+same fill shows the flank chambers' own swell reaching across the hall's line between about `a` 106 and
+144, so the hall's far end opens straight into both flanks as well as through the 7-wide passages out of
+its sides - the passages are the narrow way in, the merge is the wide one.
 
 Two rules hold the shape together:
 

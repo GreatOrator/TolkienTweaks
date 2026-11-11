@@ -54,9 +54,9 @@ PASSAGE_FAR = HALL_SIDE + 13
 PASSAGE_HEIGHT = 7
 FLANK_PASS_BACK = HALL_BACK + 10   # where that passage leaves the hall
 FLANK_PASS_FRONT = HALL_BACK + 22  # and where it arrives
-BACK_PASS_BACK = HALL_FRONT - 2    # where the hall's far wall opens
-BACK_PASS_FRONT = 152              # and where the back chamber holds it
-BACK_PASS_SIDE = 3
+TUNNEL_BACK = 134   # where a flank tunnel leaves its own chamber
+TUNNEL_FRONT = 184  # and where it is well into the back one
+TUNNEL_INSIDE = 22  # and how far it stays off the hall's own line
 CHAMBER_TALL = 20   # the tallest any lobe of a chamber gets
 FAR = 220           # the plan's own far wall
 FAR_SIDE = 60       # and how wide it reaches
@@ -75,6 +75,18 @@ BACK = (
     (196, -18, 15, 16, 15),
     (200, 20, 14, 15, 14),
     (150, 13, 13, 13, 13),
+)
+# The way from each flank chamber into the back one: a string of small balls whose centres wander, so it
+# is a tunnel rather than a bored corridor. Mirrored with the flank.
+TUNNEL = (
+    (140, -38, 4, 4, 6),
+    (146, -36, 4, 4, 5),
+    (151, -39, 3, 4, 5),
+    (156, -35, 4, 5, 6),
+    (161, -37, 3, 4, 5),
+    (166, -33, 4, 4, 6),
+    (171, -35, 3, 4, 5),
+    (176, -28, 5, 5, 6),
 )
 OPEN = 4            # the way in's own blocks, cut through the surface
 OUTSIDE = 1         # blocks cut in front of the door, so it is not walled in
@@ -188,10 +200,6 @@ class Plan:
         if (FLANK_PASS_BACK <= a <= FLANK_PASS_FRONT and PASSAGE_NEAR <= sideways <= PASSAGE_FAR
                 and self.floor <= y <= self.floor + PASSAGE_HEIGHT - 1):
             return True
-        # And on through the hall's far wall to the chamber behind it.
-        if (BACK_PASS_BACK <= a <= BACK_PASS_FRONT and sideways <= BACK_PASS_SIDE
-                and self.floor <= y <= self.floor + PASSAGE_HEIGHT - 1):
-            return True
         return self.cavern(a, s, y)
 
     def cavern(self, a, s, y):
@@ -209,6 +217,13 @@ class Plan:
         for centre_a, centre_s, ra, rs, height in BACK:
             if self.blob(a, s, y, centre_a, centre_s, ra, rs, height):
                 return True
+        # The flank tunnels are only in one stretch of the plan, so the rest of it never looks at them.
+        if TUNNEL_BACK <= a <= TUNNEL_FRONT and abs(s) >= TUNNEL_INSIDE:
+            for centre_a, centre_s, ra, rs, height in TUNNEL:
+                if self.blob(a, s, y, centre_a, centre_s, ra, rs, height):
+                    return True
+                if self.blob(a, s, y, centre_a, -centre_s, ra, rs, height):
+                    return True
         return False
 
     def blob(self, a, s, y, centre_a, centre_s, reach_a, reach_s, height):

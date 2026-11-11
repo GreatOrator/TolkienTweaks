@@ -51,9 +51,9 @@ public final class GoblinCave {
     private static final int PASSAGE_HEIGHT = 7;
     private static final int FLANK_PASS_BACK = HALL_BACK + 10;   // where that passage leaves the hall
     private static final int FLANK_PASS_FRONT = HALL_BACK + 22;  // and where it arrives
-    private static final int BACK_PASS_BACK = HALL_FRONT - 2;     // where the hall's far wall opens
-    private static final int BACK_PASS_FRONT = 152;               // and where the back chamber holds it
-    private static final int BACK_PASS_SIDE = 3;
+    private static final int TUNNEL_BACK = 134;   // where a flank tunnel leaves its own chamber
+    private static final int TUNNEL_FRONT = 184;  // and where it is well into the back one
+    private static final int TUNNEL_INSIDE = 22;  // and how far it stays off the hall's own line
     private static final int CHAMBER_TALL = 20;   // the tallest any lobe of a chamber gets
     private static final int FAR = 220;           // the plan's own far wall
     private static final int FAR_SIDE = 60;       // and how wide it reaches
@@ -79,6 +79,22 @@ public final class GoblinCave {
             new Lobe(196, -18, 15, 16, 15),
             new Lobe(200, 20, 14, 15, 14),
             new Lobe(150, 13, 13, 13, 13),
+    };
+
+    /**
+     * The way from each flank chamber into the one behind the hall, as a string of small balls rather
+     * than a bored corridor: the centres wander and the radii change, so it reads as a tunnel somebody
+     * followed rather than a passage somebody drove. Mirrored with the flank, like the chamber is.
+     */
+    private static final Lobe[] TUNNEL = {
+            new Lobe(140, -38, 4, 4, 6),
+            new Lobe(146, -36, 4, 4, 5),
+            new Lobe(151, -39, 3, 4, 5),
+            new Lobe(156, -35, 4, 5, 6),
+            new Lobe(161, -37, 3, 4, 5),
+            new Lobe(166, -33, 4, 4, 6),
+            new Lobe(171, -35, 3, 4, 5),
+            new Lobe(176, -28, 5, 5, 6),
     };
     private static final int ROOF = 3;            // rock kept between the cave and the sky above it
     private static final int OPEN = 4;            // the way in's own blocks, cut through the surface
@@ -175,11 +191,6 @@ public final class GoblinCave {
                 && sideways <= PASSAGE_FAR && y >= floor && y <= floor + PASSAGE_HEIGHT - 1) {
             return true;
         }
-        // And on through the hall's far wall to the chamber behind it.
-        if (a >= BACK_PASS_BACK && a <= BACK_PASS_FRONT && sideways <= BACK_PASS_SIDE
-                && y >= floor && y <= floor + PASSAGE_HEIGHT - 1) {
-            return true;
-        }
         if (!cavern(a, s, y, floor)) return false;
         // A stalactite or a stalagmite is rock the cut leaves standing rather than a block it places:
         // the hillside's own material comes down from the ceiling and up off the floor.
@@ -197,6 +208,13 @@ public final class GoblinCave {
         }
         for (Lobe lobe : BACK) {
             if (swell(a, s, y, floor, lobe.a(), lobe.s(), lobe.ra(), lobe.rs(), lobe.height())) return true;
+        }
+        // The flank tunnels are only in one stretch of the plan, so the rest of it never looks at them.
+        if (a >= TUNNEL_BACK && a <= TUNNEL_FRONT && Math.abs(s) >= TUNNEL_INSIDE) {
+            for (Lobe ball : TUNNEL) {
+                if (swell(a, s, y, floor, ball.a(), ball.s(), ball.ra(), ball.rs(), ball.height())) return true;
+                if (swell(a, s, y, floor, ball.a(), -ball.s(), ball.ra(), ball.rs(), ball.height())) return true;
+            }
         }
         return false;
     }
