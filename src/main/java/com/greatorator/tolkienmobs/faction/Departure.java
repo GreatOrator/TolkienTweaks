@@ -39,9 +39,9 @@ import java.util.UUID;
  * second scene for Elrond's last words - so this class is the same shape: a tick-driven beat list, the
  * cast placed on the ground the plaza's own marks give, and the lines spoken in order.
  * <p>
- * When Gandalf's sending is said the courtyard empties: the nine who go walk off it in lanes of their own
- * on the bearing the ring itself gives - the open side, away from Elrond - and Elrond and Bilbo stay for
- * the last five lines and are taken away with the scene. Where the road runs past the plaza's rim
+ * When the last line of the script is said the courtyard empties: the nine who go walk off it in lanes of
+ * their own on the bearing the ring itself gives - the open side, away from Elrond - and Elrond and Bilbo
+ * stay where they were stood until the nine are off the plaza, then go with the scene. Where the road runs past the plaza's rim
  * is not this class's business yet: the walk ends where the courtyard does. The old script's walk mark and
  * its spawn layout are in {@code docs/departure-scene.md}.
  * <p>
@@ -69,8 +69,6 @@ public final class Departure {
     private static final int GAP = 60;
     /** Ticks kept after the last line before the company is taken away and the page is handed over. */
     private static final int TAIL = 60;
-    /** The line after which the nine who go turn and leave: Gandalf's sending is the twentieth. */
-    private static final int LEAVE_AFTER = 20;
     /** How far past the gathering mark a leaver walks before it is out of the courtyard, in blocks. */
     private static final double GONE = 24.0D;
     /** How far a body steps in one tick: a walking player's pace, so the legs keep their own rhythm. */
@@ -403,10 +401,14 @@ public final class Departure {
             player.sendSystemMessage(Component.literal(line.who() + ": ").withStyle(line.colour())
                     .append(Component.translatable(line.key()).withStyle(style)));
         }
-        // The nine who go leave on Gandalf's sending, so Elrond's five lines are said over the walking.
-        if (show.sent >= LEAVE_AFTER) beginWalk(level, show);
+        // Nobody turns until the last line has been said: Elrond's five are spoken with the whole Company
+        // still standing there, and only then does the courtyard empty.
+        if (show.sent >= LINES.size()) beginWalk(level, show);
         if (show.sent < LINES.size()) return;
         if (elapsed < (long) GAP * LINES.size() + TAIL) return;
+        // The walk out is the end of the scene rather than a thing happening beside it, so Elrond and Bilbo
+        // are not taken away until the nine who go are off the plaza.
+        if (!show.targets.isEmpty()) return;
         finish(player, level, show);
     }
 
@@ -475,7 +477,10 @@ public final class Departure {
         if (show == null || show.facing.isEmpty()) return;
         if (!(player.level() instanceof ServerLevel level)) return;
         long now = level.getGameTime();
-        Line speaking = show.sent > 0 && show.sent <= LINES.size() ? LINES.get(show.sent - 1) : null;
+        // A line is being said from the tick it lands until the next one does, so an arm comes down of its
+        // own accord when the script moves on, and the last line's does not stay up through the walk out.
+        Line speaking = show.sent > 0 && now - show.start < (long) GAP * show.sent
+                ? LINES.get(show.sent - 1) : null;
         for (UUID id : List.copyOf(show.facing.keySet())) {
             // A body on its way out is steered by the walk, and a body already taken away has nothing to
             // steer.
