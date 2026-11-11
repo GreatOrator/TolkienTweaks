@@ -47,6 +47,7 @@ import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
@@ -260,6 +261,12 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_CREBAIN.get(), CrebainRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_SWARM.get(), SwarmRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_GREAT_EAGLE.get(), GreatEagleRender::new);
+
+                // Furniture
+                // A seat has nothing to draw, but every entity type needs a renderer: 26.1's dispatcher
+                // dereferences it before asking whether to draw anything, so a type without one crashes
+                // the client on the first frame that has an entity of it.
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SEAT.get(), NoopRenderer::new);
 
                 // Passive
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_AUROCH.get(), AurochRender::new);
