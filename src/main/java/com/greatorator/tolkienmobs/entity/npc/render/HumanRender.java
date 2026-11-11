@@ -13,6 +13,7 @@ import com.greatorator.tolkienmobs.entity.npc.HumanEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.HumanModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -220,6 +221,14 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
     private static final float STRIDE_SWING = 26.0F;
     /** How much of the legs' swing the arms take up, which is less because a swinging arm reads as a march. */
     private static final float ARM_SWING = 0.55F;
+    /** How far a speaking arm comes up when the body is greeting somebody with it, in degrees. */
+    private static final float GREET_RAISE = 80.0F;
+    /** How far an arm with a scroll in its hand comes up: less, because paper is read close to the face. */
+    private static final float READ_RAISE = 44.0F;
+    /** How far a reading arm turns across the body, so the scroll ends up in front of it rather than beside. */
+    private static final float READ_ACROSS = -20.0F;
+    /** How far a reading head drops towards the paper, in degrees. */
+    private static final float READ_PITCH = -12.0F;
 
     /**
      * The scene's own facts, read off a body as it is extracted: whether it belongs to a scene, which way the
@@ -238,6 +247,9 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         // means nine of them are never in step with each other.
         renderState.sceneWalking = body.isSceneWalking();
         renderState.sceneStride = body.tickCount + partialTick;
+        // Reading is not speaking with a hand up: a body holding paper brings it to its face. The item is
+        // synched with the body, so the client can see which of the two it is doing.
+        renderState.sceneReading = body.getMainHandItem().is(TolkienItems.ITEM_SCROLL.get());
         float want = 0.0F;
         Player player = Minecraft.getInstance().player;
         if (player != null) {
@@ -262,8 +274,11 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
      */
     public static boolean sceneBones(TolkienGeoRenderState renderState, BoneSnapshots snapshots) {
         if (!renderState.sceneBody) return false;
-        snapshots.ifPresent("head", bone ->
-                bone.setRotation(0f, renderState.headYaw * HEAD_SIGN * Mth.DEG_TO_RAD, 0f));
+        // A body reading from a scroll looks down at it while the paper is up; everybody else's head stays
+        // level and only turns.
+        float headPitch = renderState.sceneReading && renderState.armRaise > 0.01F ? READ_PITCH : 0.0F;
+        snapshots.ifPresent("head", bone -> bone.setRotation(headPitch * Mth.DEG_TO_RAD,
+                renderState.headYaw * HEAD_SIGN * Mth.DEG_TO_RAD, 0f));
         // The legs carry the walk: hips forward and back on the body's own beat, arms against them. Nothing
         // else about the body moves, so the ground it was stood on stays where it was put.
         float swing = renderState.sceneWalking
@@ -274,9 +289,13 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
             snapshots.ifPresent("leftArm", bone -> bone.setRotation(swing * ARM_SWING, 0f, 0f));
         }
         if (renderState.armRaise > 0.01F) {
-            // The arm comes forward and up rather than out to the side, which reads as a greeting.
-            float raised = -80.0F * renderState.armRaise * Mth.DEG_TO_RAD;
-            snapshots.ifPresent("rightArm", bone -> bone.setRotation(raised, 0f, 0f));
+            // A greeting comes forward and up, out in front of the shoulder. Reading does not: the arm comes up
+            // less far and turns across the body, which brings the scroll in front of the face where a person
+            // reading aloud actually holds it. The turn is eased with the lift, so the two arrive together.
+            float raised = (renderState.sceneReading ? READ_RAISE : GREET_RAISE) * renderState.armRaise;
+            float across = renderState.sceneReading ? READ_ACROSS * renderState.armRaise : 0.0F;
+            snapshots.ifPresent("rightArm", bone ->
+                    bone.setRotation(-raised * Mth.DEG_TO_RAD, across * Mth.DEG_TO_RAD, 0f));
         } else if (renderState.sceneWalking) {
             snapshots.ifPresent("rightArm", bone -> bone.setRotation(-swing * ARM_SWING, 0f, 0f));
         }

@@ -496,3 +496,15 @@ whether the script was *behind* the line it had just said, which is never true -
 It now asks whether a line's worth of ticks has passed since the line landed, on the script's own clock
 (the one the pause is written into), so an arm comes up as a line lands and comes down as the next one
 does, and Elrond's last one lowers three seconds after "Let us go back, Adventurer".
+
+## Reading, not greeting - 10 November 2026
+
+The arm raise was one gesture for every speaking body: eighty degrees forward, which is a greeting held
+in the air. A body with `ITEM_SCROLL` in its main hand is drawn differently - `sceneReading` is set
+during extraction off the synched item - and takes `READ_RAISE` (44 degrees) with `READ_ACROSS` (-20
+across the body) so the paper comes up in front of the face, and `READ_PITCH` (-12) drops the head
+towards it. Everyone else keeps the greeting.
+
+Both numbers are eased by the same `armRaise`, so the lift and the turn arrive together and leave
+together. The side the arm turns to, and the sign of the head's pitch, are the two guesses here: either
+one may need its sign flipped once it is seen, and both are single constants next to `HEAD_SIGN`.

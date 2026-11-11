@@ -84,6 +84,10 @@ public class TolkienGeoRenderState extends LivingEntityRenderState implements Ge
     /** Where in its stride a walking body is, in ticks, with the frame's part of a tick folded in. */
     public float sceneStride;
 
+    /** Whether this body has a scroll in its hand, set by the renderer during extraction. A body reading */
+    /** aloud holds the paper up to its face rather than out in front of it, so the arm's rise is its own. */
+    public boolean sceneReading;
+
     @Override
     public <D> void addGeckolibData(DataTicket<D> dataTicket, D data) {
         this.geckolibData.put(dataTicket, data);
