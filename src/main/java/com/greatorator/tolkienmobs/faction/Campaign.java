@@ -505,6 +505,8 @@ public final class Campaign extends SavedData {
      */
     private static final String GLOIN = "Glóin";
     private static final String GLOIN_TAG = "tolkienmobs:campaign_gloin";
+    /** The camp's name on the ground, as the catalogue writes it. */
+    private static final String GLOIN_PLACE = "gloin";
     /** How far from the middle of the camp a player has to be for him to be stood at it, in blocks. */
     private static final double GLOIN_REACH = 96.0D;
     /**
@@ -3088,6 +3090,9 @@ public final class Campaign extends SavedData {
         keepBarachen(player);
         keepElrond(player);
         keepLegolas(player);
+        // The camp is a place as well as a build, so a page that names it has a bearing rather than a hill: the
+        // name stands at the camp's own pin, the way the goblin fires stand on the cave's.
+        Places.ensure(player, GLOIN_PLACE, CAMP_RADIUS);
         keepGloin(player);
         keepGimli(player);
         // The seam between the chapters is walked rather than handed over: the note left at the end of

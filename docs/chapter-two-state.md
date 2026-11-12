@@ -148,6 +148,10 @@ written down so it cannot cost another outcrop.
 
 - The cave's wear, its hall dressing and the key's stocking; the camp's mouth clearing on any hill but the one
   it was tested on; the eleven pages themselves.
+- **Glóin's camp** - it was written down by the survey before its pin existed, so the site held a guess 900
+  blocks from the pin and never built, which is why no dwarf stood at the fire. A pin now outranks an unbuilt
+  site both when the page is taken and on every look, and the camp has its own name on the ground (`gloin`).
+  Compiled only.
 - **The goblin cave's gate** - the mouth walled at the cut, the bronze key and the camp chest set to
   `CampStorage`, the ashen scroll opening the mouth within 16 blocks, and the wall going back up at settling unless
   another player still carries the page. Compiled only; nothing of it has been played.

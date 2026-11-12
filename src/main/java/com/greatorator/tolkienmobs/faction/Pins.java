@@ -133,6 +133,9 @@ public final class Pins extends SavedData {
             // block, the ground outside the wall the camp's own track leaves from.
             Map.entry(Sites.GLOIN_CAMP, new BlockPos(8215, 224, -3674)),
             Map.entry(Sites.GLOIN_CAMP + ".end", new BlockPos(8229, 223, -3652)),
+            // The camp's own name, written at the middle of the footprint the pin above lays: a page that names
+            // Glóin's camp asks for ground by the name, and the middle is where the fire and the man at it stand.
+            Map.entry("gloin", new BlockPos(8229, 223, -3663)),
             // The departure's own courtyard, read off eleven marker blocks laid on the staging plaza at
             // 5117, -3409 on 10 November 2026 - one block per body, the mithril one Elrond's. The blocks were
             // a survey and are not wanted again: they stand in the world they were laid in and in no other, so

@@ -626,13 +626,26 @@ public final class Sites extends SavedData {
             // rather than over it. A player walking the campaign through a second time met a second crag
             // at every cave.
             if (existing.built() && existing.structure().equals(structure)) return true;
+            // A site written down before its ground was pinned is holding the drawing's guess, and the guess can be
+            // most of a country from the pin - the camp then waits on ground nobody was ever sent to. A pin outranks
+            // the guess while the build is not standing, which is the rule the world's own buildings already follow;
+            // only an unbuilt site is re-seated, so a camp already up stays where it stands.
+            if (!existing.built()) {
+                BlockPos pinned = Pins.at(level, structure);
+                if (pinned != null && (existing.centre().getX() != pinned.getX()
+                        || existing.centre().getZ() != pinned.getZ())) {
+                    SITES.remove(player.getUUID());
+                    store.setDirty();
+                    existing = null;
+                }
+            }
             // A second page to a structure the player has not reached yet is the same ground: a quest in
             // pieces sends them on to what they are already walking toward rather than pitching a rival
             // beside it. Once they have found one, a new page is a new place.
             // A landmark is the exception: its ground comes from the map rather than from where the page
             // was taken, so a site pitched before the map was asked where the landmark belonged is
             // corrected instead of kept.
-            if (!existing.found() && existing.structure().equals(structure)
+            if (existing != null && !existing.found() && existing.structure().equals(structure)
                     && !CANON.containsKey(structure)) {
                 return true;
             }
@@ -1062,6 +1075,19 @@ public final class Sites extends SavedData {
         if (site == null) return;
         if (!player.level().dimension().equals(site.dimension())) return;
         if (!(player.level() instanceof ServerLevel level)) return;
+        if (!site.built()) {
+            // The same rule as {@link #plan}'s, asked on every look: a world that wrote the site down before the pin
+            // existed carries the guess in its own file, and re-taking the page is not something a player should have
+            // to know to do. Read from the pin, the gate that waits for the player is the gate at the camp.
+            BlockPos seated = Pins.at(level, site.structure());
+            if (seated != null && (site.centre().getX() != seated.getX()
+                    || site.centre().getZ() != seated.getZ())) {
+                site = new Site(site.player(), site.dimension(), seated, site.structure(), site.keeper(),
+                        false, site.found(), site.country(), site.road());
+                SITES.put(player.getUUID(), site);
+                instance(level).setDirty();
+            }
+        }
         double away = away(player, site);
         if (!site.built()) {
             if (away <= BUILD_REACH) build(level, site, player);
