@@ -993,6 +993,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.goblins", "Troublesome Goblins");
         this.add("campaign.tolkienmobs.page.goblins.place", "the goblin fires of the Pinnath Fenui, north-east of the pass");
         this.add("campaign.tolkienmobs.page.goblins.closing", "We found this key we think will help find the goblin entrance, take it and see if it will help.");
+        this.add("campaign.tolkienmobs.page.goblins.tale", "I crossed the mountains with Thorin once, and goblins beset us in the dark the way weather does. Ulmug keeps a fire in the Pinnath Fenui now, and his folk have been troubling what little traffic the pass still has. Put the fire out - not the creatures only, the fire - and the road north will be mine again.");
         this.add("campaign.tolkienmobs.cave.open", "The scroll crumbles to dust as the cave opens.");
         this.add("campaign.tolkienmobs.page.goblins.king", "Ulmug, king of the fires: kill him too, and the fires are out.");
         this.add("campaign.tolkienmobs.page.gundabad", "Return to Gundabad I");

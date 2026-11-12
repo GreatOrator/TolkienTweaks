@@ -377,6 +377,12 @@ public final class Campaign extends SavedData {
     private static final String GOBLINS_PLACE = "campaign.tolkienmobs.page.goblins.place";
     private static final String GOBLINS_CLOSING = "campaign.tolkienmobs.page.goblins.closing";
     /**
+     * Glóin's account of the fires themselves, said when he hands the page over. It used to be the page's closing
+     * line; the closing is the key now, so his words are spoken where a briefing belongs and the book keeps the
+     * key line for the player to read while they carry it.
+     */
+    private static final String GOBLINS_TALE = "campaign.tolkienmobs.page.goblins.tale";
+    /**
      * What page 27 asks for: the hall's five folk and the king they are named after, six kills in all.
      * <p>
      * The count is the fires' own - {@link GoblinCave#FOLK} goblins and Ulmug - and so are the kills that
@@ -1667,7 +1673,7 @@ public final class Campaign extends SavedData {
             if (stack.getItem() instanceof KeyItem && GoblinCave.CAMP_CODE.equals(KeyItem.getKeyCode(stack))) return;
         }
         player.getInventory().add(GoblinCave.campKey());
-        player.sendSystemMessage(Component.translatable(GOBLINS_CLOSING).withStyle(ChatFormatting.GOLD));
+        player.sendSystemMessage(Component.translatable(GOBLINS_TALE).withStyle(ChatFormatting.GOLD));
     }
 
     /**

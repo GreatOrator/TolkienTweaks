@@ -255,6 +255,7 @@ Reading the scroll within `SCROLL_REACH` (16 blocks) of the cave pin opens the m
 Settling 2-2 walls it up again for the next player, unless another player in the same world is still carrying the
 page (`Campaign.sealMouthBehind`) - the wall is the world's, not the finisher's.
 
-The page's closing line is now Gloin's word on the key: *"We found this key we think will help find the goblin
-entrance, take it and see if it will help."* It is said at the hand-over and again at settling, because it is the
-same key.
+Page 2-2 now has two lines. Its **closing** is Gloin's word on the key - *"We found this key we think will help
+find the goblin entrance, take it and see if it will help."* - which the book carries while the page is walked.
+His account of the fires themselves - Ulmug's fire, the pass's traffic, the road north - is
+`campaign.tolkienmobs.page.goblins.tale`, spoken once when the key is handed over.
