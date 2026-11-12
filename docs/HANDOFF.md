@@ -518,3 +518,19 @@ the nine leave by), and eight faces - `bilbo`, `gandalf`, `aragorn`, `boromir`, 
 on is done: the camp and the pass road are pinned and built (87f2217a).
 
 Nothing of the scene is built yet.
+
+
+## Where we stopped - 12 November 2026
+
+Chapter one's ground is settled and the chapter-two line stands where `docs/chapter-two-state.md` says: eleven
+pages, 26 to 36, written and wired, never walked. Since the last note the shelter camp is seated on its pin and
+seen in game, the goblin cave cuts and dresses itself as the player comes near, the key is stocked from
+`tolkienmobs:chests/dungeonkey`, and the courtyard seam is built and driven from `Campaign.tick`.
+
+The one thing to read before touching a structure file: a structure block never saves a structure void cell, so a
+**sparse** template is how a build leaves its ground alone, and a dense one takes a cube of hillside with it. That
+is `docs/structure-void.md`, with `tools/structure_void_audit.py` to check any file or the whole tree.
+
+Next, in order: walk 26 to 36 in a fresh world; gate the inner keep's stair behind the plans; name the Pinnath
+Fenui a place; then place the ten `ch2_*` templates and the eight key templates that have no ground. The full
+open list, with what each one costs, is the last section of `docs/chapter-two-state.md`.

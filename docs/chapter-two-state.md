@@ -112,3 +112,74 @@ of the High Pass.`
 
 So chapter two's first page no longer needs Elrond to be walked back to. What chapter two still wants is
 the walk itself: pages 26 to 36 have never been played, and the four things to watch are listed above.
+## Where we stopped - 12 November 2026
+
+The chapter two line itself is unchanged since 4 November: eleven pages, 26 to 36, written and wired, never
+walked. What has changed is the ground those pages stand on, and one lesson about templates that is now
+written down so it cannot cost another outcrop.
+
+### Standing, and seen in a world
+
+- **The shelter camp.** Its cut is `key_structures/shelter_cave`, pinned at 5595, 196, -3621 and seated on the
+  pin itself - corner at the pin, height at the pin, no ground survey - with `Sites.SELF_DRESSED`: no underpin,
+  no sweep, no keeper, no steed, no stone. It brings its own fire and benches, so the only ground it touches is
+  the mouth: `Sites.clearMouth` clears eleven wide, six out and six up in front of the door, at the raise and on
+  every approach after it. The player has walked up to it and reports the placement exact.
+- **The goblin cave.** `GoblinCave.raised` runs from `Campaign.tick` within 96 blocks of the pin, so the hill
+  the fires sit in is cut and dressed as the player comes near rather than by a command. The cut keeps the plan's
+  own record of every open cell, `wear` weathers every chamber it opened (cobble and mossy cobble patches on
+  floor and wall, the rare glowstone in a ceiling, only ever into `BASE_STONE_OVERWORLD`), and the hall's own box
+  is dressed by `wearHall` after the template is laid so its floor course is not weathered with the rest.
+- **The key, and page 27's count.** One hall goblin carries a key whose code is `DungeonKey`, stocked from the
+  named table `tolkienmobs:chests/dungeonkey` - so the hall chest and any other chest set to that code open to
+  the same key, three uses. Page 27 asks for the fires' own folk: `GOBLINS_GOAL` is `GoblinCave.FOLK` plus
+  Ulmug, and only goblins tagged by the cave count, so six goblins met anywhere in the mountains are not the six
+  the page wants.
+- **The courtyard seam.** `Departure` is built and driven from `Campaign.tick`: page 26 falls into the book as
+  the courtyard empties, and the campaign says once where that page goes. Open decision 3 is answered.
+
+### Compiled, not seen
+
+- The cave's wear, its hall dressing and the key's stocking; the camp's mouth clearing on any hill but the one
+  it was tested on; the eleven pages themselves.
+- The palette cleanup of the whole template set (`3d8168e4`, 662 templates, 54 dead entries and 31 duplicated
+  states rebuilt out of the states in use, 42,763,308 listed blocks and 614,650 air cells unchanged, so no cell
+  moved). Unseen because it changes no block.
+
+### The template lesson
+
+A structure block never saves a structure void cell - it writes nothing at all - so a save with void in it comes
+out **sparse**: the box is full size, and the void cells are simply missing. A cell that is not listed is never
+placed, so the ground there stands as it was; a cell listed as air *is* placed and clears what stands there. The
+shelter camp's first template was dense, and its box's air took the hillside away in a cube. It is now exactly
+what the player saved, rotated back into the seated frame: 3,427 listed blocks and 344 air cells for the room,
+with everything outside the camp left unwritten. No template in the tree lists a structure void cell; the audit
+and the rule for new builds are in `docs/structure-void.md`.
+
+### Open, in the order worth taking them
+
+1. **Walk 26 to 36 in a fresh world.** Nothing in the chapter has been played end to end. Watch four things:
+   that the camp reads as a camp; that Gundabad's site search finds level enough ground for a 122-by-183
+   footprint in the Hithaeglir; that the spiral's stair reads as the way down; and that Carn Dum's border camps
+   are findable from the page's direction.
+2. **Gate the inner keep.** The stair is open, so the keep below it can be walked before the plans say it can.
+   Page 29 is already the beat that would open it - a door the plans open is the whole of the work.
+3. **Name the Pinnath Fenui.** The notes put Ulmug's fires north-east of the camp; the page carries the bearing
+   and the prose carries the name. Naming it a place in `Places`, with a country and a pin, is the decision -
+   the cave's own pin already exists to hang it on.
+4. **Place the chapter-two set.** `ch2_approach`, `ch2_cave_a`, `ch2_cave_b`, `ch2_cistern`, `ch2_colonnade`,
+   `ch2_hall`, `ch2_inner_a`, `ch2_inner_b`, `ch2_spiral` and `ch2_vault` are ten finished templates with no
+   reference in the Java and none in the datapack. The two cave tiles were cut for a cave beat the chapter does
+   not yet have. They want a cut table (as Rivendell has) or a pin per piece, and then nothing else - the raise
+   already exists.
+5. **Eight key templates still have no ground:** `elven_banner`, `elven_gate`, `elven_house_1`,
+   `elven_house_2`, `elven_lamp`, `elven_library`, `elven_square` and `snow_camp`.
+6. **Chinese is deferred** for every line the rework touched, as with chapter one - the last pass, not a running
+   cost.
+7. **The place `glo` is still canon'd to the Hithaeglir** while the camp's site is in the Gladden. Nothing
+   targets `placeTarget("gloin")` today, so it is harmless; a page that points at the place would point into the
+   mountains rather than at the camp.
+
+Nothing after page 36 is written. `FINALE_OPEN = false` and `FRONTS` holds the West alone, so the Rider, the
+castle, the arena and the Witch-king stay shut by design. The notes' job boards (quest 37) are not started;
+`Contract` already covers herald work.
