@@ -85,7 +85,9 @@ the only one in the campaign.
 - How the **inner keep** is gated. The notes make page 31 the secret entrance, and the stair is open now:
   the way in wants a door the plans open, not a passage a player can simply walk down.
 - Whether the notes' **Pinnath Fenui** is named ground or a direction: the notes describe it as the hills
-  north-east of the camp, which a compass bearing already covers.
+  north-east of the camp, which a compass bearing already covers. **Answered 12 November 2026:** named ground.
+  `Places` lists `goblins`, whose id is the cave's own pin key, and `Campaign.tick` writes the place from that
+  pin, so the fires are announced where they were cut rather than carried as a direction.
 
 ## Not carried: the old world's Gundabad
 

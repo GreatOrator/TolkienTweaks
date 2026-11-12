@@ -3041,6 +3041,10 @@ public final class Campaign extends SavedData {
         keepCaveTroll(player);
         // The cave is the world's rather than a command's: it is cut and dressed as a player comes near it.
         GoblinCave.raised(player);
+        // The cave is a place as well as a build, and its pin is the name's: the goblin fires stand on
+        // whatever ground the cave was scouted on, so page 27's bearing becomes a point a needle can
+        // find, and a player who walks up to the mouth is told where they are.
+        Places.ensure(player, GoblinCave.PIN, CAMP_RADIUS);
         GoblinCave.keep(player);
         keepElladan(player);
         keepBarachen(player);

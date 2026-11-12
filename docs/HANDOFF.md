@@ -531,6 +531,7 @@ The one thing to read before touching a structure file: a structure block never 
 **sparse** template is how a build leaves its ground alone, and a dense one takes a cube of hillside with it. That
 is `docs/structure-void.md`, with `tools/structure_void_audit.py` to check any file or the whole tree.
 
-Next, in order: walk 26 to 36 in a fresh world; gate the inner keep's stair behind the plans; name the Pinnath
-Fenui a place; then place the ten `ch2_*` templates and the eight key templates that have no ground. The full
-open list, with what each one costs, is the last section of `docs/chapter-two-state.md`.
+Next, in order: walk 26 to 36 in a fresh world; gate the inner keep's stair behind the plans; then place the ten
+`ch2_*` templates and the eight key templates that have no ground. The Pinnath Fenui came off the list on 12
+November 2026 - the goblin fires are a place now, written from the cave's pin rather than described as a
+bearing. The full open list, with what each one costs, is the last section of `docs/chapter-two-state.md`.

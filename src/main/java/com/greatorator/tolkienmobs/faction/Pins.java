@@ -299,6 +299,7 @@ public final class Pins extends SavedData {
             new Need(Sites.TROLL_CAVE_3, "Sholdroth's cave"),
             new Need(Sites.TROLL_CAVE_4, "Matuna's lair"),
             new Need(Sites.GLOIN_CAMP, "Gloin's camp at the pass mouth"),
+            new Need(GoblinCave.PIN, "the goblin fires of the Pinnath Fenui"),
             new Need(Sites.GUNDABAD, "Gundabad"),
             new Need(Sites.BOSS_CASTLE, "the Witch-king's castle"),
             new Need(Sites.BOSS_ARENA, "the arena beneath it"));

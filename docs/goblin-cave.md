@@ -38,7 +38,11 @@ to a new spot rather than by editing code.
 
 `goblins` is in `Places.CATALOGUE` and canon'd to `HITHAEGLIR`, announced as "The Goblin Fires" over
 "Ulmug's fires in the caves of the Pinnath Fenui". It has **no site and no template**, so nothing in
-`Sites` places it, and `/tmpin place goblins` is the only thing that gives it ground.
+`Sites` places it - the name is written from this same pin instead, because the place's id and the pin's key
+are the one string `goblins`: `Places.ensure` takes the pin ahead of any survey, so the name cannot drift from
+the cut, and `Campaign.tick` asks for it beside `GoblinCave.raised`, so a player arriving at the mouth is told
+where they are with no command typed. `/tmpin place goblins` is how a scout moves the name and the cave
+together.
 
 The pin's `y` is where the scout stood and is **not used**: the cut reads the ground under the door
 itself, block by block.

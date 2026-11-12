@@ -60,7 +60,12 @@ creature it does not have.
 1. **The inner keep is not gated.** The spiral's stair is open, so a player can walk down before the plans
    say they can. It wants a door that the plans open (page 29 is already the beat that would open it).
 2. **The Pinnath Fenui is a bearing, not ground.** The notes put Ulmug's fires north-east of the camp; the
-   page carries the direction and the prose carries the name. Naming it a place is still open.
+   page carries the direction and the prose carries the name. **Answered 12 November 2026:** it is a place
+   now. `Places` already listed `goblins` and `GoblinCave.PIN` is that same string, so `Places.ensure` reads
+   the cave's own pin rather than surveying - the name cannot drift from the cut. `Campaign.tick` names it
+   beside `GoblinCave.raised`, so the name is written the first time a player is in Arda and the banner reads
+   *The Goblin Fires* / *Ulmug's fires in the caves of the Pinnath Fenui* on the way down to the mouth, forty-
+   eight blocks round the pin.
 3. **The chapter-one seam is not staged.** *Hasten Their Departure* is a walk back to the library; if the
    company is ever shown leaving, it belongs between pages 25 and 26.
 4. **Chinese is deferred** for the lines the rework changed, as with chapter one — the last pass, not a
@@ -86,7 +91,8 @@ the mountains rather than at the camp.
 1. Walk 26 → 36 in order in a fresh world and watch four things: that the camp reads as a camp; that
    Gundabad's site search finds ground level enough for a 122-by-183 footprint in the Hithaeglir; that the
    stair reads as the way down; and that Carn Dûm's border camps are findable from the page's direction.
-2. Then the two real decisions — gating the stair behind the plans, and naming the Pinnath Fenui.
+2. Then the one decision left — gating the stair behind the plans. The Pinnath Fenui stopped being a
+   decision on 12 November 2026: it is a place, named from the cave's own pin.
 3. Only after that is worth spending: the cave tiles, the seam scene, and Chinese.
 
 ## Where things live
@@ -164,9 +170,9 @@ and the rule for new builds are in `docs/structure-void.md`.
    are findable from the page's direction.
 2. **Gate the inner keep.** The stair is open, so the keep below it can be walked before the plans say it can.
    Page 29 is already the beat that would open it - a door the plans open is the whole of the work.
-3. **Name the Pinnath Fenui.** The notes put Ulmug's fires north-east of the camp; the page carries the bearing
-   and the prose carries the name. Naming it a place in `Places`, with a country and a pin, is the decision -
-   the cave's own pin already exists to hang it on.
+3. ~~Name the Pinnath Fenui.~~ Done on 12 November 2026, and the way it was done is worth keeping: the place
+   id is the cave's pin key, so `Places.ensure` takes the pin instead of surveying and the name and the cut
+   cannot come apart. The `/tmpin` checklist now lists the cave alongside the camps and the hold.
 4. **Place the chapter-two set.** `ch2_approach`, `ch2_cave_a`, `ch2_cave_b`, `ch2_cistern`, `ch2_colonnade`,
    `ch2_hall`, `ch2_inner_a`, `ch2_inner_b`, `ch2_spiral` and `ch2_vault` are ten finished templates with no
    reference in the Java and none in the datapack. The two cave tiles were cut for a cave beat the chapter does
