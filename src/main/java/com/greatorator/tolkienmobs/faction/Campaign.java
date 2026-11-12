@@ -1675,7 +1675,12 @@ public final class Campaign extends SavedData {
         // looked at; a reload asks afresh, which is what gives a key lost in a river back.
         if (!CAMP_KEYED.add(player.getUUID())) return;
         for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
-            if (stack.getItem() instanceof KeyItem && GoblinCave.CAMP_CODE.equals(KeyItem.getKeyCode(stack))) return;
+            if (stack.getItem() instanceof KeyItem && GoblinCave.CAMP_CODE.equals(KeyItem.getKeyCode(stack))) {
+                // The scroll is spent on the wall, and the wall is laid again for the next walk of the page: a key
+                // holding the dust of the last one is a key with no way in, so the page's stores are made good.
+                GoblinCave.stockScroll(stack);
+                return;
+            }
         }
         player.getInventory().add(GoblinCave.campKey());
         player.sendSystemMessage(Component.translatable(GOBLINS_TALE).withStyle(ChatFormatting.GOLD));

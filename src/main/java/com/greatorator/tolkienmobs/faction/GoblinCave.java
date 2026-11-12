@@ -201,6 +201,8 @@ public final class GoblinCave {
     public static final int SCROLL_REACH = 16;
     /** What the player is told when the scroll is spent on the door. */
     public static final String OPEN_LINE = "campaign.tolkienmobs.cave.open";
+    /** The courses of the mouth that are cut through the surface itself, as {@link #carve} makes them. */
+    private static final int MOUTH_COURSES = 2;
     private static final int SPUR_TOP = 16;       // of 256: how often a column of cavern keeps a stalactite
     private static final int SPUR_LOW = 14;       // and how often a stalagmite
     private static final int SPUR_LONG = 5;       // the longest of either, in blocks
@@ -237,27 +239,33 @@ public final class GoblinCave {
     }
 
     /**
-     * The mouth as a wall or as an opening: the same three courses the way in is cut through - {@link #carve}
-     * opens {@code a} 0 to 2, five wide and seven tall at the surface - so the seal is exactly the hole it hides,
-     * and opening it again hands back the air the cut made rather than taking any of the hill.
+     * The mouth as a wall or as an opening, over the cells {@link #carve} opens at the way in - and no others.
+     * <p>
+     * The sill is the pin's own height rather than the ground read at the door: once the wall is standing, the top of
+     * the column at the pin is the wall's own roof, so a sill measured there had climbed seven blocks by the time the
+     * scroll was read and the opening cleared the sky above the plug instead of the plug. The shape is the cut's, not
+     * a box drawn round the door: the ramp's first steps are cut above the ground behind the mouth, which is the open
+     * trench a player can see over the wall, so a wall three courses deep left that trench looking straight through.
      */
     private static boolean mouth(ServerLevel level, boolean fill) {
         BlockPos pin = Pins.at(level, PIN);
         if (pin == null || !TolkienDimensions.ARDA.equals(level.dimension())) return false;
-        Map<Long, Integer> ground = new HashMap<>();
-        Integer surface = ground(level, pin.getX(), pin.getZ(), ground);
-        if (surface == null) return false;
-        Direction into = steepest(level, pin.getX(), pin.getZ(), surface, ground);
+        int sill = pin.getY();
+        int floor = sill - DROP;
+        Map<Long, Integer> cache = new HashMap<>();
+        if (ground(level, pin.getX(), pin.getZ(), cache) == null) return false;
+        Direction into = steepest(level, pin.getX(), pin.getZ(), sill, cache);
         int stepX = into.getStepX();
         int stepZ = into.getStepZ();
         int acrossX = -stepZ;
         int acrossZ = stepX;
         int changed = 0;
-        for (int a = 0; a <= 2; a++) {
+        for (int a = 0; a <= OPEN; a++) {
             for (int s = -MOUTH_SIDE; s <= MOUTH_SIDE; s++) {
                 int x = pin.getX() + stepX * a + acrossX * s;
                 int z = pin.getZ() + stepZ * a + acrossZ * s;
-                for (int y = surface; y <= surface + MOUTH_HEIGHT - 1; y++) {
+                for (int y = floor; y <= sill + MOUTH_HEIGHT - 1; y++) {
+                    if (!mouthCell(a, s, y, sill, floor)) continue;
                     BlockPos at = new BlockPos(x, y, z);
                     BlockState state = level.getBlockState(at);
                     if (fill) {
@@ -275,6 +283,22 @@ public final class GoblinCave {
         return changed > 0;
     }
 
+    /**
+     * The cells the way in is made of: the wall's own three courses through the surface at the door, and the ramp's
+     * first steps behind them, which are cut above the ground and so are the trench a player sees from outside. Taken
+     * from {@link #carve} rather than drawn round the door, so the wall is the hole's shape and opening it back up
+     * cannot take a block the cut never opened.
+     */
+    private static boolean mouthCell(int a, int s, int y, int sill, int floor) {
+        if (Math.abs(s) > MOUTH_SIDE) return false;
+        if (a >= 0 && a <= MOUTH_COURSES && y >= sill && y <= sill + MOUTH_HEIGHT - 1) return true;
+        if (a >= 1 && a <= OPEN) {
+            int low = floor + DROP - (a - 1) * DROP / (RAMP - 1);
+            return y >= low && y <= low + MOUTH_HEIGHT - 1;
+        }
+        return false;
+    }
+
     /** The block the hill beside the mouth is made of, so the wall is the hillside rather than a plug in it. */
     private static BlockState skinOf(ServerLevel level, int x, int z, int y, int stepX, int stepZ,
                                      int acrossX, int acrossZ) {
@@ -283,6 +307,34 @@ public final class GoblinCave {
             if (beside.is(BlockTags.BASE_STONE_OVERWORLD)) return beside;
         }
         return Blocks.TUFF.defaultBlockState();
+    }
+
+    /** Whether a key's own slots still hold the ashen scroll the mouth answers to. */
+    public static boolean holdsScroll(ItemStack key) {
+        ItemContainerContents contents = key.get(TolkienDataComponents.ITEMSTACK_HANDLER.get());
+        if (contents == null) return false;
+        for (int slot = 0; slot < contents.getSlots(); slot++) {
+            if (contents.getStackInSlot(slot).is(TolkienItems.ITEM_SCROLL.get())) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Puts an ashen scroll back in a key's own slots. The scroll is spent on the wall, and the page can be walked
+     * again in this world and the wall laid again when it is finished with: a key holding the dust of the last one
+     * would leave the second walk with no way in, and the camp's chest has nothing else to give.
+     */
+    public static void stockScroll(ItemStack key) {
+        if (holdsScroll(key)) return;
+        ItemContainerContents contents = key.get(TolkienDataComponents.ITEMSTACK_HANDLER.get());
+        NonNullList<ItemStack> slots = NonNullList.withSize(KeyItemContainer.SLOTS, ItemStack.EMPTY);
+        if (contents != null) contents.copyInto(slots);
+        for (int slot = 0; slot < slots.size(); slot++) {
+            if (!slots.get(slot).isEmpty()) continue;
+            slots.set(slot, new ItemStack(TolkienItems.ITEM_SCROLL.get()));
+            break;
+        }
+        key.set(TolkienDataComponents.ITEMSTACK_HANDLER.get(), ItemContainerContents.fromItems(slots));
     }
 
     /** How many cram the key's own slots carry. */

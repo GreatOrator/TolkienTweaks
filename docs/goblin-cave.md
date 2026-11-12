@@ -234,12 +234,19 @@ from the door's ground either way, so the shape does not move with it. **That pi
 
 ## The mouth is walled until the scroll is read
 
-`GoblinCave.cut` ends by walling the mouth up: the same rectangle the cut opens at the surface - three courses deep,
-five wide, seven tall - filled with the hill's own stone (`skinOf` reads the flank, so the wall is the hillside and
-not a plug of something else). A player who finds the place sees unbroken hillside rather than a hole.
+`GoblinCave.cut` ends by walling the mouth up with the hill's own stone (`skinOf` reads the flank, so the wall is the
+hillside and not a plug of something else).
 
-`seal` and `open` are the same loop the other way round: one fills the mouth's air, the other takes it back out to
-cave air, and neither touches a cell outside that rectangle - opening cannot eat the hill.
+The wall is the hole's own shape, not a box drawn round the door. `mouthCell` takes the cells `carve` opens at the
+way in - the three courses through the surface at the door, and the ramp's first steps behind them, which are cut
+*above* the ground and so are the trench a player sees over a three-deep plug. Both `seal` and `open` walk exactly
+those cells: one fills the air, the other takes stone back out, so opening hands back the cut's own shape and cannot
+eat a block the cut never opened.
+
+The sill is the **pin's own height**, not the ground read at the door. Once the wall stands, the top of the column at
+the pin is the wall's roof, so a sill measured there had climbed seven blocks by the time the scroll was read: the
+opening cleared the sky above the plug and left the plug standing. The pin was written down before the wall existed
+and does not move.
 
 Page 2-2 hands out a **bronze key** coded `CampStorage` with **zero uses and no mode**. `KeyItem` spends a key only
 when its mode is set, so zero uses is the one setting that never consumes it. The key's own fifteen slots carry the
@@ -251,6 +258,10 @@ standing (`Sites.codeCampChest`), so a camp raised before this change still open
 
 Reading the scroll within `SCROLL_REACH` (16 blocks) of the cave pin opens the mouth, spends one scroll and says
 `campaign.tolkienmobs.cave.open`: *"The scroll crumbles to dust as the cave opens."*
+
+The scroll is spent, and the wall is laid again when the page is finished with, so the key's stores are made good:
+while the page is carried and the key is in the pack, a key with no scroll in its slots is given one back. A key
+holding the dust of the last wall would leave the second walk of the page with no way in.
 
 Settling 2-2 walls it up again for the next player, unless another player in the same world is still carrying the
 page (`Campaign.sealMouthBehind`) - the wall is the world's, not the finisher's.
