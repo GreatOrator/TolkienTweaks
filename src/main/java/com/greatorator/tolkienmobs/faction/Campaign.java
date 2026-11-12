@@ -55,6 +55,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
+import com.greatorator.tolkienmobs.item.custom.KeyItem;
 
 /**
  * How far a player has got on each of the three fronts, which is the one thing the mod was missing to
@@ -1653,6 +1654,36 @@ public final class Campaign extends SavedData {
      * deepest chamber found, and never topped up - a kill at depth moves the page to the next crag, while
      * one killed somewhere shallow is still owed a body down here.
      */
+    /**
+     * Page 2-2's key. Gloin's word on the page is that a key was found on the road and might open something, so
+     * the key is in the pack from the moment the page is carried - given once, by the code it carries, so a key
+     * lost in a river is not quietly replaced and a second one is never handed out.
+     */
+    private static void keepCaveGated(ServerPlayer player) {
+        Quest page = carriedCampaignPage(player);
+        if (page == null || page.complete() || page.kind() != Quest.Kind.HUNT) return;
+        if (!GOBLINS_TARGET.equals(page.target())) return;
+        for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
+            if (stack.getItem() instanceof KeyItem && GoblinCave.CAMP_CODE.equals(KeyItem.getKeyCode(stack))) return;
+        }
+        player.getInventory().add(GoblinCave.campKey());
+        player.sendSystemMessage(Component.translatable(GOBLINS_CLOSING).withStyle(ChatFormatting.GOLD));
+    }
+
+    /**
+     * The fires put out is the mouth walled up again, for whoever walks up next. The wall is the world's rather
+     * than the finisher's, so it stays down while another player in this world is still carrying the page.
+     */
+    private static void sealMouthBehind(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        for (ServerPlayer other : level.players()) {
+            if (other == player) continue;
+            Quest carried = carriedCampaignPage(other);
+            if (carried != null && !carried.complete() && GOBLINS_TARGET.equals(carried.target())) return;
+        }
+        GoblinCave.seal(level);
+    }
+
     private static void keepCaveTroll(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
         Quest stone = stoneQuest(player);
@@ -3046,6 +3077,7 @@ public final class Campaign extends SavedData {
         // find, and a player who walks up to the mouth is told where they are.
         Places.ensure(player, GoblinCave.PIN, CAMP_RADIUS);
         GoblinCave.keep(player);
+        keepCaveGated(player);
         keepElladan(player);
         keepBarachen(player);
         keepElrond(player);
@@ -3620,6 +3652,8 @@ public final class Campaign extends SavedData {
                 // as the standing so a page cannot be worth one and not the other.
                 payPurse(player, paid);
                 payGift(player, paid);
+                // 2-2 ends with the fires out, so the mouth is walled up behind the player who put them out.
+                if (GOBLINS_TARGET.equals(quest.target())) sealMouthBehind(player);
                 // The chapter's last page does not hand the next one over: it leaves Elrond's note, and
                 // chapter two stays shut until the Company has been seen off at the courtyard.
                 if (DEPARTURE_TITLE.equals(paid.title())) Departure.summon(player);

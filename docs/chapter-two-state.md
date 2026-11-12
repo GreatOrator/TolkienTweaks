@@ -147,7 +147,10 @@ written down so it cannot cost another outcrop.
 ### Compiled, not seen
 
 - The cave's wear, its hall dressing and the key's stocking; the camp's mouth clearing on any hill but the one
-  it was tested on; the eleven pages themselves.
+  it was tested on; the eleven pages themselves.
+- **The goblin cave's gate** - the mouth walled at the cut, the bronze key and the camp chest set to
+  `CampStorage`, the ashen scroll opening the mouth within 16 blocks, and the wall going back up at settling unless
+  another player still carries the page. Compiled only; nothing of it has been played.
 - The palette cleanup of the whole template set (`3d8168e4`, 662 templates, 54 dead entries and 31 duplicated
   states rebuilt out of the states in use, 42,763,308 listed blocks and 614,650 air cells unchanged, so no cell
   moved). Unseen because it changes no block.

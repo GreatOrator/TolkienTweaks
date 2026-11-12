@@ -195,11 +195,98 @@ public final class GoblinCave {
     private static final int OUTSIDE = 1;         // blocks cut in front of the door, so it is not walled in
     private static final int MOUTH_SIDE = 2;      // half the mouth's width, and the way in's
     private static final int MOUTH_HEIGHT = 7;    // and how tall both are
+    /** The code the camp's chest and the key Gloin hands over both carry. */
+    public static final String CAMP_CODE = "CampStorage";
+    /** How near the mouth an ashen scroll has to be read, in blocks. */
+    public static final int SCROLL_REACH = 16;
+    /** What the player is told when the scroll is spent on the door. */
+    public static final String OPEN_LINE = "campaign.tolkienmobs.cave.open";
     private static final int SPUR_TOP = 16;       // of 256: how often a column of cavern keeps a stalactite
     private static final int SPUR_LOW = 14;       // and how often a stalagmite
     private static final int SPUR_LONG = 5;       // the longest of either, in blocks
     private static final double COARSE = 0.16;    // how far a wall wanders, as a share of its reach
     private static final double FINE = 0.06;      // and how much of that is per two blocks
+
+    /**
+     * The key page 2-2 hands out: a bronze key coded to the camp's chest, and worn out before it is given - zero
+     * uses and no mode to spend them - so opening the chest never costs it. Its own fifteen slots are the camp's
+     * stores, which is the only thing a key's inventory is: a few cram and the ashen scroll the mouth answers to.
+     */
+    public static ItemStack campKey() {
+        ItemStack key = new ItemStack(TolkienItems.BRONZE_KEY.get());
+        KeyItem.setKeyData(key, CAMP_CODE, 0, false);
+        NonNullList<ItemStack> slots = NonNullList.withSize(KeyItemContainer.SLOTS, ItemStack.EMPTY);
+        slots.set(0, new ItemStack(TolkienItems.CRAM.get(), CAMP_CRAM));
+        slots.set(1, new ItemStack(TolkienItems.ITEM_SCROLL.get(), 1));
+        key.set(TolkienDataComponents.ITEMSTACK_HANDLER.get(), ItemContainerContents.fromItems(slots));
+        return key;
+    }
+
+    /**
+     * Walls the mouth up with the hill's own stone, so a cave that has not been opened reads as unbroken rock
+     * rather than as a hole nobody was meant to find. Cut into the hillside at the raise, and laid again when a
+     * page is finished with it.
+     */
+    public static boolean seal(ServerLevel level) {
+        return mouth(level, true);
+    }
+
+    /** Takes that wall back out, when the ashen scroll is read at the door. */
+    public static boolean open(ServerLevel level) {
+        return mouth(level, false);
+    }
+
+    /**
+     * The mouth as a wall or as an opening: the same three courses the way in is cut through - {@link #carve}
+     * opens {@code a} 0 to 2, five wide and seven tall at the surface - so the seal is exactly the hole it hides,
+     * and opening it again hands back the air the cut made rather than taking any of the hill.
+     */
+    private static boolean mouth(ServerLevel level, boolean fill) {
+        BlockPos pin = Pins.at(level, PIN);
+        if (pin == null || !TolkienDimensions.ARDA.equals(level.dimension())) return false;
+        Map<Long, Integer> ground = new HashMap<>();
+        Integer surface = ground(level, pin.getX(), pin.getZ(), ground);
+        if (surface == null) return false;
+        Direction into = steepest(level, pin.getX(), pin.getZ(), surface, ground);
+        int stepX = into.getStepX();
+        int stepZ = into.getStepZ();
+        int acrossX = -stepZ;
+        int acrossZ = stepX;
+        int changed = 0;
+        for (int a = 0; a <= 2; a++) {
+            for (int s = -MOUTH_SIDE; s <= MOUTH_SIDE; s++) {
+                int x = pin.getX() + stepX * a + acrossX * s;
+                int z = pin.getZ() + stepZ * a + acrossZ * s;
+                for (int y = surface; y <= surface + MOUTH_HEIGHT - 1; y++) {
+                    BlockPos at = new BlockPos(x, y, z);
+                    BlockState state = level.getBlockState(at);
+                    if (fill) {
+                        if (!state.isAir() && !state.is(Blocks.CAVE_AIR) && !state.is(Blocks.VOID_AIR)) continue;
+                        level.setBlock(at, skinOf(level, x, z, y, stepX, stepZ, acrossX, acrossZ), 2);
+                        changed++;
+                    } else {
+                        if (!state.is(BlockTags.BASE_STONE_OVERWORLD)) continue;
+                        level.setBlock(at, Blocks.CAVE_AIR.defaultBlockState(), 2);
+                        changed++;
+                    }
+                }
+            }
+        }
+        return changed > 0;
+    }
+
+    /** The block the hill beside the mouth is made of, so the wall is the hillside rather than a plug in it. */
+    private static BlockState skinOf(ServerLevel level, int x, int z, int y, int stepX, int stepZ,
+                                     int acrossX, int acrossZ) {
+        for (int side : new int[]{MOUTH_SIDE + 1, -MOUTH_SIDE - 1}) {
+            BlockState beside = level.getBlockState(new BlockPos(x + acrossX * side, y, z + acrossZ * side));
+            if (beside.is(BlockTags.BASE_STONE_OVERWORLD)) return beside;
+        }
+        return Blocks.TUFF.defaultBlockState();
+    }
+
+    /** How many cram the key's own slots carry. */
+    private static final int CAMP_CRAM = 4;
 
     /** What one cut came to, for the command to say. */
     public record Result(BlockPos door, Direction into, int floor, int ceiling, int cells, int dropped,
@@ -274,6 +361,9 @@ public final class GoblinCave {
         wear(level, opened, box);
         BlockPos hall = dress(level, pin, into, floor);
         if (box != null) wearHall(level, box);
+        // The mouth is walled as the last thing the cut does, so the hill reads unbroken until a scroll is read
+        // at it; the hall is behind the wall rather than sealed away from it.
+        seal(level);
         return new Result(pin, into, floor, floor + HALL_HEIGHT - 1, cells, dropped, hall);
     }
 

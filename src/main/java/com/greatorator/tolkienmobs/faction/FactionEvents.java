@@ -18,6 +18,11 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 
 /**
  * The three ways a standing moves: killing a soldier of one alliance, handing tokens to a hall's
@@ -94,6 +99,28 @@ public final class FactionEvents {
                         taken, alliance.displayName(), FactionStandings.standing(player, alliance), rankName(rank))
                 .withStyle(ChatFormatting.WHITE));
         player.level().playSound(null, player.blockPosition(), SoundEvents.VILLAGER_YES, SoundSource.PLAYERS, 0.6F, 1.0F);
+    }
+
+    /**
+     * The ashen scroll read at the goblin cave's mouth. The cave is cut behind a wall of the hill's own stone
+     * until the scroll is read within reach of the door: reading it is what takes the wall down, and the scroll
+     * goes to dust for it.
+     */
+    @SubscribeEvent
+    public static void onScrollAtCaveMouth(PlayerInteractEvent.RightClickItem event) {
+        if (event.getHand() != InteractionHand.MAIN_HAND) return;
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (!(player.level() instanceof ServerLevel level)) return;
+        ItemStack stack = event.getItemStack();
+        if (!stack.is(TolkienItems.ITEM_SCROLL.get())) return;
+        BlockPos pin = Pins.at(level, GoblinCave.PIN);
+        if (pin == null) return;
+        if (pin.distToCenterSqr(player.position()) > (double) GoblinCave.SCROLL_REACH * GoblinCave.SCROLL_REACH) return;
+        if (!GoblinCave.open(level)) return;
+        stack.shrink(1);
+        player.sendSystemMessage(Component.translatable(GoblinCave.OPEN_LINE).withStyle(ChatFormatting.GOLD));
+        event.setCancellationResult(InteractionResult.SUCCESS);
+        event.setCanceled(true);
     }
 
     @SubscribeEvent

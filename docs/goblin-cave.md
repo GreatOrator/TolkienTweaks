@@ -231,3 +231,30 @@ from the door's ground either way, so the shape does not move with it. **That pi
   every world's cave at its next cut or `/tmcave dress`, so what is in that file is what the pack ships.
 - The cut asks for its chunks, so it will generate ground that nobody has walked — intentional for
   looking at a cave, not something to do near a player's builds by accident.
+
+## The mouth is walled until the scroll is read
+
+`GoblinCave.cut` ends by walling the mouth up: the same rectangle the cut opens at the surface - three courses deep,
+five wide, seven tall - filled with the hill's own stone (`skinOf` reads the flank, so the wall is the hillside and
+not a plug of something else). A player who finds the place sees unbroken hillside rather than a hole.
+
+`seal` and `open` are the same loop the other way round: one fills the mouth's air, the other takes it back out to
+cave air, and neither touches a cell outside that rectangle - opening cannot eat the hill.
+
+Page 2-2 hands out a **bronze key** coded `CampStorage` with **zero uses and no mode**. `KeyItem` spends a key only
+when its mode is set, so zero uses is the one setting that never consumes it. The key's own fifteen slots carry the
+camp's stores - four cram and the **ashen scroll** (`tolkienmobs:item_scroll`) - because a chest opened with the
+right key opens `KeyItemContainer`, which is the key's inventory rather than the chest's.
+
+The **shelter camp's chest** is set to the same code when the camp is laid, and on every look at a camp already
+standing (`Sites.codeCampChest`), so a camp raised before this change still opens to the new key.
+
+Reading the scroll within `SCROLL_REACH` (16 blocks) of the cave pin opens the mouth, spends one scroll and says
+`campaign.tolkienmobs.cave.open`: *"The scroll crumbles to dust as the cave opens."*
+
+Settling 2-2 walls it up again for the next player, unless another player in the same world is still carrying the
+page (`Campaign.sealMouthBehind`) - the wall is the world's, not the finisher's.
+
+The page's closing line is now Gloin's word on the key: *"We found this key we think will help find the goblin
+entrance, take it and see if it will help."* It is said at the hand-over and again at settling, because it is the
+same key.

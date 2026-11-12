@@ -60,6 +60,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
 
 /**
  * The ground the campaign has built on: a structure it put down for one player, and the laying of it.
@@ -418,6 +419,17 @@ public final class Sites extends SavedData {
      * standing where the scout had left nothing. What it does get is its own way in: {@link #clearMouth} takes the hill
      * out of the doorway, since a camp the hill has closed over is no camp at all.
      */
+    /** Sets the camp's chest to the code the page's key carries, so the key opens the chest it was found at. */
+    private static void codeCampChest(ServerLevel level, BlockPos corner, Vec3i size) {
+        for (BlockPos pos : BlockPos.betweenClosed(corner,
+                corner.offset(size.getX() - 1, size.getY() - 1, size.getZ() - 1))) {
+            if (!(level.getBlockEntity(pos) instanceof LockableChestBlockEntity chest)) continue;
+            LockableChestBlockEntity.setKeyCode(chest, GoblinCave.CAMP_CODE);
+            chest.setChanged();
+            return;
+        }
+    }
+
     private static final Set<String> SELF_DRESSED = Set.of(SHELTER_CAMP);
 
     /**
@@ -1226,6 +1238,9 @@ public final class Sites extends SavedData {
                 sweep(level, corner, size, site.structure());
             }
         }
+        // The chest is coded whether the camp was laid by this look or was already standing: a camp from before the
+        // code existed still has to open to the key the page hands out.
+        if (SHELTER_CAMP.equals(site.structure())) codeCampChest(level, corner, size);
         // A build that brought its own dressing is finished here: the template is the whole of what it is meant to be,
         // so there is nothing to stand at it and no stone to put down by it.
         if (selfDressed) return;
