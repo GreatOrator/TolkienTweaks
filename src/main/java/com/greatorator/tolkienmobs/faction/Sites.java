@@ -408,6 +408,18 @@ public final class Sites extends SavedData {
     private static final Set<String> ON_THE_PIN = Set.of(SHELTER_CAMP);
 
     /**
+     * Buildings whose template is the whole of what they are meant to be: laid and left, with nothing filled under
+     * them, no ground swept off them, nobody stood at them and no stone put by their door.
+     * <p>
+     * The shelter camp is one. It is cut as a rock outcrop with the camp already inside it - the hill's own stone for
+     * the shell, its own way in on the north face, the floor course and the furniture in place - so it is meant to
+     * look like ground somebody found rather than ground somebody placed. Every pass that tidies a building for the
+     * world was tidying this one into something else: a plinth of dirt under it, a hillside cut away over it, a stone
+     * standing where the scout had left nothing.
+     */
+    private static final Set<String> SELF_DRESSED = Set.of(SHELTER_CAMP);
+
+    /**
      * What the stone standing at a building's door is called, by template: the name a player reads in the travel
      * list. A building with no line here gets no stone of its own, since an unnamed stone asks whoever arrives to
      * name it and the campaign's ground is not the player's to name.
@@ -1136,6 +1148,7 @@ public final class Sites extends SavedData {
         if (template == null) return;
         Vec3i size = template.getSize();
         if (size.getX() <= 0 || size.getZ() <= 0) return;
+        boolean selfDressed = SELF_DRESSED.contains(site.structure());
         // Everything the building stands over has to be loaded, not just the chunk at its middle:
         // a block written into an unloaded chunk is quietly dropped, and half a castle is worse than
         // none. The tent fit in one chunk and never needed to ask; a hilltop a hundred blocks across
@@ -1197,13 +1210,18 @@ public final class Sites extends SavedData {
         if (!standsAt(level, site.structure(), corner)) {
             // A building on a bank wants a bank under it, so the fill reaches as far down as the ground
             // it was lifted off actually fell away, up to a limit that keeps a butte from a plinth.
-            underpin(level, corner, size.getX(), size.getZ(),
-                    Math.min(UNDERPIN_MAX, Math.max(UNDERPIN_DEPTH, found.relief() + 2)));
+            if (!selfDressed) {
+                underpin(level, corner, size.getX(), size.getZ(),
+                        Math.min(UNDERPIN_MAX, Math.max(UNDERPIN_DEPTH, found.relief() + 2)));
+            }
             template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
             // The ground it was laid into is carried to its own roofline, the way the valley's is dressed to the cut's:
             // without this a build seated in a bank kept the bank standing over it, which is a camp nobody can find.
-            sweep(level, corner, size, site.structure());
+            if (!selfDressed) sweep(level, corner, size, site.structure());
         }
+        // A build that brought its own dressing is finished here: the template is the whole of what it is meant to be,
+        // so there is nothing to stand at it and no stone to put down by it.
+        if (selfDressed) return;
         // What the place carries once it stands: the man at a camp, the animal the rider came off at the ruin,
         // and the stone every building has so the travel list can bring a player back to it.
         Body body = site.keeper() ? Body.KEEPER : bodyFor(site.structure());
@@ -1219,6 +1237,9 @@ public final class Sites extends SavedData {
      * cannot multiply them.
      */
     private static void dress(ServerLevel level, Site site, ServerPlayer player) {
+        // A build that brought its own dressing is left exactly as it was laid: no ground swept off it, nobody stood
+        // at it, no stone by its door.
+        if (SELF_DRESSED.contains(site.structure())) return;
         Vec3i size = footprint(level, site.structure());
         if (size == null) return;
         BlockPos corner = site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
