@@ -190,6 +190,38 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
+    /**
+     * Mount Gundabad: the frozen massif at the north end of the range, three peaks over the orcs'
+     * northern capital.
+     *
+     * <p>It is colder than the Misty Mountains around it - the snow lies all year and the fall is snow
+     * rather than rain - and the mist is closer, because the peaks themselves hold the weather rather
+     * than the range's low cloud. The rock is the range's, dressed by {@code TolkienSurfaceRules}, and
+     * what little grows is the mountain's grass in the lee of the rubble. Its people are the goblins and
+     * orcs of the capital, the wargs of the slopes and the duergar in the halls under it.
+     */
+    public static Biome makeBiomeGundabad(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        var generation = gundabadGen(placedFeatureGetter, carverGetter);
+        var spawning = gundabadSpawning();
+        return foggedBiome(4.0F, 44.0F)
+                .hasPrecipitation(true)
+                .temperature(-0.3F)
+                .downfall(0.5F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(-0.3F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0xC3CCD4))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x14283A))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_WARPED_FOREST_MOOD))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(ParticleTypes.SNOWFLAKE, 0.0125F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(0x2E4E5E)
+                        .foliageColorOverride(0x46503F)
+                        .grassColorOverride(0x525C46)
+                        .build())
+                .mobSpawnSettings(spawning.build())
+                .generationSettings(generation.build())
+                .build();
+    }
+
     public static Biome makeBiomeGladden(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         gladdenGen(placedFeatureGetter, carverGetter);
         marshSpawning();

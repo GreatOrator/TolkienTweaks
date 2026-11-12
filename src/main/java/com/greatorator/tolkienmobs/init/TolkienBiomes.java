@@ -54,6 +54,15 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> IRON_HILLS = createBiome("iron_hills", BiomeMaker::makeBiomeIronHills, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.COLD, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> BLUE_MOUNTAINS = createBiome("blue_mountains", BiomeMaker::makeBiomeBlueMountains, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> HITHAEGLIR = createBiome("hithaeglir", BiomeMaker::makeBiomeHithaelgir, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.ICY, TolkienTags.Biomes.HOSTILE);
+    /**
+     * Mount Gundabad: the three-peaked massif at the northern end of the Misty Mountains, where the range
+     * meets the Mountains of Angmar and the cold of Forodwaith comes down out of the north. It is the
+     * orcs' northern capital, taken from the Longbeards whose halls are under it - so the ground is
+     * colder and harder than the range it stands in, the wargs bred on its slopes are its own weather, and
+     * the duergar of the deep halls stand where the notes name the dwarves that lost it.
+     */
+    public static final ResourceKey<Biome> GUNDABAD = createBiome("gundabad", BiomeMaker::makeBiomeGundabad, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.ICY, TolkienTags.Biomes.SNOWY, TolkienTags.Biomes.HOSTILE);
+
     public static final ResourceKey<Biome> FANGORN = createBiome("fangorn_forest", BiomeMaker::makeBiomeFangorn, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
     public static final ResourceKey<Biome> MORDOR = createBiome("mordor", BiomeMaker::makeBiomeMordor, TolkienTags.Biomes.WASTELAND, TolkienTags.Biomes.HOT, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> NURN = createBiome("nurn", BiomeMaker::makeBiomeNurn, TolkienTags.Biomes.PLAINS);

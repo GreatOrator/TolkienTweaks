@@ -269,11 +269,12 @@ public final class Sites extends SavedData {
             // side, which the drawing names Gladden, rather than the mountains it cuts through. That is where
             // the old world built it and where the notes send the player, north of the valley.
             Map.entry(GLOIN_CAMP, ArdaMap.Country.GLADDEN),
-            // Gundabad is in the Hithaeglir - the Misty Mountains themselves - which is where the
-            // notes put it and where the dwarves would have cut it. No cell is pinned for it, because
-            // a building 122 by 183 can only stand where the ground is level enough to take it, and the
-            // search has to be free to walk out from the country's middle to find that ground.
-            Map.entry(GUNDABAD, ArdaMap.Country.HITHAEGLIR));
+            // Gundabad is a country of its own in the drawing now - the massif at the Misty Mountains'
+            // northern end - which is where the notes put it and where the dwarves would have cut it. No
+            // cell is pinned for it, because a building 122 by 183 can only stand where the ground is
+            // level enough to take it, and the massif is three peaks: the search has to be free to walk
+            // out from the country's middle to the ground under them.
+            Map.entry(GUNDABAD, ArdaMap.Country.GUNDABAD));
     /**
      * The cell of the drawing a landmark the books pinpoint is asked for in, as {column, row}.
      * <p>

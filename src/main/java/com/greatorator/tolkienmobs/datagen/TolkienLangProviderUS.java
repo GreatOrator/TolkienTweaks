@@ -761,6 +761,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("biome.tolkienmobs.dagorlad", "The Brown Lands");
             this.add("biome.tolkienmobs.haradwaith", "Haradwaith");
             this.add("biome.tolkienmobs.gladden", "Gladden Fields");
+            this.add("biome.tolkienmobs.gundabad", "Mount Gundabad");
             this.add("biome.tolkienmobs.hithaeglir", "Misty Mountains");
             this.add("biome.tolkienmobs.iron_hills", "Iron Hills");
             this.add("biome.tolkienmobs.blue_mountains", "Blue Mountains");
@@ -1248,6 +1249,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("arda.tolkienmobs.country.barrow_downs", "the Barrow Downs");
         this.add("arda.tolkienmobs.country.dunland", "Dunland");
         this.add("arda.tolkienmobs.country.hithaeglir", "the Misty Mountains");
+        this.add("arda.tolkienmobs.country.gundabad", "Mount Gundabad");
         this.add("arda.tolkienmobs.country.firien", "the Firien wood");
         this.add("arda.tolkienmobs.country.lorinand", "Lórinand");
         this.add("arda.tolkienmobs.country.fangorn", "Fangorn");

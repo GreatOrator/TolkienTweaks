@@ -91,6 +91,7 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ENEDWAITH, TolkienBiomes.GLADDEN), wetFloor()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MIRKWOOD, TolkienBiomes.MIRKWOOD_SPOOKY, TolkienBiomes.ERYN_VORN, TolkienBiomes.OLD_FOREST, TolkienBiomes.FANGORN, TolkienBiomes.LORINAND, TolkienBiomes.WILD_WOOD, TolkienBiomes.FIRIEN), woodlandFloor()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), angmarSurface()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.GUNDABAD), gundabadSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.IMLADRIS), imladrisSurface()),
                                 ironHillsSurface(), hithaeglirSurface(), whiteMountainsFloor(), makeTolkienWorldRules())),
                         SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
@@ -101,7 +102,7 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.FOROCHEL, TolkienBiomes.FOROCHEL_SLOPES, TolkienBiomes.ERED_MITHRIN), STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORIA), MOUNTAIN_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), COARSE_DIRT),
-                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), STONE))),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR, TolkienBiomes.GUNDABAD), STONE))),
                         blueMountainsFloor(),
                         blueMountainsRock(),
                         whiteMountainsRock(),
@@ -410,6 +411,22 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 						)
 				));
 		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), snowySoil);
+	}
+
+	/**
+	 * Gundabad's floor: snow over bare rock, the same reading the Misty Mountains get above the pass, with
+	 * the ice kept to the hollows. It is the frozen end of the range, so the snow is the default rather
+	 * than the exception - only the steep faces and the ground the surface noise breaks read as rock.
+	 */
+	@NotNull
+	private static SurfaceRules.RuleSource gundabadSurface() {
+		SurfaceRules.ConditionSource waterBlocks = SurfaceRules.waterBlockCheck(0, 0);
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.steep(), STONE),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.PACKED_ICE, -0.5, 0.2), STONE),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.ICE, -0.0625, 0.025), ICE),
+				SurfaceRules.ifTrue(waterBlocks, SNOW_BLOCK),
+				SNOW_BLOCK);
 	}
 
 	@NotNull

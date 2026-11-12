@@ -180,12 +180,14 @@ public final class Places extends SavedData {
             // The crossing the beryl is carried to is below the valley and a walk down the road
             // from it, in the same hills, rather than wherever the page was taken.
             "ford", ArdaMap.Country.TROLLSHAWS,
-            // Glóin's camp, Gundabad and its vault are all Misty Mountain ground: the pass out of the
-            // valley and the fortress the notes put far north of it, in the same range.
+            // Glóin's camp and the vault are Misty Mountain ground: the pass out of the valley and the
+            // halls the notes put far north of it, in the same range.
             "gloin", ArdaMap.Country.HITHAEGLIR,
             // The goblin caves are the pass's own country, north-east along the same range the camp is in.
             "goblins", ArdaMap.Country.HITHAEGLIR,
-            "gundabad", ArdaMap.Country.HITHAEGLIR,
+            // Gundabad is its own country in the drawing now - the massif at the range's northern end - so
+            // the fortress is surveyed on the mountain the notes name rather than anywhere along the range.
+            "gundabad", ArdaMap.Country.GUNDABAD,
             "vault", ArdaMap.Country.HITHAEGLIR,
             // The key-stone's vault is at the source of the Bruinen, in the hills below the valley.
             "keystone", ArdaMap.Country.TROLLSHAWS,

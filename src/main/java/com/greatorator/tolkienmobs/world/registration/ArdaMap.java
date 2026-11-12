@@ -731,6 +731,13 @@ public final class ArdaMap {
 
         // The Misty Mountains and the countries either side of them.
         HITHAEGLIR(TolkienBiomes.HITHAEGLIR, 175, 34, true),
+        /**
+         * Mount Gundabad: the massif at the range's northern end, where the Misty Mountains, the Grey
+         * Mountains and Angmar's peaks come together. It stands higher than the range it belongs to and
+         * broader at the foot, which is what three peaks over one massif are - and it is painted after the
+         * mountains' line, so it takes that line's own cells rather than standing beside them.
+         */
+        GUNDABAD(TolkienBiomes.GUNDABAD, 195, 32, true),
         FIRIEN(TolkienBiomes.FIRIEN, 76, 8, true),
         // The Trollshaws, west of the mountains and south of Rhudaur: higher and rougher than Eregion
         // below them, which is what makes them a hill country rather than more of the same wood.
@@ -2182,6 +2189,12 @@ public final class ArdaMap {
         // Vales on the eastern one.
         line(map, Country.HITHAEGLIR, 2, new double[]{20.5, 21.0, 21.0, 22.0, 22.5},
                 new double[]{3.0, 7.0, 11.0, 15.0, 19.0});
+        // Mount Gundabad is a country of its own rather than more of the range: the three-peaked massif
+        // where the Misty Mountains meet Angmar's mountains, painted after the line so it takes the drawn
+        // range's own cells instead of standing beside it. Two columns and two rows is the massif and the
+        // shoulders under its peaks - x 5,120 to 6,143 and z -7,680 to -6,145 - which is the ground north
+        // of the Ettenmoors and east of Angmar that the maps give the mountain.
+        fill(map, Country.GUNDABAD, 20, 5, 21, 6);
         // The Trollshaws take the northern end of the country drawn as Firien - the ground under
         // Rhudaur and against the mountains - leaving Eregion and the holly country south of it.
         // Firien is painted round them rather than over them: a fill that started at row 12 covered

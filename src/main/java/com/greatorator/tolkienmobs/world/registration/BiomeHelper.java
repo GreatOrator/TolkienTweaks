@@ -179,6 +179,29 @@ public abstract class BiomeHelper {
 	}
 
 	/**
+	 * Gundabad's people: the tribes of the northern capital, the wargs bred on its slopes and the duergar
+	 * in the halls under it. The counts are larger than the pass carries, because the books put an army
+	 * here rather than a band - and the duergar stand in for the dwarves the notes name, since the
+	 * Longbeards lost the mountain and the halls under it are held against everyone else.
+	 */
+	public static MobSpawnSettings.Builder gundabadSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 2, 6))
+				.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_ORC.get(), 1, 4))
+				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_WARG.get(), 2, 4))
+				.addSpawn(MobCategory.MONSTER, 20, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_DUERGAR.get(), 1, 2))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 1, 3))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_ORC.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_DUERGAR.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.GOAT, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
+	}
+
+	/**
 	 * Eregion is a peaceful country - Hollin after the rings were made, empty of everything but the
 	 * Elves who pass through it - so its list is Firien's without the wild Hurons that walk that
 	 * country's hills. Its tag and its list say the same thing now.
@@ -904,6 +927,29 @@ public abstract class BiomeHelper {
         BiomeDefaultFeatures.addMountainTrees(biome);
         // Summits go in above the trees but before the freeze, so the snow lands on them and none
         // of them is planted with a spruce.
+        biome.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, TolkienPlacedFeatures.PLACED_MOUNTAIN_PEAK);
+        BiomeDefaultFeatures.addSurfaceFreezing(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
+	/**
+	 * Gundabad's ground: the range's own rock and mountain trees, with the rockpiles and rubble of a
+	 * mountain that has been quarried and fought over, and no fallen leaves - nothing broadleaf grows this
+	 * far north. The peaks and the surface freezing go on last, as they do on the Misty Mountains, so the
+	 * snow lies on the summits rather than under a spruce.
+	 */
+	public static BiomeGenerationSettings.Builder gundabadGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_ROCKPILE);
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MITHRIL_ORE_PLACED_KEY);
+
+        BiomeDefaultFeatures.addMountainTrees(biome);
         biome.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, TolkienPlacedFeatures.PLACED_MOUNTAIN_PEAK);
         BiomeDefaultFeatures.addSurfaceFreezing(biome);
 		BiomeDefaultFeatures.addDefaultOres(biome);
