@@ -243,6 +243,13 @@ way in - the three courses through the surface at the door, and the ramp's first
 those cells: one fills the air, the other takes stone back out, so opening hands back the cut's own shape and cannot
 eat a block the cut never opened.
 
+The wall is also carried **up to the ground beside it**. The ramp's first steps are cut down into the hillside, and
+the hillside falls away above them, so the bore's own head sits below the surface by the time the way in is a few
+courses deep; a wall built only to the bore's head left that trench open to the sky behind it, which is the hole a
+player saw over the plug. Air above the bore is filled up to the higher of the two flank columns (`WALL_CAP` above the
+head at most), so the sky over the trench becomes hillside, and the bank itself is never touched. Opening clears the
+bore only, so that fill stays and the doorway is the bore's own height.
+
 The sill is the ground the **cut measured at the door column**, not the pin's own y. A pin's y is where the scout
 stood, which can be several blocks above or below the door: a wall built from it stood under the bore and left the
 mouth open over the top of the wall, and once the wall was in place the ground at the pin was the wall's own roof, so

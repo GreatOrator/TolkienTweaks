@@ -201,6 +201,8 @@ public final class GoblinCave {
     public static final int SCROLL_REACH = 16;
     /** What the player is told when the scroll is spent on the door. */
     public static final String OPEN_LINE = "campaign.tolkienmobs.cave.open";
+    /** How far above the bore's head the wall is carried, at most, to meet the hillside beside it. */
+    private static final int WALL_CAP = 8;
     /** The courses of the mouth that are cut through the surface itself, as {@link #carve} makes them. */
     private static final int MOUTH_COURSES = 2;
     private static final int SPUR_TOP = 16;       // of 256: how often a column of cavern keeps a stalactite
@@ -289,6 +291,22 @@ public final class GoblinCave {
                         changed++;
                     }
                 }
+                if (!fill) continue;
+                // And the wall is carried up to the ground beside it. The ramp's first steps are cut down into the
+                // hillside, and the hillside falls away above them, so the bore's own head is below the surface by
+                // the time the way in is a few courses deep: a wall built to the bore's head left the trench open to
+                // the sky behind it, which is the hole a player saw over the plug. Only air is filled, so the bank
+                // itself is left exactly as it stands, and the sky over the trench becomes hillside.
+                Integer beside = flankGround(level, x, z, acrossX, acrossZ, cache);
+                if (beside == null) continue;
+                int head = Math.min(beside, sill + MOUTH_HEIGHT + WALL_CAP);
+                for (int y = sill + MOUTH_HEIGHT; y <= head; y++) {
+                    BlockPos at = new BlockPos(x, y, z);
+                    BlockState state = level.getBlockState(at);
+                    if (!state.isAir() && !state.is(Blocks.CAVE_AIR) && !state.is(Blocks.VOID_AIR)) continue;
+                    level.setBlock(at, skinOf(level, x, z, y, stepX, stepZ, acrossX, acrossZ), 2);
+                    changed++;
+                }
             }
         }
         return changed > 0;
@@ -327,6 +345,17 @@ public final class GoblinCave {
             return y >= low && y <= low + MOUTH_HEIGHT - 1;
         }
         return false;
+    }
+
+    /** The ground beside a mouth column, higher of the two flanks, which is the hillside the mouth was cut into. */
+    @Nullable
+    private static Integer flankGround(ServerLevel level, int x, int z, int acrossX, int acrossZ,
+                                       Map<Long, Integer> cache) {
+        Integer left = ground(level, x + acrossX * (MOUTH_SIDE + 1), z + acrossZ * (MOUTH_SIDE + 1), cache);
+        Integer right = ground(level, x - acrossX * (MOUTH_SIDE + 1), z - acrossZ * (MOUTH_SIDE + 1), cache);
+        if (left == null) return right;
+        if (right == null) return left;
+        return Math.max(left, right);
     }
 
     /** The block the hill beside the mouth is made of, so the wall is the hillside rather than a plug in it. */
