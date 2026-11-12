@@ -415,7 +415,8 @@ public final class Sites extends SavedData {
      * the shell, its own way in on the north face, the floor course and the furniture in place - so it is meant to
      * look like ground somebody found rather than ground somebody placed. Every pass that tidies a building for the
      * world was tidying this one into something else: a plinth of dirt under it, a hillside cut away over it, a stone
-     * standing where the scout had left nothing.
+     * standing where the scout had left nothing. What it does get is its own way in: {@link #clearMouth} takes the hill
+     * out of the doorway, since a camp the hill has closed over is no camp at all.
      */
     private static final Set<String> SELF_DRESSED = Set.of(SHELTER_CAMP);
 
@@ -1217,7 +1218,13 @@ public final class Sites extends SavedData {
             template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
             // The ground it was laid into is carried to its own roofline, the way the valley's is dressed to the cut's:
             // without this a build seated in a bank kept the bank standing over it, which is a camp nobody can find.
-            if (!selfDressed) sweep(level, corner, size, site.structure());
+            if (selfDressed) {
+                // The build keeps the hill it was cut into; a mouth buried by that hill is a camp nobody can reach, so
+                // the ground is cleared out of the doorway rather than off the whole shell.
+                clearMouth(level, corner, seat);
+            } else {
+                sweep(level, corner, size, site.structure());
+            }
         }
         // A build that brought its own dressing is finished here: the template is the whole of what it is meant to be,
         // so there is nothing to stand at it and no stone to put down by it.
@@ -1238,8 +1245,16 @@ public final class Sites extends SavedData {
      */
     private static void dress(ServerLevel level, Site site, ServerPlayer player) {
         // A build that brought its own dressing is left exactly as it was laid: no ground swept off it, nobody stood
-        // at it, no stone by its door.
-        if (SELF_DRESSED.contains(site.structure())) return;
+        // at it, no stone by its door. Its doorway is still kept clear, on every approach, so a world that raised it
+        // before this pass existed is walked into rather than walked round.
+        if (SELF_DRESSED.contains(site.structure())) {
+            Vec3i grown = footprint(level, site.structure());
+            if (grown != null) {
+                BlockPos corner = site.centre().offset(-grown.getX() / 2, 0, -grown.getZ() / 2);
+                clearMouth(level, corner, seatFor(level, site.structure(), grown));
+            }
+            return;
+        }
         Vec3i size = footprint(level, site.structure());
         if (size == null) return;
         BlockPos corner = site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
@@ -1501,6 +1516,38 @@ public final class Sites extends SavedData {
      * after the layers it was given rather than hanging a plinth a long way down off a building that is
      * on a cliff.
      */
+    /** How far in front of a self-dressed build's door the hill is cleared, how wide the opening is, and how tall. */
+    private static final int MOUTH_OUT = 6;
+    private static final int MOUTH_WIDE = 5;
+    private static final int MOUTH_TALL = 6;
+
+    /**
+     * Clears the hill out of a self-dressed build's doorway, so the place reads as part of the ground and still has a
+     * way in.
+     * <p>
+     * A build like the shelter camp is cut with its own shell, which is the point of it: it is meant to look like an
+     * outcrop somebody found. Sweeping the ground over the whole shell would cut the outcrop away as well, so this
+     * clears the one place the build must be open - a box in front of the door's own column, at the sill and the
+     * courses over it, wide enough to walk a body through. Nothing inside the template is touched, and nothing on the
+     * ground the player stands on: the clearing starts one block out from the door and one course above the sill.
+     */
+    private static void clearMouth(ServerLevel level, BlockPos corner, Seat seat) {
+        if (!seat.doorway()) return;
+        Direction front = seat.front();
+        BlockPos mouth = corner.offset(seat.doorX(), 0, seat.doorZ());
+        int sill = corner.getY() + seat.doorY();
+        for (int across = -MOUTH_WIDE; across <= MOUTH_WIDE; across++) {
+            for (int out = 1; out <= MOUTH_OUT; out++) {
+                BlockPos column = mouth.relative(front, out).relative(front.getClockWise(), across);
+                for (int up = 0; up < MOUTH_TALL; up++) {
+                    BlockPos at = column.atY(sill + up);
+                    if (level.getBlockState(at).isAir()) continue;
+                    level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                }
+            }
+        }
+    }
+
     public static void underpin(ServerLevel level, BlockPos corner, int wide, int deep, int layers) {
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int dx = 0; dx < wide; dx++) {
