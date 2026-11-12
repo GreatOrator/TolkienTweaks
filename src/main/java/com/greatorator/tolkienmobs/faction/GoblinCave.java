@@ -250,11 +250,22 @@ public final class GoblinCave {
     private static boolean mouth(ServerLevel level, boolean fill) {
         BlockPos pin = Pins.at(level, PIN);
         if (pin == null || !TolkienDimensions.ARDA.equals(level.dimension())) return false;
-        int sill = pin.getY();
-        int floor = sill - DROP;
         Map<Long, Integer> cache = new HashMap<>();
-        if (ground(level, pin.getX(), pin.getZ(), cache) == null) return false;
-        Direction into = steepest(level, pin.getX(), pin.getZ(), sill, cache);
+        Door written = door(level);
+        int sill;
+        Direction into;
+        if (written != null) {
+            sill = written.sill();
+            into = written.into();
+        } else {
+            // A world cut before the door was written down: the ground at the pin is the wall's own roof by now, so
+            // this is a guess and only as good as the wall that stands. Re-cutting writes the door and settles it.
+            Integer read = ground(level, pin.getX(), pin.getZ(), cache);
+            if (read == null) return false;
+            sill = read;
+            into = steepest(level, pin.getX(), pin.getZ(), sill, cache);
+        }
+        int floor = sill - DROP;
         int stepX = into.getStepX();
         int stepZ = into.getStepZ();
         int acrossX = -stepZ;
@@ -281,6 +292,25 @@ public final class GoblinCave {
             }
         }
         return changed > 0;
+    }
+
+    /** The pin a cut writes its own doorway under, headed by the way the hill rose from it. */
+    private static String doorPin(Direction into) {
+        return PIN + ".door." + into.getName();
+    }
+
+    /** The sill and the heading a cut wrote down, or null for a world cut before they were written. */
+    @Nullable
+    private static Door door(ServerLevel level) {
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            BlockPos written = Pins.at(level, doorPin(side));
+            if (written != null) return new Door(written.getY(), side);
+        }
+        return null;
+    }
+
+    /** What a cut knows about its own way in, and what a later scroll has to know to put it back. */
+    private record Door(int sill, Direction into) {
     }
 
     /**
@@ -371,6 +401,12 @@ public final class GoblinCave {
         // Every chunk the cave touches is asked for first: a block written to a chunk nobody is holding
         // is a block written to nothing.
         reach(level, doorX, doorZ, stepX, stepZ, acrossX, acrossZ);
+
+        // The door's own height and heading are written down before a block is taken out: the sill is the ground at
+        // the door column, which the cut then opens to the sky and the wall later puts its own roof over - so after
+        // the cut there is nothing left in the world to measure it from, and a wall built from the pin's own y stood
+        // as many blocks under the bore as the scout happened to be standing above or below it.
+        Pins.set(level, doorPin(into), new BlockPos(doorX, surface, doorZ));
 
         int floor = surface - DROP;
         int cells = 0;

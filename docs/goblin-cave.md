@@ -243,10 +243,13 @@ way in - the three courses through the surface at the door, and the ramp's first
 those cells: one fills the air, the other takes stone back out, so opening hands back the cut's own shape and cannot
 eat a block the cut never opened.
 
-The sill is the **pin's own height**, not the ground read at the door. Once the wall stands, the top of the column at
-the pin is the wall's roof, so a sill measured there had climbed seven blocks by the time the scroll was read: the
-opening cleared the sky above the plug and left the plug standing. The pin was written down before the wall existed
-and does not move.
+The sill is the ground the **cut measured at the door column**, not the pin's own y. A pin's y is where the scout
+stood, which can be several blocks above or below the door: a wall built from it stood under the bore and left the
+mouth open over the top of the wall, and once the wall was in place the ground at the pin was the wall's own roof, so
+a sill read there had climbed seven blocks by the time the scroll was read. The cut therefore writes its doorway down
+before it takes the ground away - `goblins.door.west` (or north, south, east), the door's block and the sill in its y,
+the heading in the key - and both the wall and the opening read it back. A world cut before that was written has no
+door to read; it falls back to the ground at the pin, and a re-cut settles it.
 
 Page 2-2 hands out a **bronze key** coded `CampStorage` with **zero uses and no mode**. `KeyItem` spends a key only
 when its mode is set, so zero uses is the one setting that never consumes it. The key's own fifteen slots carry the
