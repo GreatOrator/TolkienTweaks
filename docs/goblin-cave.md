@@ -259,3 +259,10 @@ Page 2-2 now has two lines. Its **closing** is Gloin's word on the key - *"We fo
 find the goblin entrance, take it and see if it will help."* - which the book carries while the page is walked.
 His account of the fires themselves - Ulmug's fire, the pass's traffic, the road north - is
 `campaign.tolkienmobs.page.goblins.tale`, spoken once when the key is handed over.
+
+## Ulmug's body
+
+The king the cave stands is `ENTITY_TTM_GOBLINKING`, and the first king anything ever spawned crashed the server on
+creation: `GoblinKingEntity` built its snowball goal in a field initialiser, while `Mob`'s own constructor calls
+`registerGoals` before any initialiser on the class being built, so the selector was handed a null goal and died
+hashing it. The goal is made in `registerGoals` now. Nothing to do with the cave; the cave is simply the first caller.

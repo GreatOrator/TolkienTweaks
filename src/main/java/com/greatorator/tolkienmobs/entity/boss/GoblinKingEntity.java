@@ -78,8 +78,15 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
     );
     private long nextDefensiveAbilityUse = 0L;
     private final static long defensiveCoolDown = 10000L;
-    /** One instance, so re-registering it after a weapon change cannot leave a second copy running. */
-    private final RangedAttackGoal snowballGoal = new AggressiveRangedAttackGoal(this, 1.0D, 40, 20.0F);
+    /**
+     * One instance, so re-registering it after a weapon change cannot leave a second copy running.
+     * <p>
+     * Made in {@link #registerGoals()} rather than here: a mob's goals are registered from the middle of
+     * {@code Mob}'s own constructor, which runs before this class's field initialisers, so a goal built here was
+     * still null when it was added to the selector - and a null goal is not a goal that does nothing, it is a crash
+     * in the selector's hash. Nothing had spawned a king until the cave stood one, which is why it was never seen.
+     */
+    private RangedAttackGoal snowballGoal;
 
     public GoblinKingEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -91,6 +98,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
         super.registerGoals();
         this.goalSelector.addGoal(1, new MeleeCombatGoal(this));
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(GoblinEntity.class));
+        if (this.snowballGoal == null) this.snowballGoal = new AggressiveRangedAttackGoal(this, 1.0D, 40, 20.0F);
         this.goalSelector.addGoal(2, this.snowballGoal);
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
@@ -127,6 +135,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
         this.goalSelector.removeGoal(this.bowGoal);
         // GoblinKing uses snowballs for ranged attacks, doesn't need a bow
         // Always use ranged attack goal regardless of held item
+        if (this.snowballGoal == null) return;
         this.goalSelector.removeGoal(this.snowballGoal);
         this.goalSelector.addGoal(2, this.snowballGoal);
         this.ranged = true;
