@@ -505,6 +505,8 @@ public final class Campaign extends SavedData {
      */
     private static final String GLOIN = "Glóin";
     private static final String GLOIN_TAG = "tolkienmobs:campaign_gloin";
+    /** Who this session has been given page 2-2's key, so the hand-over is one moment rather than every look. */
+    private static final Set<UUID> CAMP_KEYED = new HashSet<>();
     /** The camp's name on the ground, as the catalogue writes it. */
     private static final String GLOIN_PLACE = "gloin";
     /** How far from the middle of the camp a player has to be for him to be stood at it, in blocks. */
@@ -1668,14 +1670,29 @@ public final class Campaign extends SavedData {
      * lost in a river is not quietly replaced and a second one is never handed out.
      */
     private static void keepCaveGated(ServerPlayer player) {
-        Quest page = carriedCampaignPage(player);
-        if (page == null || page.complete() || page.kind() != Quest.Kind.HUNT) return;
-        if (!GOBLINS_TARGET.equals(page.target())) return;
+        if (!holdsGoblinPage(player)) return;
+        // Once a session, so a key put away in a chest is not handed out again with the words each time the book is
+        // looked at; a reload asks afresh, which is what gives a key lost in a river back.
+        if (!CAMP_KEYED.add(player.getUUID())) return;
         for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
             if (stack.getItem() instanceof KeyItem && GoblinCave.CAMP_CODE.equals(KeyItem.getKeyCode(stack))) return;
         }
         player.getInventory().add(GoblinCave.campKey());
         player.sendSystemMessage(Component.translatable(GOBLINS_TALE).withStyle(ChatFormatting.GOLD));
+    }
+
+    /**
+     * Whether this player is carrying page 2-2. Asked of the book rather than of {@link #carriedCampaignPage}, which
+     * is the Rider's page and nothing else - a gate that asked it was never handed a page of Gloin's, and no key came
+     * with one. A story page of any front is what the pages are; this asks for the one page.
+     */
+    private static boolean holdsGoblinPage(ServerPlayer player) {
+        for (Quest page : QuestLedger.active(player)) {
+            if (!page.story() || page.kind() != Quest.Kind.HUNT) continue;
+            if (!GOBLINS_TARGET.equals(page.target()) || page.complete()) continue;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -1686,8 +1703,7 @@ public final class Campaign extends SavedData {
         if (!(player.level() instanceof ServerLevel level)) return;
         for (ServerPlayer other : level.players()) {
             if (other == player) continue;
-            Quest carried = carriedCampaignPage(other);
-            if (carried != null && !carried.complete() && GOBLINS_TARGET.equals(carried.target())) return;
+            if (holdsGoblinPage(other)) return;
         }
         GoblinCave.seal(level);
     }
