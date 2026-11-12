@@ -397,6 +397,17 @@ public final class Sites extends SavedData {
             SHELTER_CAMP, new Seat(0, SEAT_SINK, 11, 0, 0, Direction.NORTH));
 
     /**
+     * Buildings that stand exactly where their pin is, with the ground under them taken as it is found: no sampling
+     * of the footprint and no sinking into it.
+     * <p>
+     * The shelter camp is one. Its pin was walked on the ground its floor is meant to be at, so the seating
+     * arithmetic had nothing to add but error - measured from its highest column it stood proud of the hill, and
+     * measured from its mouth it came down by a number that was still a guess at the ground the scout had already
+     * stood on. The pin is the measurement.
+     */
+    private static final Set<String> ON_THE_PIN = Set.of(SHELTER_CAMP);
+
+    /**
      * What the stone standing at a building's door is called, by template: the name a player reads in the travel
      * list. A building with no line here gets no stone of its own, since an unnamed stone asks whoever arrives to
      * name it and the campaign's ground is not the player's to name.
@@ -1146,7 +1157,11 @@ public final class Sites extends SavedData {
         // which is a building the drawing guessed at and no scout has stood on.
         Plane found;
         if (pinned != null) {
-            found = plane(level, pinned, size.getX(), size.getZ(), seat);
+            // A building on this list is put where its pin is and nowhere else, with no question asked of the ground
+            // under it: the corner is the pin, the height is the pin's own, and the hill is whatever the hill is.
+            found = ON_THE_PIN.contains(site.structure())
+                    ? new Plane(pinned, 0)
+                    : plane(level, pinned, size.getX(), size.getZ(), seat);
             if (found == null) {
                 if (UNBUILDABLE.add(site.player())) {
                     LOGGER.info("The pin at {} will not take {} - re-pin it rather than move the build ({})",
