@@ -659,21 +659,20 @@ public final class ArdaMap {
      */
     private static final double PASS_STEP = 2.5D;
     /**
-     * How far the mountain's foot stands above the floor at the build's own ends, in blocks: sixty.
+     * How far the mountain's foot stands above the floor at the build's own ends, in blocks: zero.
      * <p>
-     * Left at the floor the ground met the gate at its lowest course and then climbed away, which left a slot between
-     * the build's rock and the mountain - the ends stood in the open with the rock leaning away from them. Sixty is
-     * exactly the height twenty-four blocks of the climb would have gained, so the foot starts where the slope would
-     * have been twenty-four blocks out - 247 within a block of the footprint, the roof's 267 by about eight, the drawn
-     * massif by about twenty - and the mountain arrives at the build without the slope being shortened to do it.
+     * At zero the ground at the footprint's edge is the floor and the climb runs its full length out of it - floor
+     * 187, the roof's 267 by about thirty-two blocks, the drawn massif by about forty-five - which is the slope the
+     * owner called right from every side.
      * <p>
-     * It is a step at the footprint's edge and it is meant to be: the build's own rock stands there, so the step is
-     * inside the gate's flank and is laid over when it is placed. Shifting the whole climb in by twenty-four blocks
-     * instead was tried and is wrong twice over: it walks the pass floor out of its own early return, so the courtyard
-     * falls to the drawn ground - which at the pass is the map's 63-level valley - and it leaves the slope six blocks
-     * to reach a three-hundred-block plateau, which is a wall.
+     * It was sixty for a while, to bring the foot in twenty-four blocks' worth of climb. That works on paper and is
+     * wrong in the world: the lift is a step at the footprint's edge, so the sides began with a sixty-block face and
+     * only twenty blocks of slope were left before the drawn plateau's three hundred, and the side mountains read as
+     * flat from the ground while the back - where the lift is zero because it is shared by distance - kept its slope.
+     * If the foot is to come in again, it has to come in as length of climb, not as height: shortening this slope is
+     * what makes a wall of it.
      */
-    private static final int PASS_SINK = 60;
+    private static final int PASS_SINK = 0;
     /**
      * How far the mountain's own surface is broken up, in blocks, and at what scales: the crag a range is broken
      * by, and the crests that wander along the pass.

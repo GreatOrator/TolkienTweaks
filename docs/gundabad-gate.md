@@ -70,9 +70,9 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 | | |
 |---|---|
 | floor inside the gate's box | **187, level to the block** — the roll starts only past the gate, because a roll that lifts a floor course by one is a gap under the whole build |
-| the mountain's foot at the gate's ends | **249** — the floor plus the end lift (`PASS_SINK` 60) and one step: the roof's 267 by about eight blocks, so the ends are into the rock |
+| the mountain's foot at the gate's ends | **187** — the floor itself (`PASS_SINK` 0): the climb runs its full length out of it on every side |
 | the mountain round the gate | climbs at **two and a half blocks up per block out** (`PASS_STEP`): 202 at six blocks, 247 at twenty-four, the roof's 267 by about thirty-two |
-| behind the plaza | **187** — level, because the lift is shared out by which distance is doing the work: the ends get all of it, the plaza none, and the courtyard none once it is thirty-two blocks south of the box |
+| behind the plaza | **187** — level, and level for its own sake: the camp stands on it |
 | at the corners | distance **across and behind together**, so the side and the back are one flank and not two ramps meeting in a crease |
 | where the climb stops | at the country's own drawn surface - 293 to 319 round the courtyard - so everything past about fifty blocks is the drawing |
 | its surface | broken by ±14 of folded noise and ±18 of crest wandering along the pass, fading in off the build's own edge |
@@ -87,16 +87,17 @@ capped by the country's own drawn surface - `Math.min(drawn, floor + distance * 
 accord at 293 to 319, about fifty blocks out, and past that the mountain is the drawing's, sloping away the way it
 always did. Nothing is stood up above the drawn massif, so there is no crest to end in a face. The surface carries the
 map's folded noise (±14, at twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass,
-fading in off the build's own edge so the gate still meets the ground exactly. The foot is not at the floor
-beside the build's **ends**, though: it stands thirty-two blocks up (`PASS_SINK`), so the mountain comes up onto the
-ends - at 249 within a block of the footprint, the roof's 267 by about eight - instead of meeting the gate at its
-lowest course and leaning away, which left a slot between the build's rock and the mountain. The lift is sixty
-because that is the height twenty-four blocks of the climb would have gained, so the foot starts where the slope would
-have been twenty-four blocks out **without the slope being shortened to do it**, and it fades out along the courtyard
-(`alongWeight`, over thirty-two blocks south of the box) so the way in stays open and its sides climb out of the floor
-as they always did.
+fading in off the build's own edge so the gate still meets the ground exactly. The foot is the floor everywhere, on every side, and the climb runs its full length out of it - which is the shape
+that read right from every side.
 
-Two ways of bringing the foot in were tried and are wrong, and are worth not repeating: shifting the *whole climb*
+`PASS_SINK` can lift that foot at the build's ends, and was 60 for a while to bring the mountain in twenty-four
+blocks' worth of climb. That is right on paper and wrong in the world: the lift is a **step** at the footprint's edge,
+so the sides began with a sixty-block face and had only twenty blocks of slope left before the drawn plateau's three
+hundred. The back kept its slope through all of it, because the lift is shared out by distance and is zero behind the
+plaza - which is exactly why the rear looked right and the sides went flat. If the foot is to come in again it has to
+come in as a longer or a steeper climb, not as height at the edge: shortening this slope is what makes a wall of it.
+
+Two other ways of bringing the foot in were tried and are wrong, and are worth not repeating: shifting the *whole climb*
 inboard by twenty-four blocks (the pass floor stops being recognized as the floor, because the early return tests the
 distance it has just changed, so the courtyard falls to the drawn ground - which in the pass is the map's 63-level
 valley - and the slope is left six blocks to reach a three-hundred-block plateau, which is a wall), and counting
@@ -220,7 +221,8 @@ the noise above are the answer to both.
 1. Regenerate the ground: a fresh world, or close Mod Test and take those chunks out
    (`python tools/chunk_trim.py --world "run/saves/Mod Test" --radius <n> ... --apply`), then let them
    make again.
-2. `/tmgate place` — lays the eight pieces at the box **unturned**, facade south toward the approach, and reports how many blocks of
+2. `/tmgate place` — lays the eight pieces at the box **unturned**, facade south toward the approach, with the seam
+   **left undressed** (`GundabadGate.drape` is not called while the ground is being judged), and reports how many blocks of
    ground the drape added.
 3. `/tmgate clear` takes the gate's box out at the site; `clear here` takes out a box at the player's own
    position and facing, for a piece tried with `here`.
