@@ -122,6 +122,26 @@ Keep commit messages short, sentence style, and focused on why the change is nee
 Anything under `src/generated/resources` is datagen output: after touching biomes, features,
 placed features, tags or loot, regenerate and commit the generated JSON alongside the code.
 
+## Terrain is drawn, and it should still look like the game's mountains
+
+- **Before changing where the ground stands, read `docs/terrain-style.md`.** It sets out how 1.18+
+  Minecraft builds mountains - multi-noise controls, folded ridged noise, splines, 3D density for
+  overhangs - against what `ArdaMap` actually does, and which of those this generator can and cannot
+  imitate. The short version: the heights are drawn, the detail is cut into the drawing, and
+  `ArdaMap.ragged` is the folded-noise pass that keeps a range from being a cone.
+- **A column's height is a function of the column alone,** in `ArdaMap.sample`, or two chunks that
+  meet will not agree at their border.
+- **Blends are smoothsteps with chosen runs** - a rock face ten to twenty blocks, a hillside a
+  hundred or more, a courtyard's easing two to four hundred. A hard step between two heights is the
+  one shape that never reads as the game's ground.
+- **There are no overhangs in Arda and cannot be.** `ArdaChunkGenerator.reshape` retargets every
+  column to one height, so a build may be cut into a face but the terrain will never be undercut.
+- **Faces are dressed by slope, not by hand:** `SurfaceRules.steep()` in the surface rules, altitude
+  for snow, and `materials()` as the one place the mod's own stone, dirt and grass live.
+- **Measure it, then say it is unverified.** Mirror the shaping function in Python against
+  `assets/tolkienmobs/arda/height.png` and `mountains.png` and read the heights off it before
+  generating anything; terrain is only ever judged in a fresh chunk, in game.
+
 ## World generation facts worth not rediscovering
 
 - **Which fluid fills a biome is not a biome property.** The overworld aquifer is built in

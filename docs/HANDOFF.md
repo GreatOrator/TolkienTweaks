@@ -551,3 +551,7 @@ wings is carried as air until `tools/gate_capture.py --trim-sky` is run.
 
 Nothing in the gate has been seen in game with the new ground: the chunks in the test world were made with
 the first, wide pass, so they have to be made again before the gate can be measured against it.
+
+How the ground should look now has a note of its own: `docs/terrain-style.md` sets vanilla's mountain
+geometry - ridged noise, splines, 3D density, surface rules by slope - against what `ArdaMap` does, and
+`AGENTS.md` points at it from the worldgen section.
