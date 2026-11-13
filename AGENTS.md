@@ -181,6 +181,15 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   passage open, and air above a roof is what stops the rock closing over the build. Trim only the part that is
   removing ground nobody asked to remove, and say in the commit which pieces were trimmed.
 
+### The gate's end tiles carry no air
+
+Every capture in the pack still carries its air and that air still cuts. The Gundabad gate's four **end** tiles are
+the exception, as of the commit that took it out: `gundabad_gate_0_0_0`, `0_1_0`, `3_0_0` and `3_1_0` hold rock and
+nothing else, because a gate set into a mountain has to meet the mountain at its ends, and air written there cut the
+rock back to the gate's own silhouette and left a trench wall. The middle two tiles (`1_*`, `2_*`) still carry their
+air, so the plaza the gate opens onto is still cleared. `git checkout <commit> -- src/main/resources/data/
+tolkienmobs/structure/key_structures` puts the air back.
+
 ## World generation facts worth not rediscovering
 
 - **Which fluid fills a biome is not a biome property.** The overworld aquifer is built in

@@ -86,6 +86,9 @@ public final class GundabadGate {
      *
      * @return how many of the eight files were found and laid; a file missing from the pack is skipped
      */
+    /** Whether the seam is dressed as part of the placing, or left bare for the ground to be judged on its own. */
+    public static final boolean DRESS_ON_PLACEMENT = false;
+
     public static int place(ServerLevel level, BlockPos front, Rotation rotation) {
         BlockPos base = base(front, rotation);
         int laid = 0;
