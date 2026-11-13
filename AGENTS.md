@@ -5,6 +5,29 @@ git:
   push_on_success: false
 ---
 
+## Ask when the ask is ambiguous, or when it fights the last one
+
+The owner is working out the shape of a thing by looking at it, so requests arrive as "bring that in", "make it
+stop sooner", "flip it round". Those are honest descriptions of a picture, and the words underdetermine the
+change. **Ask, in one short question with the options spelled out, instead of picking one and building it.** One
+question costs a minute; guessing wrong costs a regeneration, a world trimmed and a playtest, and the owner is the
+one who pays it.
+
+Ask when:
+
+- **the request contradicts something already settled** - "no sheer walls" then "stand the rock up at the ends",
+  "the ends must sink in" then "keep the foot on the floor". Say which earlier ask it collides with and what the
+  trade is; usually one of the two was about a different surface (the world before placing, the world after).
+- **one word could mean two mechanisms.** "Start the slope 24 blocks in" is a profile shifted inboard, or a foot
+  lifted 24 blocks' worth of height, or an opening narrowed by 24 - three different changes, and only one of them
+  keeps the shape that was just approved. Say the three back and let the owner pick.
+- **a number has two reference points.** "24 blocks further" from the footprint's edge or from the drawn massif's
+  edge; "the back 32 blocks away" a gap or a reach. Name the reference point in the question.
+- **the change is to something the owner has already called right.** Ask before touching it, and offer to leave it.
+
+It is not a reason to stop for routine choices (which file, which constant name, how to word a comment). Those get
+made and mentioned.
+
 ## Reference material
 
 - **The old CustomNPCs world is where names and faces come from.**
