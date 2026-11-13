@@ -7,12 +7,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +29,10 @@ import java.util.List;
  * offsets below the way the valley's own pieces are laid. Its front face is the box's north side, so
  * {@link #place} takes the point the gate should <em>look</em> at and turns the parts to face it.
  * <p>
- * {@link #cut} is the other answer to the same question, kept for the comparison: the same gate as ground the
- * world cuts rather than a build it places - a passage arched out of the hillside, its mouth dressed from the
- * stone that was there. It cannot carry the hand-built detail, but it costs no templates and it always fits the
- * ground it is cut into, so which of the two is wanted is a decision to make with both standing.
+ * The gate was cut a second way while the two answers were being judged - a passage arched out of the hillside
+ * rather than a build set into it - and the build won: it lays fast enough that nothing is gained from the cut,
+ * and the cut could carry none of the hand-dressed detail. The cut has been taken out of the pack, and this is
+ * the gate.
  */
 public final class GundabadGate {
     /** The gate's own box, in blocks, as it was cut: x across the facade, y up, z into the hill. */
@@ -66,12 +64,6 @@ public final class GundabadGate {
             new Piece("1_1_0", 48, 48, 0),
             new Piece("2_1_0", 96, 48, 0),
             new Piece("3_1_0", 144, 48, 0));
-
-    /** The mouth a cut makes: twenty-four across, twelve courses of jamb and eight of arch. */
-    private static final int CUT_HALF = 12;
-    private static final int CUT_JAMB = 12;
-    private static final int CUT_RISE = 8;
-    private static final int CUT_APRON = 6;
 
     private GundabadGate() {
     }
@@ -140,99 +132,6 @@ public final class GundabadGate {
             }
         }
         return cleared;
-    }
-
-    /**
-     * The gate as a cut rather than a build: a passage arched out of the hillside behind {@code door}, its mouth
-     * dressed from the stone that was there.
-     * <p>
-     * The shape is the gate's own, reduced to what a cut can carry: twenty-four across, a straight jamb of twelve
-     * courses and an arch rising eight over it, running forty-eight blocks in - the gate's own depth, so the two
-     * answers are the same length. The mouth's ring is dressed in cobblestone and its wet twin, the two cobbles
-     * the build is made of, and the crown is closed with a keystone of obsidian, so the portal reads as worked
-     * stone without a leaf of the template's detail. The floor is cobblestone from six blocks out in front of
-     * the door to the end of the passage, so the way in is walked rather than stepped up.
-     *
-     * @return what was cut, or null when there is no horizontal way in to cut along
-     */
-    @Nullable
-    public static Cut cut(ServerLevel level, BlockPos door, Direction into) {
-        if (into.getAxis().isVertical()) return null;
-        int floor = door.getY();
-        int carved = 0;
-        int dressed = 0;
-        for (int a = 0; a < DEEP; a++) {
-            for (int s = -CUT_HALF; s < CUT_HALF; s++) {
-                int head = head(s);
-                for (int y = floor; y <= floor + head; y++) {
-                    BlockPos at = along(door, into, a, s, y);
-                    if (!level.hasChunkAt(at) || level.getBlockState(at).isAir()) continue;
-                    level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
-                    carved++;
-                }
-            }
-        }
-        // Its floor and the apron in front of the door, laid once across the whole mouth rather than per course.
-        for (int a = -CUT_APRON; a < DEEP; a++) {
-            for (int s = -CUT_HALF; s < CUT_HALF; s++) {
-                BlockPos bed = along(door, into, a, s, floor - 1);
-                if (!level.hasChunkAt(bed) || !level.getBlockState(bed).isAir()) continue;
-                level.setBlock(bed, Blocks.COBBLESTONE.defaultBlockState(), 2);
-                carved++;
-            }
-        }
-        // The mouth's ring: the stone the cut left standing on the arch's own outline, for the first two courses
-        // in, dressed in the gate's cobbles. The outline is read in the passage's own coordinates, so nothing has
-        // to be turned for a gate that faces east or west.
-        for (int a = 0; a < 2; a++) {
-            for (int s = -CUT_HALF - 2; s < CUT_HALF + 2; s++) {
-                for (int up = -1; up <= CUT_JAMB + CUT_RISE + 2; up++) {
-                    if (inside(s, up)) continue;
-                    if (!touchesMouth(s, up)) continue;
-                    BlockPos at = along(door, into, a, s, floor + up);
-                    if (!level.hasChunkAt(at) || level.getBlockState(at).isAir()) continue;
-                    level.setBlock(at, ring(at), 2);
-                    dressed++;
-                }
-            }
-        }
-        BlockPos crown = along(door, into, 0, 0, floor + CUT_JAMB + CUT_RISE);
-        if (level.hasChunkAt(crown)) {
-            level.setBlock(crown, Blocks.OBSIDIAN.defaultBlockState(), 2);
-            dressed++;
-        }
-        return new Cut(door, into, carved, dressed, DEEP, CUT_HALF * 2, CUT_JAMB + CUT_RISE + 1);
-    }
-
-    /** What a cut took out and dressed, for the command to report. */
-    public record Cut(BlockPos door, Direction into, int carved, int dressed, int depth, int wide, int high) {
-    }
-
-    /** The top of the passage at an offset across it: the jamb, plus whatever the arch has risen there. */
-    private static int head(int s) {
-        double t = (double) s / (double) CUT_HALF;
-        return CUT_JAMB + (int) Math.round(CUT_RISE * Math.sqrt(Math.max(0.0D, 1.0D - t * t)));
-    }
-
-    /** Whether a mouth-relative cell is inside the arch, before the hill is consulted. */
-    private static boolean inside(int s, int up) {
-        return s >= -CUT_HALF && s < CUT_HALF && up >= 0 && up <= head(s);
-    }
-
-    /** Whether a cell sits on the arch's own outline: one step outside the opening, beside stone it keeps. */
-    private static boolean touchesMouth(int s, int up) {
-        return inside(s - 1, up) || inside(s + 1, up) || inside(s, up - 1) || inside(s, up + 1);
-    }
-
-    /** The gate's two cobbles, alternating off the cell's own hash so the ring reads as weathered stone. */
-    private static BlockState ring(BlockPos at) {
-        return (at.asLong() >>> 61 & 1L) == 0L ? Blocks.COBBLESTONE.defaultBlockState()
-                : Blocks.MOSSY_COBBLESTONE.defaultBlockState();
-    }
-
-    /** A cell of the passage: from the door, along the way in, across it, and above its floor. */
-    private static BlockPos along(BlockPos door, Direction into, int a, int s, int y) {
-        return door.relative(into, a).relative(into.getClockWise(), s).atY(y);
     }
 
     /** The gate's own origin, from the point its facade's middle should stand at. */
