@@ -97,6 +97,9 @@ public final class GundabadGate {
     private static final int HALL_WALL = 2;
     private static final int HALL_ROOF = 3;
 
+    /** How tall the chamber is, in courses: y 190 to 226, measured off the rear face. Read, never grown. */
+    private static final int HALL_HEIGHT = 37;
+
     /** How far out from the footprint the floor is bedded into the ground beside it, in blocks. */
     private static final int FLOOR_REACH = 6;
 
@@ -245,22 +248,17 @@ public final class GundabadGate {
         int wide = WIDE;
         open(level, base.offset(-4, 0, -HALL_REACH), wide + 8, DEEP + HALL_REACH + 4);
 
-        // The room: the lowest run of air at the rear face that rock holds on both sides, then every row above it that
-        // still has air in that same span. Grown downward-free and upward in order, so the room is the chamber's own
-        // void and not the daylight between the towers above it.
-        int lowX = -1;
-        int highX = -1;
+        // The room: its floor is the lowest row of the rear face that air and rock close between, and its height is the
+        // chamber's own thirty-seven courses - the rear face is open above that, so there is no ceiling up there to stop
+        // at and growing upward only ever found the daylight between the towers.
         int lowY = -1;
-        int highY = -1;
         for (int y = 1; y < TALL - 1 && lowY < 0; y++) {
             int run = -1;
             for (int x = 0; x < wide; x++) {
                 if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
                     if (run > 0 && x - run >= 8) {
-                        lowX = run;
-                        highX = x - 1;
                         lowY = y;
-                        highY = y;
+                        break;
                     }
                     run = -1;
                 } else if (run < 0) {
@@ -269,26 +267,26 @@ public final class GundabadGate {
             }
         }
         if (lowY < 0) return 0;
-        for (int y = lowY + 1; y < TALL - 1; y++) {
-            int a = Integer.MAX_VALUE;
-            int b = Integer.MIN_VALUE;
+        int highY = Math.min(TALL - 2, lowY + HALL_HEIGHT - 1);
+
+        // Its width: every closed run in those rows, taken together, which is the room the three passages open into.
+        int lowX = Integer.MAX_VALUE;
+        int highX = Integer.MIN_VALUE;
+        for (int y = lowY; y <= highY; y++) {
             int run = -1;
             for (int x = 0; x < wide; x++) {
                 if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
-                    if (run > 0 && x - run >= 8 && x - 1 >= lowX - 2 && run <= highX + 2) {
-                        a = Math.min(a, run);
-                        b = Math.max(b, x - 1);
+                    if (run > 0 && x - run >= 8) {
+                        lowX = Math.min(lowX, run);
+                        highX = Math.max(highX, x - 1);
                     }
                     run = -1;
                 } else if (run < 0) {
                     run = x;
                 }
             }
-            if (a > b) break;
-            highY = y;
-            lowX = Math.min(lowX, a);
-            highX = Math.max(highX, b);
         }
+        if (lowX > highX) return 0;
 
         int floorTop = base.getY() + lowY - 1;
         int roofY = base.getY() + highY + 1;
