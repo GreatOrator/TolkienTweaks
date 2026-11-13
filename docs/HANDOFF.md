@@ -562,12 +562,9 @@ what it showed: the drawn rock is twenty-five blocks higher east of the gate tha
 which climbed straight back into the drawing - was too small to read on the left and would have swallowed
 the build on the right, and its smooth blend laid down one-block treads for eighty blocks. Both walls now
 reach a shoulder of 302, thirty-five above the wings, in sixteen blocks, hand back to the drawing over
-a mountain drawn round the gate's own footprint. That is where it has settled: the ground at the build's edge is
-the wings' height so the ends sink in, it rises over twenty-eight blocks to a peak of 330 - sixty-three above the
-roof - holds the crest for sixteen and falls at six in sixteen until the drawing is higher and takes over. The
-front of the gate is left open because the peak is multiplied by how closed the pass still is. Behind the gate there is a **plaza**, not rock: the gate is the only way into the keep, so
-thirty-two blocks of level ground stand behind it for the orc camp that is still to be built, and the mountain climbs
-out of the plaza beyond that. Not generated yet; `docs/gundabad-gate.md` has both measured tables.
+the mountain climbing out of the floor at two and a half blocks per block (`PASS_STEP`) until it meets the country's
+own drawn surface about fifty blocks out, where the drawing takes over. That is the shape: the gate's ends are into
+the rock by about thirty blocks, nothing is stood up above the drawn massif, and there is no crest to end in a face. Not generated yet; `docs/gundabad-gate.md` has both measured tables.
 
 The Hithaeglir's and Gundabad's fog is lifted for the screenshots (`BiomeMaker.CLEAR_RANGE_FOG`): both read a far
 plane of 1024 instead of 38 and 44. It is temporary - false puts both mists back, and their own numbers never left

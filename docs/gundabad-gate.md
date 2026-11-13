@@ -71,29 +71,27 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 |---|---|
 | floor inside the gate's box | **187, level to the block** — the roll starts only past the gate, because a roll that lifts a floor course by one is a gap under the whole build |
 | the mountain's foot at the gate's edges (x 5495 / 5656) | **187** — the floor itself, so nothing is stood up where the build goes |
-| the mountain round the gate | rises out of that floor over **96 blocks** to a **peak of 330** - sixty-three above the roof |
-| the crest | held for 16 blocks, then falling at six in sixteen until the country's own ground is higher |
-| its surface | broken by ±14 of folded noise and ±18 of crest wandering along the pass, both held off the build's edge |
-| behind the gate | a **plaza**: level at 187 for **32 blocks** north of the box's back, then the mountain |
-| the mountain behind the plaza | climbs out of the plaza to the same 330 over **96 blocks**, holds the crest, then falls into the country |
-| gap | 160 wide through the gate's depth and sixty blocks south, then opening |
+| the mountain round the gate | climbs at **two and a half blocks up per block out** (`PASS_STEP`): 202 at six blocks, 247 at twenty-four, the roof's 267 by about thirty-two |
+| where the climb stops | at the country's own drawn surface - 293 to 319 round the courtyard - so everything past about fifty blocks is the drawing |
+| its surface | broken by ±14 of folded noise and ±18 of crest wandering along the pass, fading in off the build's own edge |
+ 160 wide through the gate's depth and sixty blocks south, then opening |
 | courtyard | 540 wide by z −6650, 756 at the mouth |
 | floor along the pass | 187 at the gate, 175 at the mouth |
 
-Inside the pass the ground is the floor, and the mountains outside it are drawn out of that same floor: the
-mountain's foot stands at **187** at the build's own edge - no lip, no shoulder, nothing stood up where the build will
-go, so before it is placed the ground is a valley whose sides come down to the floor - and from there it climbs over
-ninety-six blocks to a peak of **330**, sixty-three above the roof, holds that crest for sixteen and falls at six in
-sixteen until the country's own ground is higher and takes over. The surface carries the map's folded noise (±14, at
-twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass. Where the pass has opened
-into the courtyard the peak has come down to the floor with the lip, so the same curve is a valley wall over a court,
-and the courtyard's own walls are the country's.
+Inside the pass the ground is the floor, and outside it the mountain climbs **out of that floor at once**: two
+and a half blocks of height for every block of distance from the footprint, a stair of two or three each step, so the
+gate's ends are into the rock within about thirty blocks and the gate reads as nestled into the pass. The climb is
+capped by the country's own drawn surface - `Math.min(drawn, floor + distance * PASS_STEP)` - so it stops of its own
+accord at 293 to 319, about fifty blocks out, and past that the mountain is the drawing's, sloping away the way it
+always did. Nothing is stood up above the drawn massif, so there is no crest to end in a face. The surface carries the
+map's folded noise (±14, at twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass,
+fading in off the build's own edge so the gate still meets the ground exactly.
 
 Behind the gate there is no rock against the back at all. The gate stands in a pass and is the only way into the
 keep behind it, so what is behind it is a floor an army can stand on: thirty-two blocks of plaza, level to the block
-(`PASS_PLAZA`), and then the mountain, which climbs to the same 330 over fifty-six blocks (`PASS_BACK_RISE`) and
-falls away into the country beyond that crest. The plaza is the pass's own width, so the mountain closes round it on
-three sides and the gate is the one way in - which is the whole point of where it stands.
+(`PASS_PLAZA`), and then the same climb as the sides - two and a half up per block out - until it meets the drawn
+massif. The plaza is the pass's own width, so the mountain closes round it on three sides and the gate is the one way
+in, which is the whole point of where it stands.
 
 The mouth blends back into the Hithaeglir's low ground,
 which is already 174–176 there, so the join has no seam.
@@ -153,12 +151,13 @@ the noise above are the answer to both.
 - **The ground is cut to the gate, not the gate seated on ground.** The gate brings forty-eight blocks
   of its own mountain, so the world behind its mouth has to be at the gate's height within a few paces
   of the face; a wall that started at the floor would leave the build in a trench of its own making.
-- **The mountain is drawn to the footprint.** Standing ground up as a lip, then as a shoulder, then shaving
-  it, each failed one way or the other; the shape the owner asked for is a mountain *round* the gate. So the ground
-  at the build's own edge is the wings' height - the ends sink in - rises over twenty-eight blocks to a peak at 330
-  (`PASS_PEAK`), holds it for sixteen (`PASS_CREST_KEEP`) and falls at six in sixteen (`PASS_FALL`) until the
-  drawing is higher and takes over.
-- **... and the front stays open.** The peak only exists where the pass has not opened: by the courtyard the
+- **The mountain climbs out of the floor and stops at the drawing.** Every profile that stood ground up - a lip,
+  a shoulder, a peak - ended as a face, because standing rock above the country is how a wall happens. The ground now
+  climbs out of the floor at a fixed rate, stair-stepped, `Math.min(drawn, floor + distance * PASS_STEP)` with
+  `PASS_STEP` at two and a half blocks per block: it reaches the roof's 267 about thirty-two blocks out, meets the
+  drawn massif at fifty or so, and past that the mountain is the drawing's and slopes away as it always did.
+- **... and the front stays open.** The pass's own floor runs south from the gate and widens into the courtyard, so
+  nothing is stood up in front of it: the climb only exists where the ground is outside the pass. The peak only exists where the pass has not opened: by the courtyard the
   `opened` share has brought it down to the lip with the rest, so nothing is stood up in front of the gate.
 - **The gate is the only way in.** It stands in a pass, so the ground behind it is not rock against its back: it is
   a plaza an army camps on, level for thirty-two blocks (`PASS_PLAZA`), with the mountain climbing out of it on every
@@ -182,10 +181,9 @@ the noise above are the answer to both.
 3. **The sky above the wings is carried as air** — the capture lists every cell, so the box is whole.
    `tools/gate_capture.py --trim-sky` drops air above the highest block of each column when the voids
    want adjusting. Not run.
-4. **The peak has not been seen.** It is written from the owner's brief - mountains surrounding the footprint,
-   ends sunk, a peak over the roof, the front clear - and from the save's measurements, but no world has been
-   generated with it: unverified is whether 330 reads as a mountain over the gate or a berm, whether the fall is
-   slow enough to meet the drawing without a seam, and whether the build's ends sink as far as they want.
+4. **The climb has not been seen.** Two and a half blocks per block is a stair of two or three each step, which is
+   what was asked for, but no world has been generated with it: unverified is whether that reads as rock rather than as
+   a staircase, whether it reaches the drawing smoothly at ~50 blocks, and whether the gate's ends disappear into it.
 5. **The Mod Test chunks are the first world's.** They carry the pass as it was before the shoulder, so
    the ground around the gate has to be made again — `tools/chunk_trim.py --radius` with the world
    closed and `--apply`, or a fresh world.
@@ -200,8 +198,8 @@ the noise above are the answer to both.
    make again.
 2. `/tmgate place` — lays the eight pieces at the box, facade south, and reports how many blocks of
    ground the drape added.
-3. `/tmgate clear` takes the gate's box out again; it does not take the drape down, and it is the
-   player's position and facing that decide the box, so clear where you placed.
+3. `/tmgate clear` takes the gate's box out at the site; `clear here` takes out a box at the player's own
+   position and facing, for a piece tried with `here`.
 
 ## Where the code is
 
