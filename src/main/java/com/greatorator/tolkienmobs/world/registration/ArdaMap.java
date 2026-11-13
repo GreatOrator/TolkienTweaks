@@ -669,6 +669,16 @@ public final class ArdaMap {
      */
     private static final int PASS_SINK = 32;
     /**
+     * How far in toward the build the climb starts, in blocks: twenty-four.
+     * <p>
+     * The mountain is shaped where it is wanted and the climb is simply begun twenty-four blocks closer than the
+     * footprint, so the ground at the build's own edge already stands where the slope would have been twenty-four
+     * blocks out - about 279, twelve above the roof - and the ends of the gate are into the rock. The part of the climb
+     * that is inside the footprint is the build's ground and is laid over when the gate is placed; the part outside is
+     * the mountain, and it is the same mountain, only arriving sooner.
+     */
+    private static final int PASS_SOONER = 24;
+    /**
      * How far the mountain's own surface is broken up, in blocks, and at what scales: the crag a range is broken
      * by, and the crests that wander along the pass.
      * <p>
@@ -2269,7 +2279,7 @@ public final class ArdaMap {
         double across = Math.abs(blockX - PASS_X) - half;
         double outX = Math.max(0.0D, across);
         double outZ = Math.max(0.0D, Math.max(-along - PASS_PLAZA, along - length));
-        double out = Math.sqrt(outX * outX + outZ * outZ);
+        double out = Math.sqrt(outX * outX + outZ * outZ) + PASS_SOONER;
         // The foot stands higher where the mountain meets the build's ends than it does behind the plaza, which has to
         // stay level for the camp: the lift is shared out by which distance is doing the work, so the ends get all of
         // it, the plaza none, and the corners a share of each.
