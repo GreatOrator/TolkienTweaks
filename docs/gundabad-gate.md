@@ -74,7 +74,8 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 | the mountain round the gate | **285 at the build's own edge**, rising over 28 blocks to a **peak of 330** - sixty-three above the roof |
 | the crest | held for 16 blocks, then falling at six in sixteen until the country's own ground is higher |
 | its surface | broken by ±14 of folded noise and ±18 of crest wandering along the pass, both held off the build's edge |
-| rock behind the back face | 200 at 3 north, 231 at 6, 277 at 10, **301 at 14** |
+| behind the gate | a **plaza**: level at 187 for **32 blocks** north of the box's back, then the mountain |
+| the mountain behind the plaza | climbs to the same 330 over 56 blocks, holds the crest, then falls into the country |
 | gap | 160 wide through the gate's depth and sixty blocks south, then opening |
 | courtyard | 540 wide by z −6650, 756 at the mouth |
 | floor along the pass | 187 at the gate, 175 at the mouth |
@@ -88,6 +89,12 @@ ground is higher than it and takes over, about a hundred blocks out. The surface
 (±14, at twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass, held off the
 build's own edge so the gate still meets the ground exactly where its ends sink in. The courtyard is untouched:
 its floor is open, its walls are the country's and the peak has come down to the lip by the time the pass opens.
+
+Behind the gate there is no rock against the back at all. The gate stands in a pass and is the only way into the
+keep behind it, so what is behind it is a floor an army can stand on: thirty-two blocks of plaza, level to the block
+(`PASS_PLAZA`), and then the mountain, which climbs to the same 330 over fifty-six blocks (`PASS_BACK_RISE`) and
+falls away into the country beyond that crest. The plaza is the pass's own width, so the mountain closes round it on
+three sides and the gate is the one way in - which is the whole point of where it stands.
 
 The mouth blends back into the Hithaeglir's low ground,
 which is already 174–176 there, so the join has no seam.
@@ -137,6 +144,10 @@ the noise above are the answer to both.
   drawing is higher and takes over.
 - **... and the front stays open.** The peak only exists where the pass has not opened: by the courtyard the
   `opened` share has brought it down to the lip with the rest, so nothing is stood up in front of the gate.
+- **The gate is the only way in.** It stands in a pass, so the ground behind it is not rock against its back: it is
+  a plaza an army camps on, level for thirty-two blocks (`PASS_PLAZA`), with the mountain climbing out of it on every
+  side but the gate. Behind is where the camp goes, and the keep is reached through the gate or by climbing the
+  massif, which is what the pass is for.
 - **The drape only ever adds.** `GundabadGate.drape` walks the ring around the footprint, reads the top
   of the gate at the nearest column and fills the ground up to it with the stone it already has, capped
   with the surface that was there. A drape that cut would lower the very walls the pass was shaped for.

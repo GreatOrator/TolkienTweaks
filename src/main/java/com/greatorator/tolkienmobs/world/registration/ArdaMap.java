@@ -671,8 +671,19 @@ public final class ArdaMap {
     private static final int PASS_SPUR_SCALE = 96;
     /** The same once the pass has opened into the courtyard, where a hillside is a hillside. */
     private static final int PASS_SIDE_RUN = 150;
-    /** How far north of the gate's back the plateau climbs out of the floor: the gate's own face, behind it. */
-    private static final int PASS_FACE_RUN = 14;
+    /**
+     * The plaza behind the gate, and how far past it the mountain climbs.
+     * <p>
+     * The gate stands in a pass and is the only way into the keep behind it, so what is behind it is not rock against
+     * its back: it is a floor an army can stand on - level to the block for thirty-two blocks north of the box's back
+     * - and then the mountain, which climbs to the same peak the sides do and falls away into the country beyond that
+     * crest. The plaza is the pass's own width, so the mountain closes round it on three sides and the gate is the
+     * one way in.
+     */
+    private static final int PASS_PLAZA = 32;
+    private static final int PASS_BACK_RISE = 56;
+    /** How far north of the back the shaping reaches: the plaza, the climb, the crest, and the fall out of it. */
+    private static final int PASS_BACK_REACH = PASS_PLAZA + PASS_BACK_RISE + PASS_CREST_KEEP + 200;
     /** How far the mouth blends back into the open ground it opens onto. */
     private static final int PASS_MOUTH_RUN = 250;
     /** How much the floor rolls either way, in blocks, so a valley is ground rather than a table. */
@@ -2202,14 +2213,14 @@ public final class ArdaMap {
      * The Gundabad pass: the massif brought down to a floor the gate fits in, with its own plateau over the back
      * of it and its walls at the gate's own edges.
      * <p>
-     * The notch is cut to the build rather than to a country: from the gate's back north the drawn plateau climbs
-     * out of the floor in fourteen blocks, so the rock is there at the gate's own height a pace behind it; either
-     * side of the gate the ground is drawn to the footprint instead: at the build's own edge it stands at the height
-     * of its wings, climbs over twenty-eight blocks to a peak sixty-three above its roof, holds that crest for
-     * sixteen and then falls back into the country until the drawing is higher than the slope. The ends of the gate
-     * are sunk into rock, the mountain stands over the roof, and its body runs out into the massif on both sides;
-     * the surface carries the map's own folded noise and the crests that wander along the pass, because a drawn
-     * slope is otherwise a plane. South of the gate the pass opens - the floor widens from
+     * The notch is drawn to the build rather than to a country. Beside the gate the ground stands at the top of the
+     * wings plus eighteen (`PASS_SINK`), so the ends of the gate are sunk into rock, and it climbs over twenty-eight
+     * blocks to a peak of 330 - sixty-three above the roof - holds that crest for sixteen and then falls at six in
+     * sixteen until the drawing is higher and takes over. Behind the gate there is no rock at the back at all: the
+     * gate is the only way into the keep, so thirty-two blocks of level plaza stand behind it for the army that camps
+     * there (`PASS_PLAZA`), and the mountain climbs out of the plaza beyond that to the same peak. The surface
+     * carries the map's own folded noise and the crests that wander along the pass, because a drawn slope is
+     * otherwise a plane. South of the gate the pass opens - the floor widens from
      * the gate's hundred and sixty to seven hundred and sixty over four hundred blocks, and the walls ease from a
      * cliff into a hillside - so what is behind the gate is a courtyard the hold can stand in, and what is beside
      * it is the mountain it was cut out of.
@@ -2221,7 +2232,7 @@ public final class ArdaMap {
     private static int gundabadPass(int blockX, int blockZ, int height) {
         int east = PASS_X + PASS_MOUTH_HALF + PASS_SIDE_RUN;
         int west = PASS_X - PASS_MOUTH_HALF - PASS_SIDE_RUN;
-        if (blockX < west || blockX > east || blockZ < PASS_HEAD_Z - PASS_FACE_RUN
+        if (blockX < west || blockX > east || blockZ < PASS_HEAD_Z - PASS_BACK_REACH
                 || blockZ > PASS_MOUTH_Z + PASS_MOUTH_RUN) {
             return height;
         }
@@ -2241,28 +2252,39 @@ public final class ArdaMap {
         double floor = PASS_HEAD_FLOOR + (PASS_MOUTH_FLOOR - PASS_HEAD_FLOOR) * span + roll;
 
         double across = Math.abs(blockX - PASS_X) - half;
-        if (along < 0.0D) {
-            // North of the gate's back: the plateau stands up out of the floor.
-            return blend(floor, height, -along / PASS_FACE_RUN);
+        double behind = -along;
+
+        if (behind > 0.0D && behind <= PASS_PLAZA && across <= 0.0D) {
+            // The plaza behind the gate: level to the block, because an army stands on it.
+            return (int) Math.round(floor);
         }
-        if (across <= 0.0D) {
+        if (behind <= 0.0D && across <= 0.0D) {
             // Inside the pass: the floor, and only the mouth eases it back into the open ground.
             return blend(floor, height, (along - length) / PASS_MOUTH_RUN);
         }
-        // The mountain round the gate is drawn to the gate's footprint. At its own edge the ground stands eighteen
-        // blocks above the top of the build's wings, so the ends sink in; over PASS_RISE blocks it climbs to a peak
-        // sixty-three above the roof; the crest is held for PASS_CREST_KEEP; and from there the slope falls away
-        // until the country's own ground is higher than it and takes over. Where the pass has opened into the
-        // courtyard the sink and the peak have both come down to the lip with the rest, so the same curve is a
-        // valley wall over a court.
-        double up = smooth(Mth.clamp(across / PASS_RISE, 0.0D, 1.0D));
-        double foot = lip + PASS_SINK * (1.0D - opened);
-        double crestline = foot + (PASS_PEAK - PASS_EDGE_TOP - PASS_SINK) * (1.0D - opened) * up;
-        double past = Math.max(0.0D, across - PASS_RISE - PASS_CREST_KEEP);
+        // The mountain round the gate, drawn to the footprint and the same on every side it stands on. Its foot is
+        // the ground it rises from: beside the build that is the height of the wings plus PASS_SINK, so the ends are
+        // sunk in, and behind the plaza it is the floor itself. From there it climbs to the peak - over PASS_RISE
+        // beside the gate, and over PASS_BACK_RISE behind the plaza, where there is no build to be measured to.
+        double out;
+        double foot;
+        double run;
+        if (across > 0.0D) {
+            out = across;
+            foot = lip + PASS_SINK * (1.0D - opened);
+            run = PASS_RISE;
+        } else {
+            out = behind - PASS_PLAZA;
+            foot = floor;
+            run = PASS_BACK_RISE;
+        }
+        double up = smooth(Mth.clamp(out / run, 0.0D, 1.0D));
+        double crestline = foot + (PASS_PEAK - foot) * up;
+        double past = Math.max(0.0D, out - run - PASS_CREST_KEEP);
         double mountain = crestline - past * (PASS_FALL / 16.0D);
         double shaped = Math.max(mountain, height);
         // And broken by the map's own folded noise the way a range is, fading out at the build's own edge.
-        double bite = smooth(Mth.clamp((across - 1.0D) / 12.0D, 0.0D, 1.0D));
+        double bite = smooth(Mth.clamp((out - 1.0D) / 12.0D, 0.0D, 1.0D));
         double crag = 1.0D - Math.abs(fractal(blockX, blockZ, PASS_CRAG_SCALE, 37));
         crag += 0.5D * (1.0D - Math.abs(fractal(blockX, blockZ, 11, 41)));
         double spur = (1.0D - Math.abs(fractal(blockX, blockZ, PASS_SPUR_SCALE, 19))) - 0.5D;
