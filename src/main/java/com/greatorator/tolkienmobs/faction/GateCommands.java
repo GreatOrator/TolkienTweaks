@@ -21,7 +21,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 /**
  * {@code /tmgate} - the Gundabad gate tried in a world before anything is written down for every world.
  * <p>
- * The gate is eight structure templates laid as a build, and it has a site: {@link ArdaMap#gateFront()}, facade
+ * The gate is eight structure templates laid as a build, and it has a site: {@link ArdaMap#gatePlan()}, facade
  * south, the coordinates the valley under Gundabad is shaped to. That is where it is laid unless somebody asks for
  * {@code here}, which lays it at the player's feet and facing whichever way they look - a tool for trying a piece
  * somewhere else, not how the gate stands. {@code clear} takes the site's box down again, and {@code clear here} a
@@ -68,7 +68,11 @@ public final class GateCommands {
     }
 
     /**
-     * Lays the gate at the site the pass was drawn for: {@link ArdaMap#gateFront()}, facade south.
+     * Lays the gate at the site the pass was drawn for: {@link ArdaMap#gatePlan()}, facade south.
+     * <p>
+     * Turned four-square ({@link Rotation#NONE}). Turned half round it filled the same box but faced north - into the
+     * mountain behind the plaza - with its back to the approach, so the courtyard was behind the gate instead of in
+     * front of it.
      * <p>
      * The valley is shaped to that one spot - its floor at 187, its mountains out of the same floor, its plaza behind
      * the box's back - so the gate that fits it is the gate at those coordinates and no other. Every measurement of
@@ -81,7 +85,7 @@ public final class GateCommands {
             source.sendFailure(Component.literal("The gate's site is ground in Arda - ask this in a world."));
             return 0;
         }
-        return lay(source, level, ArdaMap.gateFront(), Rotation.CLOCKWISE_180, "facing south, at its own site");
+        return lay(source, level, ArdaMap.gatePlan(), Rotation.NONE, "facing south, at its own site");
     }
 
     /** The laying itself, and the seam dressed after it: the same act whether it is at a site or at a player. */
@@ -109,8 +113,8 @@ public final class GateCommands {
             source.sendFailure(Component.literal("The gate's site is ground in Arda - ask this in a world."));
             return 0;
         }
-        BlockPos front = ArdaMap.gateFront();
-        int cleared = GundabadGate.clear(level, front, Rotation.CLOCKWISE_180);
+        BlockPos front = ArdaMap.gatePlan();
+        int cleared = GundabadGate.clear(level, front, Rotation.NONE);
         source.sendSuccess(() -> Component.literal("Cleared " + cleared + " blocks out of the gate's box at "
                 + front.toShortString() + "."), true);
         return cleared;

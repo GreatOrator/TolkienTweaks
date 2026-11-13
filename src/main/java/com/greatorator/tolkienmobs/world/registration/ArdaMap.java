@@ -609,6 +609,18 @@ public final class ArdaMap {
     public static final int GATE_FLOOR = 187;
 
     /** The middle of the gate's facade, which is where a caller places it by. */
+    /**
+     * The point the gate's plan is anchored by: the middle of the row its own plan starts at.
+     * <p>
+     * {@code GundabadGate.place} takes the point that the middle of the gate's plan lands on after it is turned, and
+     * with the gate unturned that point is the middle of the box's north row - so a gate laid here with
+     * {@link Rotation#NONE} fills the box at x 5496 to 5655, z -6877 to -6830, facade south. The same box it always
+     * fills: what changed is which way round the build sits in it.
+     */
+    public static BlockPos gatePlan() {
+        return new BlockPos(PASS_X, GATE_FLOOR, GATE_NORTH);
+    }
+
     public static BlockPos gateFront() {
         return new BlockPos((GATE_WEST + GATE_EAST) / 2, GATE_FLOOR, GATE_SOUTH);
     }
@@ -646,6 +658,16 @@ public final class ArdaMap {
      * end in a face.
      */
     private static final double PASS_STEP = 2.5D;
+    /**
+     * How far the mountain's foot stands above the floor at the build's own ends, in blocks: thirty-two.
+     * <p>
+     * Left at the floor the ground met the gate at its lowest course and then climbed away, which left a slot between
+     * the build's rock and the mountain - the ends stood in the open with the rock leaning away from them. Thirty-two
+     * puts the foot nearer the middle of the build's height, so the mountain comes up onto the ends and the gate is
+     * set into it. It is a step at the footprint's edge, so it is kept small: this lifts the ground and then the climb
+     * carries on from there.
+     */
+    private static final int PASS_SINK = 32;
     /**
      * How far the mountain's own surface is broken up, in blocks, and at what scales: the crag a range is broken
      * by, and the crests that wander along the pass.
@@ -2248,6 +2270,10 @@ public final class ArdaMap {
         double outX = Math.max(0.0D, across);
         double outZ = Math.max(0.0D, Math.max(-along - PASS_PLAZA, along - length));
         double out = Math.sqrt(outX * outX + outZ * outZ);
+        // The foot stands higher where the mountain meets the build's ends than it does behind the plaza, which has to
+        // stay level for the camp: the lift is shared out by which distance is doing the work, so the ends get all of
+        // it, the plaza none, and the corners a share of each.
+        double lift = PASS_SINK * (outX / (outX + outZ));
         if (out <= 0.0D) {
             if (along < 0.0D) {
                 // The plaza behind the gate: level to the block, because an army stands on it.
@@ -2260,7 +2286,7 @@ public final class ArdaMap {
         // half blocks up for every block out, a stair of two or three each step, so the ends of the gate are into the
         // rock inside thirty blocks and the gate is nestled into the pass. The climb stops the moment it meets the
         // country's own drawn surface; past that the mountain is the drawing's, sloping away as it always did.
-        double shaped = Math.min(height, floor + out * PASS_STEP);
+        double shaped = Math.min(height, floor + lift + out * PASS_STEP);
         // And broken by the map's own folded noise the way a range is, fading in off the build's own edge so the
         // gate still meets the ground exactly where it stands.
         double bite = smooth(Mth.clamp((out - 1.0D) / 8.0D, 0.0D, 1.0D));

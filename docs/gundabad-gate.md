@@ -70,8 +70,9 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 | | |
 |---|---|
 | floor inside the gate's box | **187, level to the block** — the roll starts only past the gate, because a roll that lifts a floor course by one is a gap under the whole build |
-| the mountain's foot at the gate's edges (x 5495 / 5656) | **187** — the floor itself, so nothing is stood up where the build goes |
+| the mountain's foot at the gate's ends | **219** — the floor plus the end lift (`PASS_SINK` 32), so the mountain comes up onto the ends instead of leaning away from them |
 | the mountain round the gate | climbs at **two and a half blocks up per block out** (`PASS_STEP`): 202 at six blocks, 247 at twenty-four, the roof's 267 by about thirty-two |
+| behind the plaza | **187** — level, because the lift is shared out by which distance is doing the work: the ends get all of it, the plaza none |
 | at the corners | distance **across and behind together**, so the side and the back are one flank and not two ramps meeting in a crease |
 | where the climb stops | at the country's own drawn surface - 293 to 319 round the courtyard - so everything past about fifty blocks is the drawing |
 | its surface | broken by ±14 of folded noise and ±18 of crest wandering along the pass, fading in off the build's own edge |
@@ -86,7 +87,11 @@ capped by the country's own drawn surface - `Math.min(drawn, floor + distance * 
 accord at 293 to 319, about fifty blocks out, and past that the mountain is the drawing's, sloping away the way it
 always did. Nothing is stood up above the drawn massif, so there is no crest to end in a face. The surface carries the
 map's folded noise (±14, at twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass,
-fading in off the build's own edge so the gate still meets the ground exactly. The distance the climb is measured over is the distance from the footprint as a
+fading in off the build's own edge so the gate still meets the ground exactly. The foot is not at the floor
+beside the build's **ends**, though: it stands thirty-two blocks up (`PASS_SINK`), so the mountain comes up onto the
+ends - at 219 within a block of the footprint, at the roof's 267 by about sixteen - instead of meeting the gate at its
+lowest course and leaning away, which left a slot between the build's rock and the mountain. The lift is shared out by
+which distance is doing the work (`outX / (outX + outZ)`), so the ends get all of it and the plaza none. The distance the climb is measured over is the distance from the footprint as a
 whole - across beside the box, north behind the plaza, south down the pass, and both together at the corners - so the
 sides and the back meet as one continuous flank; measured one axis at a time the two ramps ran into each other and left
 a crease, which in a mountain is a gap.
@@ -163,6 +168,10 @@ the noise above are the answer to both.
 - **... and the front stays open.** The pass's own floor runs south from the gate and widens into the courtyard, so
   nothing is stood up in front of it: the climb only exists where the ground is outside the pass. The peak only exists where the pass has not opened: by the courtyard the
   `opened` share has brought it down to the lip with the rest, so nothing is stood up in front of the gate.
+- **The gate faces south, four-square.** The site lays it with `Rotation.NONE` from `ArdaMap.gatePlan()` - the middle
+  of the box's north row - which fills exactly the same box (x 5496…5655, z −6877…−6830). Turned half round it filled
+  the same box but faced **north**, into the mountain behind the plaza, with its back to the approach: the courtyard
+  ended up behind the gate instead of in front of it.
 - **The gate is the only way in.** It stands in a pass, so the ground behind it is not rock against its back: it is
   a plaza an army camps on, level for thirty-two blocks (`PASS_PLAZA`), with the mountain climbing out of it on every
   side but the gate. Behind is where the camp goes, and the keep is reached through the gate or by climbing the
@@ -200,7 +209,7 @@ the noise above are the answer to both.
 1. Regenerate the ground: a fresh world, or close Mod Test and take those chunks out
    (`python tools/chunk_trim.py --world "run/saves/Mod Test" --radius <n> ... --apply`), then let them
    make again.
-2. `/tmgate place` — lays the eight pieces at the box, facade south, and reports how many blocks of
+2. `/tmgate place` — lays the eight pieces at the box **unturned**, facade south toward the approach, and reports how many blocks of
    ground the drape added.
 3. `/tmgate clear` takes the gate's box out at the site; `clear here` takes out a box at the player's own
    position and facing, for a piece tried with `here`.
