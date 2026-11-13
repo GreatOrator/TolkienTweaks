@@ -563,3 +563,7 @@ the build on the right, and its smooth blend laid down one-block treads for eigh
 reach a shoulder of 302, thirty-five above the wings, in sixteen blocks, hand back to the drawing over
 another forty-eight, and carry the map's folded noise. Not generated yet; `docs/gundabad-gate.md` has the
 measured table.
+
+The Hithaeglir's and Gundabad's fog is lifted for the screenshots (`BiomeMaker.CLEAR_RANGE_FOG`): both read a far
+plane of 1024 instead of 38 and 44. It is temporary - false puts both mists back, and their own numbers never left
+the two calls.

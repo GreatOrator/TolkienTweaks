@@ -35,6 +35,18 @@ public class BiomeMaker extends BiomeHelper{
     }
 
     /**
+     * TEMPORARY, 13 November 2026: the Hithaeglir's and Mount Gundabad's mists, lifted while the gate's ground is
+     * photographed. A fog whose far plane is thirty-eight blocks cannot show a mountain, so while this is on those
+     * two biomes read {@link #CLEAR_FOG_START} and {@link #CLEAR_FOG_END} instead of their own numbers - which are
+     * still written at the two calls, one ternary away. Nothing else reads this. Set it false to put both mists
+     * back; it is a look, not a world rule, so no generated data depends on it.
+     */
+    private static final boolean CLEAR_RANGE_FOG = true;
+    /** The near and far planes the two ranges read while {@link #CLEAR_RANGE_FOG} is on: past any view. */
+    private static final float CLEAR_FOG_START = 512.0F;
+    private static final float CLEAR_FOG_END = 1024.0F;
+
+    /**
      * A biome's own fog. 26.1 reads the near and far planes from the biome's environment attributes
      * rather than from a dimension effect, so a thick fog is just a short far plane: the sky and the
      * clouds end where the terrain fog does, which is what closes a mist in overhead instead of
@@ -170,7 +182,8 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeHithaelgir(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         hithaeglirGen(placedFeatureGetter, carverGetter);
         hithaeglirSpawning();
-        return foggedBiome(0.0F, 38.0F)
+        // The Misty Mountains' own mist is a far plane of 38, put back by CLEAR_RANGE_FOG going false.
+        return foggedBiome(CLEAR_RANGE_FOG ? CLEAR_FOG_START : 0.0F, CLEAR_RANGE_FOG ? CLEAR_FOG_END : 38.0F)
                 .hasPrecipitation(true)
                 .temperature(0.1F)
                 .downfall(0.4F)
@@ -203,7 +216,8 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeGundabad(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         var generation = gundabadGen(placedFeatureGetter, carverGetter);
         var spawning = gundabadSpawning();
-        return foggedBiome(4.0F, 44.0F)
+        // Gundabad's own mist is a far plane of 44, put back by CLEAR_RANGE_FOG going false.
+        return foggedBiome(CLEAR_RANGE_FOG ? CLEAR_FOG_START : 4.0F, CLEAR_RANGE_FOG ? CLEAR_FOG_END : 44.0F)
                 .hasPrecipitation(true)
                 .temperature(-0.3F)
                 .downfall(0.5F)
