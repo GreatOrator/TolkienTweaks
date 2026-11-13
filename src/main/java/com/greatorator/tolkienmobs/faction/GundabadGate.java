@@ -100,11 +100,6 @@ public final class GundabadGate {
     /** How tall the chamber is, in courses: y 190 to 226, measured off the rear face. Read, never grown. */
     private static final int HALL_HEIGHT = 37;
 
-    /**
-     * How far north of the gate the plaza runs before the mountain: the hall starts there, not at the gate, so the
-     * courtyard between the two stays open to the sky and the box only exists where it is against the rock.
-     */
-    private static final int HALL_PLAZA = 32;
 
     /** How far out from the footprint the floor is bedded into the ground beside it, in blocks. */
     private static final int FLOOR_REACH = 6;
@@ -251,20 +246,23 @@ public final class GundabadGate {
     public static int extendHall(ServerLevel level, BlockPos front, Rotation rotation) {
         if (rotation != Rotation.NONE) return 0;
         BlockPos base = base(front, rotation);
-        int wide = WIDE;
-        open(level, base.offset(-4, 0, -HALL_REACH), wide + 8, DEEP + HALL_REACH + 4);
+        open(level, base.offset(-4, 0, -HALL_REACH), WIDE + 8, DEEP + HALL_REACH + 4);
 
-        // The room: its floor is the lowest row of the rear face that air and rock close between, and its height is the
-        // chamber's own thirty-seven courses - the rear face is open above that, so there is no ceiling up there to stop
-        // at and growing upward only ever found the daylight between the towers.
+        // The chamber: the passage through the rear face that holds the gate's own middle - its sides read off the rock
+        // on either hand, and its ceiling off the first course of rock above it. It is a passage, not the width of the
+        // building: the courtyard either side of it is open to the sky and stays that way.
+        int middle = WIDE / 2;
+        int lowX = Integer.MIN_VALUE;
+        int highX = Integer.MIN_VALUE;
         int lowY = -1;
         for (int y = 1; y < TALL - 1 && lowY < 0; y++) {
             int run = -1;
-            for (int x = 0; x < wide; x++) {
+            for (int x = 0; x < WIDE; x++) {
                 if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
-                    if (run > 0 && x - run >= 8) {
+                    if (run > 0 && x - run >= 6 && run <= middle && middle <= x - 1) {
+                        lowX = run;
+                        highX = x - 1;
                         lowY = y;
-                        break;
                     }
                     run = -1;
                 } else if (run < 0) {
@@ -273,37 +271,23 @@ public final class GundabadGate {
             }
         }
         if (lowY < 0) return 0;
-        int highY = Math.min(TALL - 2, lowY + HALL_HEIGHT - 1);
 
-        // Its width: every closed run in those rows, taken together, which is the room the three passages open into.
-        int lowX = Integer.MAX_VALUE;
-        int highX = Integer.MIN_VALUE;
-        for (int y = lowY; y <= highY; y++) {
-            int run = -1;
-            for (int x = 0; x < wide; x++) {
-                if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
-                    if (run > 0 && x - run >= 8) {
-                        lowX = Math.min(lowX, run);
-                        highX = Math.max(highX, x - 1);
-                    }
-                    run = -1;
-                } else if (run < 0) {
-                    run = x;
-                }
+        int roofBottom = -1;
+        for (int y = lowY + 1; y < TALL - 1 && roofBottom < 0; y++) {
+            if (!level.getBlockState(base.offset(middle, y, 0)).isAir()) {
+                roofBottom = y;
             }
         }
-        if (lowX > highX) return 0;
+        if (roofBottom < 0) roofBottom = lowY + HALL_HEIGHT;
 
         int floorTop = base.getY() + lowY - 1;
-        int roofY = base.getY() + highY + 1;
+        int roofY = base.getY() + roofBottom;
         int added = 0;
 
-        // The hall itself: its floor and its roof, from the plaza's north edge to the rock that stands over the roof.
-        int first = base.getZ() - HALL_PLAZA;
+        // The passage itself: its floor and its roof, carried north until the rock stands over the roof.
         for (int x = lowX; x <= highX; x++) {
             int end = hallEnd(level, base, x, roofY);
-            if (end >= first) continue;
-            for (int z = first; z >= end; z--) {
+            for (int z = base.getZ() - 1; z >= end; z--) {
                 for (int y = base.getY(); y <= floorTop; y++) {
                     added += lay(level, base.getX() + x, y, z);
                 }
@@ -314,15 +298,13 @@ public final class GundabadGate {
             }
         }
 
-        // Its two walls, outside the room, following the room's own end at the nearest column, each course of the
-        // thickness a course lower than the last so the outside reads as a bank of rock rather than a wall.
+        // Its two walls, outside the passage, stepping a course lower outward.
         for (int side = 0; side < 2; side++) {
             int ref = side == 0 ? lowX : highX;
             int end = hallEnd(level, base, ref, roofY);
-            if (end >= first) continue;
             for (int w = 0; w < HALL_WALL; w++) {
                 int x = side == 0 ? lowX - 1 - w : highX + 1 + w;
-                for (int z = first; z >= end; z--) {
+                for (int z = base.getZ() - 1; z >= end; z--) {
                     int top = roofY + HALL_ROOF - 1 + rough(x, z, 2) - w;
                     for (int y = base.getY(); y <= top; y++) {
                         added += lay(level, base.getX() + x, y, z);
