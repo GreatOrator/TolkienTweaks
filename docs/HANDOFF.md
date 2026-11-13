@@ -535,3 +535,19 @@ Next, in order: walk 26 to 36 in a fresh world; gate the inner keep's stair behi
 `ch2_*` templates and the eight key templates that have no ground. The Pinnath Fenui came off the list on 12
 November 2026 - the goblin fires are a place now, written from the cave's pin rather than described as a
 bearing. The full open list, with what each one costs, is the last section of `docs/chapter-two-state.md`.
+
+## Where we stopped - 13 November 2026
+
+The Gundabad gate is a build at last. Eight templates cut out of the map, a pass through Mount Gundabad
+cut to the gate's own box so the walls stand at its edges and the plateau closes behind it, and a drape
+that dresses the seam after every laying: `docs/gundabad-gate.md` has the numbers, the decisions and the
+open list. The procedural cut the gate was judged against is gone.
+
+Three things wait on the owner there. The gate is still reached by `/tmgate` alone - a pin needs a name in
+`PinCommands.BUILDINGS` and a raise that lays all eight pieces, or the "no commands on the map" rule is not
+met. The keep's pin at 5655, 189, -6877 now sits inside the pass's new east wall and is being moved once
+the gate is settled; its ground is the courtyard south of the gate, not behind it. And the sky over the
+wings is carried as air until `tools/gate_capture.py --trim-sky` is run.
+
+Nothing in the gate has been seen in game with the new ground: the chunks in the test world were made with
+the first, wide pass, so they have to be made again before the gate can be measured against it.
