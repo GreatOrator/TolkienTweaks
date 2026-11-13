@@ -100,6 +100,12 @@ public final class GundabadGate {
     /** How tall the chamber is, in courses: y 190 to 226, measured off the rear face. Read, never grown. */
     private static final int HALL_HEIGHT = 37;
 
+    /**
+     * How far north of the gate the plaza runs before the mountain: the hall starts there, not at the gate, so the
+     * courtyard between the two stays open to the sky and the box only exists where it is against the rock.
+     */
+    private static final int HALL_PLAZA = 32;
+
     /** How far out from the footprint the floor is bedded into the ground beside it, in blocks. */
     private static final int FLOOR_REACH = 6;
 
@@ -292,10 +298,12 @@ public final class GundabadGate {
         int roofY = base.getY() + highY + 1;
         int added = 0;
 
-        // The hall itself: its floor and its roof, carried north until the rock stands over the roof.
+        // The hall itself: its floor and its roof, from the plaza's north edge to the rock that stands over the roof.
+        int first = base.getZ() - HALL_PLAZA;
         for (int x = lowX; x <= highX; x++) {
             int end = hallEnd(level, base, x, roofY);
-            for (int z = base.getZ() - 1; z >= end; z--) {
+            if (end >= first) continue;
+            for (int z = first; z >= end; z--) {
                 for (int y = base.getY(); y <= floorTop; y++) {
                     added += lay(level, base.getX() + x, y, z);
                 }
@@ -311,9 +319,10 @@ public final class GundabadGate {
         for (int side = 0; side < 2; side++) {
             int ref = side == 0 ? lowX : highX;
             int end = hallEnd(level, base, ref, roofY);
+            if (end >= first) continue;
             for (int w = 0; w < HALL_WALL; w++) {
                 int x = side == 0 ? lowX - 1 - w : highX + 1 + w;
-                for (int z = base.getZ() - 1; z >= end; z--) {
+                for (int z = first; z >= end; z--) {
                     int top = roofY + HALL_ROOF - 1 + rough(x, z, 2) - w;
                     for (int y = base.getY(); y <= top; y++) {
                         added += lay(level, base.getX() + x, y, z);
