@@ -165,7 +165,7 @@ public final class GundabadGate {
     }
 
     /** How far out from the gate's own edge the seam is dressed, in blocks, and how fast that skirt falls away. */
-    private static final int DRAPE_REACH = 10;
+    private static final int DRAPE_REACH = 6;
     private static final int DRAPE_FALL = 2;
 
     /**
