@@ -73,6 +73,7 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 | the opening's width | narrowed **39 blocks on the west and 24 on the east** (`PASS_FOOT_WEST` / `PASS_FOOT_EAST`): the climb begins that far inboard of the footprint, so the gap the gate stands in is that much narrower |
 | the mountain's foot | **187** — the floor itself, where the climb begins; the slope's shape is unchanged, it only starts sooner |
 | inside the footprint | never above **267**, the build's own roof, so every cell of ground there is one the placing clears |
+| the floor's edge | the ground beside the footprint is bedded **up to y 188**, the floor's own top, six blocks out (`FLOOR_REACH` 6): fill only, and only where the ground is lower, so the rock at the ends is left as it is |
 | the ends of the build | laid as **rock only** - the four end tiles carry no air, so the mountain is not cut back to the gate's own silhouette there and the ends are absorbed into the rock |
 | the mountain round the gate | climbs at **two and a half blocks up per block out** (`PASS_STEP`): 202 at six blocks, 247 at twenty-four, the roof's 267 by about thirty-two |
 | behind the plaza | **187** — level, and level for its own sake: the camp stands on it |

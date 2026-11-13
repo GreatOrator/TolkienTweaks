@@ -87,7 +87,13 @@ public final class GundabadGate {
      * @return how many of the eight files were found and laid; a file missing from the pack is skipped
      */
     /** Whether the seam is dressed as part of the placing, or left bare for the ground to be judged on its own. */
-    public static final boolean DRESS_ON_PLACEMENT = false;
+    public static final boolean DRESS_ON_PLACEMENT = true;
+
+    /** How far out from the footprint the floor is bedded into the ground beside it, in blocks. */
+    private static final int FLOOR_REACH = 6;
+
+    /** The floor stands two courses: `base` and the one above it, so the ground beside it beds to that top. */
+    private static final int FLOOR_COURSE = 1;
 
     public static int place(ServerLevel level, BlockPos front, Rotation rotation) {
         BlockPos base = base(front, rotation);
@@ -110,6 +116,52 @@ public final class GundabadGate {
             laid++;
         }
         return laid;
+    }
+
+    /**
+     * Beds the ground beside the gate up to the floor's own top.
+     * <p>
+     * The floor stands two courses, so anywhere the ground beside the footprint sits a course or two below it there is a
+     * lip at the edge of the build - the last thing between the gate and the country it was set into. This walks the ring
+     * around the footprint, and fills the ground up to the floor's top with the stone it already has, capped with the
+     * surface that was there, so the floor runs out into the ground instead of stopping above it.
+     * <p>
+     * It only ever adds, and only where the ground is below the floor: where the rock already stands at or above it, as
+     * it does at the ends, this leaves the rock exactly as it is.
+     *
+     * @return how many blocks were added
+     */
+    public static int dressFloor(ServerLevel level, BlockPos front, Rotation rotation) {
+        BlockPos base = base(front, rotation);
+        boolean turned = rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90;
+        int wide = turned ? DEEP : WIDE;
+        int deep = turned ? WIDE : DEEP;
+        open(level, base.offset(-FLOOR_REACH, 0, -FLOOR_REACH), wide + FLOOR_REACH * 2, deep + FLOOR_REACH * 2);
+
+        int want = base.getY() + FLOOR_COURSE;
+        int dressed = 0;
+        for (int x = -FLOOR_REACH; x < wide + FLOOR_REACH; x++) {
+            for (int z = -FLOOR_REACH; z < deep + FLOOR_REACH; z++) {
+                int outX = x < 0 ? -x : (x >= wide ? x - wide + 1 : 0);
+                int outZ = z < 0 ? -z : (z >= deep ? z - deep + 1 : 0);
+                int out = Math.max(outX, outZ);
+                if (out == 0) continue;
+                BlockPos column = base.offset(x, 0, z);
+                if (!level.hasChunkAt(column)) continue;
+                int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()) - 1;
+                if (ground >= want) continue;
+                BlockState cap = level.getBlockState(column.atY(ground));
+                for (int y = ground + 1; y < want; y++) {
+                    level.setBlock(column.atY(y), Blocks.STONE.defaultBlockState(), 2);
+                    dressed++;
+                }
+                if (!cap.isAir() && !cap.canBeReplaced()) {
+                    level.setBlock(column.atY(want), cap, 2);
+                    dressed++;
+                }
+            }
+        }
+        return dressed;
     }
 
     /** How far out from the gate's own edge the seam is dressed, in blocks, and how fast that skirt falls away. */
