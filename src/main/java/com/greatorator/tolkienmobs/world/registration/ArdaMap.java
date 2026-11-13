@@ -2207,7 +2207,9 @@ public final class ArdaMap {
      * at the back at all: the gate is the only way into the keep, so thirty-two blocks of level plaza stand behind it
      * for the army that camps there (`PASS_PLAZA`), and the climb starts again past it. The surface carries the map's
      * own folded noise and the crests that wander along the pass, so a stepped slope reads as rock rather than as a
-     * staircase. South of the gate the pass opens - the floor widens from
+     * staircase. The distance the climb is measured over is the distance from the footprint as a whole - across beside
+     * the box, north behind the plaza, south down the pass, and both together at the corners - so the sides and the
+     * back are one flank and not two ramps meeting in a crease. South of the gate the pass opens - the floor widens from
      * the gate's hundred and sixty to seven hundred and sixty over four hundred blocks, and the walls ease from a
      * cliff into a hillside - so what is behind the gate is a courtyard the hold can stand in, and what is beside
      * it is the mountain it was cut out of.
@@ -2237,14 +2239,20 @@ public final class ArdaMap {
                 * Mth.clamp((along - PASS_GATE_KEEP) / 120.0D, 0.0D, 1.0D);
         double floor = PASS_HEAD_FLOOR + (PASS_MOUTH_FLOOR - PASS_HEAD_FLOOR) * span + roll;
 
+        // The distance is measured from the footprint itself, not from one side of it at a time: beside the box it is
+        // the distance across, behind the plaza the distance north, south of the box the distance down the pass, and
+        // at the corners the two together. Measured one axis at a time the side and the back ran into each other and
+        // left a crease between them, which is a gap in a mountain; measured from the whole footprint there is one
+        // continuous flank round it.
         double across = Math.abs(blockX - PASS_X) - half;
-        double behind = -along;
-
-        if (behind > 0.0D && behind <= PASS_PLAZA && across <= 0.0D) {
-            // The plaza behind the gate: level to the block, because an army stands on it.
-            return (int) Math.round(floor);
-        }
-        if (behind <= 0.0D && across <= 0.0D) {
+        double outX = Math.max(0.0D, across);
+        double outZ = Math.max(0.0D, Math.max(-along - PASS_PLAZA, along - length));
+        double out = Math.sqrt(outX * outX + outZ * outZ);
+        if (out <= 0.0D) {
+            if (along < 0.0D) {
+                // The plaza behind the gate: level to the block, because an army stands on it.
+                return (int) Math.round(floor);
+            }
             // Inside the pass: the floor, and only the mouth eases it back into the open ground.
             return blend(floor, height, (along - length) / PASS_MOUTH_RUN);
         }
@@ -2252,7 +2260,6 @@ public final class ArdaMap {
         // half blocks up for every block out, a stair of two or three each step, so the ends of the gate are into the
         // rock inside thirty blocks and the gate is nestled into the pass. The climb stops the moment it meets the
         // country's own drawn surface; past that the mountain is the drawing's, sloping away as it always did.
-        double out = across > 0.0D ? across : behind - PASS_PLAZA;
         double shaped = Math.min(height, floor + out * PASS_STEP);
         // And broken by the map's own folded noise the way a range is, fading in off the build's own edge so the
         // gate still meets the ground exactly where it stands.

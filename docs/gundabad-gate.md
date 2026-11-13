@@ -72,6 +72,7 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 | floor inside the gate's box | **187, level to the block** — the roll starts only past the gate, because a roll that lifts a floor course by one is a gap under the whole build |
 | the mountain's foot at the gate's edges (x 5495 / 5656) | **187** — the floor itself, so nothing is stood up where the build goes |
 | the mountain round the gate | climbs at **two and a half blocks up per block out** (`PASS_STEP`): 202 at six blocks, 247 at twenty-four, the roof's 267 by about thirty-two |
+| at the corners | distance **across and behind together**, so the side and the back are one flank and not two ramps meeting in a crease |
 | where the climb stops | at the country's own drawn surface - 293 to 319 round the courtyard - so everything past about fifty blocks is the drawing |
 | its surface | broken by ±14 of folded noise and ±18 of crest wandering along the pass, fading in off the build's own edge |
  160 wide through the gate's depth and sixty blocks south, then opening |
@@ -85,7 +86,10 @@ capped by the country's own drawn surface - `Math.min(drawn, floor + distance * 
 accord at 293 to 319, about fifty blocks out, and past that the mountain is the drawing's, sloping away the way it
 always did. Nothing is stood up above the drawn massif, so there is no crest to end in a face. The surface carries the
 map's folded noise (±14, at twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass,
-fading in off the build's own edge so the gate still meets the ground exactly.
+fading in off the build's own edge so the gate still meets the ground exactly. The distance the climb is measured over is the distance from the footprint as a
+whole - across beside the box, north behind the plaza, south down the pass, and both together at the corners - so the
+sides and the back meet as one continuous flank; measured one axis at a time the two ramps ran into each other and left
+a crease, which in a mountain is a gap.
 
 Behind the gate there is no rock against the back at all. The gate stands in a pass and is the only way into the
 keep behind it, so what is behind it is a floor an army can stand on: thirty-two blocks of plaza, level to the block
