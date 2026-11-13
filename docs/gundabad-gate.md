@@ -227,8 +227,8 @@ the noise above are the answer to both.
 1. Regenerate the ground: a fresh world, or close Mod Test and take those chunks out
    (`python tools/chunk_trim.py --world "run/saves/Mod Test" --radius <n> ... --apply`), then let them
    make again.
-2. `/tmgate place` — lays the eight pieces at the box **unturned**, facade south toward the approach, with the seam
-   **left undressed** (`GundabadGate.drape` is not called while the ground is being judged), and reports how many blocks of
+2. `/tmgate place` — lays the eight pieces at the box **unturned**, facade south toward the approach, dresses the
+   seam (`GundabadGate.drape`) and reports how many blocks of
    ground the drape added.
 3. `/tmgate clear` takes the gate's box out at the site; `clear here` takes out a box at the player's own
    position and facing, for a piece tried with `here`.

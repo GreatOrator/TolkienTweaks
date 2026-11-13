@@ -94,11 +94,11 @@ public final class GateCommands {
         int laid = GundabadGate.place(level, front, rotation);
         List<String> missing = GundabadGate.missing(level);
         if (missing.isEmpty()) {
-            // The seam is left undressed for now, so what is judged is the ground the pass made and not the skirt the
-            // drape lays over it: GundabadGate.drape is still here, and is called again once the ground is settled.
+            int dressed = GundabadGate.drape(level, front, rotation);
             source.sendSuccess(() -> Component.literal("Laid " + laid + " pieces of the Gundabad gate at "
                     + front.toShortString() + ", " + where + ": " + GundabadGate.WIDE + " wide, "
-                    + GundabadGate.TALL + " tall, " + GundabadGate.DEEP + " deep, seam left undressed."), true);
+                    + GundabadGate.TALL + " tall, " + GundabadGate.DEEP + " deep, with " + dressed
+                    + " blocks of ground dressed into the seam."), true);
         } else {
             source.sendSuccess(() -> Component.literal("Laid " + laid + " of 8 pieces of the Gundabad gate at "
                     + front.toShortString() + "; not in the pack: " + String.join(", ", missing) + "."), true);
