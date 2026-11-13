@@ -72,19 +72,21 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 | floor inside the gate's box | **187, level to the block** — the roll starts only past the gate, because a roll that lifts a floor course by one is a gap under the whole build |
 | wall foot at the gate's edges (x 5495 / 5656) | **267** — the height of the build's own wings |
 | the walls' shoulder, sixteen blocks out | **302 on both sides** — the build's own scale, within ±10 of folded noise |
-| the drawing takes the walls back | over another 48 blocks: the range's own 288 west and 313 east, 64 blocks out |
+| the bank behind the shoulder | falls at one in four, and the drawing takes over wherever it stands higher |
+| the crest along the pass | wanders ±18 blocks on a ninety-six block scale, so the bank carries spurs |
 | rock behind the back face | 200 at 3 north, 231 at 6, 277 at 10, **301 at 14** |
 | gap | 160 wide through the gate's depth and sixty blocks south, then opening |
 | courtyard | 540 wide by z −6650, 756 at the mouth |
 | floor along the pass | 187 at the gate, 175 at the mouth |
 
 Inside the pass the ground is the floor; past its edges the wall climbs to its shoulder in sixteen
-blocks and hands over to the drawing over another forty-eight, and once the pass has opened the same
-curve is a hillside over a hundred and fifty. The face is broken by the map's own folded noise — ±10 at
-twenty-eight and eleven blocks — held off the build's own edge so the gate still meets the ground
-exactly: an eased wall is a regular staircase of one-block treads, which is the flat, pasted look a
-mountain should never have. The mouth blends back into the Hithaeglir's low ground, which is already
-174–176 there, so the join has no seam.
+blocks, and behind the shoulder the ground runs back at one in four — a bank with the drawing's own
+ground wherever that stands higher — while the crest wanders along the pass on a ninety-six block
+scale, so what bounds the courtyard is a flank with spurs rather than a rim. The face is broken by the
+map's own folded noise, ±10 at twenty-eight and eleven blocks, held off the build's own edge so the gate
+still meets the ground exactly: an eased wall is a regular staircase of one-block treads, which is the
+flat, pasted look a mountain should never have. The mouth blends back into the Hithaeglir's low ground,
+which is already 174–176 there, so the join has no seam.
 
 ### What the first world actually made — 13 November 2026
 
@@ -98,6 +100,13 @@ column by column, not guessed from the code:
 | wall foot, east | 267 at x 5656, then 274 at x 5660, 313 at x 5671 |
 | behind the back | 202 at five north of it, 272 by twelve, 301 further out |
 | courtyard | 186–188, with `rockpile` blocks scattered on it |
+
+And the ring the drape bridges, measured the same way: east of the box the ground is 267 two blocks out
+and 280 at eight, but **the courtyard wall was a rim** — at z −6700 the floor is 184, the wall foot 249,
+the crest 282 at x 5400 and then 255 by x 5360, because the drawn country west of the courtyard is a
+basin at about 250. A wall that rises above the ground behind it and then drops is a curved face with the
+sky over it, which is what the owner photographed; the bank above is the answer to it, falling from the
+crest at one in four and holding the ground up wherever the drawing would have sunk it.
 
 So the pass was doing what it was told and the shape was still wrong in two ways, which is what the
 owner saw: the drawn rock is **25 blocks higher on the east than the west**, so a wall that climbed
@@ -117,6 +126,11 @@ the noise above are the answer to both.
 - **The ground is cut to the gate, not the gate seated on ground.** The gate brings forty-eight blocks
   of its own mountain, so the world behind its mouth has to be at the gate's height within a few paces
   of the face; a wall that started at the floor would leave the build in a trench of its own making.
+- **A wall needs ground behind it.** The drawn country either side of the courtyard is a basin only about
+  two hundred and fifty up, lower than the wall's own crest, so blending the wall back into the drawing
+  built a rim with the sky behind it. The bank falls from the crest at one in four (`PASS_BANK_FALL`) and
+  the drawing wins wherever it is higher, and the crest wanders ±18 blocks on a ninety-six block scale
+  (`PASS_SPUR`) so it has spurs and gullies instead of a shell's edge.
 - **The side walls are the build's scale, not the country's.** The drawn rock is 288 ten blocks west of
   the gate and 313 ten blocks east; climbing straight back into it made one side too small and the other
   too big. Both sides now reach a shoulder of 302 at sixteen blocks — thirty-five above the wings —

@@ -647,7 +647,24 @@ public final class ArdaMap {
      * takes back over over {@link #PASS_WALL_EASE} paces once that ledge is behind the walker.
      */
     private static final int PASS_WALL_TOP = 302;
-    private static final int PASS_WALL_EASE = 48;
+    /**
+     * How fast the bank behind the wall falls away, in blocks per sixteen across: one in four.
+     * <p>
+     * The drawn ground either side of the courtyard is a basin only two hundred and fifty or so up, lower than
+     * the wall's own crest, so a wall that blended straight back into the drawing rose to a rim and then dropped -
+     * a curved face with the sky behind it, which is not a mountainside. The crest runs back at one in four
+     * instead and the drawing takes over wherever it is higher, so what stands beside the gate is a flank with
+     * ground behind it.
+     */
+    private static final int PASS_BANK_FALL = 4;
+    /**
+     * How far the crest wanders along the pass, in blocks, and at what scale.
+     * <p>
+     * A crest at one height for the length of the courtyard is a shell, however good its profile: the wall needs
+     * spurs and the gullies between them the way a range does.
+     */
+    private static final int PASS_SPUR = 18;
+    private static final int PASS_SPUR_SCALE = 96;
     /**
      * How far the shaped walls are broken up by the map's own folded noise, in blocks, and at what scale.
      * <p>
@@ -2195,10 +2212,11 @@ public final class ArdaMap {
      * <p>
      * The notch is cut to the build rather than to a country: from the gate's back north the drawn plateau climbs
      * out of the floor in fourteen blocks, so the rock is there at the gate's own height a pace behind it; either
-     * side of the gate the walls stand at its edges, at the height of its wings, reach their shoulder over sixteen
-     * blocks and let the drawn rock take them back over another forty-eight, so the near wall is the same on both
-     * sides of the gate whatever the drawing does there - and it is broken by the map's own folded noise, because
-     * an eased wall is a staircase of one-block treads and reads as a cut. South of the gate the pass opens - the floor widens from
+     * side of the gate the walls stand at its edges, at the height of its wings, and reach their shoulder over
+     * sixteen blocks - the same on both sides of the gate whatever the drawing does there. Behind the shoulder the
+     * bank runs back at one in four with the crest wandering along the pass and the drawing taking over wherever it
+     * stands higher, so what bounds the courtyard is a flank with ground behind it rather than a rim, and the face
+     * is broken by the map's own folded noise, because an eased wall is a staircase of one-block treads. South of the gate the pass opens - the floor widens from
      * the gate's hundred and sixty to seven hundred and sixty over four hundred blocks, and the walls ease from a
      * cliff into a hillside - so what is behind the gate is a courtyard the hold can stand in, and what is beside
      * it is the mountain it was cut out of.
@@ -2241,17 +2259,22 @@ public final class ArdaMap {
             return blend(floor, height, (along - length) / PASS_MOUTH_RUN);
         }
         // The wall beside the gate, drawn to the build rather than to the country: the wing top at the gate's own
-        // edge, the shoulder by PASS_GATE_RUN paces, and the drawing's mountain from there over PASS_WALL_EASE.
-        // Where the pass has opened into the courtyard the shoulder has come down to the floor with the lip, so
-        // the same curve is a hillside over a court rather than a face over a gate.
-        double shoulder = lip + (PASS_WALL_TOP - PASS_EDGE_TOP) * (1.0D - opened)
-                * smooth(Mth.clamp(across / run, 0.0D, 1.0D));
-        double back = smooth(Mth.clamp((across - run) / (double) PASS_WALL_EASE, 0.0D, 1.0D));
+        // edge, the shoulder by PASS_GATE_RUN paces, and the bank behind it falling at PASS_BANK_FALL with the
+        // country's own ground wherever that stands higher. Where the pass has opened into the courtyard the
+        // shoulder has come down to the floor with the lip, so the same curve is a hillside over a court rather
+        // than a face over a gate.
+        double up = smooth(Mth.clamp(across / run, 0.0D, 1.0D));
+        double shoulder = lip + (PASS_WALL_TOP - PASS_EDGE_TOP) * (1.0D - opened) * up;
+        // The crest wanders along the pass, so the bank is a flank with spurs on it rather than a shell.
+        double spur = (1.0D - Math.abs(fractal(blockX, blockZ, PASS_SPUR_SCALE, 19))) - 0.5D;
+        shoulder += spur * 2.0D * PASS_SPUR * up;
+        // Behind the crest the ground runs back at PASS_BANK_FALL and the drawing takes over wherever it is
+        // higher - never a rim with the country's own basin showing behind it.
+        double bank = shoulder - Math.max(0.0D, across - run) * (PASS_BANK_FALL / 16.0D);
         double mouth = smooth(Mth.clamp((along - length) / (double) PASS_MOUTH_RUN, 0.0D, 1.0D));
-        double shaped = (shoulder * (1.0D - back) + height * back) * (1.0D - mouth) + height * mouth;
-        // And broken by the map's folded noise the way a range is, fading out at the build's own edge and again
-        // where the drawing has taken the wall back.
-        double bite = smooth(Mth.clamp((across - 1.0D) / 10.0D, 0.0D, 1.0D)) * (1.0D - back);
+        double shaped = Math.max(bank, height) * (1.0D - mouth) + height * mouth;
+        // And broken by the map's folded noise the way a range is, fading out at the build's own edge.
+        double bite = smooth(Mth.clamp((across - 1.0D) / 10.0D, 0.0D, 1.0D));
         double crest = 1.0D - Math.abs(fractal(blockX, blockZ, PASS_CRAG_SCALE, 37));
         crest += 0.5D * (1.0D - Math.abs(fractal(blockX, blockZ, 11, 41)));
         shaped += (crest / 1.5D - 0.5D) * 2.0D * PASS_CRAG * bite;
