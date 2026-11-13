@@ -70,7 +70,9 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 | | |
 |---|---|
 | floor inside the gate's box | **187, level to the block** — the roll starts only past the gate, because a roll that lifts a floor course by one is a gap under the whole build |
-| the mountain's foot at the gate's ends | **187** — the floor itself (`PASS_SINK` 0): the climb runs its full length out of it on every side |
+| the opening's width | narrowed **39 blocks on the west and 24 on the east** (`PASS_FOOT_WEST` / `PASS_FOOT_EAST`): the climb begins that far inboard of the footprint, so the gap the gate stands in is that much narrower |
+| the mountain's foot | **187** — the floor itself, where the climb begins; the slope's shape is unchanged, it only starts sooner |
+| inside the footprint | never above **267**, the build's own roof, so every cell of ground there is one the placing clears |
 | the mountain round the gate | climbs at **two and a half blocks up per block out** (`PASS_STEP`): 202 at six blocks, 247 at twenty-four, the roof's 267 by about thirty-two |
 | behind the plaza | **187** — level, and level for its own sake: the camp stands on it |
 | at the corners | distance **across and behind together**, so the side and the back are one flank and not two ramps meeting in a crease |
@@ -87,8 +89,12 @@ capped by the country's own drawn surface - `Math.min(drawn, floor + distance * 
 accord at 293 to 319, about fifty blocks out, and past that the mountain is the drawing's, sloping away the way it
 always did. Nothing is stood up above the drawn massif, so there is no crest to end in a face. The surface carries the
 map's folded noise (±14, at twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass,
-fading in off the build's own edge so the gate still meets the ground exactly. The foot is the floor everywhere, on every side, and the climb runs its full length out of it - which is the shape
-that read right from every side.
+fading in off the build's own edge so the gate still meets the ground exactly. The foot is the floor on every side and the climb runs out of it at two and a half blocks per block - which is the shape
+that read right from every side. What is narrowed is the **opening**: the climb begins thirty-nine blocks inboard on the
+west and twenty-four on the east, because the drawn massif does not reach the gate equally on the two sides, so the gap
+the build stands in is that much narrower and the ends are into the rock. Inside the footprint the ground is held to
+267 - the build's own roof - because a rock left above the build's cells would survive the placing and sit on the
+parapet; outside it the mountain is free to stand over the roof.
 
 `PASS_SINK` can lift that foot at the build's ends, and was 60 for a while to bring the mountain in twenty-four
 blocks' worth of climb. That is right on paper and wrong in the world: the lift is a **step** at the footprint's edge,

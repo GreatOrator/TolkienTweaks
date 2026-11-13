@@ -674,6 +674,17 @@ public final class ArdaMap {
      */
     private static final int PASS_SINK = 0;
     /**
+     * How far inboard of the footprint the mountain's foot starts on each side, in blocks: thirty-nine on the west and
+     * twenty-four on the east.
+     * <p>
+     * The foot is still the floor - 187 - but it begins that many blocks <em>inside</em> the box, so the ground comes
+     * down into the footprint and the build is laid into the mountain rather than stood against it. The two sides are
+     * different because the drawn massif does not reach the gate equally on both: bringing the west in thirteen blocks
+     * further than the east puts the same flank of rock against both ends.
+     */
+    private static final int PASS_FOOT_WEST = 39;
+    private static final int PASS_FOOT_EAST = 24;
+    /**
      * How far the mountain's own surface is broken up, in blocks, and at what scales: the crag a range is broken
      * by, and the crests that wander along the pass.
      * <p>
@@ -2268,26 +2279,24 @@ public final class ArdaMap {
 
         double across = Math.abs(blockX - PASS_X) - half;
         double behind = -along;
-
-        if (behind > 0.0D && behind <= PASS_PLAZA && across <= 0.0D) {
-            // The plaza behind the gate: level to the block, because an army stands on it.
-            return (int) Math.round(floor);
-        }
-        if (behind <= 0.0D && across <= 0.0D) {
-            // Inside the pass: the floor, and only the mouth eases it back into the open ground. The courtyard south
-            // of the box is this floor running on - it is the pass, not ground outside it - and its sides climb out
-            // of the floor like any hillside, which is what makes the courtyard read as the way in.
-            return blend(floor, height, (along - length) / PASS_MOUTH_RUN);
-        }
-        // The mountain's distance is measured from the footprint, across from the pass's edge and north from the
-        // plaza's own edge, and the two together at the corners - so the side and the back are one flank and not two
-        // ramps meeting in a crease.
-        double outX = Math.max(0.0D, across);
+        // The mountain's foot starts inboard of the footprint on both sides - thirty-nine blocks on the west, twenty-four
+        // on the east - so the ground runs down into the box instead of stopping at its edge, and the gate is placed
+        // into the mountain. The foot is the floor, 187, where the climb begins; that is just inside the box now, and
+        // the cells the build writes are the ones that carry the floor the rest of the way.
+        double shift = blockX < PASS_X ? PASS_FOOT_WEST : PASS_FOOT_EAST;
+        double outX = Math.max(0.0D, across + shift);
         double outZ = Math.max(0.0D, behind - PASS_PLAZA);
         double out = Math.sqrt(outX * outX + outZ * outZ);
+        if (out <= 0.0D) {
+            if (behind > 0.0D && behind <= PASS_PLAZA) {
+                // The plaza behind the gate: level to the block, because an army stands on it.
+                return (int) Math.round(floor);
+            }
+            // Inside the pass and clear of both feet: the floor, and only the mouth eases it back into the open ground.
+            return blend(floor, height, (along - length) / PASS_MOUTH_RUN);
+        }
         // The foot stands highest beside the build's own depth and comes back down to the floor along the courtyard,
-        // which is why the lift fades out south of the box: the gate's ends get the mountain up on them, and the way
-        // in stays open.
+        // which is why the lift fades out south of the box.
         double alongWeight = 1.0D - smooth(Mth.clamp((along - length) / 32.0D, 0.0D, 1.0D));
         double lift = PASS_SINK * (outX / (outX + outZ)) * alongWeight;
         double shaped = Math.min(height, floor + lift + out * PASS_STEP);
@@ -2298,6 +2307,12 @@ public final class ArdaMap {
         crag += 0.5D * (1.0D - Math.abs(fractal(blockX, blockZ, 11, 41)));
         double spur = (1.0D - Math.abs(fractal(blockX, blockZ, PASS_SPUR_SCALE, 19))) - 0.5D;
         shaped += ((crag / 1.5D - 0.5D) * 2.0D * PASS_CRAG + spur * 2.0D * PASS_SPUR) * bite;
+        // Inside the footprint the ground never stands above the build's own top: the build's cells are what carry its
+        // roof, and a rock left above them would survive the placing and sit on the parapet. Outside the footprint the
+        // mountain is free to stand over the roof, which is the point of it.
+        if (across <= 0.0D) {
+            shaped = Math.min(shaped, PASS_EDGE_TOP);
+        }
         return (int) Math.round(shaped);
     }
 
