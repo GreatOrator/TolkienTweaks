@@ -581,6 +581,49 @@ public final class ArdaMap {
      */
     private static final int CRAG = 42;
 
+    /**
+     * The Gundabad pass: the massif opened into a valley, and the rock face its gate is cut into.
+     * <p>
+     * The massif's own drawing is a plateau some three hundred blocks up with thirty blocks of movement on
+     * it and no face anywhere a gate eighty-one blocks tall could be set into - which is what the trial in
+     * the map found. The country is drawn as a pass instead: a floor at a hundred and ninety-six under the
+     * gate, falling to a hundred and seventy-six where it opens into the Hithaeglir's own low ground, with
+     * the plateau standing over the head of the valley as the rock the gate is set into. None of it is
+     * invented: the flank south of the massif already falls from three hundred to a hundred and seventy-five
+     * between z -7000 and -6350, so the valley is that fall carried north and held level, and the walk up
+     * to the fortress is the climb the drawing already asked for.
+     */
+    /** The middle of the valley, which is the middle of the country: the gate is centred on it. */
+    private static final int PASS_X = 5631;
+    /** The rock face at the head of the valley, north of which the massif stands whole. */
+    private static final int PASS_HEAD_Z = -7300;
+    /** Where the valley's floor meets the ground the drawing already put low. */
+    private static final int PASS_MOUTH_Z = -6350;
+    /** Half the valley's width at the face: four hundred and forty across, for a gate a hundred and sixty. */
+    private static final int PASS_HEAD_HALF = 220;
+    /** The same at the mouth, where it opens into the low ground. */
+    private static final int PASS_MOUTH_HALF = 380;
+    /** The floor under the gate. */
+    private static final int PASS_HEAD_FLOOR = 196;
+    /** The floor at the mouth, so the valley falls away from the fortress rather than into it. */
+    private static final int PASS_MOUTH_FLOOR = 176;
+    /** How far the side walls climb back out of the floor, in blocks. */
+    private static final int PASS_SIDE_RUN = 150;
+    /** How far the mouth blends back into the open ground it opens onto. */
+    private static final int PASS_MOUTH_RUN = 250;
+    /**
+     * The face itself: how far north of the head the plateau stands up.
+     * <p>
+     * Twenty blocks, which is a cliff rather than a slope, and deliberately so. The gate's own cut carries
+     * forty-eight blocks of its mountain, so the world behind its mouth has to be standing at the gate's own
+     * height within a few paces of the face, or the build's own rock pokes out of the hill it is set into.
+     */
+    private static final int PASS_FACE_RUN = 20;
+    /** How much the floor rolls either way, in blocks, so a valley is ground rather than a table. */
+    private static final int PASS_ROLL = 3;
+    /** The scale of the floor's own roll, in blocks. */
+    private static final int PASS_ROLL_SCALE = 128;
+
     private static final Country[][] GRID = draw();
 
     /**
@@ -2035,14 +2078,18 @@ public final class ArdaMap {
      */
     private static int groundHeight(int blockX, int blockZ, int drawn, int relief, double rough) {
         int mapped = ArdaMasks.ground(blockX, blockZ);
+        int height;
         if (mapped != ArdaMasks.NO_GROUND) {
-            return ragged(blockX, blockZ, ArdaMasks.lift(blockX, blockZ, vale(blockX, blockZ,
+            height = ragged(blockX, blockZ, ArdaMasks.lift(blockX, blockZ, vale(blockX, blockZ,
                     SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL))),
                     VALLEY_CROWN));
+        } else {
+            height = ragged(blockX, blockZ, ArdaMasks.lift(blockX, blockZ,
+                    Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
+                            MOUNTAIN_CEILING), VALLEY_CROWN));
         }
-        return ragged(blockX, blockZ, ArdaMasks.lift(blockX, blockZ,
-                Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
-                        MOUNTAIN_CEILING), VALLEY_CROWN));
+        // Gundabad last, so the valley cuts the drawn rock, its crags and its lean-to all at once.
+        return gundabadPass(blockX, blockZ, height);
     }
 
     /**
@@ -2092,6 +2139,54 @@ public final class ArdaMap {
         // country's lowest ground higher than the valley's water: a river could not leave the valley,
         // because the water sitting in the floor was already below everything it had to reach.
         int floor = VALLEY_FLOOR;
+        return (int) Math.round(floor * weight + height * (1.0D - weight));
+    }
+
+    /**
+     * The Gundabad pass: the massif brought down to a floor the hold fits on, with its own plateau over the
+     * head of the valley as the face the gate is cut into.
+     * <p>
+     * A valley is one floor and a way into it. The floor runs from the face north of the hold to a mouth out
+     * in the low ground, narrowing as it comes to the fortress - four hundred and forty across at the face
+     * for a gate a hundred and sixty wide, seven hundred and sixty at the mouth - and falling away from it,
+     * from a hundred and ninety-six under the gate to a hundred and seventy-six at the mouth, so the way in
+     * is a slope walked up rather than a shelf. Inside it the ground is the floor and nothing else; past its
+     * edges the drawn ground comes back over a hundred and fifty blocks at the sides and two hundred and
+     * fifty past the mouth, which is what leaves the massif's own crest standing over the valley on three
+     * sides instead of a rim of cut rock.
+     * <p>
+     * The face is the one edge that is not eased. Behind it the drawing already stands at three hundred and
+     * ten, and the gate's cut carries its mountain forty-eight blocks in, so the rock has twenty blocks to
+     * climb the hundred and ten it stands above the floor. That is a cliff, and a cliff is the point: a hold
+     * whose gate is set into a hill needs the hill to be there at the gate's own height, not a bank a pace
+     * beyond it.
+     */
+    private static int gundabadPass(int blockX, int blockZ, int height) {
+        int east = PASS_X + PASS_MOUTH_HALF + PASS_SIDE_RUN;
+        int west = PASS_X - PASS_MOUTH_HALF - PASS_SIDE_RUN;
+        if (blockX < west || blockX > east || blockZ < PASS_HEAD_Z - PASS_FACE_RUN
+                || blockZ > PASS_MOUTH_Z + PASS_MOUTH_RUN) {
+            return height;
+        }
+        double along = blockZ - PASS_HEAD_Z;
+        double length = PASS_MOUTH_Z - PASS_HEAD_Z;
+        double span = Mth.clamp(along / length, 0.0D, 1.0D);
+        double half = PASS_HEAD_HALF + (PASS_MOUTH_HALF - PASS_HEAD_HALF) * span;
+        double floor = PASS_HEAD_FLOOR + (PASS_MOUTH_FLOOR - PASS_HEAD_FLOOR) * span
+                + (fractal(blockX, blockZ, PASS_ROLL_SCALE, 23) - 0.5D) * 2.0D * PASS_ROLL;
+
+        double share;
+        if (along < 0.0D) {
+            // North of the face: the plateau stands up out of the floor in twenty blocks.
+            share = -along / PASS_FACE_RUN;
+        } else {
+            share = Math.max((Math.abs(blockX - PASS_X) - half) / PASS_SIDE_RUN,
+                    (along - length) / PASS_MOUTH_RUN);
+        }
+        if (share >= 1.0D) {
+            return height;
+        }
+        double weight = 1.0D - smooth(Mth.clamp(share, 0.0D, 1.0D));
         return (int) Math.round(floor * weight + height * (1.0D - weight));
     }
 
