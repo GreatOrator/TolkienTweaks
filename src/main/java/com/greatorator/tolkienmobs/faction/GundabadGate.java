@@ -97,8 +97,14 @@ public final class GundabadGate {
     private static final int HALL_WALL = 2;
     private static final int HALL_ROOF = 3;
 
-    /** How tall the chamber is, in courses: y 190 to 226, measured off the rear face. Read, never grown. */
-    private static final int HALL_HEIGHT = 37;
+    /**
+     * The chamber's own floor and ceiling, measured off the rear face and then fixed: the floor's top is two courses
+     * above the build's base (y 189) and the first course of rock over the passage is thirteen (y 200). They are fixed
+     * because reading them off the world means reading around the rubble that is lying in the passage, and one stray
+     * block moves the floor a course.
+     */
+    private static final int HALL_FLOOR = 2;
+    private static final int HALL_CEILING = 13;
 
 
     /** How far out from the footprint the floor is bedded into the ground beside it, in blocks. */
@@ -252,17 +258,17 @@ public final class GundabadGate {
         // on either hand, and its ceiling off the first course of rock above it. It is a passage, not the width of the
         // building: the courtyard either side of it is open to the sky and stays that way.
         int middle = WIDE / 2;
-        int lowX = Integer.MIN_VALUE;
-        int highX = Integer.MIN_VALUE;
-        int lowY = -1;
-        for (int y = 1; y < TALL - 1 && lowY < 0; y++) {
+        int lowX = middle - 13;
+        int highX = middle + 15;
+        int widest = 0;
+        for (int y = HALL_FLOOR + 2; y < HALL_CEILING; y++) {
             int run = -1;
             for (int x = 0; x < WIDE; x++) {
                 if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
-                    if (run > 0 && x - run >= 6 && run <= middle && middle <= x - 1) {
+                    if (run > 0 && x - run > widest && run <= middle && middle <= x - 1) {
+                        widest = x - run;
                         lowX = run;
                         highX = x - 1;
-                        lowY = y;
                     }
                     run = -1;
                 } else if (run < 0) {
@@ -270,18 +276,9 @@ public final class GundabadGate {
                 }
             }
         }
-        if (lowY < 0) return 0;
 
-        int roofBottom = -1;
-        for (int y = lowY + 1; y < TALL - 1 && roofBottom < 0; y++) {
-            if (!level.getBlockState(base.offset(middle, y, 0)).isAir()) {
-                roofBottom = y;
-            }
-        }
-        if (roofBottom < 0) roofBottom = lowY + HALL_HEIGHT;
-
-        int floorTop = base.getY() + lowY - 1;
-        int roofY = base.getY() + roofBottom;
+        int floorTop = base.getY() + HALL_FLOOR;
+        int roofY = base.getY() + HALL_CEILING;
         int added = 0;
 
         // The passage itself: its floor and its roof, carried north until the rock stands over the roof.
@@ -291,6 +288,14 @@ public final class GundabadGate {
                 for (int y = base.getY(); y <= floorTop; y++) {
                     added += lay(level, base.getX() + x, y, z);
                 }
+                // The passage's own inside is cleared as it is laid: a course of rubble left in it, or a floor laid a
+                // course high by an earlier pass, would otherwise be something the placing could never take back.
+                for (int y = floorTop + 1; y < roofY; y++) {
+                    BlockPos inside = base.offset(x, y, z);
+                    if (!level.getBlockState(inside).isAir()) {
+                        level.setBlock(inside, Blocks.AIR.defaultBlockState(), 2);
+                    }
+                }
                 int top = roofY + HALL_ROOF - 1 + rough(x, z, 1);
                 for (int y = roofY; y <= top; y++) {
                     added += lay(level, base.getX() + x, y, z);
@@ -298,13 +303,17 @@ public final class GundabadGate {
             }
         }
 
-        // Its two walls, outside the passage, stepping a course lower outward.
+        // Its two walls, outside the passage, stepping a course lower outward. They run as far north as the passage
+        // does at its furthest column, not as far as the single column they stand beside happens to manage.
+        int wallEnd = base.getZ() - HALL_REACH;
+        for (int x = lowX; x <= highX; x++) {
+            wallEnd = Math.min(wallEnd, hallEnd(level, base, x, roofY));
+        }
         for (int side = 0; side < 2; side++) {
-            int ref = side == 0 ? lowX : highX;
-            int end = hallEnd(level, base, ref, roofY);
+            int x = 0;
             for (int w = 0; w < HALL_WALL; w++) {
-                int x = side == 0 ? lowX - 1 - w : highX + 1 + w;
-                for (int z = base.getZ() - 1; z >= end; z--) {
+                x = side == 0 ? lowX - 1 - w : highX + 1 + w;
+                for (int z = base.getZ() - 1; z >= wallEnd; z--) {
                     int top = roofY + HALL_ROOF - 1 + rough(x, z, 2) - w;
                     for (int y = base.getY(); y <= top; y++) {
                         added += lay(level, base.getX() + x, y, z);
