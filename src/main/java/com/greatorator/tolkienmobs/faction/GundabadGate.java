@@ -127,6 +127,62 @@ public final class GundabadGate {
     }
 
     /**
+     * Takes out the skirt a drape laid across the chamber's opening - the strip behind the gate, out to the dressing's
+     * reach, from the floor's top up to the top of the build there. Worlds laid before the drape learned to keep off the
+     * back need it once, so the chamber leads out into the hall instead of into a wall of its own ground.
+     *
+     * @return how many blocks were taken out
+     */
+    public static int undressBack(ServerLevel level, BlockPos front, Rotation rotation) {
+        BlockPos base = base(front, rotation);
+        boolean turned = rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90;
+        int wide = turned ? DEEP : WIDE;
+        int deep = turned ? WIDE : DEEP;
+        open(level, base.offset(0, 0, -DRAPE_REACH), wide, DRAPE_REACH);
+
+        // Only the width the chamber itself spans, and only up to the gate's own top in each of those columns: the wings
+        // beyond it have ground of their own standing high behind them, and that ground is not this to take away.
+        int lowX = Integer.MAX_VALUE;
+        int highX = Integer.MIN_VALUE;
+        for (int y = 1; y < TALL - 1; y++) {
+            int run = -1;
+            for (int x = 0; x < wide; x++) {
+                if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
+                    if (run > 0 && x - run >= 8) {
+                        lowX = Math.min(lowX, run);
+                        highX = Math.max(highX, x - 1);
+                    }
+                    run = -1;
+                } else if (run < 0) {
+                    run = x;
+                }
+            }
+        }
+        if (lowX > highX) return 0;
+
+        int cleared = 0;
+        for (int x = lowX; x <= highX; x++) {
+            int top = base.getY();
+            for (int y = TALL - 1; y >= 0; y--) {
+                if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
+                    top = base.getY() + y;
+                    break;
+                }
+            }
+            for (int z = -DRAPE_REACH; z < 0; z++) {
+                for (int y = base.getY() + 1; y <= top; y++) {
+                    BlockPos at = base.offset(x, y, z);
+                    if (!level.hasChunkAt(at)) continue;
+                    if (level.getBlockState(at).isAir()) continue;
+                    level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                    cleared++;
+                }
+            }
+        }
+        return cleared;
+    }
+
+    /**
      * Beds the ground beside the gate up to the floor's own top.
      * <p>
      * The floor stands two courses, so anywhere the ground beside the footprint sits a course or two below it there is a
@@ -329,6 +385,9 @@ public final class GundabadGate {
         int dressed = 0;
         for (int x = -DRAPE_REACH; x < wide + DRAPE_REACH; x++) {
             for (int z = -DRAPE_REACH; z < deep + DRAPE_REACH; z++) {
+                // Never behind the gate. The back is where the chamber opens and the hall runs north out of it, and a skirt
+                // of ground laid across that opening closes the one thing the build is there to lead into.
+                if (z < 0) continue;
                 int outX = x < 0 ? -x : (x >= wide ? x - wide + 1 : 0);
                 int outZ = z < 0 ? -z : (z >= deep ? z - deep + 1 : 0);
                 int out = Math.max(outX, outZ);

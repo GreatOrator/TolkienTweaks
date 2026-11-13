@@ -44,6 +44,7 @@ public final class GateCommands {
                 .then(Commands.literal("place").executes(GateCommands::site))
                 .then(Commands.literal("site").executes(GateCommands::site))
                 .then(Commands.literal("here").executes(GateCommands::here))
+                .then(Commands.literal("undress").executes(GateCommands::undressBack))
                 .then(Commands.literal("clear")
                         .executes(GateCommands::clear)
                         .then(Commands.literal("here").executes(GateCommands::clearHere))));
@@ -109,6 +110,19 @@ public final class GateCommands {
                     + front.toShortString() + "; not in the pack: " + String.join(", ", missing) + "."), true);
         }
         return laid;
+    }
+
+    /** Takes out the skirt an old drape laid across the chamber's opening, so the hall can lead out of it. */
+    private static int undressBack(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getLevel() instanceof ServerLevel level)) {
+            source.sendFailure(Component.literal("The gate's site is ground in Arda - ask this in a world."));
+            return 0;
+        }
+        BlockPos front = ArdaMap.gatePlan();
+        int cleared = GundabadGate.undressBack(level, front, Rotation.NONE);
+        source.sendSuccess(() -> Component.literal("Took " + cleared + " blocks out of the strip behind the gate."), true);
+        return cleared;
     }
 
     /** Takes the whole gate's box out again at its own site, so the spot is as it was found. */
