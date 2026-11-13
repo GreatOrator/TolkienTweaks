@@ -543,7 +543,8 @@ cut to the gate's own box so the walls stand at its edges and the plateau closes
 that dresses the seam after every laying: `docs/gundabad-gate.md` has the numbers, the decisions and the
 open list. The procedural cut the gate was judged against is gone.
 
-Three things wait on the owner there. The gate is still reached by `/tmgate` alone - a pin needs a name in
+Three things wait on the owner there. The gate is placed with `/tmgate place`, which lays it at the map's own coordinates (5575, 187,
+-6830, facade south) rather than where the player stands, and is still not reached by any pin - a pin needs a name in
 `PinCommands.BUILDINGS` and a raise that lays all eight pieces, or the "no commands on the map" rule is not
 met. The keep's pin at 5655, 189, -6877 now sits inside the pass's new east wall and is being moved once
 the gate is settled; its ground is the courtyard south of the gate, not behind it. And the sky over the

@@ -70,25 +70,24 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 | | |
 |---|---|
 | floor inside the gate's box | **187, level to the block** — the roll starts only past the gate, because a roll that lifts a floor course by one is a gap under the whole build |
-| wall foot at the gate's edges (x 5495 / 5656) | **285** — eighteen above the top of the build's wings, so the ends sink in |
-| the mountain round the gate | **285 at the build's own edge**, rising over 28 blocks to a **peak of 330** - sixty-three above the roof |
+| the mountain's foot at the gate's edges (x 5495 / 5656) | **187** — the floor itself, so nothing is stood up where the build goes |
+| the mountain round the gate | rises out of that floor over **96 blocks** to a **peak of 330** - sixty-three above the roof |
 | the crest | held for 16 blocks, then falling at six in sixteen until the country's own ground is higher |
 | its surface | broken by ±14 of folded noise and ±18 of crest wandering along the pass, both held off the build's edge |
 | behind the gate | a **plaza**: level at 187 for **32 blocks** north of the box's back, then the mountain |
-| the mountain behind the plaza | climbs to the same 330 over 56 blocks, holds the crest, then falls into the country |
+| the mountain behind the plaza | climbs out of the plaza to the same 330 over **96 blocks**, holds the crest, then falls into the country |
 | gap | 160 wide through the gate's depth and sixty blocks south, then opening |
 | courtyard | 540 wide by z −6650, 756 at the mouth |
 | floor along the pass | 187 at the gate, 175 at the mouth |
 
-Inside the pass the ground is the floor. Outside it the ground is **drawn to the gate's footprint**: at the
-build's own edge it already stands eighteen blocks above the top of the wings (`PASS_SINK`), so the ends of the
-gate are sunk in rock rather than meeting it; over twenty-eight
-blocks it climbs to a peak of 330, sixty-three above the roof, so the mountain stands over the build rather than
-beside it; the crest is held for sixteen; and from there the slope falls at six in sixteen until the country's own
-ground is higher than it and takes over, about a hundred blocks out. The surface carries the map's folded noise
-(±14, at twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass, held off the
-build's own edge so the gate still meets the ground exactly where its ends sink in. The courtyard is untouched:
-its floor is open, its walls are the country's and the peak has come down to the lip by the time the pass opens.
+Inside the pass the ground is the floor, and the mountains outside it are drawn out of that same floor: the
+mountain's foot stands at **187** at the build's own edge - no lip, no shoulder, nothing stood up where the build will
+go, so before it is placed the ground is a valley whose sides come down to the floor - and from there it climbs over
+ninety-six blocks to a peak of **330**, sixty-three above the roof, holds that crest for sixteen and falls at six in
+sixteen until the country's own ground is higher and takes over. The surface carries the map's folded noise (±14, at
+twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass. Where the pass has opened
+into the courtyard the peak has come down to the floor with the lip, so the same curve is a valley wall over a court,
+and the courtyard's own walls are the country's.
 
 Behind the gate there is no rock against the back at all. The gate stands in a pass and is the only way into the
 keep behind it, so what is behind it is a floor an army can stand on: thirty-two blocks of plaza, level to the block
@@ -99,7 +98,24 @@ three sides and the gate is the one way in - which is the whole point of where i
 The mouth blends back into the Hithaeglir's low ground,
 which is already 174–176 there, so the join has no seam.
 
-### What the first world actually made — 13 November 2026
+### The build's own measurements — 13 November 2026
+
+Read out of the eight templates cell by cell (`tools/grab_build.py`), with the box anchored at the site's own corner:
+`WEST` 5496, `FLOOR` 187, `NORTH` -6877.
+
+| | |
+|---|---|
+| solid cells | **132,268** (and 489,812 air cells carried with them) |
+| x | 5496 … 5655 — **160 wide** |
+| y | 187 … 267 — **81 tall**, its floor course on 187 and nothing above 267 |
+| z | -6877 … -6830 — **48 deep** |
+| feet | every column's lowest solid is the floor course: **187 across the whole footprint**, so the ground under the gate must be 187 and no higher |
+| tops | the **two central towers** (x 5560 … 5592) and the **west end** (x 5496) reach the full **267**; the wings stand 12 to 47 above the floor; and between the towers, and again between a tower and its wing, the footprint is only the floor course — **the gate is open there, and air above it is what the mountain must not fill** |
+
+So what the terrain has to honour is: floor 187 across the whole 160 by 48 footprint, a build 81 tall, its highest
+rock at 267, and two central towers plus the west end standing on that full height.
+
+## What the first world actually made — 13 November 2026
 
 Read out of `run/saves/Mod Test` (the first world generated with the pass, region files written 04:29)
 column by column, not guessed from the code:
@@ -173,15 +189,16 @@ the noise above are the answer to both.
 5. **The Mod Test chunks are the first world's.** They carry the pass as it was before the shoulder, so
    the ground around the gate has to be made again — `tools/chunk_trim.py --radius` with the world
    closed and `--apply`, or a fresh world.
-6. **`/tmgate place` still lays at the player's feet** — a dev tool for trying the gate elsewhere.
-   `/tmgate site` is the real one.
+6. **`/tmgate place` is the site, and it has to be.** `here` is the dev tool that lays it at the player's feet and
+   facing whichever way they look; `clear` takes the site's box down and `clear here` a box at the player. Every
+   screenshot of the gate is only comparable while it lands in the same place.
 
 ## How to see it
 
 1. Regenerate the ground: a fresh world, or close Mod Test and take those chunks out
    (`python tools/chunk_trim.py --world "run/saves/Mod Test" --radius <n> ... --apply`), then let them
    make again.
-2. `/tmgate site` — lays the eight pieces at the box, facade south, and reports how many blocks of
+2. `/tmgate place` — lays the eight pieces at the box, facade south, and reports how many blocks of
    ground the drape added.
 3. `/tmgate clear` takes the gate's box out again; it does not take the drape down, and it is the
    player's position and facing that decide the box, so clear where you placed.
@@ -191,7 +208,7 @@ the noise above are the answer to both.
 | | |
 |---|---|
 | `faction/GundabadGate.java` | the parts table, `place`, `clear`, `drape`, `rotationFor`, `missing` |
-| `faction/GateCommands.java` | `/tmgate place`, `/tmgate site`, `/tmgate clear` (gamemasters) |
+| `faction/GateCommands.java` | `/tmgate place` (the site), `here`, `clear`, `clear here` (gamemasters) |
 | `world/registration/ArdaMap.java` | `GATE_*`, `gateFront()`, `PASS_*`, `gundabadPass()` |
 | `resources/data/tolkienmobs/structure/key_structures/gundabad_gate_*` | the eight templates, 1.7 MB |
 | `tools/gate_capture.py` | the capture, with `--trim-sky` and `--from/--to` |

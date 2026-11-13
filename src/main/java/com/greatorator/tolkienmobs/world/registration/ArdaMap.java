@@ -649,14 +649,15 @@ public final class ArdaMap {
      */
     private static final int PASS_PEAK = 330;
     /**
-     * How far the ground at the build's own edge stands above the top of its wings, in blocks: eighteen.
+     * How far above the floor the mountain's foot stands at the build's own edge, in blocks.
      * <p>
-     * At the wings' height the gate merely meets the ground, and a build that meets ground reads as standing on it.
-     * Eighteen blocks over buries the lowest courses of each end, so what the rock meets is the gate's flank and the
-     * ends are sunk into what surrounds them.
+     * Zero, so the ground before the gate is placed is a valley whose mountains come down to the floor and there is
+     * no face of rock standing where the build will go. Eighteen would bury the lowest courses of each end and read
+     * as the gate sunk into the mountain, but it does that by standing a wall up at the footprint's edge, which is
+     * exactly what has to be judged without one.
      */
-    private static final int PASS_SINK = 18;
-    private static final int PASS_RISE = 28;
+    private static final int PASS_SINK = 0;
+    private static final int PASS_RISE = 96;
     private static final int PASS_CREST_KEEP = 16;
     private static final int PASS_FALL = 6;
     /**
@@ -681,7 +682,7 @@ public final class ArdaMap {
      * one way in.
      */
     private static final int PASS_PLAZA = 32;
-    private static final int PASS_BACK_RISE = 56;
+    private static final int PASS_BACK_RISE = 96;
     /** How far north of the back the shaping reaches: the plaza, the climb, the crest, and the fall out of it. */
     private static final int PASS_BACK_REACH = PASS_PLAZA + PASS_BACK_RISE + PASS_CREST_KEEP + 200;
     /** How far the mouth blends back into the open ground it opens onto. */
@@ -2271,7 +2272,7 @@ public final class ArdaMap {
         double run;
         if (across > 0.0D) {
             out = across;
-            foot = lip + PASS_SINK * (1.0D - opened);
+            foot = floor + PASS_SINK * (1.0D - opened);
             run = PASS_RISE;
         } else {
             out = behind - PASS_PLAZA;

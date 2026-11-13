@@ -21,10 +21,11 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 /**
  * {@code /tmgate} - the Gundabad gate tried in a world before anything is written down for every world.
  * <p>
- * The gate is eight structure templates laid as a build. It belongs to a page or a place yet - a spot for it is
- * being measured - so it is asked for by hand, at the player's own feet and facing whichever way they look: the
- * facade's middle where they stand, the gate running on into the hill ahead of them. {@code clear} takes it down
- * again, because a spot tried is a spot to leave as it was found.
+ * The gate is eight structure templates laid as a build, and it has a site: {@link ArdaMap#gateFront()}, facade
+ * south, the coordinates the valley under Gundabad is shaped to. That is where it is laid unless somebody asks for
+ * {@code here}, which lays it at the player's feet and facing whichever way they look - a tool for trying a piece
+ * somewhere else, not how the gate stands. {@code clear} takes the site's box down again, and {@code clear here} a
+ * box at the player, because a spot tried is a spot to leave as it was found.
  * <p>
  * A command is the right home for this and not a place: the players who walk the map have no commands, so
  * nothing here is allowed to be the only way the gate ever stands. Once a spot is chosen, the gate is pinned and
@@ -40,13 +41,22 @@ public final class GateCommands {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         dispatcher.register(Commands.literal("tmgate")
                 .requires(source -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source))
-                .then(Commands.literal("place").executes(GateCommands::place))
+                .then(Commands.literal("place").executes(GateCommands::site))
                 .then(Commands.literal("site").executes(GateCommands::site))
-                .then(Commands.literal("clear").executes(GateCommands::clear)));
+                .then(Commands.literal("here").executes(GateCommands::here))
+                .then(Commands.literal("clear")
+                        .executes(GateCommands::clear)
+                        .then(Commands.literal("here").executes(GateCommands::clearHere))));
     }
 
-    /** Lays the eight templates at the player's feet, facing the way they face, and dresses the seam. */
-    private static int place(CommandContext<CommandSourceStack> context) {
+    /**
+     * Lays the eight templates at the player's feet, facing the way they face, and dresses the seam.
+     * <p>
+     * A tool, not the way the gate is placed: where the build lands has to be the ground's measure, not the walker's
+     * position, or every judgement of the terrain is made against a gate in a different place. This is for trying a
+     * piece somewhere else.
+     */
+    private static int here(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerPlayer player = source.getPlayer();
         if (player == null || !(source.getLevel() instanceof ServerLevel level)) {
@@ -58,12 +68,12 @@ public final class GateCommands {
     }
 
     /**
-     * Lays the gate at the site the pass was drawn for.
+     * Lays the gate at the site the pass was drawn for: {@link ArdaMap#gateFront()}, facade south.
      * <p>
-     * The notch under Gundabad is cut to the gate's own box - its walls stand at the gate's edges, its floor is the
-     * gate's own floor, and the plateau climbs out of the ground fourteen blocks behind its back - so the gate that
-     * fits it is the gate at {@link ArdaMap#gateFront()}, facade south. Laid anywhere else the gate is standing in a
-     * valley shaped for a different gate, which is what {@code /tmgate place} is for while the ground is measured.
+     * The valley is shaped to that one spot - its floor at 187, its mountains out of the same floor, its plaza behind
+     * the box's back - so the gate that fits it is the gate at those coordinates and no other. Every measurement of
+     * the terrain, and every screenshot of the gate in it, is worth comparing only while the build lands in the same
+     * place: this is the default, and {@code here} is the exception.
      */
     private static int site(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
@@ -92,8 +102,22 @@ public final class GateCommands {
         return laid;
     }
 
-    /** Takes the whole gate's box out again, so the spot is as it was found. */
+    /** Takes the whole gate's box out again at its own site, so the spot is as it was found. */
     private static int clear(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getLevel() instanceof ServerLevel level)) {
+            source.sendFailure(Component.literal("The gate's site is ground in Arda - ask this in a world."));
+            return 0;
+        }
+        BlockPos front = ArdaMap.gateFront();
+        int cleared = GundabadGate.clear(level, front, Rotation.CLOCKWISE_180);
+        source.sendSuccess(() -> Component.literal("Cleared " + cleared + " blocks out of the gate's box at "
+                + front.toShortString() + "."), true);
+        return cleared;
+    }
+
+    /** Takes a gate's box out where the player stands, for a piece tried somewhere else. */
+    private static int clearHere(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerPlayer player = source.getPlayer();
         if (player == null || !(source.getLevel() instanceof ServerLevel level)) {
