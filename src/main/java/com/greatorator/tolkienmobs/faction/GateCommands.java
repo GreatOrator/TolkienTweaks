@@ -96,11 +96,13 @@ public final class GateCommands {
         if (missing.isEmpty()) {
             int bedded = GundabadGate.DRESS_ON_PLACEMENT ? GundabadGate.dressFloor(level, front, rotation) : 0;
             int dressed = GundabadGate.DRESS_ON_PLACEMENT ? GundabadGate.drape(level, front, rotation) : 0;
+            int hall = GundabadGate.DRESS_ON_PLACEMENT ? GundabadGate.extendHall(level, front, rotation) : 0;
             source.sendSuccess(() -> Component.literal("Laid " + laid + " pieces of the Gundabad gate at "
                     + front.toShortString() + ", " + where + ": " + GundabadGate.WIDE + " wide, "
                     + GundabadGate.TALL + " tall, " + GundabadGate.DEEP + " deep, ends laid as rock only, "
                     + (bedded > 0 ? bedded + " blocks bedded to the floor" : "floor left bedding itself") + ", "
-                    + (dressed > 0 ? dressed + " dressed into the seam." : "seam left as it was.")),
+                    + (dressed > 0 ? dressed + " dressed into the seam" : "seam left as it was") + ", "
+                    + (hall > 0 ? hall + " laid into the hall behind." : "hall not laid.")),
                     true);
         } else {
             source.sendSuccess(() -> Component.literal("Laid " + laid + " of 8 pieces of the Gundabad gate at "

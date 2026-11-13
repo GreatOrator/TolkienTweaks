@@ -89,6 +89,10 @@ public final class GundabadGate {
     /** Whether the seam is dressed as part of the placing, or left bare for the ground to be judged on its own. */
     public static final boolean DRESS_ON_PLACEMENT = true;
 
+    /** How far into the rock the hall is carried, and how far north it will walk looking for the rock. */
+    private static final int HALL_INTO_ROCK = 3;
+    private static final int HALL_REACH = 96;
+
     /** How far out from the footprint the floor is bedded into the ground beside it, in blocks. */
     private static final int FLOOR_REACH = 6;
 
@@ -162,6 +166,83 @@ public final class GundabadGate {
             }
         }
         return dressed;
+    }
+
+    /**
+     * Carries the chamber at the back of the gate north into the mountain: the room the three rear passages open into is
+     * read back off the world, and that room - its floor, its two side walls and its roof at its own ceiling - is carried
+     * north until the rock stands over the roof, and three blocks further into it.
+     * <p>
+     * Nothing is ever taken away. Every block is written only where the cell is air, so the mountain keeps its own rock,
+     * the ground keeps its own shape, and the hall simply closes onto the mountain where the mountain arrives - which is
+     * what makes it read, from outside, as a way cut through a mass of rock rather than a tunnel laid in the open.
+     *
+     * @return how many blocks the hall added
+     */
+    public static int extendHall(ServerLevel level, BlockPos front, Rotation rotation) {
+        if (rotation != Rotation.NONE) return 0;
+        BlockPos base = base(front, rotation);
+        int wide = WIDE;
+        open(level, base.offset(-4, 0, -HALL_REACH), wide + 8, DEEP + HALL_REACH + 4);
+
+        // The room: every run of air at the rear face that rock holds on both sides, taken together.
+        int lowX = Integer.MAX_VALUE;
+        int highX = Integer.MIN_VALUE;
+        int lowY = Integer.MAX_VALUE;
+        int highY = Integer.MIN_VALUE;
+        for (int y = 1; y < TALL - 1; y++) {
+            int run = -1;
+            for (int x = 0; x < wide; x++) {
+                if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
+                    if (run >= 0 && x - run >= 8 && run > 0) {
+                        lowX = Math.min(lowX, run);
+                        highX = Math.max(highX, x - 1);
+                        lowY = Math.min(lowY, y);
+                        highY = Math.max(highY, y);
+                    }
+                    run = -1;
+                } else if (run < 0) {
+                    run = x;
+                }
+            }
+        }
+        if (lowX > highX || lowY > highY) return 0;
+
+        int floorTop = base.getY() + lowY - 1;
+        int roofY = base.getY() + highY + 1;
+        int added = 0;
+        for (int x = lowX; x <= highX; x++) {
+            int end = base.getZ() - HALL_REACH;
+            for (int z = base.getZ() - 1; z > base.getZ() - HALL_REACH; z--) {
+                if (level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, base.getX() + x, z) - 1 >= roofY) {
+                    end = z - HALL_INTO_ROCK;
+                    break;
+                }
+            }
+            for (int z = base.getZ() - 1; z >= end; z--) {
+                for (int y = base.getY(); y <= floorTop; y++) {
+                    added += lay(level, base.getX() + x, y, z);
+                }
+                added += lay(level, base.getX() + x, roofY, z);
+            }
+            for (int z = base.getZ() - 1; z >= end; z--) {
+                for (int y = base.getY(); y <= roofY; y++) {
+                    if (x == lowX || x == highX) {
+                        added += lay(level, base.getX() + x, y, z);
+                    }
+                }
+            }
+        }
+        return added;
+    }
+
+    /** Puts the gate's own rock into a cell, and only where that cell is air: the mountain is never cut into. */
+    private static int lay(ServerLevel level, int x, int y, int z) {
+        BlockPos at = new BlockPos(x, y, z);
+        if (!level.hasChunkAt(at)) return 0;
+        if (!level.getBlockState(at).isAir()) return 0;
+        level.setBlock(at, Blocks.MOSSY_COBBLESTONE.defaultBlockState(), 2);
+        return 1;
     }
 
     /** How far out from the gate's own edge the seam is dressed, in blocks, and how fast that skirt falls away. */
