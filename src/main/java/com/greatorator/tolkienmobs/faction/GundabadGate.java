@@ -93,6 +93,10 @@ public final class GundabadGate {
     private static final int HALL_INTO_ROCK = 3;
     private static final int HALL_REACH = 96;
 
+    /** The hall's own rock: two courses to a wall, three to a roof, which is what the room's frame carries. */
+    private static final int HALL_WALL = 2;
+    private static final int HALL_ROOF = 3;
+
     /** How far out from the footprint the floor is bedded into the ground beside it, in blocks. */
     private static final int FLOOR_REACH = 6;
 
@@ -211,23 +215,31 @@ public final class GundabadGate {
         int floorTop = base.getY() + lowY - 1;
         int roofY = base.getY() + highY + 1;
         int added = 0;
+
+        // The hall itself: its floor and its roof, carried north until the rock stands over the roof.
         for (int x = lowX; x <= highX; x++) {
-            int end = base.getZ() - HALL_REACH;
-            for (int z = base.getZ() - 1; z > base.getZ() - HALL_REACH; z--) {
-                if (level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, base.getX() + x, z) - 1 >= roofY) {
-                    end = z - HALL_INTO_ROCK;
-                    break;
-                }
-            }
+            int end = hallEnd(level, base, x, roofY);
             for (int z = base.getZ() - 1; z >= end; z--) {
                 for (int y = base.getY(); y <= floorTop; y++) {
                     added += lay(level, base.getX() + x, y, z);
                 }
-                added += lay(level, base.getX() + x, roofY, z);
+                int top = roofY + HALL_ROOF - 1 + rough(x, z, 1);
+                for (int y = roofY; y <= top; y++) {
+                    added += lay(level, base.getX() + x, y, z);
+                }
             }
-            for (int z = base.getZ() - 1; z >= end; z--) {
-                for (int y = base.getY(); y <= roofY; y++) {
-                    if (x == lowX || x == highX) {
+        }
+
+        // Its two walls, outside the room, following the room's own end at the nearest column, each course of the
+        // thickness a course lower than the last so the outside reads as a bank of rock rather than a wall.
+        for (int side = 0; side < 2; side++) {
+            int ref = side == 0 ? lowX : highX;
+            int end = hallEnd(level, base, ref, roofY);
+            for (int w = 0; w < HALL_WALL; w++) {
+                int x = side == 0 ? lowX - 1 - w : highX + 1 + w;
+                for (int z = base.getZ() - 1; z >= end; z--) {
+                    int top = roofY + HALL_ROOF - 1 + rough(x, z, 2) - w;
+                    for (int y = base.getY(); y <= top; y++) {
                         added += lay(level, base.getX() + x, y, z);
                     }
                 }
@@ -236,13 +248,41 @@ public final class GundabadGate {
         return added;
     }
 
+    /** How far north a column of the hall runs: until the rock stands over the roof, and three blocks further in. */
+    private static int hallEnd(ServerLevel level, BlockPos base, int x, int roofY) {
+        for (int z = base.getZ() - 1; z > base.getZ() - HALL_REACH; z--) {
+            if (level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, base.getX() + x, z) - 1 >= roofY) {
+                return z - HALL_INTO_ROCK;
+            }
+        }
+        return base.getZ() - HALL_REACH;
+    }
+
+    /** How many courses this column of the hall carries above its nominal top: the roughening that stops it reading flat. */
+    private static int rough(int x, int z, int salt) {
+        int h = x * 73856093 ^ z * 19349663 ^ salt * 83492791;
+        h ^= h >>> 13;
+        return Math.floorMod(h, 3);
+    }
+
     /** Puts the gate's own rock into a cell, and only where that cell is air: the mountain is never cut into. */
     private static int lay(ServerLevel level, int x, int y, int z) {
         BlockPos at = new BlockPos(x, y, z);
         if (!level.hasChunkAt(at)) return 0;
         if (!level.getBlockState(at).isAir()) return 0;
-        level.setBlock(at, Blocks.MOSSY_COBBLESTONE.defaultBlockState(), 2);
+        level.setBlock(at, rock(x, y, z), 2);
         return 1;
+    }
+
+    /**
+     * The rock the gate is cut out of, in the proportions the capture holds it: stone for the bulk, cobblestone and
+     * mossy cobblestone for the rest, so a hall laid in it does not read as one block repeated.
+     */
+    private static BlockState rock(int x, int y, int z) {
+        int pick = Math.floorMod(x * 31 + z * 17 + y * 7, 10);
+        if (pick < 5) return Blocks.STONE.defaultBlockState();
+        if (pick < 8) return Blocks.COBBLESTONE.defaultBlockState();
+        return Blocks.MOSSY_COBBLESTONE.defaultBlockState();
     }
 
     /** How far out from the gate's own edge the seam is dressed, in blocks, and how fast that skirt falls away. */
