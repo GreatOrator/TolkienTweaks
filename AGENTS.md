@@ -142,6 +142,22 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   `assets/tolkienmobs/arda/height.png` and `mountains.png` and read the heights off it before
   generating anything; terrain is only ever judged in a fresh chunk, in game.
 
+## A capture's air is written too, and it cuts
+
+- **Air in a template is not nothing.** Placing a structure writes the air it carries, so every air cell a build
+  was cut with erases whatever the world has at that cell - and a build cut out of a hillside carries a great deal
+  of it: the Gundabad gate's eight files hold 489,812 air cells against 132,268 blocks, and one of them
+  (`gundabad_gate_3_1_0.nbt`, the top course's east end) is 25,344 cells of nothing but air. Placed into a
+  mountain, that file alone clears a sixteen by thirty-three by forty-eight box.
+- **So when a build leaves a flat cut face, the air is one of the two things to try.** Either the ground is not
+  shaped to the build (worldgen) or the build is clearing ground it does not need (the capture): trim the air and
+  the face goes with it. `tools/gate_capture.py --trim-sky` is the pass that exists - it drops air above the
+  highest block of each column, so a template ends where the build does - and the same reasoning covers any
+  capture: keep the air inside the rooms, drop the air that is only the box's own sky.
+- **Check what the air is for before dropping it.** Some of it is load-bearing: a passage's air is what keeps the
+  passage open, and air above a roof is what stops the rock closing over the build. Trim only the part that is
+  removing ground nobody asked to remove, and say in the commit which pieces were trimmed.
+
 ## World generation facts worth not rediscovering
 
 - **Which fluid fills a biome is not a biome property.** The overworld aquifer is built in

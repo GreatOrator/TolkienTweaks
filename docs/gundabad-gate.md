@@ -134,6 +134,12 @@ the noise above are the answer to both.
   the courtyard is a basin lower than any lip we chose. The pass now shaves: the ground outside it is the
   drawing's own, and a one-in-one slope from the wings' height is the only thing it takes away
   (`PASS_CUT_RISE`), so there is no wall to leave standing and the gate clears its own box.
+- **Air is a material, and it can be trimmed.** The capture carries the box's air as air - 489,812 cells of it
+  against 132,268 blocks - and placing a template writes that air, so the gate clears terrain wherever it was cut
+  with sky. The top course's east end (`gundabad_gate_3_1_0.nbt`) is 25,344 cells and every one is air; the two
+  upper pieces beside it are 94–99% air. If a flat cut face survives the worldgen being right, the next thing to
+  try is `tools/gate_capture.py --trim-sky`, which drops air above the highest block of a column, or dropping the
+  pieces that hold nothing but air - they clear ground the gate does not need cleared.
 - **The drape only ever adds.** `GundabadGate.drape` walks the ring around the footprint, reads the top
   of the gate at the nearest column and fills the ground up to it with the stone it already has, capped
   with the surface that was there. A drape that cut would lower the very walls the pass was shaped for.
