@@ -561,9 +561,10 @@ what it showed: the drawn rock is twenty-five blocks higher east of the gate tha
 which climbed straight back into the drawing - was too small to read on the left and would have swallowed
 the build on the right, and its smooth blend laid down one-block treads for eighty blocks. Both walls now
 reach a shoulder of 302, thirty-five above the wings, in sixteen blocks, hand back to the drawing over
-a cut that only ever shaves the mountain down. The last of those is the owner's: the pass is not to stand ground
-up beside the gate at all, only take it away. Outside the pass the ground is the drawing's own, shaved where it
-stands above a one-in-one slope from the wings' height, with the map's noise and crests on the cut. Not generated yet; `docs/gundabad-gate.md` has both measured tables.
+a mountain drawn round the gate's own footprint. That is where it has settled: the ground at the build's edge is
+the wings' height so the ends sink in, it rises over twenty-eight blocks to a peak of 330 - sixty-three above the
+roof - holds the crest for sixteen and falls at six in sixteen until the drawing is higher and takes over. The
+front of the gate is left open because the peak is multiplied by how closed the pass still is. Not generated yet; `docs/gundabad-gate.md` has both measured tables.
 
 The Hithaeglir's and Gundabad's fog is lifted for the screenshots (`BiomeMaker.CLEAR_RANGE_FOG`): both read a far
 plane of 1024 instead of 38 and 44. It is temporary - false puts both mists back, and their own numbers never left

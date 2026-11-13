@@ -70,23 +70,24 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 | | |
 |---|---|
 | floor inside the gate's box | **187, level to the block** — the roll starts only past the gate, because a roll that lifts a floor course by one is a gap under the whole build |
-| wall foot at the gate's edges (x 5495 / 5656) | **267** — the height of the build's own wings |
-| the cut beside the gate | the drawing's own ground, shaved where it stands above a slope of one in one from 267 |
-| the cut face | broken by ±10 of folded noise and ±18 of crest wandering along the pass, both held off the build's edge |
+| wall foot at the gate's edges (x 5495 / 5656) | **285** — eighteen above the top of the build's wings, so the ends sink in |
+| the mountain round the gate | **285 at the build's own edge**, rising over 28 blocks to a **peak of 330** - sixty-three above the roof |
+| the crest | held for 16 blocks, then falling at six in sixteen until the country's own ground is higher |
+| its surface | broken by ±14 of folded noise and ±18 of crest wandering along the pass, both held off the build's edge |
 | rock behind the back face | 200 at 3 north, 231 at 6, 277 at 10, **301 at 14** |
 | gap | 160 wide through the gate's depth and sixty blocks south, then opening |
 | courtyard | 540 wide by z −6650, 756 at the mouth |
 | floor along the pass | 187 at the gate, 175 at the mouth |
 
-Inside the pass the ground is the floor. Outside it the ground is the **drawing's own**, shaved only where it
-stands above the slope the pass's edge makes: that slope starts at the height of the gate's wings - the pass's
-lip, which comes down to the floor as the pass opens into the courtyard - and runs back at one in one, so the
-rock beside the gate falls away into the mountain and anything the mountain holds below the slope is left as it
-was drawn. Nothing is ever stood up beside the gate, which is the whole point: a lip held at the wings' height
-becomes a face however it is dressed, and a face with the country's own basin behind it is the curved wall that
-was photographed twice. The cut carries the map's folded noise (plus or minus ten, at twenty-eight and eleven
-blocks) and crests that wander eighteen blocks either way along the pass, held off the build's own edge so the
-gate still meets the ground exactly - a cut surface is otherwise a plane.
+Inside the pass the ground is the floor. Outside it the ground is **drawn to the gate's footprint**: at the
+build's own edge it already stands eighteen blocks above the top of the wings (`PASS_SINK`), so the ends of the
+gate are sunk in rock rather than meeting it; over twenty-eight
+blocks it climbs to a peak of 330, sixty-three above the roof, so the mountain stands over the build rather than
+beside it; the crest is held for sixteen; and from there the slope falls at six in sixteen until the country's own
+ground is higher than it and takes over, about a hundred blocks out. The surface carries the map's folded noise
+(±14, at twenty-eight and eleven blocks) and crests that wander eighteen either way along the pass, held off the
+build's own edge so the gate still meets the ground exactly where its ends sink in. The courtyard is untouched:
+its floor is open, its walls are the country's and the peak has come down to the lip by the time the pass opens.
 
 The mouth blends back into the Hithaeglir's low ground,
 which is already 174–176 there, so the join has no seam.
@@ -129,17 +130,13 @@ the noise above are the answer to both.
 - **The ground is cut to the gate, not the gate seated on ground.** The gate brings forty-eight blocks
   of its own mountain, so the world behind its mouth has to be at the gate's height within a few paces
   of the face; a wall that started at the floor would leave the build in a trench of its own making.
-- **The pass only ever cuts.** Every version that stood ground up beside the gate - a lip at the height of
-  the wings, then a shoulder above it - ended as a face with the sky behind it, because the drawn country round
-  the courtyard is a basin lower than any lip we chose. The pass now shaves: the ground outside it is the
-  drawing's own, and a one-in-one slope from the wings' height is the only thing it takes away
-  (`PASS_CUT_RISE`), so there is no wall to leave standing and the gate clears its own box.
-- **Air is a material, and it can be trimmed.** The capture carries the box's air as air - 489,812 cells of it
-  against 132,268 blocks - and placing a template writes that air, so the gate clears terrain wherever it was cut
-  with sky. The top course's east end (`gundabad_gate_3_1_0.nbt`) is 25,344 cells and every one is air; the two
-  upper pieces beside it are 94–99% air. If a flat cut face survives the worldgen being right, the next thing to
-  try is `tools/gate_capture.py --trim-sky`, which drops air above the highest block of a column, or dropping the
-  pieces that hold nothing but air - they clear ground the gate does not need cleared.
+- **The mountain is drawn to the footprint.** Standing ground up as a lip, then as a shoulder, then shaving
+  it, each failed one way or the other; the shape the owner asked for is a mountain *round* the gate. So the ground
+  at the build's own edge is the wings' height - the ends sink in - rises over twenty-eight blocks to a peak at 330
+  (`PASS_PEAK`), holds it for sixteen (`PASS_CREST_KEEP`) and falls at six in sixteen (`PASS_FALL`) until the
+  drawing is higher and takes over.
+- **... and the front stays open.** The peak only exists where the pass has not opened: by the courtyard the
+  `opened` share has brought it down to the lip with the rest, so nothing is stood up in front of the gate.
 - **The drape only ever adds.** `GundabadGate.drape` walks the ring around the footprint, reads the top
   of the gate at the nearest column and fills the ground up to it with the stone it already has, capped
   with the surface that was there. A drape that cut would lower the very walls the pass was shaped for.
@@ -158,10 +155,10 @@ the noise above are the answer to both.
 3. **The sky above the wings is carried as air** — the capture lists every cell, so the box is whole.
    `tools/gate_capture.py --trim-sky` drops air above the highest block of each column when the voids
    want adjusting. Not run.
-4. **The cut has not been seen.** The shoulder, the bank and the shaved slope were written one after another
-   from the save's own measurements and none of them has been photographed in a generated world: unverified is
-   whether a one-in-one cut reads as a mountain's flank, whether ±10 and ±18 of break is enough to lose the plane,
-   and whether the gate's own rock meets the cut foot cleanly all along its two sides.
+4. **The peak has not been seen.** It is written from the owner's brief - mountains surrounding the footprint,
+   ends sunk, a peak over the roof, the front clear - and from the save's measurements, but no world has been
+   generated with it: unverified is whether 330 reads as a mountain over the gate or a berm, whether the fall is
+   slow enough to meet the drawing without a seam, and whether the build's ends sink as far as they want.
 5. **The Mod Test chunks are the first world's.** They carry the pass as it was before the shoulder, so
    the ground around the gate has to be made again — `tools/chunk_trim.py --radius` with the world
    closed and `--apply`, or a fresh world.

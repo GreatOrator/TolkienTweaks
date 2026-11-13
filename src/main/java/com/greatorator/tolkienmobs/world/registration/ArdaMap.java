@@ -637,25 +637,35 @@ public final class ArdaMap {
     /** ... and how long they take to open from there, so the courtyard is a court and not a funnel. */
     private static final int PASS_GATE_EASE = 420;
     /**
-     * How fast the ground the pass is cut through climbs away from it, in blocks per sixteen across: one in one.
+     * The mountain that surrounds the gate, drawn to its footprint: how high its peak stands, how far out the
+     * rise takes to reach it, how long the crest is held, and how fast it falls back into the country.
      * <p>
-     * The pass edges onto the mountain, and the mountain is the drawing's. Ground is never stood up beside the
-     * gate: a lip held at the height of its wings becomes a face however it is dressed, and a face with the
-     * country's own basin behind it is the curved wall that was photographed. What the pass does instead is
-     * shave - the drawn ground, ragged as it is, wherever it stands beneath the slope, and the slope where it does
-     * not. The slope starts at the wings' height at the gate's own edge and runs back at about forty-five degrees,
-     * so the rock beside the gate falls back into the mountain and the gate itself clears the rest.
+     * The gate is a gatehouse set into a mountain, so the ground has to be a mountain around it: at the gate's own
+     * edge it is the height of the build's wings, rises over {@link #PASS_RISE} blocks to a peak
+     * {@link #PASS_PEAK} - sixty-three above the roof - holds that crest for {@link #PASS_CREST_KEEP}, and then
+     * falls away at {@link #PASS_FALL} in sixteen until the country's own ground is higher than the slope and takes
+     * over. So the ends of the build sink into the rock, the mountain stands over the roof rather than beside it,
+     * and its body runs out into the massif on both sides instead of ending in a face.
      */
-    private static final int PASS_CUT_RISE = 16;
+    private static final int PASS_PEAK = 330;
     /**
-     * How far a cut face is broken up, in blocks, and at what scales: the crag the ranges are broken by, and the
-     * crest that wanders along the pass.
+     * How far the ground at the build's own edge stands above the top of its wings, in blocks: eighteen.
      * <p>
-     * A cut surface is a plane, and a plane beside a build reads as a wall however good its gradient is. The same
-     * folded crests that break a range break this one, and they are held off the build's own edge so the gate
-     * still meets the ground exactly.
+     * At the wings' height the gate merely meets the ground, and a build that meets ground reads as standing on it.
+     * Eighteen blocks over buries the lowest courses of each end, so what the rock meets is the gate's flank and the
+     * ends are sunk into what surrounds them.
      */
-    private static final int PASS_CRAG = 10;
+    private static final int PASS_SINK = 18;
+    private static final int PASS_RISE = 28;
+    private static final int PASS_CREST_KEEP = 16;
+    private static final int PASS_FALL = 6;
+    /**
+     * How far the mountain's own surface is broken up, in blocks, and at what scales: the crag a range is broken
+     * by, and the crests that wander along the pass.
+     * <p>
+     * Held off the build's own edge, so the gate still meets the ground exactly where its ends sink in.
+     */
+    private static final int PASS_CRAG = 14;
     private static final int PASS_CRAG_SCALE = 28;
     private static final int PASS_SPUR = 18;
     private static final int PASS_SPUR_SCALE = 96;
@@ -2194,10 +2204,12 @@ public final class ArdaMap {
      * <p>
      * The notch is cut to the build rather than to a country: from the gate's back north the drawn plateau climbs
      * out of the floor in fourteen blocks, so the rock is there at the gate's own height a pace behind it; either
-     * side of the gate the mountain is the drawing's own, shaved where it stands above a slope that starts at the
-     * height of the wings and runs back at one in one: nothing is stood up beside the gate, so there is no face to
-     * be left standing once the gate has cleared its box, and the cut carries the map's own folded noise and the
-     * crests that wander along the pass, because a cut surface is otherwise a plane. South of the gate the pass opens - the floor widens from
+     * side of the gate the ground is drawn to the footprint instead: at the build's own edge it stands at the height
+     * of its wings, climbs over twenty-eight blocks to a peak sixty-three above its roof, holds that crest for
+     * sixteen and then falls back into the country until the drawing is higher than the slope. The ends of the gate
+     * are sunk into rock, the mountain stands over the roof, and its body runs out into the massif on both sides;
+     * the surface carries the map's own folded noise and the crests that wander along the pass, because a drawn
+     * slope is otherwise a plane. South of the gate the pass opens - the floor widens from
      * the gate's hundred and sixty to seven hundred and sixty over four hundred blocks, and the walls ease from a
      * cliff into a hillside - so what is behind the gate is a courtyard the hold can stand in, and what is beside
      * it is the mountain it was cut out of.
@@ -2237,21 +2249,24 @@ public final class ArdaMap {
             // Inside the pass: the floor, and only the mouth eases it back into the open ground.
             return blend(floor, height, (along - length) / PASS_MOUTH_RUN);
         }
-        // The wall beside the gate is a cut and never a stand: the ground there is the drawing's own, as high as
-        // the massif puts it, shaved where it stands above the slope the pass's edge makes. That slope starts at
-        // the height of the gate's wings - the pass's lip, which comes down to the floor as the pass opens into
-        // the courtyard - and runs back at one in one, so the rock beside the gate falls back into the mountain
-        // and nothing is left standing once the gate has cleared its own box.
-        double slope = lip + across * (PASS_CUT_RISE / 16.0D);
-        double shaped = Math.min(height, slope);
-        // What the cut took is what the noise breaks: full at the foot of the slope, gone at the build's own edge
-        // so the gate still meets the ground exactly, and gone again where the mountain was never cut at all.
-        double bite = smooth(Mth.clamp((across - 1.0D) / 16.0D, 0.0D, 1.0D))
-                * smooth(Mth.clamp((height - shaped) / 24.0D, 0.0D, 1.0D));
-        double crest = 1.0D - Math.abs(fractal(blockX, blockZ, PASS_CRAG_SCALE, 37));
-        crest += 0.5D * (1.0D - Math.abs(fractal(blockX, blockZ, 11, 41)));
+        // The mountain round the gate is drawn to the gate's footprint. At its own edge the ground stands eighteen
+        // blocks above the top of the build's wings, so the ends sink in; over PASS_RISE blocks it climbs to a peak
+        // sixty-three above the roof; the crest is held for PASS_CREST_KEEP; and from there the slope falls away
+        // until the country's own ground is higher than it and takes over. Where the pass has opened into the
+        // courtyard the sink and the peak have both come down to the lip with the rest, so the same curve is a
+        // valley wall over a court.
+        double up = smooth(Mth.clamp(across / PASS_RISE, 0.0D, 1.0D));
+        double foot = lip + PASS_SINK * (1.0D - opened);
+        double crestline = foot + (PASS_PEAK - PASS_EDGE_TOP - PASS_SINK) * (1.0D - opened) * up;
+        double past = Math.max(0.0D, across - PASS_RISE - PASS_CREST_KEEP);
+        double mountain = crestline - past * (PASS_FALL / 16.0D);
+        double shaped = Math.max(mountain, height);
+        // And broken by the map's own folded noise the way a range is, fading out at the build's own edge.
+        double bite = smooth(Mth.clamp((across - 1.0D) / 12.0D, 0.0D, 1.0D));
+        double crag = 1.0D - Math.abs(fractal(blockX, blockZ, PASS_CRAG_SCALE, 37));
+        crag += 0.5D * (1.0D - Math.abs(fractal(blockX, blockZ, 11, 41)));
         double spur = (1.0D - Math.abs(fractal(blockX, blockZ, PASS_SPUR_SCALE, 19))) - 0.5D;
-        shaped += ((crest / 1.5D - 0.5D) * 2.0D * PASS_CRAG + spur * 2.0D * PASS_SPUR) * bite;
+        shaped += ((crag / 1.5D - 0.5D) * 2.0D * PASS_CRAG + spur * 2.0D * PASS_SPUR) * bite;
         return (int) Math.round(shaped);
     }
 
