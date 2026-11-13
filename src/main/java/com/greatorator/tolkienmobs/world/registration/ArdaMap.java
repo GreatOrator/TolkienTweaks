@@ -582,45 +582,70 @@ public final class ArdaMap {
     private static final int CRAG = 42;
 
     /**
-     * The Gundabad pass: the massif opened into a valley, and the rock face its gate is cut into.
+     * The Gundabad gate's site, and the notch the pass ends in for it.
      * <p>
-     * The massif's own drawing is a plateau some three hundred blocks up with thirty blocks of movement on
-     * it and no face anywhere a gate eighty-one blocks tall could be set into - which is what the trial in
-     * the map found. The country is drawn as a pass instead: a floor at a hundred and ninety-six under the
-     * gate, falling to a hundred and seventy-six where it opens into the Hithaeglir's own low ground, with
-     * the plateau standing over the head of the valley as the rock the gate is set into. None of it is
-     * invented: the flank south of the massif already falls from three hundred to a hundred and seventy-five
-     * between z -7000 and -6350, so the valley is that fall carried north and held level, and the walk up
-     * to the fortress is the climb the drawing already asked for.
+     * The gate is the one build in this pack whose shape the world is drawn to know: it is a gatehouse cut out of
+     * a mountainside - a hundred and sixty wide, forty-eight deep and eighty-one tall, its facade on the south
+     * face and its back in the rock - so the ground it stands on can be measured to it instead of the other way
+     * round. The box below is that measurement, taken off the gate laid in the map, and it is the one place the
+     * gate can go: the pass is cut to the box, so a gate laid anywhere else has a valley shaped for a different
+     * gate. {@link #gateFront()} is the point that names it.
+     * <p>
+     * The massif's own drawing is a plateau three hundred blocks up with thirty blocks of movement on it and no
+     * face anywhere a gate eighty-one blocks tall could be set into, which is what the first trial in the map
+     * found. The country is drawn as a pass instead: a floor at a hundred and eighty-seven under the gate,
+     * widening south from the gate's own width into a courtyard, and falling to a hundred and seventy-six where
+     * it opens into the Hithaeglir's own low ground, so the walk up to the fortress is a climb the drawing
+     * already asked for rather than a shelf. The massif stands over it on three sides: the rock behind the gate
+     * is the drawn plateau climbing out of the floor, and the walls either side come down to the gate's own edges
+     * at the height of its wings, so the mountain the gate carries is the mountain the world grows.
      */
-    /** The middle of the valley, which is the middle of the country: the gate is centred on it. */
-    private static final int PASS_X = 5631;
-    /** The rock face at the head of the valley, north of which the massif stands whole. */
-    private static final int PASS_HEAD_Z = -7300;
+    /** The gate's box, in blocks: west and east across the facade, north at its back, south at its face. */
+    public static final int GATE_WEST = 5496;
+    public static final int GATE_EAST = 5655;
+    public static final int GATE_NORTH = -6877;
+    public static final int GATE_SOUTH = -6830;
+    /** The gate's floor: the course its own file starts at, and the pass's floor where it stands. */
+    public static final int GATE_FLOOR = 187;
+
+    /** The middle of the gate's facade, which is where a caller places it by. */
+    public static BlockPos gateFront() {
+        return new BlockPos((GATE_WEST + GATE_EAST) / 2, GATE_FLOOR, GATE_SOUTH);
+    }
+
+    /** The middle of the pass, a block east of the gate's own middle so the gate's box sits inside it. */
+    private static final int PASS_X = 5576;
+    /** The back of the gate: the pass ends here, and the plateau stands over it. */
+    private static final int PASS_HEAD_Z = GATE_NORTH;
     /** Where the valley's floor meets the ground the drawing already put low. */
     private static final int PASS_MOUTH_Z = -6350;
-    /** Half the valley's width at the face: four hundred and forty across, for a gate a hundred and sixty. */
-    private static final int PASS_HEAD_HALF = 220;
-    /** The same at the mouth, where it opens into the low ground. */
+    /** Half the pass's width at the gate: eighty, which is half the gate, so the walls stand at its edges. */
+    private static final int PASS_HEAD_HALF = 80;
+    /** The same at the mouth, where it has opened into the courtyard and the low ground beyond it. */
     private static final int PASS_MOUTH_HALF = 380;
-    /** The floor under the gate. */
-    private static final int PASS_HEAD_FLOOR = 196;
-    /** The floor at the mouth, so the valley falls away from the fortress rather than into it. */
+    /** The floor at the gate, and at the mouth, so the way up is walked rather than climbed. */
+    private static final int PASS_HEAD_FLOOR = GATE_FLOOR;
     private static final int PASS_MOUTH_FLOOR = 176;
-    /** How far the side walls climb back out of the floor, in blocks. */
+    /**
+     * The height the ground stands at the walls' own foot beside the gate: the top of the gate's wings, eighty
+     * above its floor. A wall that starts at the floor and climbs leaves the gate standing in a trench of its own
+     * making - the rock the build carries on its back would show as a face. This is the height it continues from.
+     */
+    private static final int PASS_EDGE_TOP = 267;
+    /** How far south of the gate the walls keep that height before they open into the courtyard. */
+    private static final int PASS_GATE_KEEP = 80;
+    /** ... and how long they take to open from there, so the courtyard is a court and not a funnel. */
+    private static final int PASS_GATE_EASE = 420;
+    /** How far the walls climb back out to the drawn rock at the gate, in blocks: a cliff at its edges. */
+    private static final int PASS_GATE_RUN = 16;
+    /** The same once the pass has opened into the courtyard, where a hillside is a hillside. */
     private static final int PASS_SIDE_RUN = 150;
+    /** How far north of the gate's back the plateau climbs out of the floor: the gate's own face, behind it. */
+    private static final int PASS_FACE_RUN = 14;
     /** How far the mouth blends back into the open ground it opens onto. */
     private static final int PASS_MOUTH_RUN = 250;
-    /**
-     * The face itself: how far north of the head the plateau stands up.
-     * <p>
-     * Twenty blocks, which is a cliff rather than a slope, and deliberately so. The gate's own cut carries
-     * forty-eight blocks of its mountain, so the world behind its mouth has to be standing at the gate's own
-     * height within a few paces of the face, or the build's own rock pokes out of the hill it is set into.
-     */
-    private static final int PASS_FACE_RUN = 20;
     /** How much the floor rolls either way, in blocks, so a valley is ground rather than a table. */
-    private static final int PASS_ROLL = 3;
+    private static final int PASS_ROLL = 2;
     /** The scale of the floor's own roll, in blocks. */
     private static final int PASS_ROLL_SCALE = 128;
 
@@ -2143,23 +2168,20 @@ public final class ArdaMap {
     }
 
     /**
-     * The Gundabad pass: the massif brought down to a floor the hold fits on, with its own plateau over the
-     * head of the valley as the face the gate is cut into.
+     * The Gundabad pass: the massif brought down to a floor the gate fits in, with its own plateau over the back
+     * of it and its walls at the gate's own edges.
      * <p>
-     * A valley is one floor and a way into it. The floor runs from the face north of the hold to a mouth out
-     * in the low ground, narrowing as it comes to the fortress - four hundred and forty across at the face
-     * for a gate a hundred and sixty wide, seven hundred and sixty at the mouth - and falling away from it,
-     * from a hundred and ninety-six under the gate to a hundred and seventy-six at the mouth, so the way in
-     * is a slope walked up rather than a shelf. Inside it the ground is the floor and nothing else; past its
-     * edges the drawn ground comes back over a hundred and fifty blocks at the sides and two hundred and
-     * fifty past the mouth, which is what leaves the massif's own crest standing over the valley on three
-     * sides instead of a rim of cut rock.
+     * The notch is cut to the build rather than to a country: from the gate's back north the drawn plateau climbs
+     * out of the floor in fourteen blocks, so the rock is there at the gate's own height a pace behind it; either
+     * side of the gate the walls stand at its edges, at the height of its wings, and climb to the drawn rock over
+     * sixteen blocks, which is a face rather than a bank. South of the gate the pass opens - the floor widens from
+     * the gate's hundred and sixty to seven hundred and sixty over four hundred blocks, and the walls ease from a
+     * cliff into a hillside - so what is behind the gate is a courtyard the hold can stand in, and what is beside
+     * it is the mountain it was cut out of.
      * <p>
-     * The face is the one edge that is not eased. Behind it the drawing already stands at three hundred and
-     * ten, and the gate's cut carries its mountain forty-eight blocks in, so the rock has twenty blocks to
-     * climb the hundred and ten it stands above the floor. That is a cliff, and a cliff is the point: a hold
-     * whose gate is set into a hill needs the hill to be there at the gate's own height, not a bank a pace
-     * beyond it.
+     * The floor falls as it goes south, from the gate's own hundred and eighty-seven to a hundred and seventy-six
+     * at the mouth, where the drawn ground is already that low: the pass drains away from the fortress and joins
+     * the Hithaeglir without a seam.
      */
     private static int gundabadPass(int blockX, int blockZ, int height) {
         int east = PASS_X + PASS_MOUTH_HALF + PASS_SIDE_RUN;
@@ -2171,23 +2193,34 @@ public final class ArdaMap {
         double along = blockZ - PASS_HEAD_Z;
         double length = PASS_MOUTH_Z - PASS_HEAD_Z;
         double span = Mth.clamp(along / length, 0.0D, 1.0D);
-        double half = PASS_HEAD_HALF + (PASS_MOUTH_HALF - PASS_HEAD_HALF) * span;
+
+        // How open the pass is at this depth: closed at the gate, a courtyard beyond it.
+        double opened = smooth(Mth.clamp((along - PASS_GATE_KEEP) / (double) PASS_GATE_EASE, 0.0D, 1.0D));
+        double half = PASS_HEAD_HALF + (PASS_MOUTH_HALF - PASS_HEAD_HALF) * opened;
+        // And how steep its walls are: the gate's own edges first, a hillside once it has opened.
+        double run = PASS_GATE_RUN + (PASS_SIDE_RUN - PASS_GATE_RUN) * opened;
+        // The walls' foot beside the gate is the height of its wings, coming down to the floor as the pass opens.
+        double lip = PASS_EDGE_TOP + (PASS_HEAD_FLOOR - PASS_EDGE_TOP) * opened;
         double floor = PASS_HEAD_FLOOR + (PASS_MOUTH_FLOOR - PASS_HEAD_FLOOR) * span
                 + (fractal(blockX, blockZ, PASS_ROLL_SCALE, 23) - 0.5D) * 2.0D * PASS_ROLL;
 
+        double across = Math.abs(blockX - PASS_X) - half;
         double share;
         if (along < 0.0D) {
-            // North of the face: the plateau stands up out of the floor in twenty blocks.
+            // North of the gate's back: the plateau stands up out of the floor.
             share = -along / PASS_FACE_RUN;
+        } else if (across <= 0.0D) {
+            // Inside the pass: only the mouth eases the floor back into the open ground.
+            share = (along - length) / PASS_MOUTH_RUN;
         } else {
-            share = Math.max((Math.abs(blockX - PASS_X) - half) / PASS_SIDE_RUN,
-                    (along - length) / PASS_MOUTH_RUN);
+            share = Math.max(across / run, (along - length) / PASS_MOUTH_RUN);
         }
         if (share >= 1.0D) {
             return height;
         }
         double weight = 1.0D - smooth(Mth.clamp(share, 0.0D, 1.0D));
-        return (int) Math.round(floor * weight + height * (1.0D - weight));
+        double inner = along < 0.0D ? floor : (across <= 0.0D ? floor : lip);
+        return (int) Math.round(inner * weight + height * (1.0D - weight));
     }
 
     /** The drawn ground at a column, before it is turned into a {@link Sample}. */

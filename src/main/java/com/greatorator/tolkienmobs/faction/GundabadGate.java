@@ -7,6 +7,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -105,6 +107,75 @@ public final class GundabadGate {
             laid++;
         }
         return laid;
+    }
+
+    /** How far out from the gate's own edge the seam is dressed, in blocks, and how fast that skirt falls away. */
+    private static final int DRAPE_REACH = 10;
+    private static final int DRAPE_FALL = 2;
+
+    /**
+     * Dresses the seam where the gate meets the ground it was set into.
+     * <p>
+     * The gate is rock - forty-eight blocks of the mountain it was cut out of - so the ground beside it has to
+     * arrive at the gate's own edge height, or the build stands in a trench of its own making. The pass is drawn to
+     * that height already, but the pass is measured off the map and the gate is a build: a block out here and a
+     * course there leave the seam open. This walks the ring around the footprint, reads the top of the gate at the
+     * nearest column of it, and fills the ground up to that with the stone it already has, capped with the surface
+     * that was there, so the rock the build carries runs on into the rock the world made.
+     * <p>
+     * It only ever adds. The mountain over the gate is the mountain, and a drape that cut would lower the very
+     * walls the pass was shaped for.
+     *
+     * @return how many blocks of ground were added
+     */
+    public static int drape(ServerLevel level, BlockPos front, Rotation rotation) {
+        BlockPos base = base(front, rotation);
+        boolean turned = rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90;
+        int wide = turned ? DEEP : WIDE;
+        int deep = turned ? WIDE : DEEP;
+        open(level, base.offset(-DRAPE_REACH, 0, -DRAPE_REACH), wide + DRAPE_REACH * 2, deep + DRAPE_REACH * 2);
+
+        // The top of the gate at every column of its own plan, read back off the world rather than guessed at.
+        int[] tops = new int[wide * deep];
+        for (int x = 0; x < wide; x++) {
+            for (int z = 0; z < deep; z++) {
+                int found = Integer.MIN_VALUE;
+                for (int y = TALL - 1; y >= 0; y--) {
+                    if (!level.getBlockState(base.offset(x, y, z)).isAir()) {
+                        found = y;
+                        break;
+                    }
+                }
+                tops[x * deep + z] = found;
+            }
+        }
+
+        int dressed = 0;
+        for (int x = -DRAPE_REACH; x < wide + DRAPE_REACH; x++) {
+            for (int z = -DRAPE_REACH; z < deep + DRAPE_REACH; z++) {
+                int outX = x < 0 ? -x : (x >= wide ? x - wide + 1 : 0);
+                int outZ = z < 0 ? -z : (z >= deep ? z - deep + 1 : 0);
+                int out = Math.max(outX, outZ);
+                if (out == 0) continue;
+                int edge = tops[Math.min(wide - 1, Math.max(0, x)) * deep + Math.min(deep - 1, Math.max(0, z))];
+                if (edge == Integer.MIN_VALUE) continue;
+                int want = base.getY() + edge - DRAPE_FALL * (out - 1);
+                BlockPos column = base.offset(x, 0, z);
+                if (!level.hasChunkAt(column)) continue;
+                int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()) - 1;
+                if (ground >= want) continue;
+                BlockState cap = level.getBlockState(column.atY(ground));
+                for (int y = ground + 1; y < want; y++) {
+                    level.setBlock(column.atY(y), Blocks.STONE.defaultBlockState(), 2);
+                    dressed++;
+                }
+                if (!cap.isAir() && !cap.canBeReplaced()) {
+                    level.setBlock(column.atY(want), cap, 2);
+                    dressed++;
+                }
+            }
+        }
+        return dressed;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -40,10 +41,11 @@ public final class GateCommands {
         dispatcher.register(Commands.literal("tmgate")
                 .requires(source -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source))
                 .then(Commands.literal("place").executes(GateCommands::place))
+                .then(Commands.literal("site").executes(GateCommands::site))
                 .then(Commands.literal("clear").executes(GateCommands::clear)));
     }
 
-    /** Lays the eight templates at the player's feet, facing the way they face. */
+    /** Lays the eight templates at the player's feet, facing the way they face, and dresses the seam. */
     private static int place(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerPlayer player = source.getPlayer();
@@ -51,15 +53,38 @@ public final class GateCommands {
             source.sendFailure(Component.literal("A gate is placed where somebody stands - be a player in a world first."));
             return 0;
         }
-        BlockPos front = player.blockPosition();
-        Rotation rotation = GundabadGate.rotationFor(player.getDirection());
+        return lay(source, level, player.blockPosition(), GundabadGate.rotationFor(player.getDirection()),
+                "facing " + player.getDirection().getName());
+    }
+
+    /**
+     * Lays the gate at the site the pass was drawn for.
+     * <p>
+     * The notch under Gundabad is cut to the gate's own box - its walls stand at the gate's edges, its floor is the
+     * gate's own floor, and the plateau climbs out of the ground fourteen blocks behind its back - so the gate that
+     * fits it is the gate at {@link ArdaMap#gateFront()}, facade south. Laid anywhere else the gate is standing in a
+     * valley shaped for a different gate, which is what {@code /tmgate place} is for while the ground is measured.
+     */
+    private static int site(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getLevel() instanceof ServerLevel level)) {
+            source.sendFailure(Component.literal("The gate's site is ground in Arda - ask this in a world."));
+            return 0;
+        }
+        return lay(source, level, ArdaMap.gateFront(), Rotation.CLOCKWISE_180, "facing south, at its own site");
+    }
+
+    /** The laying itself, and the seam dressed after it: the same act whether it is at a site or at a player. */
+    private static int lay(CommandSourceStack source, ServerLevel level, BlockPos front, Rotation rotation,
+                           String where) {
         int laid = GundabadGate.place(level, front, rotation);
         List<String> missing = GundabadGate.missing(level);
         if (missing.isEmpty()) {
+            int dressed = GundabadGate.drape(level, front, rotation);
             source.sendSuccess(() -> Component.literal("Laid " + laid + " pieces of the Gundabad gate at "
-                    + front.toShortString() + ", facing " + player.getDirection().getName() + ": "
-                    + GundabadGate.WIDE + " wide, " + GundabadGate.TALL + " tall, " + GundabadGate.DEEP
-                    + " deep, running into the ground ahead."), true);
+                    + front.toShortString() + ", " + where + ": " + GundabadGate.WIDE + " wide, "
+                    + GundabadGate.TALL + " tall, " + GundabadGate.DEEP + " deep, with " + dressed
+                    + " blocks of ground dressed into the seam."), true);
         } else {
             source.sendSuccess(() -> Component.literal("Laid " + laid + " of 8 pieces of the Gundabad gate at "
                     + front.toShortString() + "; not in the pack: " + String.join(", ", missing) + "."), true);
