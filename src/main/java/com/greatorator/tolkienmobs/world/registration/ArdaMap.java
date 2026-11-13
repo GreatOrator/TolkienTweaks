@@ -2201,8 +2201,11 @@ public final class ArdaMap {
         double run = PASS_GATE_RUN + (PASS_SIDE_RUN - PASS_GATE_RUN) * opened;
         // The walls' foot beside the gate is the height of its wings, coming down to the floor as the pass opens.
         double lip = PASS_EDGE_TOP + (PASS_HEAD_FLOOR - PASS_EDGE_TOP) * opened;
-        double floor = PASS_HEAD_FLOOR + (PASS_MOUTH_FLOOR - PASS_HEAD_FLOOR) * span
-                + (fractal(blockX, blockZ, PASS_ROLL_SCALE, 23) - 0.5D) * 2.0D * PASS_ROLL;
+        // The floor rolls only past the gate: under the build it is level to the block, because a floor course
+        // that a roll has lifted off the ground by one is a gap under the whole gate.
+        double roll = (fractal(blockX, blockZ, PASS_ROLL_SCALE, 23) - 0.5D) * 2.0D * PASS_ROLL
+                * Mth.clamp((along - PASS_GATE_KEEP) / 120.0D, 0.0D, 1.0D);
+        double floor = PASS_HEAD_FLOOR + (PASS_MOUTH_FLOOR - PASS_HEAD_FLOOR) * span + roll;
 
         double across = Math.abs(blockX - PASS_X) - half;
         double share;
