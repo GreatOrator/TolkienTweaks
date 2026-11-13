@@ -555,3 +555,11 @@ the first, wide pass, so they have to be made again before the gate can be measu
 How the ground should look now has a note of its own: `docs/terrain-style.md` sets vanilla's mountain
 geometry - ridged noise, splines, 3D density, surface rules by slope - against what `ArdaMap` does, and
 `AGENTS.md` points at it from the worldgen section.
+
+The first world with the pass has been read back out of `run/saves/Mod Test` and the walls reshaped from
+what it showed: the drawn rock is twenty-five blocks higher east of the gate than west, so the old wall -
+which climbed straight back into the drawing - was too small to read on the left and would have swallowed
+the build on the right, and its smooth blend laid down one-block treads for eighty blocks. Both walls now
+reach a shoulder of 302, thirty-five above the wings, in sixteen blocks, hand back to the drawing over
+another forty-eight, and carry the map's folded noise. Not generated yet; `docs/gundabad-gate.md` has the
+measured table.

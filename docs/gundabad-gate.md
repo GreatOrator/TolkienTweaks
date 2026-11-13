@@ -71,15 +71,40 @@ showed. The country is therefore drawn as a pass (`ArdaMap.gundabadPass`), cut t
 |---|---|
 | floor inside the gate's box | **187, level to the block** — the roll starts only past the gate, because a roll that lifts a floor course by one is a gap under the whole build |
 | wall foot at the gate's edges (x 5495 / 5656) | **267** — the height of the build's own wings |
-| walls eight blocks out | 277 west, 301 east |
+| the walls' shoulder, sixteen blocks out | **302 on both sides** — the build's own scale, within ±10 of folded noise |
+| the drawing takes the walls back | over another 48 blocks: the range's own 288 west and 313 east, 64 blocks out |
 | rock behind the back face | 200 at 3 north, 231 at 6, 277 at 10, **301 at 14** |
 | gap | 160 wide through the gate's depth and sixty blocks south, then opening |
 | courtyard | 540 wide by z −6650, 756 at the mouth |
 | floor along the pass | 187 at the gate, 175 at the mouth |
 
-Inside the pass the ground is the floor; past its edges the drawn rock comes back over sixteen blocks
-at the gate (a face) and a hundred and fifty once the pass has opened (a hillside). The mouth blends
-back into the Hithaeglir's low ground, which is already 174–176 there, so the join has no seam.
+Inside the pass the ground is the floor; past its edges the wall climbs to its shoulder in sixteen
+blocks and hands over to the drawing over another forty-eight, and once the pass has opened the same
+curve is a hillside over a hundred and fifty. The face is broken by the map's own folded noise — ±10 at
+twenty-eight and eleven blocks — held off the build's own edge so the gate still meets the ground
+exactly: an eased wall is a regular staircase of one-block treads, which is the flat, pasted look a
+mountain should never have. The mouth blends back into the Hithaeglir's low ground, which is already
+174–176 there, so the join has no seam.
+
+### What the first world actually made — 13 November 2026
+
+Read out of `run/saves/Mod Test` (the first world generated with the pass, region files written 04:29)
+column by column, not guessed from the code:
+
+| | |
+|---|---|
+| floor inside the box | 186–187 across all 160 × 48 columns |
+| wall foot, west | 267 at x 5495, then 272 at 5492, 288 at 5486 — a step, then the drawing |
+| wall foot, east | 267 at x 5656, then 274 at x 5660, 313 at x 5671 |
+| behind the back | 202 at five north of it, 272 by twelve, 301 further out |
+| courtyard | 186–188, with `rockpile` blocks scattered on it |
+
+So the pass was doing what it was told and the shape was still wrong in two ways, which is what the
+owner saw: the drawn rock is **25 blocks higher on the east than the west**, so a wall that climbed
+straight back into the drawing was too small a mountain to read on the left and one that would swallow
+the whole side of the build on the right; and the climb itself was a smooth blend, which lays down
+one-block treads of even width for eighty blocks along the wall — a pre-placed look. The shoulder and
+the noise above are the answer to both.
 
 ## Decisions taken
 
@@ -92,6 +117,11 @@ back into the Hithaeglir's low ground, which is already 174–176 there, so the 
 - **The ground is cut to the gate, not the gate seated on ground.** The gate brings forty-eight blocks
   of its own mountain, so the world behind its mouth has to be at the gate's height within a few paces
   of the face; a wall that started at the floor would leave the build in a trench of its own making.
+- **The side walls are the build's scale, not the country's.** The drawn rock is 288 ten blocks west of
+  the gate and 313 ten blocks east; climbing straight back into it made one side too small and the other
+  too big. Both sides now reach a shoulder of 302 at sixteen blocks — thirty-five above the wings —
+  before the drawing takes over over another forty-eight, and the face carries the same folded noise a
+  range gets (`PASS_WALL_TOP`, `PASS_WALL_EASE`, `PASS_CRAG`).
 - **The drape only ever adds.** `GundabadGate.drape` walks the ring around the footprint, reads the top
   of the gate at the nearest column and fills the ground up to it with the stone it already has, capped
   with the surface that was there. A drape that cut would lower the very walls the pass was shaped for.
@@ -110,13 +140,14 @@ back into the Hithaeglir's low ground, which is already 174–176 there, so the 
 3. **The sky above the wings is carried as air** — the capture lists every cell, so the box is whole.
    `tools/gate_capture.py --trim-sky` drops air above the highest block of each column when the voids
    want adjusting. Not run.
-4. **Nothing has been seen in game with the new pass.** Unverified: the wall foot really arriving at
-   267 at the gate's edges (that comes off the drawn rock, not off the build), whether a sixteen-block
-   climb reads as a rock face or a quarry cut, the drape's fill, the courtyard's width, and whether the
-   keep fits in it.
-5. **The Mod Test chunks at the gate are old.** They were made with the first, wide pass; they need
-   `tools/chunk_trim.py --radius` around the gate (world closed, `--apply`) or a fresh world before
-   anything can be measured.
+4. **The shoulder and the noise have not been seen.** The first world was measured out of the save and
+   the walls reshaped from what it showed, but the new ground has not been generated: unverified whether
+   the shoulder reads as a mountain rather than a ledge, whether ±10 of noise is enough to lose the
+   treads, and whether the drape's ring still meets the wall foot. The pass's own numbers (267 at the
+   foot, 302 at the shoulder) are now guaranteed by the code rather than by the drawing.
+5. **The Mod Test chunks are the first world's.** They carry the pass as it was before the shoulder, so
+   the ground around the gate has to be made again — `tools/chunk_trim.py --radius` with the world
+   closed and `--apply`, or a fresh world.
 6. **`/tmgate place` still lays at the player's feet** — a dev tool for trying the gate elsewhere.
    `/tmgate site` is the real one.
 

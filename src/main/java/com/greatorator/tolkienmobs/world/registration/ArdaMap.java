@@ -636,7 +636,29 @@ public final class ArdaMap {
     private static final int PASS_GATE_KEEP = 80;
     /** ... and how long they take to open from there, so the courtyard is a court and not a funnel. */
     private static final int PASS_GATE_EASE = 420;
-    /** How far the walls climb back out to the drawn rock at the gate, in blocks: a cliff at its edges. */
+    /**
+     * The height the walls' own shoulder stands at, thirty-five above the wing top, and how far past it the
+     * drawing's mountain takes them back.
+     * <p>
+     * The drawn ground is not the same on the two sides of the gate - two hundred and eighty-eight at ten blocks
+     * west of it and three hundred and thirteen at the same distance east - so a wall that simply climbed back
+     * into the drawing gave a mountain too small to read on one side, and one that swallowed the whole side of the
+     * build on the other. The near wall is the build's own scale instead, the same on both sides, and the country
+     * takes back over over {@link #PASS_WALL_EASE} paces once that ledge is behind the walker.
+     */
+    private static final int PASS_WALL_TOP = 302;
+    private static final int PASS_WALL_EASE = 48;
+    /**
+     * How far the shaped walls are broken up by the map's own folded noise, in blocks, and at what scale.
+     * <p>
+     * A wall that is only its own curve is a cut, however well its gradient was chosen: eased over sixteen
+     * blocks a blend is a regular staircase of one-block treads, which is the flat look a pre-placed mountain
+     * has. The same folded crests that break a range break this face, at two scales, held off the build's own
+     * edge so the gate still meets the ground exactly.
+     */
+    private static final int PASS_CRAG = 10;
+    private static final int PASS_CRAG_SCALE = 28;
+    /** How far the walls take to reach that shoulder at the gate, in blocks: a face at its edges, not a bank. */
     private static final int PASS_GATE_RUN = 16;
     /** The same once the pass has opened into the courtyard, where a hillside is a hillside. */
     private static final int PASS_SIDE_RUN = 150;
@@ -2173,8 +2195,10 @@ public final class ArdaMap {
      * <p>
      * The notch is cut to the build rather than to a country: from the gate's back north the drawn plateau climbs
      * out of the floor in fourteen blocks, so the rock is there at the gate's own height a pace behind it; either
-     * side of the gate the walls stand at its edges, at the height of its wings, and climb to the drawn rock over
-     * sixteen blocks, which is a face rather than a bank. South of the gate the pass opens - the floor widens from
+     * side of the gate the walls stand at its edges, at the height of its wings, reach their shoulder over sixteen
+     * blocks and let the drawn rock take them back over another forty-eight, so the near wall is the same on both
+     * sides of the gate whatever the drawing does there - and it is broken by the map's own folded noise, because
+     * an eased wall is a staircase of one-block treads and reads as a cut. South of the gate the pass opens - the floor widens from
      * the gate's hundred and sixty to seven hundred and sixty over four hundred blocks, and the walls ease from a
      * cliff into a hillside - so what is behind the gate is a courtyard the hold can stand in, and what is beside
      * it is the mountain it was cut out of.
@@ -2208,21 +2232,38 @@ public final class ArdaMap {
         double floor = PASS_HEAD_FLOOR + (PASS_MOUTH_FLOOR - PASS_HEAD_FLOOR) * span + roll;
 
         double across = Math.abs(blockX - PASS_X) - half;
-        double share;
         if (along < 0.0D) {
             // North of the gate's back: the plateau stands up out of the floor.
-            share = -along / PASS_FACE_RUN;
-        } else if (across <= 0.0D) {
-            // Inside the pass: only the mouth eases the floor back into the open ground.
-            share = (along - length) / PASS_MOUTH_RUN;
-        } else {
-            share = Math.max(across / run, (along - length) / PASS_MOUTH_RUN);
+            return blend(floor, height, -along / PASS_FACE_RUN);
         }
+        if (across <= 0.0D) {
+            // Inside the pass: the floor, and only the mouth eases it back into the open ground.
+            return blend(floor, height, (along - length) / PASS_MOUTH_RUN);
+        }
+        // The wall beside the gate, drawn to the build rather than to the country: the wing top at the gate's own
+        // edge, the shoulder by PASS_GATE_RUN paces, and the drawing's mountain from there over PASS_WALL_EASE.
+        // Where the pass has opened into the courtyard the shoulder has come down to the floor with the lip, so
+        // the same curve is a hillside over a court rather than a face over a gate.
+        double shoulder = lip + (PASS_WALL_TOP - PASS_EDGE_TOP) * (1.0D - opened)
+                * smooth(Mth.clamp(across / run, 0.0D, 1.0D));
+        double back = smooth(Mth.clamp((across - run) / (double) PASS_WALL_EASE, 0.0D, 1.0D));
+        double mouth = smooth(Mth.clamp((along - length) / (double) PASS_MOUTH_RUN, 0.0D, 1.0D));
+        double shaped = (shoulder * (1.0D - back) + height * back) * (1.0D - mouth) + height * mouth;
+        // And broken by the map's folded noise the way a range is, fading out at the build's own edge and again
+        // where the drawing has taken the wall back.
+        double bite = smooth(Mth.clamp((across - 1.0D) / 10.0D, 0.0D, 1.0D)) * (1.0D - back);
+        double crest = 1.0D - Math.abs(fractal(blockX, blockZ, PASS_CRAG_SCALE, 37));
+        crest += 0.5D * (1.0D - Math.abs(fractal(blockX, blockZ, 11, 41)));
+        shaped += (crest / 1.5D - 0.5D) * 2.0D * PASS_CRAG * bite;
+        return (int) Math.round(shaped);
+    }
+
+    /** The ground between a floor the pass has shaped and the country's own, by how far the shaping has run. */
+    private static int blend(double inner, int height, double share) {
         if (share >= 1.0D) {
             return height;
         }
         double weight = 1.0D - smooth(Mth.clamp(share, 0.0D, 1.0D));
-        double inner = along < 0.0D ? floor : (across <= 0.0D ? floor : lip);
         return (int) Math.round(inner * weight + height * (1.0D - weight));
     }
 
