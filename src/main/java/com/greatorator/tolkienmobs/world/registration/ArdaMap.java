@@ -659,25 +659,21 @@ public final class ArdaMap {
      */
     private static final double PASS_STEP = 2.5D;
     /**
-     * How far the mountain's foot stands above the floor at the build's own ends, in blocks: thirty-two.
+     * How far the mountain's foot stands above the floor at the build's own ends, in blocks: sixty.
      * <p>
      * Left at the floor the ground met the gate at its lowest course and then climbed away, which left a slot between
-     * the build's rock and the mountain - the ends stood in the open with the rock leaning away from them. Thirty-two
-     * puts the foot nearer the middle of the build's height, so the mountain comes up onto the ends and the gate is
-     * set into it. It is a step at the footprint's edge, so it is kept small: this lifts the ground and then the climb
-     * carries on from there.
-     */
-    private static final int PASS_SINK = 32;
-    /**
-     * How far in toward the build the climb starts, in blocks: twenty-four.
+     * the build's rock and the mountain - the ends stood in the open with the rock leaning away from them. Sixty is
+     * exactly the height twenty-four blocks of the climb would have gained, so the foot starts where the slope would
+     * have been twenty-four blocks out - 247 within a block of the footprint, the roof's 267 by about eight, the drawn
+     * massif by about twenty - and the mountain arrives at the build without the slope being shortened to do it.
      * <p>
-     * The mountain is shaped where it is wanted and the climb is simply begun twenty-four blocks closer than the
-     * footprint, so the ground at the build's own edge already stands where the slope would have been twenty-four
-     * blocks out - about 279, twelve above the roof - and the ends of the gate are into the rock. The part of the climb
-     * that is inside the footprint is the build's ground and is laid over when the gate is placed; the part outside is
-     * the mountain, and it is the same mountain, only arriving sooner.
+     * It is a step at the footprint's edge and it is meant to be: the build's own rock stands there, so the step is
+     * inside the gate's flank and is laid over when it is placed. Shifting the whole climb in by twenty-four blocks
+     * instead was tried and is wrong twice over: it walks the pass floor out of its own early return, so the courtyard
+     * falls to the drawn ground - which at the pass is the map's 63-level valley - and it leaves the slope six blocks
+     * to reach a three-hundred-block plateau, which is a wall.
      */
-    private static final int PASS_SOONER = 24;
+    private static final int PASS_SINK = 60;
     /**
      * How far the mountain's own surface is broken up, in blocks, and at what scales: the crag a range is broken
      * by, and the crests that wander along the pass.
@@ -2271,31 +2267,30 @@ public final class ArdaMap {
                 * Mth.clamp((along - PASS_GATE_KEEP) / 120.0D, 0.0D, 1.0D);
         double floor = PASS_HEAD_FLOOR + (PASS_MOUTH_FLOOR - PASS_HEAD_FLOOR) * span + roll;
 
-        // The distance is measured from the footprint itself, not from one side of it at a time: beside the box it is
-        // the distance across, behind the plaza the distance north, south of the box the distance down the pass, and
-        // at the corners the two together. Measured one axis at a time the side and the back ran into each other and
-        // left a crease between them, which is a gap in a mountain; measured from the whole footprint there is one
-        // continuous flank round it.
         double across = Math.abs(blockX - PASS_X) - half;
-        double outX = Math.max(0.0D, across);
-        double outZ = Math.max(0.0D, Math.max(-along - PASS_PLAZA, along - length));
-        double out = Math.sqrt(outX * outX + outZ * outZ) + PASS_SOONER;
-        // The foot stands higher where the mountain meets the build's ends than it does behind the plaza, which has to
-        // stay level for the camp: the lift is shared out by which distance is doing the work, so the ends get all of
-        // it, the plaza none, and the corners a share of each.
-        double lift = PASS_SINK * (outX / (outX + outZ));
-        if (out <= 0.0D) {
-            if (along < 0.0D) {
-                // The plaza behind the gate: level to the block, because an army stands on it.
-                return (int) Math.round(floor);
-            }
-            // Inside the pass: the floor, and only the mouth eases it back into the open ground.
+        double behind = -along;
+
+        if (behind > 0.0D && behind <= PASS_PLAZA && across <= 0.0D) {
+            // The plaza behind the gate: level to the block, because an army stands on it.
+            return (int) Math.round(floor);
+        }
+        if (behind <= 0.0D && across <= 0.0D) {
+            // Inside the pass: the floor, and only the mouth eases it back into the open ground. The courtyard south
+            // of the box is this floor running on - it is the pass, not ground outside it - and its sides climb out
+            // of the floor like any hillside, which is what makes the courtyard read as the way in.
             return blend(floor, height, (along - length) / PASS_MOUTH_RUN);
         }
-        // The mountain climbs out of the floor at once, and at the same rate on every side it stands on: two and a
-        // half blocks up for every block out, a stair of two or three each step, so the ends of the gate are into the
-        // rock inside thirty blocks and the gate is nestled into the pass. The climb stops the moment it meets the
-        // country's own drawn surface; past that the mountain is the drawing's, sloping away as it always did.
+        // The mountain's distance is measured from the footprint, across from the pass's edge and north from the
+        // plaza's own edge, and the two together at the corners - so the side and the back are one flank and not two
+        // ramps meeting in a crease.
+        double outX = Math.max(0.0D, across);
+        double outZ = Math.max(0.0D, behind - PASS_PLAZA);
+        double out = Math.sqrt(outX * outX + outZ * outZ);
+        // The foot stands highest beside the build's own depth and comes back down to the floor along the courtyard,
+        // which is why the lift fades out south of the box: the gate's ends get the mountain up on them, and the way
+        // in stays open.
+        double alongWeight = 1.0D - smooth(Mth.clamp((along - length) / 32.0D, 0.0D, 1.0D));
+        double lift = PASS_SINK * (outX / (outX + outZ)) * alongWeight;
         double shaped = Math.min(height, floor + lift + out * PASS_STEP);
         // And broken by the map's own folded noise the way a range is, fading in off the build's own edge so the
         // gate still meets the ground exactly where it stands.
