@@ -245,20 +245,22 @@ public final class GundabadGate {
         int wide = WIDE;
         open(level, base.offset(-4, 0, -HALL_REACH), wide + 8, DEEP + HALL_REACH + 4);
 
-        // The room: every run of air at the rear face that rock holds on both sides, taken together.
-        int lowX = Integer.MAX_VALUE;
-        int highX = Integer.MIN_VALUE;
-        int lowY = Integer.MAX_VALUE;
-        int highY = Integer.MIN_VALUE;
-        for (int y = 1; y < TALL - 1; y++) {
+        // The room: the lowest run of air at the rear face that rock holds on both sides, then every row above it that
+        // still has air in that same span. Grown downward-free and upward in order, so the room is the chamber's own
+        // void and not the daylight between the towers above it.
+        int lowX = -1;
+        int highX = -1;
+        int lowY = -1;
+        int highY = -1;
+        for (int y = 1; y < TALL - 1 && lowY < 0; y++) {
             int run = -1;
             for (int x = 0; x < wide; x++) {
                 if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
-                    if (run >= 0 && x - run >= 8 && run > 0) {
-                        lowX = Math.min(lowX, run);
-                        highX = Math.max(highX, x - 1);
-                        lowY = Math.min(lowY, y);
-                        highY = Math.max(highY, y);
+                    if (run > 0 && x - run >= 8) {
+                        lowX = run;
+                        highX = x - 1;
+                        lowY = y;
+                        highY = y;
                     }
                     run = -1;
                 } else if (run < 0) {
@@ -266,7 +268,27 @@ public final class GundabadGate {
                 }
             }
         }
-        if (lowX > highX || lowY > highY) return 0;
+        if (lowY < 0) return 0;
+        for (int y = lowY + 1; y < TALL - 1; y++) {
+            int a = Integer.MAX_VALUE;
+            int b = Integer.MIN_VALUE;
+            int run = -1;
+            for (int x = 0; x < wide; x++) {
+                if (!level.getBlockState(base.offset(x, y, 0)).isAir()) {
+                    if (run > 0 && x - run >= 8 && x - 1 >= lowX - 2 && run <= highX + 2) {
+                        a = Math.min(a, run);
+                        b = Math.max(b, x - 1);
+                    }
+                    run = -1;
+                } else if (run < 0) {
+                    run = x;
+                }
+            }
+            if (a > b) break;
+            highY = y;
+            lowX = Math.min(lowX, a);
+            highX = Math.max(highX, b);
+        }
 
         int floorTop = base.getY() + lowY - 1;
         int roofY = base.getY() + highY + 1;
