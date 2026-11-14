@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 - **The Misty Mountains and Mount Gundabad are clear while the gate is photographed.** Both ranges close their fog at thirty-eight and forty-four blocks, which is what a mist is and also what hides a mountain from a screenshot taken outside it, so `BiomeMaker.CLEAR_RANGE_FOG` is on and both biomes read a near plane of 512 and a far plane of 1024 instead. It is temporary and it is one switch: set it false and the two mists come back exactly as they were, since their own numbers are still written at the two calls. Nothing generated depends on it - a fog is a look, not a world rule - and every other biome in the pack keeps the fog it had.
 - **A capture's air is written, and it is the other half of a flat cut face.** Placing a structure writes the air it carries, so a build cut out of a hillside erases ground wherever it was cut with sky: the gate's eight files hold 489,812 air cells against 132,268 blocks, and the top course's east end - `gundabad_gate_3_1_0.nbt`, sixteen by thirty-three by forty-eight - is 25,344 cells and every one of them air, so that file alone clears a box the size of itself out of the mountain. The two upper pieces beside it are 94 to 99 per cent air. So a flat face left after a build is placed has two possible causes - ground not shaped to the build, or the build clearing ground it does not need - and the second is fixed at the capture: `tools/gate_capture.py --trim-sky` drops the air above the highest block of each column, and a piece that holds nothing but air can be dropped whole. Both are written into `AGENTS.md` as the rule for any build, with the warning that a passage's own air is load-bearing and only the box's sky is fair game. Nothing about the gate changes yet: its air is below the height of its wings and the pass's floor already leaves it nothing to clear inside the box.
+- **The keep is underground, and the plan says where.** `docs/gundabad-keep.md` is rewritten for the owner's
+          intent - the chamber out of the gate is the keep's approach, not a way up to a building - and it lines the two up
+          to the block: the passage's floor's top is **189** and its interior starts at **190**; the `gundabad` template's
+          floor is three courses, so its pin's **y is 187** and its interior also starts at 190. The pin is **(5516, 187,
+          -7112)**, its own north-west corner, giving a box of **x 5516-5637 by z -7112-6930** with the roof course at 212;
+          the passage has to run **19 blocks further** (34 to 53) to reach the south wall, and the doorway - 29 wide and ten
+          tall - has to be cut, because **all four faces of the template are wall at floor level** and it has no door on any
+          of them. The box was sampled at y 190 to 211 across its whole footprint: **0 % air**, so it is solid rock the
+          template's own air will carve, with 18 blocks of rock over the south wall and 55 under the crown at 267. And two
+          passes in `Sites.build` would wreck it as written: the seating reads the surface height (267) and would lay the
+          keep on the crown, and `sweep` would cut the whole 122 by 183 footprint down to 187 - so the keep needs
+          `ON_THE_PIN` and `SELF_DRESSED`, the two lists the shelter camp already uses.
 - **The keep's site is worked out, and it is a shelf rather than a mountain.** `docs/gundabad-keep.md` records what
           the ground behind the gate actually is - the courtyard at 187, the cliff from z -6908 up to 267 at 2.4 blocks per
           block, and above it a level terrace **160 wide and 168 deep at exactly 267**, held there by the pass's own

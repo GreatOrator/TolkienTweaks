@@ -543,10 +543,11 @@ cut to the gate's own box so the walls stand at its edges and the plateau closes
 that dresses the seam after every laying: `docs/gundabad-gate.md` has the numbers, the decisions and the
 open list. The procedural cut the gate was judged against is gone.
 
-Three things wait on the owner there. **The keep is planned** - `docs/gundabad-keep.md` has the measured ground behind the gate and the placing:
-the shelf at 267 is the site, the shipped `gundabad` template (122 × 26 × 183) fits it, the orc pieces are
-the camp on the courtyard below, and the way up (78 blocks of cliff from the passage's 189) is the one
-build the plan leaves open.
+Three things wait on the owner there. **The keep is planned** - `docs/gundabad-keep.md` now has it where the owner wants it: **underground and
+dwarven**, reached through the chamber the gate carries north. Pin **(5516, 187, −7112)**, box x 5516…5637
+by z −7112…−6930, floor top 189 level with the passage's, and 19 more blocks of passage to reach its south
+wall. Two things must change before a page may raise it: `ON_THE_PIN`, or the seating pass lifts it 78 blocks
+onto the crown, and `SELF_DRESSED`, or the sweep quarries a 122 × 183 pit down to 187.
 
 **The gate is finished** (tag `gate-complete`): the eight pieces, the narrowed opening, the rock-only ends,
 the floor bedded to its own top, the seam dressed at six blocks, and the chamber's passage carried 34 blocks north
