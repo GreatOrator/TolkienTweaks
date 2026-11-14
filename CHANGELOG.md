@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The cave east of the gate is cut, on the second mark the owner laid.** (5693, 186, -6676) stands on the shelf
+          where the mountain begins to climb, and `GundabadCave` cuts a way in facing west: a mouth two wide and two up
+          with its floor on the shelf's own ground course, a six-block tunnel, and a room seven across by nine deep -
+          x 5699-5707, z -6679 to -6673 - five courses clear with the ceiling ragged a course or two higher column by
+          column, the same uneven cut the gate's rock and the goblin halls carry. The dais is three by three, one
+          course up, of `angainor_bricks`, on the middle of the floor at x 5702-5704, z -6677 to -6675. Nothing else
+          is placed: the mouth, the walls and the roof are the mountain's own stone. The cut is 412 blocks and all of
+          it is inside chunk (356, -418), with at least eight courses of rock over the highest part of the ceiling - the
+          tunnel is six blocks rather than three because the shelf's foot runs diagonally and a room starting three
+          blocks in broke out along its southern corner, where the surface is 186 and the ceiling 193. It goes up with
+          the hold on every start and is left alone once it stands; `/tmgate cave` re-cuts it on demand.
 - **The hold has a travel stone, on the mark set into the gate's own facade.** The owner put an ammolite at
           (5584, 190, -6830) - the gate's facade plane, three courses up its wall - and `Stones` now stands one there,
           named **Gundabad**, on every server start: on the mark rather than with the gate, so a world whose gate has

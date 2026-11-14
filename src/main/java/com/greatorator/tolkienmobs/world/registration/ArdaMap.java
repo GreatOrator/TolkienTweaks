@@ -667,6 +667,16 @@ public final class ArdaMap {
         return new BlockPos(5584, 190, -6830);
     }
 
+    /**
+     * The cave east of the gate: the second ammolite the owner laid, at (5693, 186, -6676), standing on the shelf where
+     * the mountain begins to climb. It is the mouth's own floor course - the ground the marker stands on - and
+     * {@link com.greatorator.tolkienmobs.faction.GundabadCave} cuts the way in facing west and the room back east into
+     * the rock.
+     */
+    public static BlockPos gundabadCave() {
+        return new BlockPos(5693, 186, -6676);
+    }
+
     /** The south wall's own course, which is the last course of the passage out of the gate. */
     public static int keepWall() {
         return KEEP_Z + KEEP_DEEP - 1;

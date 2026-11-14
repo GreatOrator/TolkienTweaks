@@ -45,6 +45,7 @@ public final class GateCommands {
                 .then(Commands.literal("site").executes(GateCommands::site))
                 .then(Commands.literal("here").executes(GateCommands::here))
                 .then(Commands.literal("keep").executes(GateCommands::keep))
+                .then(Commands.literal("cave").executes(GateCommands::cave))
                 .then(Commands.literal("undress").executes(GateCommands::undressBack))
                 .then(Commands.literal("clear")
                         .executes(GateCommands::clear)
@@ -140,6 +141,24 @@ public final class GateCommands {
                 + " deep, unturned, " + cleared + " blocks taken out of its doorway's mouth. Its floor is 189 at"
                 + " x 5577, z -6918 - stand at 5577 190 -6915 to look through it."), true);
         return laid;
+    }
+
+    /**
+     * Cuts the cave east of the gate again, whether it stood or not - the tool for a hollow that was cut before the
+     * ceiling's own numbers were settled, and for trying the cut at the mark rather than waiting on a restart.
+     */
+    private static int cave(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getLevel() instanceof ServerLevel level)) {
+            source.sendFailure(Component.literal("The cave's mark is ground in Arda - ask this in a world."));
+            return 0;
+        }
+        BlockPos plan = ArdaMap.gundabadCave();
+        int cleared = GundabadCave.carve(level);
+        source.sendSuccess(() -> Component.literal("Cut the cave at " + plan.toShortString() + ": 2 by 2 mouth,"
+                + " a 7 by 9 room five courses clear with a ragged ceiling, and a 3 by 3 dais on its middle - "
+                + cleared + " blocks taken out."), true);
+        return cleared;
     }
 
     /** Takes out the skirt an old drape laid across the chamber's opening, so the hall can lead out of it. */

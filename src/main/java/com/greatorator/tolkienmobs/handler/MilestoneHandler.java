@@ -20,6 +20,7 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import com.greatorator.tolkienmobs.faction.GundabadGate;
+import com.greatorator.tolkienmobs.faction.GundabadCave;
 import com.greatorator.tolkienmobs.faction.GundabadKeep;
 import com.greatorator.tolkienmobs.faction.OrcPieces;
 import com.greatorator.tolkienmobs.faction.Stones;
@@ -77,6 +78,9 @@ public class MilestoneHandler extends SavedData {
         // doorway is then written whole over the clearing - laid the other way round, the hall opens the wall across
         // the chamber's width and the hold has no door. A keep already standing at its plan is left exactly as it is.
         GundabadKeep.autospawn(event.getServer());
+        // The cave east of the gate, cut out of the shelf on the second mark the owner laid. It is rock rather than a
+        // template, so it is cut rather than laid - and like the hold it is left alone once it stands.
+        GundabadCave.autospawn(event.getServer());
         // The orc pieces standing at marks somebody walked out - the two ranks of towers and the huts on the plaza - go up
         // in the same pass, after the gate, because the towers stand on its own footprint. A piece that is whole is left
         // exactly as it is, so a world that has them is untouched.

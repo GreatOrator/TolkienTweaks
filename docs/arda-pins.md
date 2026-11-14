@@ -316,3 +316,29 @@ Dourhands' captain and the hunt target *below* the stair, an enemy rather than a
 stands, named **Gundabad**: `MilestoneHandler` lays it on every server start, which is why a world whose gate is long
 built still gets it, and `Stones` replaces the marker rather than leaving it beside the stone. It is the gate's stone
 rather than the keep's because the facade is what a player walks up to; the hold itself is a doorway in a chamber.
+
+## The cave east of the gate
+
+The second mark is a cave rather than a build: **(5693, 186, -6676)**, on the shelf where the mountain begins to climb.
+`GundabadCave` cuts it, and nothing is placed but the dais - the mouth, the walls and the ceiling are the mountain's own
+rock.
+
+| | |
+|---|---|
+| mouth | **2 wide by 2 up**, facing west, its floor the shelf's own ground course **186** |
+| tunnel | **six blocks** through the slope's lip, x 5693-5698 |
+| room | **7 across by 9 deep**, x 5699-5707, z -6679 to -6673, air from **187** |
+| ceiling | **5 courses clear** at its lowest, ragged a course or two higher column by column |
+| dais | **3 by 3**, one course up, `angainor_bricks`, x 5702-5704, z -6677 to -6675 |
+| the cut | **412 blocks**, all inside chunk (356, -418) |
+| buried by | at least **8 courses** of rock over the highest part of the ceiling |
+
+The tunnel is six blocks rather than three for a measured reason: the shelf's foot runs diagonally - the rock begins at
+x 5693 on the mark's own line and at x 5697 five blocks south - so a room starting three blocks in broke out along its
+southern corner, where the surface is 186 and the ceiling is 193. Six blocks in, the shallowest column the room covers
+has 199 of rock over it.
+
+It goes up with the hold, on every start, and is left alone once it stands - the test is the room's own first cell,
+since the mouth's cell answers air either way, the marker having stood on the shelf with the sky over it. `/tmgate cave`
+re-cuts it on demand and reports the count, and the marker itself is taken up into stone once the cave is cut, the way
+`Stones` takes up the gate's.
