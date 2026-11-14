@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The hold has a travel stone, on the mark set into the gate's own facade.** The owner put an ammolite at
+          (5584, 190, -6830) - the gate's facade plane, three courses up its wall - and `Stones` now stands one there,
+          named **Gundabad**, on every server start: on the mark rather than with the gate, so a world whose gate has
+          stood for weeks still gets its stone, and a stone of the same name already standing twenty-four blocks away is
+          left alone. It is the gate's stone rather than the keep's because the facade is what a player walks up to -
+          the hold is a doorway in a chamber behind it. Standing it at server start needed one change under it:
+          `MilestoneHandler.updateMilestone` now sends the travel list to a player rather than requiring one, so a
+          stone the world itself lays is registered in the save data and the list before anybody has logged in.
+          Without that it existed as a block and not as a destination until someone right-clicked it.
 - **The keep is final: one plan, one autospawn, one pin, and one dwarf at the well.** The hold's location is settled at
           (5471, 176, -7100), unturned - doorway x 5575-5579 centred on 5577 at courses 190-196, its floor course 189,
           its south wall on z -6918, the plane the ammolite was walked on. It lays itself on the first start of a world,

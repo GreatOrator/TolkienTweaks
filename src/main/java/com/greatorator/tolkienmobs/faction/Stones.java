@@ -10,6 +10,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+
+import javax.annotation.Nullable;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.UUID;
@@ -57,7 +59,7 @@ public final class Stones {
      * beside the stone: a block of ammolite is how a location is marked on the ground, and a marker is a
      * placeholder rather than scenery.
      */
-    public static void stone(ServerLevel level, BlockPos spot, String name, ServerPlayer player) {
+    public static void stone(ServerLevel level, BlockPos spot, String name, @Nullable ServerPlayer player) {
         if (name.isEmpty() || !level.hasChunkAt(spot)) return;
         BlockState ground = level.getBlockState(spot);
         boolean marked = ground.is(TolkienBlocks.BLOCK_AMMOLITE.get());

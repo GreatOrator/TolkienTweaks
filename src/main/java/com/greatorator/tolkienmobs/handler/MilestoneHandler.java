@@ -22,6 +22,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import com.greatorator.tolkienmobs.faction.GundabadGate;
 import com.greatorator.tolkienmobs.faction.GundabadKeep;
 import com.greatorator.tolkienmobs.faction.OrcPieces;
+import com.greatorator.tolkienmobs.faction.Stones;
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
@@ -80,6 +82,12 @@ public class MilestoneHandler extends SavedData {
         // exactly as it is, so a world that has them is untouched.
         ServerLevel arda = event.getServer().getLevel(TolkienDimensions.ARDA);
         if (arda != null) {
+            // The hold's travel stone, on the mark the owner set into the gate's facade. Laid on every start rather
+            // than with the gate, because a world whose gate has stood for weeks still wants its stone; a stone of the
+            // same name already standing a short walk away is left alone.
+            BlockPos stone = ArdaMap.gundabadStone();
+            arda.getChunk(stone.getX() >> 4, stone.getZ() >> 4);
+            Stones.stone(arda, stone, "Gundabad", null);
             OrcPieces.raise(arda);
         }
     }
@@ -116,7 +124,7 @@ public class MilestoneHandler extends SavedData {
         }
     }
 
-    public static void updateMilestone(MilestoneBlockEntity tile, Player player) {
+    public static void updateMilestone(MilestoneBlockEntity tile, @Nullable Player player) {
         if (tile.getLevel().isClientSide()) return;
         MilestoneHandler saveData = getInstance(tile.getLevel());
         if (saveData != null) {
@@ -127,7 +135,12 @@ public class MilestoneHandler extends SavedData {
             data.dimensionCost = tile.getMilestoneSettings().dimension;
 
 
-            PacketHandler.sendMilestonesToClients(saveData, (ServerPlayer) player);
+            // A stone laid by the world itself is registered before anybody is online to be sent the list, so the
+            // packet is for a player rather than required: without it the hold's stone existed in the world and not in
+            // the travel list until someone right-clicked it.
+            if (player instanceof ServerPlayer online) {
+                PacketHandler.sendMilestonesToClients(saveData, online);
+            }
             saveData.setDirty();
         }
     }

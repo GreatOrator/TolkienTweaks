@@ -657,6 +657,16 @@ public final class ArdaMap {
         return new BlockPos(KEEP_X, KEEP_FLOOR, KEEP_Z);
     }
 
+    /**
+     * The Gundabad travel stone: the ammolite the owner set into the gate's own facade, at (5584, 190, -6830), which is
+     * where the hold's stone is asked to stand. It is the gate's rather than the keep's because the facade is what a
+     * player walks up to - the hold itself is a doorway in a chamber - and {@code Stones} replaces a marker standing on
+     * its spot rather than leaving it beside the stone.
+     */
+    public static BlockPos gundabadStone() {
+        return new BlockPos(5584, 190, -6830);
+    }
+
     /** The south wall's own course, which is the last course of the passage out of the gate. */
     public static int keepWall() {
         return KEEP_Z + KEEP_DEEP - 1;

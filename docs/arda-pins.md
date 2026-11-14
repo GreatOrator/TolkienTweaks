@@ -311,3 +311,8 @@ column with the well's shaft at x 87-97 and the spiral's steps at x 94-95 beside
 *Last Refuge II*. Glóin gives and takes every Gundabad page but stands at **his camp**, not here; Dugorim is the
 Dourhands' captain and the hunt target *below* the stair, an enemy rather than a giver. No camp keeper and no steed:
 `CAMP_OWNERS` holds only Elladan's and Barachen's, and `bodyFor(GUNDABAD)` answers none.
+
+**Its stone.** The ammolite set into the gate's facade at **(5584, 190, -6830)** is where the hold's travel stone
+stands, named **Gundabad**: `MilestoneHandler` lays it on every server start, which is why a world whose gate is long
+built still gets it, and `Stones` replaces the marker rather than leaving it beside the stone. It is the gate's stone
+rather than the keep's because the facade is what a player walks up to; the hold itself is a doorway in a chamber.
