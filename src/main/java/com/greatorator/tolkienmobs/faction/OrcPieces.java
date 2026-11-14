@@ -33,7 +33,9 @@ import java.util.Map;
  * without anybody measuring it twice.
  * <p>
  * A mark is the **middle of the footprint** rather than a corner, because that is what a person standing in a doorway
- * can judge: the piece then runs out from it by half its own width and depth. A piece also carries a **drop** - how far
+ * can judge: the piece then runs out from it by half its own width and depth. Three of the marks are not middles but
+ * edges - a ram's front edge, marked by the pair of blocks a ten-wide front is centred between, and a farm's back - so
+ * a piece also carries a **push**: how far its footprint is moved off the mark once it has been centred on it. A piece also carries a **drop** - how far
  * below its mark its own base course sits - because the marks were not all made the same way. A tower's mark was placed
  * in the air over the courtyard floor, so its base sits one course below it, on the floor; a hut's mark was placed in
  * the plaza's own surface course, so its base sits on the mark, flush with the ground the builder stood on.
@@ -46,12 +48,24 @@ import java.util.Map;
  * from south to east, at the plaza's middle.
  */
 public final class OrcPieces {
-    /** One piece: the template, the middle of its footprint, which way it is turned, and how far its base sits below. */
-    private record Piece(String structure, BlockPos mark, Rotation rotation, int drop) {
+    /**
+     * One piece: the template, the mark it was read from, which way it is turned, how far its base sits below, and how
+     * far its footprint is pushed off the mark. Most marks are the middle of the footprint and the push is nothing; a
+     * mark taken along an edge of a build - a ram's front edge, a farm's back - needs the push to say where the rest of
+     * the build went, and it is written here as it was judged rather than worked out at the laying.
+     */
+    private record Piece(String structure, BlockPos mark, Rotation rotation, int drop, int shiftX, int shiftZ) {
+        /** A piece whose mark is the middle of its footprint, which is how all but three of these marks were made. */
+        Piece(String structure, BlockPos mark, Rotation rotation, int drop) {
+            this(structure, mark, rotation, drop, 0, 0);
+        }
     }
 
     /** An arrangement laid by an earlier table and still standing on the ground. */
-    private record Former(String structure, BlockPos mark, Rotation rotation, int drop) {
+    private record Former(String structure, BlockPos mark, Rotation rotation, int drop, int shiftX, int shiftZ) {
+        Former(String structure, BlockPos mark, Rotation rotation, int drop) {
+            this(structure, mark, rotation, drop, 0, 0);
+        }
     }
 
     /**
@@ -76,7 +90,24 @@ public final class OrcPieces {
             new Piece(Sites.ORC_HUT, new BlockPos(5548, 187, -6899), Rotation.COUNTERCLOCKWISE_90, 1),
             new Piece(Sites.ORC_HUT, new BlockPos(5599, 187, -6899), Rotation.NONE, 0),
             new Piece(Sites.ORC_HUT, new BlockPos(5613, 187, -6899), Rotation.NONE, 0),
-            new Piece(Sites.ORC_HUT, new BlockPos(5627, 187, -6899), Rotation.NONE, 0));
+            new Piece(Sites.ORC_HUT, new BlockPos(5627, 187, -6899), Rotation.NONE, 0),
+            // The lava pit. Its one mark is a single block in the courtyard floor, buried at 186 under the stone lip at
+            // 189, and it is the middle of the pit's 22 by 22 footprint, so it needs no push. A pit is a hole: the rim
+            // sits level with the low ground round it, which puts the base course at 172 and the lava at the bottom of
+            // that, seventeen courses under the lip - and the piece's own 6140 cells of air carve the whole 22 by 15
+            // box out of the ground, the bank to the south of it as well.
+            new Piece(Sites.ORC_LAVA_PIT, new BlockPos(5578, 186, -6813), Rotation.NONE, 14),
+            // The two battle rams at the gate. Each pair of marks is the middle of a ram's front edge, so the ram runs
+            // back from it: 18 deep, pushed 9 south of the mark so that edge sits at -6829, a course clear of the gate
+            // wall at -6830 - and the head, the cobblestone tip at the template's high-z end, turned round to face the
+            // gate. Their bases sit on the courtyard floor at 188, a course under the marks.
+            new Piece(Sites.ORC_RAM, new BlockPos(5610, 189, -6830), Rotation.CLOCKWISE_180, 1, 0, 9),
+            new Piece(Sites.ORC_RAM, new BlockPos(5617, 189, -6830), Rotation.CLOCKWISE_180, 1, 0, 9),
+            // The farm. Its mark is the middle of its back edge - the back of the house, whose red wool roof is the
+            // template's low-z half - rather than the middle of its footprint, so it is pushed its own half-depth, 14,
+            // north: 28 deep from -6860 up to -6887, its gated cobblestone wall, the template's high-z end, looking at
+            // the huts five courses away.
+            new Piece(Sites.ORC_FARM, new BlockPos(5614, 189, -6860), Rotation.CLOCKWISE_180, 1, 0, -14));
 
     /**
      * Arrangements these pieces were laid in before, and which still stand: the three huts east of the hall went up a
@@ -118,7 +149,8 @@ public final class OrcPieces {
         for (Piece piece : PIECES) {
             StructureTemplate template = template(level, piece.structure());
             if (template == null) continue;
-            BlockPos anchor = anchor(template, piece.mark(), piece.rotation(), piece.drop());
+            BlockPos anchor = anchor(template, piece.mark(), piece.rotation(), piece.drop(),
+                    piece.shiftX(), piece.shiftZ());
             open(level, anchor, template, piece.rotation());
             if (Sites.wholeAt(level, piece.structure(), anchor, piece.rotation())) continue;
             takeDown(level, piece);
@@ -140,9 +172,11 @@ public final class OrcPieces {
         int removed = 0;
         for (Former former : FORMER) {
             if (!former.mark().equals(piece.mark())) continue;
-            removed += clear(level, former.structure(), former.mark(), former.rotation(), former.drop(), floor);
+            removed += clear(level, former.structure(), former.mark(), former.rotation(), former.drop(),
+                    former.shiftX(), former.shiftZ(), floor);
         }
-        removed += clear(level, piece.structure(), piece.mark(), piece.rotation(), piece.drop(), floor);
+        removed += clear(level, piece.structure(), piece.mark(), piece.rotation(), piece.drop(),
+                piece.shiftX(), piece.shiftZ(), floor);
         return removed;
     }
 
@@ -152,11 +186,12 @@ public final class OrcPieces {
      * base course is left in the ground - a hut lifted a course would otherwise have its old pad taken out from under it
      * and stand over a hole.
      */
-    private static int clear(ServerLevel level, String structure, BlockPos mark, Rotation rotation, int drop, int floor) {
+    private static int clear(ServerLevel level, String structure, BlockPos mark, Rotation rotation, int drop,
+                             int shiftX, int shiftZ, int floor) {
         StructureTemplate template = template(level, structure);
         Identifier id = Identifier.tryParse(structure);
         if (template == null || id == null) return 0;
-        BlockPos anchor = anchor(template, mark, rotation, drop);
+        BlockPos anchor = anchor(template, mark, rotation, drop, shiftX, shiftZ);
         open(level, anchor, template, rotation);
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         int removed = 0;
@@ -216,14 +251,16 @@ public final class OrcPieces {
     }
 
     /**
-     * The corner a piece is laid from: half its own footprint out from the mark in the turn it will be laid in, and its
-     * base course the piece's own drop below the mark.
+     * The corner a piece is laid from: half its own footprint out from the mark in the turn it will be laid in, its base
+     * course the piece's own drop below the mark, and the piece's own push further out where the mark was taken along an
+     * edge of the build rather than its middle.
      */
-    private static BlockPos anchor(StructureTemplate template, BlockPos mark, Rotation rotation, int drop) {
+    private static BlockPos anchor(StructureTemplate template, BlockPos mark, Rotation rotation, int drop,
+                                   int shiftX, int shiftZ) {
         BoundingBox box = template.getBoundingBox(new StructurePlaceSettings().setRotation(rotation), BlockPos.ZERO);
         int across = box.maxX() - box.minX() + 1;
         int deep = box.maxZ() - box.minZ() + 1;
-        BlockPos origin = mark.offset(-(across - 1) / 2, -drop, -(deep - 1) / 2);
+        BlockPos origin = mark.offset(-(across - 1) / 2 + shiftX, -drop, -(deep - 1) / 2 + shiftZ);
         return origin.offset(-box.minX(), -box.minY(), -box.minZ());
     }
 

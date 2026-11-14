@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 - **The Misty Mountains and Mount Gundabad are clear while the gate is photographed.** Both ranges close their fog at thirty-eight and forty-four blocks, which is what a mist is and also what hides a mountain from a screenshot taken outside it, so `BiomeMaker.CLEAR_RANGE_FOG` is on and both biomes read a near plane of 512 and a far plane of 1024 instead. It is temporary and it is one switch: set it false and the two mists come back exactly as they were, since their own numbers are still written at the two calls. Nothing generated depends on it - a fog is a look, not a world rule - and every other biome in the pack keeps the fog it had.
 - **A capture's air is written, and it is the other half of a flat cut face.** Placing a structure writes the air it carries, so a build cut out of a hillside erases ground wherever it was cut with sky: the gate's eight files hold 489,812 air cells against 132,268 blocks, and the top course's east end - `gundabad_gate_3_1_0.nbt`, sixteen by thirty-three by forty-eight - is 25,344 cells and every one of them air, so that file alone clears a box the size of itself out of the mountain. The two upper pieces beside it are 94 to 99 per cent air. So a flat face left after a build is placed has two possible causes - ground not shaped to the build, or the build clearing ground it does not need - and the second is fixed at the capture: `tools/gate_capture.py --trim-sky` drops the air above the highest block of each column, and a piece that holds nothing but air can be dropped whole. Both are written into `AGENTS.md` as the rule for any build, with the warning that a passage's own air is load-bearing and only the box's sky is fair game. Nothing about the gate changes yet: its air is below the height of its wings and the pass's floor already leaves it nothing to clear inside the box.
+- **The pit, the two rams and the farm go up on their marks.** Six ammolite blocks the builder left at Gundabad: one
+          alone at (5578, 186, -6813) for `orc_lava_pit`, and two pairs on the gate's face line for the rams and the farm.
+          Three of them are not footprint middles - a ten-wide ram's front edge and the farm's back have no middle block -
+          so `OrcPieces.Piece` gained a **push**, written per piece beside the mark, that moves the footprint off the mark
+          once it has been centred on it. The pit is centred on x 5568-5589 by z -6823..-6802 with its rim level at 186,
+          base 172 and the lava seventeen courses under the lip; both rams are turned `CLOCKWISE_180` so the template's
+          cobblestone head faces the gate, pushed 9 south to put their front edges at -6829, a course clear of the wall
+          (x 5606-5615 and x 5613-5622, z -6829..-6812, base 188); the farm is pushed 14 north, its back on the mark at
+          -6860 and its gated wall looking at the huts (x 5607-5622, z -6887..-6860, base 188). The floating glowstones
+          the cut tool left at a corner of `orc_farm` (15, 15, 0) and `orc_battle_ram` (9, 6, 0) are cut out, as
+          `orc_tower`'s (11, 21, 0) was.
 - **The lava pit joins the orc pieces, and its footprint is 22 by 15 by 22.** `orc_lava_pit` is the ninth and
           last piece: `Sites.ORC_LAVA_PIT`, on `ON_THE_PIN`, `FRONT_CORNER` and `SELF_DRESSED` with the other orc pieces, and
           named **`pit`**, **`lavapit`** and **`lava`** in `PinCommands.BUILDINGS`, so `/tmpin build pit` and

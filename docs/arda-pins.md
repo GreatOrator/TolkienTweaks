@@ -74,11 +74,11 @@ comes off the list and gets its own dressing.
 
 Some spots are easier to stand on than to type: a builder marks the middle of a footprint with a block of
 `tolkienmobs:block_ammolite`, and the spot is read out of the world. No template in the pack carries
-ammolite — the gate, the keep and all eight orc pieces were checked — so every ammolite block in a save is a
+ammolite — the gate, the keep and all nine orc pieces were checked — so every ammolite block in a save is a
 mark somebody left.
 
-`OrcPieces` is the table those marks are written down in: the template, the block that marks the middle
-of its footprint, and which way the piece is turned. It is raised from `/tmplace orcs` and again as the server
+`OrcPieces` is the table those marks are written down in: the template, the block that marks its footprint
+(its middle, or an edge with a push), and which way the piece is turned. It is raised from `/tmplace orcs` and again as the server
 comes up, after the gate, because the towers stand on the gate's own footprint. A piece is laid with half its width and depth out from the mark and its **base one block
 below** the mark, which is the same rule the orc pins follow, and `/tmplace orcs` raises every marked piece
 that is not already standing. The check is `Sites.wholeAt`, the strict reading of `standsAt`: every sampled
@@ -141,3 +141,33 @@ The 20-by-19 boxes still overlap — a 19-wide box on 14-block centres always wi
 not: they are 13 wide and stand 14 apart, so each hut is its own building with one block of air between its
 neighbour's wall. Nothing is erased either way: `orc_hut` places **no air** (its palette names air, but none
 of its block entries use it), so a box overlapping a neighbour leaves it alone.
+
+## The pit, the rams and the farm
+
+Six more marks close the camp, and three of them are not middles: a pair of blocks marks the **front edge** of
+a ten-wide ram, because ten has no middle block, and another pair the **back edge** of the farm. `Piece`
+carries a **push** for those — how far the footprint moves off the mark once it has been centred on it —
+written beside the mark as it was judged rather than measured out at the laying.
+
+| mark | piece | box | base |
+|---|---|---|---|
+| (5578, 186, −6813) | `orc_lava_pit`, `NONE` | x 5568–5589, z −6823…−6802 | **172**, rim 186 |
+| (5610, 189, −6830) + (5611, 189, −6830) | `orc_battle_ram`, `CLOCKWISE_180`, push 9 south | x 5606–5615, z −6829…−6812 | 188 |
+| (5617, 189, −6830) + (5618, 189, −6830) | `orc_battle_ram`, `CLOCKWISE_180`, push 9 south | x 5613–5622, z −6829…−6812 | 188 |
+| (5614, 189, −6860) + (5615, 189, −6860) | `orc_farm`, `CLOCKWISE_180`, push 14 north | x 5607–5622, z −6887…−6860 | 188 |
+
+The pit's mark is the only one in the pack that is **buried** — a block at 186 under the stone lip at 189 —
+so its centre is the one thing that had to be read around it. It is also the only piece that carries air
+(6140 of its 7260 cells), so laying it carves its whole 22-by-15 box: the bank rising to the south of it goes
+with it, and its rim is set level with the low ground around at 186, which puts its lava seventeen courses
+under the lip.
+
+The rams look at the gate: a ram's head is the cobblestone tip at the template's high-z end, so both are turned
+right round, and their front edges sit at **−6829**, one course clear of the gate wall's own course at −6830.
+Their 10-wide grass pads overlap by three blocks — their centres are 7 apart — and their 7-wide bodies do not.
+
+The farm's back sits on its mark and it runs north to −6887, five courses short of the huts, with its gated
+cobblestone wall — the template's high-z end — looking at them.
+
+Both `orc_farm` and `orc_battle_ram` carried a **floating glowstone** at a corner of their box, (15, 15, 0) and
+(9, 6, 0): the cut tool's residue, the same as the one taken out of `orc_tower` at (11, 21, 0). Both are cut.
