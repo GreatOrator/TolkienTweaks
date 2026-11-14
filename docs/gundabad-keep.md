@@ -34,21 +34,30 @@ line: **the keep's floor top must be 189, so the pin's y is 187.**
 | across | centred on the passage's axis (x 5577) to within half a block, with ~20 blocks of rock to the west and ~19 to the east inside the crown's 160 |
 | south wall | **z −6930**, where the rock stands **230 … 249** over it - the shallowest cover anywhere on the box, and still 18 blocks above the roof |
 | north wall | **z −7112**, three blocks past the crown's own end, where the drawn ground is 279 |
-| gap to the passage | the passage ends at **z −6911**, the keep's south wall stands at **−6930**: **19 blocks of solid rock** between them |
+| gap to the passage | **none.** The passage is carried to the wall: 53 blocks out from the rear face, its last course on **z −6930** |
 
 Two numbers are choices rather than measurements:
 
-- **z −6930, not −6911.** Flush with the passage's end, the keep's south 15 to 20 blocks would have their
+- **z −6930, not −6911.** Flush with the passage's old end, the keep's south 15 to 20 blocks would have their
   upper courses **above the rise**, because the ground there is only 192 – 217 and the keep is 26 tall. It
   would break out of the slope as a stone roof. Nineteen blocks further north puts the whole box under 230
-  or more. The cost is that the passage has to be carried 19 blocks further (34 → 53) to reach the wall.
+  or more, and the passage was carried those nineteen blocks (`HALL_INTO_ROCK` gives way to the plan:
+  `ArdaMap.keepWall()`).
 - **x 5516, not 5517.** A 122-wide template cannot centre on a 29-wide passage to the block; 5516 leaves
   twenty blocks of rock west and nineteen east.
 
-So the work at the join is: carry the passage north 19 more blocks at floor 189 / ceiling 200, then open a
-**29 wide × 10 tall** doorway in the keep's south wall where it arrives. The template has **no door on any
+**The join is built.** The passage runs 53 blocks at floor 189 / ceiling 200, its last course on the keep's
+south wall, and a **29 wide × 10 tall** doorway is cut through that wall. The template has **no door on any
 of its four faces** - all four are wall at floor level, which is what an interior level of a dwarven hold
-looks like - so the doorway is ours to cut.
+looks like - so the doorway is ours, and it is cut **fourteen courses deep**, which is the deepest the wall
+goes across the passage's own columns (one course at the face, one behind most of the eastern half, three to
+nine on the west, fourteen where an inner mass stands just inside it). It is cleared every time the hall is
+laid, so **raising the keep and then laying the gate again is what opens the door**; until a keep stands
+there it is a pocket in the rock.
+
+The keep's plan lives in `ArdaMap` beside the gate's - `KEEP_X` 5516, `KEEP_Z` −7112, `KEEP_WIDE` 122,
+`KEEP_TALL` 26, `KEEP_DEEP` 183, `keepPlan()` and `keepWall()` - because the passage's end is the keep's
+wall in every world and must not be measured off rock that the hall itself changes.
 
 ## Two passes that would wreck it
 
@@ -69,6 +78,10 @@ its own: **the pin is the measurement, and the rock is what it is in.** `clearMo
 returns immediately for a build with no doorway in its seat.
 
 ## The pin itself
+
+The keep's plan is written down (`ArdaMap.keepPlan()`), so it needs no pin at all: it is a fixed piece of one
+location, like the gate. `/tmpin build <name>` - which pins the caller's feet, and takes them as the
+template's **corner** - stays as it is for everything a builder can walk to.
 
 `/tmpin build <name>` pins **the caller's feet**, and the pin is the template's **corner**, not its centre.
 That is a problem here that is not a problem anywhere else: the corner at (5516, 187, −7112) is inside solid

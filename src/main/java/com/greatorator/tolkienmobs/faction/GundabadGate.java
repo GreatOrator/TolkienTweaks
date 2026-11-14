@@ -93,12 +93,21 @@ public final class GundabadGate {
     public static final boolean DRESS_ON_PLACEMENT = true;
 
     /** How far into the rock the hall is carried, and how far north it will walk looking for the rock. */
-    private static final int HALL_INTO_ROCK = 3;
     private static final int HALL_REACH = 96;
 
     /** The hall's own rock: two courses to a wall, three to a roof, which is what the room's frame carries. */
     private static final int HALL_WALL = 2;
     private static final int HALL_ROOF = 3;
+    /**
+     * How many courses of the keep's own wall the doorway is cut through, so a wall laid after the hall still opens.
+     * <p>
+     * Measured, not guessed. Across the passage's own twenty-nine columns (keep x 47 to 75) the keep's south wall is a
+     * single course at the face, one course deep behind most of the eastern half, three to nine on the west, and up to
+     * fourteen where an inner mass stands just inside it. Fourteen is the depth that opens a way through at every one
+     * of the twenty-nine columns rather than only at the middle ones, and what it cuts is the keep's own wall and the
+     * inner mass behind it - never the rock, which the template replaces anyway.
+     */
+    private static final int HALL_DOOR_DEPTH = 14;
 
     /**
      * The chamber's own floor and ceiling, measured off the rear face and then fixed: the floor's top is two courses
@@ -311,10 +320,15 @@ public final class GundabadGate {
         int floorTop = base.getY() + HALL_FLOOR;
         int roofY = base.getY() + HALL_CEILING;
         int added = 0;
+        // Where the passage ends: the dwarven keep's own south wall, fifty-three blocks out from the rear face. It used
+        // to end where the rock first stood over its roof and then walk three blocks further in - thirty-four blocks, a
+        // tunnel stopping at a rock face because there was nothing for it to reach. The end is the plan's rather than the
+        // rock's, because the rock's answer changes once the hall is standing: its own roof reads as ground over the
+        // roof, so a doorway cut against that answer would walk back towards the gate on every pass.
+        int end = ArdaMap.keepWall();
 
-        // The passage itself: its floor and its roof, carried north until the rock stands over the roof.
+        // The passage itself: its floor, its roof and its cleared inside, carried north to the keep's own wall.
         for (int x = lowX; x <= highX; x++) {
-            int end = hallEnd(level, base, x, roofY);
             for (int z = base.getZ() - 1; z >= end; z--) {
                 for (int y = base.getY(); y <= floorTop; y++) {
                     added += lay(level, base.getX() + x, y, z);
@@ -335,11 +349,8 @@ public final class GundabadGate {
         }
 
         // Its two walls, outside the passage, stepping a course lower outward. They run as far north as the passage
-        // does at its furthest column, not as far as the single column they stand beside happens to manage.
-        int wallEnd = base.getZ() - HALL_REACH;
-        for (int x = lowX; x <= highX; x++) {
-            wallEnd = Math.min(wallEnd, hallEnd(level, base, x, roofY));
-        }
+        // does, which is the keep's wall.
+        int wallEnd = end;
         for (int side = 0; side < 2; side++) {
             int x = 0;
             for (int w = 0; w < HALL_WALL; w++) {
@@ -352,17 +363,21 @@ public final class GundabadGate {
                 }
             }
         }
-        return added;
-    }
-
-    /** How far north a column of the hall runs: until the rock stands over the roof, and three blocks further in. */
-    private static int hallEnd(ServerLevel level, BlockPos base, int x, int roofY) {
-        for (int z = base.getZ() - 1; z > base.getZ() - HALL_REACH; z--) {
-            if (level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, base.getX() + x, z) - 1 >= roofY) {
-                return z - HALL_INTO_ROCK;
+        // The doorway: the keep's south wall stands on the passage's last course, and the keep is laid after this hall,
+        // so the way in is cleared the depth of that wall beyond the end and cut again every time the hall is laid.
+        // Laying the gate after a keep has been raised is therefore what opens the hall into it; until a keep stands
+        // there, the clearing is a pocket a wall deep in the rock the passage already ends in, and nothing else.
+        for (int z = wallEnd; z > wallEnd - HALL_DOOR_DEPTH; z--) {
+            for (int x = lowX; x <= highX; x++) {
+                for (int y = floorTop + 1; y < roofY; y++) {
+                    BlockPos inside = new BlockPos(base.getX() + x, y, z);
+                    if (!level.getBlockState(inside).isAir()) {
+                        level.setBlock(inside, Blocks.AIR.defaultBlockState(), 2);
+                    }
+                }
             }
         }
-        return base.getZ() - HALL_REACH;
+        return added;
     }
 
     /** How many courses this column of the hall carries above its nominal top: the roughening that stops it reading flat. */

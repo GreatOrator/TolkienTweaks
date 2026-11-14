@@ -621,6 +621,32 @@ public final class ArdaMap {
         return new BlockPos(PASS_X, GATE_FLOOR, GATE_NORTH);
     }
 
+    /**
+     * The dwarven keep the pass was shaped for: the gundabad template's own north-west bottom corner, and the plane of
+     * its south wall, which is where the chamber out of the gate ends.
+     * <p>
+     * The keep is underground by design - a hall cut into the mountain with the pass's own crown standing over it at
+     * 267 - so it is written down here as a plan rather than surveyed: its corner is inside solid rock and nobody can
+     * stand on it to pin it. The numbers are the template's (122 by 26 by 183, its floor three courses so the top of
+     * its floor is y 2) and the gate's own floor: pin 187 puts the keep's floor top on 189 and its inside on 190, which
+     * is the chamber's own section to the block.
+     */
+    public static final int KEEP_X = 5516;
+    public static final int KEEP_Z = -7112;
+    public static final int KEEP_WIDE = 122;
+    public static final int KEEP_TALL = 26;
+    public static final int KEEP_DEEP = 183;
+
+    /** The keep's pin: the template's north-west bottom corner, laid with no rotation. */
+    public static BlockPos keepPlan() {
+        return new BlockPos(KEEP_X, GATE_FLOOR, KEEP_Z);
+    }
+
+    /** The south wall's own course, which is the last course of the passage out of the gate. */
+    public static int keepWall() {
+        return KEEP_Z + KEEP_DEEP - 1;
+    }
+
     public static BlockPos gateFront() {
         return new BlockPos((GATE_WEST + GATE_EAST) / 2, GATE_FLOOR, GATE_SOUTH);
     }
