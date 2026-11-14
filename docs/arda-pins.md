@@ -110,20 +110,28 @@ The far rank stands five blocks north of the gate's back face, at **z −6882**,
 
 Four more marks stand on the plaza, whose middle is (5576, 187, −6893):
 
-| mark | box after the turn |
-|---|---|
-| (5604, 187, −6899) | x 5595–5613, y 186–204, z −6908…−6889 |
-| (5612, 187, −6892) | x 5603–5621, y 186–204, z −6901…−6882 |
-| (5615, 187, −6905) | x 5606–5624, y 186–204, z −6914…−6895 |
-| (5627, 187, −6903) | x 5618–5636, y 186–204, z −6912…−6893 |
+| mark | body (13 wide) | door |
+|---|---|---|
+| (5548, 187, −6899) | x 5542–5554, z −6905…−6893 | east, `Rotation.COUNTERCLOCKWISE_90` |
+| (5599, 187, −6899) | x 5593–5605, z −6905…−6893 | west, `Rotation.CLOCKWISE_90` |
+| (5613, 187, −6899) | x 5607–5619, z −6905…−6893 | west, `Rotation.CLOCKWISE_90` |
+| (5627, 187, −6899) | x 5621–5633, z −6905…−6893 | west, `Rotation.CLOCKWISE_90` |
+
+The marks the builder first left were 10 to 19 blocks apart, which put all four hut bodies inside each other;
+these are spread across the strip the plaza actually leaves open. That strip is measured, not guessed: the
+hall runs **x 5563–5591**, the mountain's foot closes it at **5538** west and **5633** east, and the tower
+row takes **z −6888** south, so the open ground is x 5538–5633 by z −6889…−6909 — 24 blocks west of the hall
+and 41 east. Four 13-wide bodies need 52 plus gaps, so they go one west and three east, with **one block
+between neighbours**; a two-block gap would need two more blocks than the east strip has.
 
 A hut is not four walls: it has **one opening**, a single column two courses high in its **south face** at local
-x 10, with its stairs cut into the base below and a lintel over it. All four are turned
-`Rotation.CLOCKWISE_90`, which turns that opening from south to **west**, at the plaza's middle. The turn is
-written beside each mark rather than worked out when it is laid, and `Sites.wholeAt` turns the sampled blocks
-with it, so the check for "already standing" is asked of the piece in the turn it was laid in.
+x 10, with its stairs cut into the base below and a lintel over it. The turn is written beside each mark
+rather than worked out when it is laid, and `Sites.wholeAt` turns the sampled blocks with it, so the check for
+"already standing" is asked of the piece in the turn it was laid in. A quarter clockwise turns that opening
+from south to **west**; a quarter anticlockwise turns it to **east** — so the hut west of the hall is the one
+turned the other way, and every door looks at the plaza's middle (5576, 187, −6893).
 
-The four boxes overlap each other — by 11 × 13, 16 × 7 and 7 × 18 blocks in the worst pairs — because the
-marks are 10 to 19 blocks apart and a hut fills 19 by 20. Nothing is erased by that: `orc_hut` places **no
-air** (its palette names air, but no block entry uses it), so two huts that overlap interpenetrate rather than
-cut each other. It does mean the row reads as one huddle rather than four separate huts.
+The 20-by-19 boxes still overlap — a 19-wide box on 14-block centres always will — but the **bodies** do
+not: they are 13 wide and stand 14 apart, so each hut is its own building with one block of air between its
+neighbour's wall. Nothing is erased either way: `orc_hut` places **no air** (its palette names air, but none
+of its block entries use it), so a box overlapping a neighbour leaves it alone.

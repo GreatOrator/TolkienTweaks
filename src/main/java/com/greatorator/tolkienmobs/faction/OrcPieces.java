@@ -55,11 +55,16 @@ public final class OrcPieces {
             new Piece(Sites.ORC_TOWER, new BlockPos(5558, 187, -6882), Rotation.NONE),
             new Piece(Sites.ORC_TOWER, new BlockPos(5598, 187, -6882), Rotation.NONE),
             new Piece(Sites.ORC_TOWER, new BlockPos(5628, 187, -6882), Rotation.NONE),
-            // The huts on the plaza, each turned a quarter clockwise so its opening looks west at the plaza's middle.
-            new Piece(Sites.ORC_HUT, new BlockPos(5604, 187, -6899), Rotation.CLOCKWISE_90),
-            new Piece(Sites.ORC_HUT, new BlockPos(5612, 187, -6892), Rotation.CLOCKWISE_90),
-            new Piece(Sites.ORC_HUT, new BlockPos(5615, 187, -6905), Rotation.CLOCKWISE_90),
-            new Piece(Sites.ORC_HUT, new BlockPos(5627, 187, -6903), Rotation.CLOCKWISE_90));
+            // The huts on the plaza: four bodies 13 wide in the strip the mountain leaves open either side of the hall,
+            // one west of it and three east, one block between neighbours so each stands as its own building. The hall
+            // runs x 5563 to 5591, the mountain's foot closes the strip at 5538 and 5633, and the tower row takes
+            // z -6888 south, which is what leaves one row at this depth. Each hut turns its opening at the plaza's
+            // middle: the west one looks east, a quarter anticlockwise; the three east of the hall look west, a quarter
+            // clockwise.
+            new Piece(Sites.ORC_HUT, new BlockPos(5548, 187, -6899), Rotation.COUNTERCLOCKWISE_90),
+            new Piece(Sites.ORC_HUT, new BlockPos(5599, 187, -6899), Rotation.CLOCKWISE_90),
+            new Piece(Sites.ORC_HUT, new BlockPos(5613, 187, -6899), Rotation.CLOCKWISE_90),
+            new Piece(Sites.ORC_HUT, new BlockPos(5627, 187, -6899), Rotation.CLOCKWISE_90));
 
     private OrcPieces() {
     }
