@@ -151,23 +151,25 @@ written beside the mark as it was judged rather than measured out at the laying.
 
 | mark | piece | box | base |
 |---|---|---|---|
-| (5578, 186, −6813) | `orc_lava_pit`, `NONE` | x 5568–5589, z −6823…−6802 | **174**, rim 188 |
-| (5610, 189, −6830) + (5611, 189, −6830) | `orc_battle_ram`, `NONE`, push 9 south | x 5606–5615, z −6829…−6812 | **186** |
-| (5617, 189, −6830) + (5618, 189, −6830) | `orc_battle_ram`, `NONE`, push 9 south | x 5613–5622, z −6829…−6812 | **186** |
+| (5578, 186, −6813) | `orc_lava_pit`, `NONE`, drop 0 — the mark **is** the base | x 5568–5589, z −6823…−6802 | **186**, mouth 200 |
+| (5610, 189, −6830) + (5611, 189, −6830) | `orc_battle_ram`, `NONE`, push 15 south | x 5606–5615, z −6823…−6806 | **186** |
+| (5617, 189, −6830) + (5618, 189, −6830) | `orc_battle_ram`, `NONE`, push 15 south | x 5613–5622, z −6823…−6806 | **186** |
 | (5614, 189, −6860) + (5615, 189, −6860) | `orc_farm`, `CLOCKWISE_180`, push 14 north | x 5607–5622, z −6887…−6860 | 188 |
 
 The pit's mark is the only one in the pack that is **buried** — a block at 186 under the stone lip at 189 —
-so its centre is the one thing that had to be read around it. It is also the only piece that carries air
-(6140 of its 7260 cells), so laying it carves its whole 22-by-15 box: the bank rising to the south of it goes
-with it. It went in with its rim level with the low ground at 186 first and read as a hole cut in the floor, so
-it was lifted two: **base 174, rim 188**, which is the level of the courtyard floor it now sits in.
+and it turns out to be the piece's own **base course**, so it is the one mark read as a base rather than a
+middle: drop 0. The template's first course is its ground — 22 by 22 of grass and dirt round 21 cells of lava —
+and everything above it is a one-block perimeter wall round a hollow shaft, 6140 air cells in all. So the shaft
+its mouth stands at **200**, twelve courses over the courtyard floor, and its air carves the whole 22-by-15 box
+out of the ground around it, the bank rising to the south included. It went in twice lower than this first
+(base 172, then 174 with its rim at the courtyard floor) and was raised each time.
 
-The rams look at the gate with no turn at all (`NONE`): a ram's front is the template's low-z end, which
-unturned is the box's north edge, on the gate. Their front edges sit at **−6829**, one course clear of the gate
-wall's own course at −6830, and their bases at **186**, two courses down from where they went up. They were
-turned right round and a course high when first laid, and this is the judgement from that: the footprint and
-the marks did not move. Their 10-wide grass pads overlap by three blocks — their centres are 7 apart — and
-their 7-wide bodies do not.
+The rams stand unturned (`NONE`) with their bases at **186**, and the face that carries the template's corner
+glowstone is their front: it is the box's **south** face, so their front edges stand at **−6806** — the block
+the builder pointed at — and their 18-deep boxes run north from there to −6823, seven courses off the gate wall.
+They first went up turned right round with a base of 188 and were judged too far back, so they were turned
+about, dropped two and moved six south: the marks did not move, only the push. Their 10-wide grass pads overlap
+by three blocks — their centres are 7 apart — and their 7-wide bodies do not.
 
 The farm's back sits on its mark and it runs north to −6887, five courses short of the huts, with its gated
 cobblestone wall — the template's high-z end — looking at them. It went up right the first time and is settled:
