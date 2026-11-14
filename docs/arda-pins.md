@@ -224,3 +224,31 @@ only the one hanging in the sky goes.
 
 Both `orc_farm` and `orc_battle_ram` carried a **floating glowstone** at a corner of their box, (15, 15, 0) and
 (9, 6, 0): the cut tool's residue, the same as the one taken out of `orc_tower` at (11, 21, 0). Both are cut.
+
+## The keep
+
+The dwarven hold was written down in `ArdaMap` as a **plan** long before anything laid it: `Sites.GUNDABAD` was
+pitched by the campaign's own page, and the numbers - 122 by 26 by 183 - were the template's, with a corner nothing
+could be stood on because the corner is inside solid rock. What *can* be stood on is the mark the owner walked: an
+ammolite on the chamber's floor at **(5577, 189, -6918)**, at the foot of the hold's own doorway. That mark is the
+plan now, read backwards through the template.
+
+| | |
+|---|---|
+| floor as the template carries it | fourteen courses of deepslate, its **top course the floor a player stands on**, rooms over it, doorways from course fourteen up |
+| the mark's course | that top course, local y 13, so the base is **176** |
+| the doorway | the far one of the south wall, local x 104-108, its middle **106**, five wide and seven tall |
+| the wall's course | local z 182, the last course of the depth |
+| the plan | **x 5471, y 176, z -7100**, unturned |
+| what that puts where | the doorway's middle on the mark's x 5577, its floor on the mark's course 189, the wall on the mark's z -6918, and the rooms in the chamber's own section, 190 to 200 |
+
+The body runs the rest of its 183 courses west and north into the mountain. Every corner of the box is solid stone at
+176 to 201, with 244 to 315 of rock over it, so the hold is buried by design and only its doorway shows - the way the
+owner's own example had a doorway flush with the floor and the wall running away from it either side.
+
+**Order is the other half of it.** The gate's hall is carried north to `ArdaMap.keepWall()` - the keep's south wall -
+and cleared fourteen courses through where that wall will stand, so the gate lays first and the keep lays over it: the
+keep's own wall and its own five-wide doorway are then written whole, and the clearing the hall made is air the keep's
+rooms already hold. Laid the other way round the hall opens the wall across the chamber's whole width, and the hold
+has no door at all. `GundabadKeep.autospawn` runs after `GundabadGate.autospawn` for exactly that reason, and tests the
+doorway's own floor cell to leave a keep that is already standing alone.

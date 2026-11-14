@@ -622,24 +622,39 @@ public final class ArdaMap {
     }
 
     /**
-     * The dwarven keep the pass was shaped for: the gundabad template's own north-west bottom corner, and the plane of
-     * its south wall, which is where the chamber out of the gate ends.
+     * The dwarven keep the pass was shaped for: the gundabad template's own north-west bottom corner, laid with no
+     * rotation, with its south wall on the plane the owner marked.
      * <p>
      * The keep is underground by design - a hall cut into the mountain with the pass's own crown standing over it at
      * 267 - so it is written down here as a plan rather than surveyed: its corner is inside solid rock and nobody can
-     * stand on it to pin it. The numbers are the template's (122 by 26 by 183, its floor three courses so the top of
-     * its floor is y 2) and the gate's own floor: pin 187 puts the keep's floor top on 189 and its inside on 190, which
-     * is the chamber's own section to the block.
+     * stand on it to pin it. What <em>can</em> be stood on is the mark the owner walked: an ammolite on the chamber's
+     * floor at (5577, 189, -6918), at the foot of the keep's own doorway, and the box below is that mark read back
+     * through the template.
+     * <p>
+     * The template carries the hold's floor as the rock under it - fourteen courses of deepslate whose top course is
+     * the floor a player stands on, with the rooms over it, the doorways cut from course fourteen. So the mark's
+     * course is that top course, local y 13, and the base is 176: the doorway's floor lands on 189 and the rooms fill
+     * the chamber's own section, 190 to 200, to the block. The doorway used is the far one of the south wall - local
+     * x 104 to 108, its middle 106 - so with the box at x 5471 its middle lands on the mark's 5577; and the south
+     * wall's own course, local z 182, lands on the mark's z -6918. The body runs the rest of its hundred and eighty-
+     * three courses west and north into the mountain, and its doorway is the way out of the gate's chamber.
+     * <p>
+     * The hall out of the gate is carried north to {@link #keepWall()} and its doorway is cut the wall's depth beyond
+     * that, so the gate is laid first and the keep laid over it: the keep's own wall and its doorway then stand whole,
+     * and the cut behind them is air the keep's rooms already hold.
      */
-    public static final int KEEP_X = 5516;
-    public static final int KEEP_Z = -7112;
+    public static final int KEEP_X = 5471;
+    public static final int KEEP_Z = -7100;
     public static final int KEEP_WIDE = 122;
     public static final int KEEP_TALL = 26;
     public static final int KEEP_DEEP = 183;
 
+    /** The keep's own bottom course: the template's y 0, which puts its doorway's floor on the chamber's floor course. */
+    public static final int KEEP_FLOOR = 176;
+
     /** The keep's pin: the template's north-west bottom corner, laid with no rotation. */
     public static BlockPos keepPlan() {
-        return new BlockPos(KEEP_X, GATE_FLOOR, KEEP_Z);
+        return new BlockPos(KEEP_X, KEEP_FLOOR, KEEP_Z);
     }
 
     /** The south wall's own course, which is the last course of the passage out of the gate. */

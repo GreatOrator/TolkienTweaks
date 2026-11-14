@@ -20,6 +20,7 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import com.greatorator.tolkienmobs.faction.GundabadGate;
+import com.greatorator.tolkienmobs.faction.GundabadKeep;
 import com.greatorator.tolkienmobs.faction.OrcPieces;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -69,6 +70,11 @@ public class MilestoneHandler extends SavedData {
         // The Gundabad gate stands at its own site in Arda rather than waiting for a page or a command: every world is
         // drawn with the pass, and the gate is part of the pass. One that is already standing is left exactly as it is.
         GundabadGate.autospawn(event.getServer());
+        // The dwarven keep the pass was cut for, stood up at the end of the gate's chamber. The hall is carried north
+        // to the keep's wall and cleared through where that wall will stand, so the gate goes first and the keep's own
+        // doorway is then written whole over the clearing - laid the other way round, the hall opens the wall across
+        // the chamber's width and the hold has no door. A keep already standing at its plan is left exactly as it is.
+        GundabadKeep.autospawn(event.getServer());
         // The orc pieces standing at marks somebody walked out - the two ranks of towers and the huts on the plaza - go up
         // in the same pass, after the gate, because the towers stand on its own footprint. A piece that is whole is left
         // exactly as it is, so a world that has them is untouched.

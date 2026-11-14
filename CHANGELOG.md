@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The keep behind the gate now stands, and its way in is the floor you marked.** The dwarven hold was written down
+          in `ArdaMap` as a plan - 122 by 26 by 183 at (5516, 187, -7112), unturned - but nothing ever laid it; only the
+          campaign's page pitched it. It is now stood up at server start, after the gate, and the plan is re-read off the
+          mark the owner walked: an ammolite on the chamber's floor at (5577, 189, -6918), at the foot of the hold's own
+          doorway. The template carries its floor as rock - fourteen courses of deepslate whose top course is the floor a
+          player stands on, with the rooms over it and the doorways cut from course fourteen up - so the mark's course is
+          that top course, local y 13, and the base is 176: the doorway's floor lands on 189 and the rooms fill the
+          chamber's own section, 190 to 200, to the block. The doorway taken is the far one of the south wall, local
+          x 104-108 with its middle at 106, and the wall's own course is local z 182, so the box moves to **5471, 176,
+          -7100**: the doorway's middle lands on the mark's x, the wall on the mark's z, and the body runs the rest of
+          its 183 courses west and north into the mountain. Every corner of that box is solid stone at 176 to 201 under
+          244 to 315 of rock, so the hold is buried as designed and only its doorway shows. The order is the other half
+          of it - the gate's hall is carried north to the keep's wall and cleared fourteen courses through where that
+          wall will stand, so the gate lays first and the keep writes its own wall and its own five-wide doorway whole
+          over the clearing; laid the other way round the hall opens the wall across the chamber's whole width and the
+          hold has no door. `GundabadKeep` tests the doorway's own floor cell, so a keep already standing is left
+          exactly as it is.
 - **The Misty Mountains and Mount Gundabad are clear while the gate is photographed.** Both ranges close their fog at thirty-eight and forty-four blocks, which is what a mist is and also what hides a mountain from a screenshot taken outside it, so `BiomeMaker.CLEAR_RANGE_FOG` is on and both biomes read a near plane of 512 and a far plane of 1024 instead. It is temporary and it is one switch: set it false and the two mists come back exactly as they were, since their own numbers are still written at the two calls. Nothing generated depends on it - a fog is a look, not a world rule - and every other biome in the pack keeps the fog it had.
 - **A capture's air is written, and it is the other half of a flat cut face.** Placing a structure writes the air it carries, so a build cut out of a hillside erases ground wherever it was cut with sky: the gate's eight files hold 489,812 air cells against 132,268 blocks, and the top course's east end - `gundabad_gate_3_1_0.nbt`, sixteen by thirty-three by forty-eight - is 25,344 cells and every one of them air, so that file alone clears a box the size of itself out of the mountain. The two upper pieces beside it are 94 to 99 per cent air. So a flat face left after a build is placed has two possible causes - ground not shaped to the build, or the build clearing ground it does not need - and the second is fixed at the capture: `tools/gate_capture.py --trim-sky` drops the air above the highest block of each column, and a piece that holds nothing but air can be dropped whole. Both are written into `AGENTS.md` as the rule for any build, with the warning that a passage's own air is load-bearing and only the box's sky is fair game. Nothing about the gate changes yet: its air is below the height of its wings and the pass's floor already leaves it nothing to clear inside the box.
 - **The outside camp is final, and no floating glowstone is left standing anywhere.** All twenty-eight pieces outside
