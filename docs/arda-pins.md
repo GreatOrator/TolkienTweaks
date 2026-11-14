@@ -35,3 +35,24 @@ every world is a copy rather than a transcription.
 
 Empty is the table's normal state and a working one - a location with no pin is surveyed from the drawing
 as it always was - so nothing here has to be filled in for the campaign to be walked.
+
+## Where a pin lands on a building
+
+A pinned build is laid from its **north-west bottom corner** unless it is on the front-corner list, and the
+height is measured off the ground under the footprint rather than taken from the pin - `Pins`' own note
+says so, and it is why a pin a block or two out in y is not an error.
+
+The orc pieces are the exception. They are placed by hand against a wall or the back of a yard, so they
+are pinned at their **front**: the pin is the front's south-west corner, the piece runs back from it by its
+own depth, and it stands on the pin's own y instead of being seated. The two lists in `Sites` are
+`FRONT_CORNER` and `ON_THE_PIN`, and they carry the same eight templates.
+
+The numbers came out of the owner's own placing rather than from a guess: an `orc_hall` pinned at
+**(5533, 188, −6891)** was laid by hand at **(5533, 188, −6912)** - the pin 21 north, which is the hall's
+depth of 22 less one, with x and y untouched. Laid by the world, the same pin had put the hall at
+**(5533, 201, −6891)**: the right corner, but seated thirteen blocks up on the courtyard's surface. Both
+halves of the rule were needed - the front corner, and the pin's own height.
+
+`orc_hall`'s four faces are all open at ground level - it is a pillared hall on a grass floor rather than a
+walled box - so "front" is a convention here and not a doorway. The convention is +z: the face at the
+greater z is the front, which is the face that meets the yard it was built against.

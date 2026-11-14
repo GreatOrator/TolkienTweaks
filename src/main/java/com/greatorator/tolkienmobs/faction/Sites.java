@@ -421,7 +421,19 @@ public final class Sites extends SavedData {
      * measured from its mouth it came down by a number that was still a guess at the ground the scout had already
      * stood on. The pin is the measurement.
      */
-    private static final Set<String> ON_THE_PIN = Set.of(SHELTER_CAMP);
+    private static final Set<String> ON_THE_PIN = Set.of(SHELTER_CAMP,
+            ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2);
+
+    /**
+     * Buildings whose pin marks the middle of the front rather than the north-west corner - the orc pieces, which are
+     * placed by hand against a wall or the back of a yard and measured from the face that meets it.
+     * <p>
+     * Read off the owner's own placing rather than chosen: an {@code orc_hall} pinned at (5533, 188, -6891) was laid by
+     * hand at (5533, 188, -6912), which is the pin twenty-one blocks north - the building's own depth, 22, less one -
+     * with its x and its y untouched. So the pin is the front's south-west corner and the piece runs back from it.
+     */
+    private static final Set<String> FRONT_CORNER = Set.of(
+            ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2);
 
     /**
      * Buildings whose template is the whole of what they are meant to be: laid and left, with nothing filled under
@@ -1212,7 +1224,13 @@ public final class Sites extends SavedData {
         // furthest apart is the furthest anything can be - because a box around the centre is not the footprint of a
         // build laid from its corner, and the blocks written past its far edge would be dropped without a word.
         BlockPos pinned = Pins.at(level, site.structure());
-        BlockPos anchor = pinned != null ? pinned : site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
+        // A front-cornered build is laid back from the pin by its own depth, so the face the builder stood at is the
+        // face that lands on the pin. Everything else hangs off its north-west corner, the way it always has.
+        BlockPos spot = pinned == null ? null
+                : FRONT_CORNER.contains(site.structure())
+                        ? pinned.offset(0, 0, -(size.getZ() - 1))
+                        : pinned;
+        BlockPos anchor = spot != null ? spot : site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
         if (!chunksLoaded(level, anchor, size.getX(), size.getZ())) return;
         Seat seat = seatFor(level, site.structure(), size);
         // A pinned building stands at its pin, and nowhere else. The corner the pin names is the corner the
@@ -1227,8 +1245,8 @@ public final class Sites extends SavedData {
             // A building on this list is put where its pin is and nowhere else, with no question asked of the ground
             // under it: the corner is the pin, the height is the pin's own, and the hill is whatever the hill is.
             found = ON_THE_PIN.contains(site.structure())
-                    ? new Plane(pinned, 0)
-                    : plane(level, pinned, size.getX(), size.getZ(), seat);
+                    ? new Plane(spot, 0)
+                    : plane(level, spot, size.getX(), size.getZ(), seat);
             if (found == null) {
                 if (UNBUILDABLE.add(site.player())) {
                     LOGGER.info("The pin at {} will not take {} - re-pin it rather than move the build ({})",
