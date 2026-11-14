@@ -129,3 +129,14 @@ Not settled:
   for; if the hold is meant to be entirely underground they belong down in the courtyard instead.
 - **`orc_hall`'s 34 blocks.** Only 47 of rock stand over it at the back of the crown, and less towards the
   south wall. Where exactly it tunnels off the keep decides how much of the mountain is left over it.
+
+## The marker the auto-placement reads
+
+`GundabadGate.autospawn` stands the gate once per world at `ArdaMap.gatePlan()` and answers "already
+standing" from one cell of netherrack in the west wing. The offsets (`MARK_X`, `MARK_Y`, `MARK_Z`) are
+counted from the **box's own corner** — `base(plan, Rotation.NONE)`, which is `gatePlan()` less half the
+width, i.e. (5496, 187, −6877) — and not from `gatePlan()` itself, which is the middle of the box's north
+row. Read from the plan point the same numbers land on (5593, 188, −6852), stone, so the guard answered
+"not standing" every time the server came up and re-laid the whole gate: its template's air took the half of
+anything standing on the footprint that was inside the box. The marker cell that answers correctly is
+**(5513, 188, −6852)**, and it is netherrack in the test world.

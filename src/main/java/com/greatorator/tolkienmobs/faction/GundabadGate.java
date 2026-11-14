@@ -253,6 +253,12 @@ public final class GundabadGate {
     /**
      * The cell that says the gate is already standing: a course of netherrack inside the west wing, four sides of the
      * gate's own rock around it and under it. The country never makes netherrack, so finding it there is the gate.
+     * <p>
+     * The offsets are counted from the **box's own corner**, which is what {@code base} answers and what every piece's
+     * own position is counted from - not from the plan point, which sits in the middle of the box's north row. Read
+     * from the plan point the same three numbers land 80 blocks east, in the middle of the gate, where the answer is
+     * always stone: the guard then said "not standing" on every server start and laid the whole gate again over
+     * whatever had been built on its footprint since.
      */
     private static final int MARK_X = 17;
     private static final int MARK_Y = 1;
@@ -269,7 +275,9 @@ public final class GundabadGate {
         ServerLevel level = server.getLevel(TolkienDimensions.ARDA);
         if (level == null) return 0;
         BlockPos plan = ArdaMap.gatePlan();
-        if (level.getBlockState(plan.offset(MARK_X, MARK_Y, MARK_Z)).is(Blocks.NETHERRACK)) return 0;
+        if (level.getBlockState(base(plan, Rotation.NONE).offset(MARK_X, MARK_Y, MARK_Z)).is(Blocks.NETHERRACK)) {
+            return 0;
+        }
         int laid = place(level, plan, Rotation.NONE);
         if (laid <= 0) return 0;
         dressFloor(level, plan, Rotation.NONE);
