@@ -426,6 +426,13 @@ public final class Campaign extends SavedData {
     private static final double GIMLI_REACH = 96.0D;
     /** Where he stands, from the middle of the hold's footprint: the spiral room, beside its well. */
     private static final int[] GIMLI_STAND = {38, 61};
+    /**
+     * How far above that middle the floor he stands on is: the hold's plan is its own bottom corner, so the middle of
+     * its footprint is the course the build starts at and its rooms are fourteen above it. Without the lift the step is
+     * read thirteen courses under the room it is meant to be in, {@code floorOf} cannot reach it from there, and the
+     * dwarf was stood beside the player instead of at the well.
+     */
+    private static final int GIMLI_LIFT = 13;
     private static final String REFUGE_TITLE = "campaign.tolkienmobs.page.refuge";
     private static final String REFUGE_PLACE = "campaign.tolkienmobs.page.refuge.place";
     private static final String REFUGE_CLOSING = "campaign.tolkienmobs.page.refuge.closing";
@@ -1922,7 +1929,7 @@ public final class Campaign extends SavedData {
         // the hall was out of it and nobody keeping the hold was ever stood. The reach grows with it.
         double reach = Math.max(GIMLI_REACH, Sites.span(level, site) + 24.0D);
         if (middle.distToCenterSqr(player.position()) > reach * reach) return;
-        BlockPos post = floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]));
+        BlockPos post = floorNear(level, middle.offset(GIMLI_STAND[0], GIMLI_LIFT, GIMLI_STAND[1]));
         Entity keeper = keeperWith(level, GIMLI_TAG);
         if (keeper != null) {
             // Before the dwarf model had his face he was stood as a scaled man. That body is retired
@@ -1934,7 +1941,7 @@ public final class Campaign extends SavedData {
             keeper.discard();
         }
         BlockPos stand = post != null ? post
-                : floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]), player);
+                : floorNear(level, middle.offset(GIMLI_STAND[0], GIMLI_LIFT, GIMLI_STAND[1]), player);
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_DWARF.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob dwarf)) return;

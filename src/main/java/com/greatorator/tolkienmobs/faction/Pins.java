@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -69,6 +70,12 @@ public final class Pins extends SavedData {
             // these are the pair the chapter walks up to.
             Map.entry(GoblinCave.PIN, new BlockPos(5628, 196, -3621)),
             Map.entry(Sites.SHELTER_CAMP, new BlockPos(5595, 196, -3621)),
+            // The dwarven keep: its own north-west bottom corner, which is the plan the pass was cut to and the box
+            // GundabadKeep lays on the first start of a world. Pinned because the hold is a hundred and twenty-two by
+            // a hundred and eighty-three and there is exactly one box in the massif it fits - the one the chamber's
+            // marked floor was measured into - so a page that names Gundabad is pointed at the hold that stands
+            // rather than at a second one surveyed out of the country's middle.
+            Map.entry(Sites.GUNDABAD, ArdaMap.keepPlan()),
             // Chapter one, walked in the scouting world: the names on the ground their pages are spoken on, and
             // the camps and the four crags on the hillsides they were found on. The y is where the scout stood;
             // the laying measures the ground under a footprint and seats it, so the block is a target and not a

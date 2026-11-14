@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The keep is final: one plan, one autospawn, one pin, and one dwarf at the well.** The hold's location is settled at
+          (5471, 176, -7100), unturned - doorway x 5575-5579 centred on 5577 at courses 190-196, its floor course 189,
+          its south wall on z -6918, the plane the ammolite was walked on. It lays itself on the first start of a world,
+          after the gate and before the orc pieces, loads its own chunks and dresses its own doorway; every start after
+          that leaves it alone. `Pins.SOURCE` now carries the plan, so `Pins.at(level, Sites.GUNDABAD)` answers the corner
+          in every world instead of leaving a page free to survey a second hold out of the massif; `Sites.ON_THE_PIN`
+          holds it, because a box 122 by 183 cannot be seated by measuring the mountain under it; and it is
+          `SELF_DRESSED`, because the mountain is its roof and the sweep that carries a camp's ground to its roofline
+          would open the massif over it. Gimli's post is lifted thirteen courses to the hold's own floor - the plan is
+          the build's bottom corner, so the middle of its footprint is the course it starts at - which puts him at
+          (5570, 190, -6948), local (99, 152) beside the well at the head of the spiral stair, instead of thirteen
+          courses under the room `floorOf` could not reach.
 - **The keep's doorway has a mouth again, and it is dressed on every pass.** With the wall whole the door was still
           unusable: south of the wall the chamber's ground stands a course high - course 190 is solid across the
           passage's whole width - so at the height a player walks the five-wide doorway read as a one-block slot at its

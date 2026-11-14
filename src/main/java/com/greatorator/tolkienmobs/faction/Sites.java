@@ -429,7 +429,7 @@ public final class Sites extends SavedData {
      * measured from its mouth it came down by a number that was still a guess at the ground the scout had already
      * stood on. The pin is the measurement.
      */
-    private static final Set<String> ON_THE_PIN = Set.of(SHELTER_CAMP,
+    private static final Set<String> ON_THE_PIN = Set.of(SHELTER_CAMP, GUNDABAD,
             ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2, ORC_LAVA_PIT);
 
     /**
@@ -478,7 +478,7 @@ public final class Sites extends SavedData {
      * keeper, no steed and no travel stone, since they are pieces being tried rather than places the campaign sends
      * anyone to; if a piece ever becomes one, it comes off this list and gets its own dressing.
      */
-    private static final Set<String> SELF_DRESSED = Set.of(SHELTER_CAMP,
+    private static final Set<String> SELF_DRESSED = Set.of(SHELTER_CAMP, GUNDABAD,
             ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2, ORC_LAVA_PIT);
 
     /**

@@ -275,3 +275,39 @@ slot at its middle column**, and east of it the mountain's rock came down from 1
 It is dressed on every pass, whether the hold was just laid or has stood for weeks, so a door re-cut by a later gate
 is dressed again. The floor stays where it is, which is what makes the apron flush with the hold's own floor instead
 of a trench outside it.
+
+## The keep, settled
+
+The hold is final: one location, one way onto the ground, and one way for a page to find it.
+
+| | |
+|---|---|
+| plan | **x 5471, y 176, z -7100**, unturned, 122 by 26 by 183 |
+| doorway | x 5575-5579 (middle **5577**), courses **190-196**, floor course **189** |
+| south wall | **z -6918**, the plane the mark was walked on |
+| rooms | 190-200, the gate chamber's own section |
+| buried | solid stone at every corner course, 244 to 315 of rock over the top |
+
+**How it comes onto the ground.** `GundabadKeep.autospawn` runs in `MilestoneHandler` straight after
+`GundabadGate.autospawn` and before `OrcPieces.raise`: the gate's hall is carried north to `ArdaMap.keepWall()` and
+cleared through where the keep's wall will stand, so the gate goes first and the keep's own wall and doorway are
+written whole over that clearing. The hold lays itself on the first start of a world, loads its own chunks (the box
+begins at chunk x 341, z -444, past anything a world keeps for its spawn), dresses its doorway's mouth, and is left
+exactly as it is on every start after that - the test is the doorway's own floor cell, which answers with the
+template's deepslate once the hold is up. `/tmgate keep` is the same laying by hand, and it reports the count.
+
+**How a page finds it.** `Pins.SOURCE` carries the plan, so `Pins.at(level, Sites.GUNDABAD)` answers the corner in
+every world. `Sites.ON_THE_PIN` holds it, which is the rule that the pin's own height is the height - a box 122 by 183
+cannot be seated by measuring the ground under it, because the ground under it is the massif. And it is
+`SELF_DRESSED`: the mountain is the hold's roof, so the sweep that carries a camp's ground to its roofline would open
+the massif over it. What that costs is the travel stone, which the pack puts at every named building; the hold is
+reached by the campaign's own page and by `/tmgate keep` instead.
+
+**Who stands here.** Gimli, and only Gimli. He is the campaign's one keeper at the hold - `keepGimli` stands a
+`tolkienmobs:dwarf` beside the well at the head of the spiral stair, his post being the middle of the hold plus
+(38, 61) across and (with `GIMLI_LIFT`) thirteen courses up, which is **5570, 190, -6948**: local (99, 152), a room
+column with the well's shaft at x 87-97 and the spiral's steps at x 94-95 beside it. He is tagged
+`tolkienmobs:campaign_gimli` and named in gold, and he is the turn-in for *Last Refuge I* and the giver of
+*Last Refuge II*. Glóin gives and takes every Gundabad page but stands at **his camp**, not here; Dugorim is the
+Dourhands' captain and the hunt target *below* the stair, an enemy rather than a giver. No camp keeper and no steed:
+`CAMP_OWNERS` holds only Elladan's and Barachen's, and `bodyFor(GUNDABAD)` answers none.
