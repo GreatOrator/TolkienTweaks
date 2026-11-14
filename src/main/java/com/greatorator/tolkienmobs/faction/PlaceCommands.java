@@ -11,6 +11,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -19,7 +25,10 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -54,6 +63,25 @@ public final class PlaceCommands {
     private static final DynamicCommandExceptionType NOT_SET = new DynamicCommandExceptionType(
             name -> Component.translatable("command.tolkienmobs.place.not_set", name));
 
+    /**
+     * The orc buildings in the pack, by the short name a builder types. They are the pieces the next work at Gundabad
+     * is made of, and trying one somewhere is how the ground is judged: each is a template and nothing else, so this
+     * catalogue is the only thing between the name and the file.
+     */
+    private static final Map<String, String> BUILDS = new LinkedHashMap<>();
+
+    static {
+        BUILDS.put("ram", "tolkienmobs:orcs/orc_battle_ram");
+        BUILDS.put("battleram", "tolkienmobs:orcs/orc_battle_ram");
+        BUILDS.put("tent", "tolkienmobs:orcs/orc_tent");
+        BUILDS.put("tower", "tolkienmobs:orcs/orc_tower");
+        BUILDS.put("hut", "tolkienmobs:orcs/orc_hut");
+        BUILDS.put("farm", "tolkienmobs:orcs/orc_farm");
+        BUILDS.put("butcher", "tolkienmobs:orcs/orc_butcher");
+        BUILDS.put("hall", "tolkienmobs:orcs/orc_hall");
+        BUILDS.put("hall2", "tolkienmobs:orcs/orc_hall_2");
+    }
+
     private PlaceCommands() {
     }
 
@@ -73,6 +101,10 @@ public final class PlaceCommands {
                         .then(Commands.argument("id", StringArgumentType.word())
                                 .suggests(PlaceCommands::suggest)
                                 .executes(PlaceCommands::remove)))
+                .then(Commands.literal("build")
+                        .then(Commands.argument("name", StringArgumentType.word())
+                                .suggests(PlaceCommands::suggestBuilds)
+                                .executes(PlaceCommands::build)))
                 .then(Commands.literal("list").executes(PlaceCommands::list))
                 .then(Commands.literal("where").executes(PlaceCommands::where))
                 .then(Commands.literal("forget")
@@ -104,6 +136,47 @@ public final class PlaceCommands {
         if (!Places.remove(source.getLevel(), id)) throw NOT_SET.create(label);
         source.sendSuccess(() -> Component.translatable("command.tolkienmobs.place.removed", label), true);
         return 1;
+    }
+
+    /**
+     * Raises one of the pack's buildings where the caller stands, turned to face the way they face.
+     * <p>
+     * This is the hand a builder uses rather than the one the campaign uses: a place is named ground that a page is
+     * built on later, and this is a template laid here and now, so the piece can be walked round, measured against the
+     * ground, and thrown away again. The build's own floor sits at the caller's feet and its middle on their middle,
+     * which is where a piece being judged wants to be.
+     */
+    private static int build(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        ServerPlayer player = source.getPlayerOrException();
+        if (!(source.getLevel() instanceof ServerLevel level)) {
+            source.sendFailure(Component.literal("A building is raised in a world - be a player in one first."));
+            return 0;
+        }
+        String typed = StringArgumentType.getString(context, "name").toLowerCase(Locale.ROOT);
+        String id = BUILDS.get(typed);
+        if (id == null && typed.indexOf(':') >= 0) id = typed;
+        if (id == null) {
+            source.sendFailure(Component.literal("No building called \"" + typed + "\" - "
+                    + String.join(", ", BUILDS.keySet()) + ", or a full template id."));
+            return 0;
+        }
+        String template = id;
+        StructureTemplate found = level.getStructureManager().get(Identifier.parse(template)).orElse(null);
+        if (found == null) {
+            source.sendFailure(Component.literal("Nothing in the pack called \"" + template + "\"."));
+            return 0;
+        }
+        Rotation rotation = GundabadGate.rotationFor(player.getDirection());
+        Vec3i size = found.getSize(rotation);
+        BlockPos corner = player.blockPosition().offset(-size.getX() / 2, 0, -size.getZ() / 2);
+        StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(rotation);
+        boolean placed = found.placeInWorld(level, corner, corner, settings, level.getRandom(), 2);
+        source.sendSuccess(() -> Component.literal((placed ? "Raised " : "Tried ") + template + " at "
+                + corner.toShortString() + ", facing " + player.getDirection().getName() + ": "
+                + size.getX() + " wide, " + size.getY() + " tall, " + size.getZ() + " deep"
+                + (placed ? "." : " - the world refused it.")), true);
+        return placed ? 1 : 0;
     }
 
     /**
@@ -174,6 +247,13 @@ public final class PlaceCommands {
             ids.add(name.id());
         }
         return SharedSuggestionProvider.suggest(ids, builder);
+    }
+
+    /** Offers the buildings, since a name typed by hand is a name the builder has to remember. */
+    private static java.util.concurrent.CompletableFuture<com.mojang.brigadier.suggestion.Suggestions> suggestBuilds(
+            CommandContext<CommandSourceStack> context,
+            com.mojang.brigadier.suggestion.SuggestionsBuilder builder) {
+        return SharedSuggestionProvider.suggest(new ArrayList<>(BUILDS.keySet()), builder);
     }
 
     /** One name, or a count when several were named at once. */
