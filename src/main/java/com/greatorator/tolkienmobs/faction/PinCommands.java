@@ -89,6 +89,9 @@ public final class PinCommands {
         BUILDINGS.put("butcher", Sites.ORC_BUTCHER);
         BUILDINGS.put("hall", Sites.ORC_HALL);
         BUILDINGS.put("hall2", Sites.ORC_HALL_2);
+        BUILDINGS.put("pit", Sites.ORC_LAVA_PIT);
+        BUILDINGS.put("lavapit", Sites.ORC_LAVA_PIT);
+        BUILDINGS.put("lava", Sites.ORC_LAVA_PIT);
     }
 
     /**

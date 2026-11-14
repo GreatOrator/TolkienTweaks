@@ -97,7 +97,7 @@ rock, so there is nowhere to stand. The three ways out:
 ## Which orc pieces belong around it
 
 Sizes are the templates' own: **35 wide × 34 tall × 22 deep** for `orc_hall`, and so on. With the keep
-underground, the eight pieces divide between the hold below and the camp at the gate's foot.
+underground, the nine pieces divide between the hold below and the camp at the gate's foot.
 
 | piece | size (w × h × d) | where it belongs, and why |
 |---|---|---|
@@ -109,10 +109,11 @@ underground, the eight pieces divide between the hold below and the camp at the 
 | `orc_farm` | 16 × 16 × 28 | **the courtyard's west edge**, where the level 187 runs furthest - the one piece that wants open flat ground. |
 | `orc_tent` | 13 × 12 × 14 | **the courtyard**, beside the passage's mouth (x 5600, z −6885). |
 | `orc_battle_ram` | 10 × 7 × 18 | **the courtyard**, on the axis under the gate, where a ram is used. |
+| `orc_lava_pit` | 22 × 15 × 22 | **the courtyard**, sunk into its floor: a hole ringed with iron and skulls, its bottom 21 cells of lava with water standing over it. The only piece of the nine that **carries air** - 6140 of its 7260 entries - so laying it takes its whole 22 × 22 box out first and nothing standing inside that box survives it. |
 
 Read as one picture: **a dwarven hall under the mountain, its guard room at the door, two watch posts on
 the crown above it, and the war camp in the courtyard at the gate's foot.** `PASS_PLAZA` is level "because
-an army stands on it", and that is where five of the eight pieces go.
+an army stands on it", and that is where six of the nine pieces go.
 
 ## What is settled, and what is not
 

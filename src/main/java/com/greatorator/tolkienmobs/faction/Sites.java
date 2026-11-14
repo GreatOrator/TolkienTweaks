@@ -206,6 +206,13 @@ public final class Sites extends SavedData {
     public static final String ORC_BUTCHER = "tolkienmobs:orcs/orc_butcher";
     public static final String ORC_HALL = "tolkienmobs:orcs/orc_hall";
     public static final String ORC_HALL_2 = "tolkienmobs:orcs/orc_hall_2";
+    /**
+     * The pit the orcs keep their fire in: 22 by 15 by 22, the whole box filled - 1120 blocks of stone, dirt and grass
+     * round a sunk floor of 21 cells of lava with water standing over it and a ring of iron bars and skulls at its rim.
+     * It is the one piece of the eight that carries air (6140 of its 7260 entries), because a pit is a hole: laying it
+     * takes its whole box out first, so nothing that stands inside that box survives it.
+     */
+    public static final String ORC_LAVA_PIT = "tolkienmobs:orcs/orc_lava_pit";
 
     public static final String WOOD_RUIN = "tolkienmobs:key_structures/ttmruin_large_2";
     /**
@@ -423,7 +430,7 @@ public final class Sites extends SavedData {
      * stood on. The pin is the measurement.
      */
     private static final Set<String> ON_THE_PIN = Set.of(SHELTER_CAMP,
-            ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2);
+            ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2, ORC_LAVA_PIT);
 
     /**
      * Buildings whose pin marks the middle of the front rather than the north-west corner - the orc pieces, which are
@@ -437,7 +444,7 @@ public final class Sites extends SavedData {
      * in, and the piece's base takes the ground under their feet rather than the air they are standing in.
      */
     private static final Set<String> FRONT_CORNER = Set.of(
-            ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2);
+            ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2, ORC_LAVA_PIT);
 
     /** How far below the pin a front-cornered building's own base course sits: one, the ground the builder stood on. */
     private static final int FRONT_DROP = -1;
@@ -472,7 +479,7 @@ public final class Sites extends SavedData {
      * anyone to; if a piece ever becomes one, it comes off this list and gets its own dressing.
      */
     private static final Set<String> SELF_DRESSED = Set.of(SHELTER_CAMP,
-            ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2);
+            ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2, ORC_LAVA_PIT);
 
     /**
      * What the stone standing at a building's door is called, by template: the name a player reads in the travel
