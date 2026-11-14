@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
@@ -11,6 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
+import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 import java.util.ArrayList;
@@ -236,6 +239,34 @@ public final class GundabadGate {
             }
         }
         return dressed;
+    }
+
+    /**
+     * The cell that says the gate is already standing: a course of netherrack inside the west wing, four sides of the
+     * gate's own rock around it and under it. The country never makes netherrack, so finding it there is the gate.
+     */
+    private static final int MARK_X = 17;
+    private static final int MARK_Y = 1;
+    private static final int MARK_Z = 25;
+
+    /**
+     * Stands the gate at its own site as the server comes up, once per world: the eight pieces, the ground bedded to the
+     * floor, the seam dressed and the passage carried north into the mountain. A world that already has it is left alone,
+     * which the marker cell answers without laying a block.
+     *
+     * @return how many pieces were laid, or 0 if the gate was already standing
+     */
+    public static int autospawn(MinecraftServer server) {
+        ServerLevel level = server.getLevel(TolkienDimensions.ARDA);
+        if (level == null) return 0;
+        BlockPos plan = ArdaMap.gatePlan();
+        if (level.getBlockState(plan.offset(MARK_X, MARK_Y, MARK_Z)).is(Blocks.NETHERRACK)) return 0;
+        int laid = place(level, plan, Rotation.NONE);
+        if (laid <= 0) return 0;
+        dressFloor(level, plan, Rotation.NONE);
+        drape(level, plan, Rotation.NONE);
+        extendHall(level, plan, Rotation.NONE);
+        return laid;
     }
 
     /**

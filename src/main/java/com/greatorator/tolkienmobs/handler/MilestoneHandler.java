@@ -19,6 +19,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import com.greatorator.tolkienmobs.faction.GundabadGate;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 import javax.annotation.Nullable;
@@ -63,6 +64,9 @@ public class MilestoneHandler extends SavedData {
         if (overworld != null) {
             getInstance(overworld);
         }
+        // The Gundabad gate stands at its own site in Arda rather than waiting for a page or a command: every world is
+        // drawn with the pass, and the gate is part of the pass. One that is already standing is left exactly as it is.
+        GundabadGate.autospawn(event.getServer());
     }
 
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
