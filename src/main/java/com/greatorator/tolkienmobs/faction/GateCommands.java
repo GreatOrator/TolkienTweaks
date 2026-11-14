@@ -44,6 +44,7 @@ public final class GateCommands {
                 .then(Commands.literal("place").executes(GateCommands::site))
                 .then(Commands.literal("site").executes(GateCommands::site))
                 .then(Commands.literal("here").executes(GateCommands::here))
+                .then(Commands.literal("keep").executes(GateCommands::keep))
                 .then(Commands.literal("undress").executes(GateCommands::undressBack))
                 .then(Commands.literal("clear")
                         .executes(GateCommands::clear)
@@ -109,6 +110,34 @@ public final class GateCommands {
             source.sendSuccess(() -> Component.literal("Laid " + laid + " of 8 pieces of the Gundabad gate at "
                     + front.toShortString() + "; not in the pack: " + String.join(", ", missing) + "."), true);
         }
+        return laid;
+    }
+
+    /**
+     * Stands the dwarven keep at its own plan, whatever the autospawn has made of it - the tool for a hold that is
+     * written down but not standing, and for laying it again after its own wall has been cut through.
+     * <p>
+     * The plan is a corner in solid rock, so there is nothing to stand at and nothing to point at: the command takes
+     * no position and no facing, because there is exactly one box the hold fits and it is the one the chamber's
+     * marked floor was measured into.
+     */
+    private static int keep(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getLevel() instanceof ServerLevel level)) {
+            source.sendFailure(Component.literal("The keep's plan is ground in Arda - ask this in a world."));
+            return 0;
+        }
+        BlockPos plan = ArdaMap.keepPlan();
+        int laid = GundabadKeep.place(level, plan);
+        if (laid <= 0) {
+            source.sendFailure(Component.literal("The keep is not in the pack, or its plan could not be loaded at "
+                    + plan.toShortString() + "."));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal("Laid the keep at " + plan.toShortString() + ": "
+                + ArdaMap.KEEP_WIDE + " wide, " + ArdaMap.KEEP_TALL + " tall, " + ArdaMap.KEEP_DEEP
+                + " deep, unturned. Its doorway's floor is 189 at x 5577, z -6918 - stand at 5577 190 -6915 to look"
+                + " through it."), true);
         return laid;
     }
 

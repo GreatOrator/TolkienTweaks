@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The keep's own chunks are loaded by hand, and `/tmgate keep` lays it on demand.** The autospawn was written and it
+          did not fire in a live world: the hold's box begins at chunk x 341, z -444, further north and west than the
+          spawn chunks reach, so every chunk it needed was unloaded on the first start of a world - `hasChunkAt` answered
+          no and `place` returned nothing, silently, which reads exactly like a keep that had always been standing. The
+          box's chunks are now asked for by hand before the template is placed, which loads them and draws them where
+          they are new ground. `/tmgate keep` is the same laying as a command: no position and no facing, because there
+          is one box the hold fits - the plan the chamber's marked floor was measured into - and it reports the
+          doorway's floor at 189, x 5577, z -6918 so there is somewhere to stand and look through it.
 - **The keep behind the gate now stands, and its way in is the floor you marked.** The dwarven hold was written down
           in `ArdaMap` as a plan - 122 by 26 by 183 at (5516, 187, -7112), unturned - but nothing ever laid it; only the
           campaign's page pitched it. It is now stood up at server start, after the gate, and the plan is re-read off the

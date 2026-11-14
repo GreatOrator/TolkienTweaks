@@ -252,3 +252,8 @@ keep's own wall and its own five-wide doorway are then written whole, and the cl
 rooms already hold. Laid the other way round the hall opens the wall across the chamber's whole width, and the hold
 has no door at all. `GundabadKeep.autospawn` runs after `GundabadGate.autospawn` for exactly that reason, and tests the
 doorway's own floor cell to leave a keep that is already standing alone.
+
+`/tmgate keep` lays it by hand at the same plan - no position, no facing, because there is one box the hold fits. The
+box's chunks are asked for by hand before the template is placed: they begin at chunk x 341, z -444, past anything a
+world keeps loaded for its spawn, and a `hasChunkAt` test there answers no on a first start, which is how a keep that
+was never laid looked exactly like one that was already standing.

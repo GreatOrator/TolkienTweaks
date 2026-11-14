@@ -78,8 +78,14 @@ public final class GundabadKeep {
         if (template == null) return 0;
         Vec3i size = template.getSize();
         if (size.getX() <= 0 || size.getY() <= 0 || size.getZ() <= 0) return 0;
-        if (!level.hasChunkAt(plan) || !level.hasChunkAt(plan.offset(size.getX() - 1, 0, size.getZ() - 1))) {
-            return 0;
+        // The box sits deeper into the mountain than a world's spawn chunks reach - its south wall is fifty-three
+        // blocks past the back of the gate and its west side a further twenty-five - so on the first start of a world
+        // every one of its chunks is unloaded, and a keep asked for with a hasChunkAt test answered no and was never
+        // laid. The chunks are asked for by hand instead, which loads them and draws them if they are new ground.
+        for (int cx = plan.getX() >> 4; cx <= (plan.getX() + size.getX() - 1) >> 4; cx++) {
+            for (int cz = plan.getZ() >> 4; cz <= (plan.getZ() + size.getZ() - 1) >> 4; cz++) {
+                level.getChunk(cx, cz);
+            }
         }
         StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(Rotation.NONE);
         template.placeInWorld(level, plan, plan, settings, level.getRandom(), 2);
