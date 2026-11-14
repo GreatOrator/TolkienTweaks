@@ -1,11 +1,34 @@
 # The mod's commands
 
-Every command the pack registers, in the order a world-runner reaches for them. All seven roots are for
-arranging a world rather than for playing in one: each asks for **creative, or a gamemaster-level operator
-(op 2)**, and none of them is how a player plays the campaign. Nothing here reaches the world by a menu, so
-this file is also the only list of what the pack can be told to do.
+Every command the pack registers. All eleven roots are for arranging a world rather than for playing in one:
+each asks for **creative, or a gamemaster-level operator (op 2)**, and none of them is how a player plays the
+campaign. Nothing here reaches the world by a menu, so this file is also the only list of what the pack can be
+told to do. The sections after the map take the roots one at a time, except the three that have a file of their
+own: the gate in `docs/gundabad-gate.md`, the cave in `docs/goblin-cave.md`, and the scene in
+`docs/departure-scene.md`.
 
-The last section is the walkthrough for standing the hand-built Rivendell up in a world.
+## The map — which root is which
+
+Read this before reaching for one. **Five roots touch blocks, and only one of them is general.**
+
+| root | what it is for | blocks |
+|---|---|---|
+| `/tmplace` | **the general one.** `build <name>` lays that building at your feet, facing your way; `add <id> [radius]`, `remove <id>`, `list`, `where`, `forget <targets>` put a name on ground and take it off. | lays a template |
+| `/tmpin` | **writes a spot down and nothing else.** `place <id>` pins named ground, `build <name>` pins a template, `list`, `checklist`, `remove <name>`. A pinned build is raised later by the page that names it, not here. | none — it writes |
+| `/tmgate` | the Gundabad gate. `place` / `site` lays it at its own site in the pass, `here` lays it at your feet, `undress` strips the old skirt behind it, `clear` and `clear here` take it out again. It also stands by itself when a world starts. | lays, fills |
+| `/tmcave` | the goblin cave, cut out of ground the world already made: `cut` behind the pin, `dress` to lay the hall from its structure. The campaign does this on its own as a player comes near. | cuts, fills |
+| `/tmcity` | the hand-built Rivendell: `origin`, `summon`, `folk`, `band [count]`, `relay`, `apron`, `drape`, `goto`, `status`. Detailed below. | lays, cuts, fills |
+| `/tmroad` | the graded road out of the valley and the bridge over the Bruinen: `build`, `forget`. Detailed below. | lays, cuts, fills |
+| `/tmscene` | the chapter-one seam by hand: `state`, `note`, `play` (a rehearsal, taken away after), `stop`, `skip`, `forget`, `marks`, `route`. | stands bodies |
+| `/tmquest` | the work by hand: `give [count]`, `quit`, `complete [count]`, `spawn`, `campaign_giver <alliance>`. | none — it writes |
+| `/tmfaction` | `set` and `get` a player's standing with the three alliances; the same two are flat as `/tmsetfaction` and `/tmgetfaction`. | none |
+| `/tmcourage` | `get`, or set a player's deeds, so a high rung can be tried without a week of questing. | none |
+| `/tmtp` | the quick map: `list`, then a jump per country, place or build. Points are computed from the drawing, so they follow it. | none |
+
+The one distinction that is easy to lose: **`/tmpin` only writes a spot down; `/tmplace build` lays the
+blocks now.** Both read the same table of building names, so anything one knows the other answers to as well.
+The orc buildings are in it: `ram` (or `orcram`), `orctent`, `tower`, `hut`, `farm`, `butcher`, `hall`,
+`hall2` — and any full template id works in either command.
 
 ## `/tmcity` — the hand-built city
 
