@@ -24,9 +24,10 @@ import java.util.List;
  * the mark - the mark stands in the first course of air, so the base takes the ground under it, which is the same rule
  * the orc pins already follow.
  * <p>
- * The four towers are the marks inside the gate's own footprint (x 5496 to 5655, z -6877 to -6830). Four more ammolite
- * blocks stand five blocks north of the gate's back face, at z -6882, and are left out: they are not in the footprint,
- * so they are somebody's earlier mark rather than this row.
+ * The towers come in two ranks of four. The near rank is the marks inside the gate's own footprint (x 5496 to 5655,
+ * z -6877 to -6830), on the courtyard floor at 188. The far rank stands five blocks north of the gate's back face, at
+ * z -6882, on ground one course lower: two towers west of the passage's mouth and two east of it, closing the same
+ * building from behind.
  */
 public final class OrcPieces {
     /** One piece: the template, and the ammolite block that marks the middle of its footprint. */
@@ -41,10 +42,16 @@ public final class OrcPieces {
      * (no template in the pack carries one, so every ammolite block in the world is a mark).
      */
     private static final List<Piece> PIECES = List.of(
+            // the near rank: marks in the gate's own footprint, on the courtyard floor at 188
             new Piece(Sites.ORC_TOWER, new BlockPos(5539, 188, -6831)),
             new Piece(Sites.ORC_TOWER, new BlockPos(5557, 188, -6831)),
             new Piece(Sites.ORC_TOWER, new BlockPos(5598, 188, -6830)),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 188, -6830)));
+            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 188, -6830)),
+            // the far rank: two either side of the passage's mouth, on ground one course lower at 187
+            new Piece(Sites.ORC_TOWER, new BlockPos(5539, 187, -6882)),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5558, 187, -6882)),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5598, 187, -6882)),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 187, -6882)));
 
     private OrcPieces() {
     }

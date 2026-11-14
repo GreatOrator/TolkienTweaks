@@ -82,8 +82,9 @@ of its footprint. A piece is laid with half its width and depth out from the mar
 below** the mark, which is the same rule the orc pins follow, and `/tmplace orcs` raises every marked piece
 that is not already standing. `Sites.standsAt` is the check, so running it twice raises nothing twice.
 
-The four towers on the gate are its first entries. Their marks are the ammolite blocks **inside the gate's
-footprint** — x 5496 to 5655, z −6877 to −6830:
+The eight towers on the gate are its first entries, in two ranks of four. The near rank's marks are the
+ammolite blocks **inside the gate's footprint** — x 5496 to 5655, z −6877 to −6830, on the courtyard floor at
+188:
 
 | mark | piece's box |
 |---|---|
@@ -92,5 +93,12 @@ footprint** — x 5496 to 5655, z −6877 to −6830:
 | (5598, 188, −6830) | x 5593–5604, y 187–208, z −6836…−6824 |
 | (5628, 188, −6830) | x 5623–5634, y 187–208, z −6836…−6824 |
 
-Four more marks stand five blocks north of the gate's back face, at **z −6882** (x 5539, 5558, 5598, 5628,
-y 187). They are outside the footprint and are not in the table: earlier marks rather than this row.
+The far rank stands five blocks north of the gate's back face, at **z −6882**, on ground one course lower at
+187 — two west of the passage's mouth, two east of it, closing the same building from behind:
+
+| mark | piece's box |
+|---|---|
+| (5539, 187, −6882) | x 5534–5545, y 186–207, z −6888…−6876 |
+| (5558, 187, −6882) | x 5553–5564, y 186–207, z −6888…−6876 |
+| (5598, 187, −6882) | x 5593–5604, y 186–207, z −6888…−6876 |
+| (5628, 187, −6882) | x 5623–5634, y 186–207, z −6888…−6876 |

@@ -4,15 +4,19 @@ All notable changes to this project will be documented in this file.
 
 - **The Misty Mountains and Mount Gundabad are clear while the gate is photographed.** Both ranges close their fog at thirty-eight and forty-four blocks, which is what a mist is and also what hides a mountain from a screenshot taken outside it, so `BiomeMaker.CLEAR_RANGE_FOG` is on and both biomes read a near plane of 512 and a far plane of 1024 instead. It is temporary and it is one switch: set it false and the two mists come back exactly as they were, since their own numbers are still written at the two calls. Nothing generated depends on it - a fog is a look, not a world rule - and every other biome in the pack keeps the fog it had.
 - **A capture's air is written, and it is the other half of a flat cut face.** Placing a structure writes the air it carries, so a build cut out of a hillside erases ground wherever it was cut with sky: the gate's eight files hold 489,812 air cells against 132,268 blocks, and the top course's east end - `gundabad_gate_3_1_0.nbt`, sixteen by thirty-three by forty-eight - is 25,344 cells and every one of them air, so that file alone clears a box the size of itself out of the mountain. The two upper pieces beside it are 94 to 99 per cent air. So a flat face left after a build is placed has two possible causes - ground not shaped to the build, or the build clearing ground it does not need - and the second is fixed at the capture: `tools/gate_capture.py --trim-sky` drops the air above the highest block of each column, and a piece that holds nothing but air can be dropped whole. Both are written into `AGENTS.md` as the rule for any build, with the warning that a passage's own air is load-bearing and only the box's sky is fair game. Nothing about the gate changes yet: its air is below the height of its wings and the pass's floor already leaves it nothing to clear inside the box.
+- **The gate is closed from behind by a second rank of towers.** All eight ammolite marks by the gate are towers,
+          not four with four leftovers: the far rank stands five blocks north of the gate's back face at **z -6882** - marks
+          **(5539, 187, -6882)**, **(5558, 187, -6882)**, **(5598, 187, -6882)** and **(5628, 187, -6882)**, two either side of the
+          passage's mouth - on ground one course lower than the courtyard, so each base sits at 186 and each box runs y 186-207
+          and z -6888 to -6876. They go in the same `OrcPieces` table as the near rank, so `/tmplace orcs` raises all eight and
+          `Sites.standsAt` leaves the four already standing alone.
 - **A marked spot is enough to place a piece.** `OrcPieces` records the spots a builder marked with
           `tolkienmobs:block_ammolite`, and `/tmplace orcs` raises them: the middle of the piece's footprint goes on the mark
           and its base course one block below, the same rule the orc pins follow, and `Sites.standsAt` leaves a piece that is
           already there alone. Its first entries are the **four orc towers on the gate's own footprint** - marks
           **(5539, 188, -6831)**, **(5557, 188, -6831)**, **(5598, 188, -6830)** and **(5628, 188, -6830)**, each tower 12 by 22
-          by 13 with its base at 187. Four more ammolite blocks stand five blocks north of the gate's back face at z -6882;
-          they are outside the footprint and are left out of the table, being earlier marks. No template in the pack carries
-          ammolite - gate, keep and all eight orc pieces were checked - so every ammolite block in a save is a mark and the
-          scan cannot be confused by a build.
+          by 13 with its base at 187. No template in the pack carries ammolite - gate, keep and all eight orc pieces were
+          checked - so every ammolite block in a save is a mark and the scan cannot be confused by a build.
 - **The orc pieces bring no draping.** They join `Sites.SELF_DRESSED`, so the world lays one and leaves the ground
           alone around it: no sweep out to its rooflines, no cut inside its footprint, no underpinning under its base - the
           yard a builder pinned it on stays the yard they chose. The same list means no keeper, no steed and no travel stone
