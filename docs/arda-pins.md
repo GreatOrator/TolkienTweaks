@@ -172,8 +172,9 @@ about, dropped two and moved six south: the marks did not move, only the push. T
 by three blocks — their centres are 7 apart — and their 7-wide bodies do not.
 
 The farm's back sits on its mark and it runs north to −6887, five courses short of the huts, with its gated
-cobblestone wall — the template's high-z end — looking at them. It went up right the first time and is settled:
-the pit and the rams were moved and turned after seeing them, the farm was not touched.
+cobblestone wall — the template's high-z end — looking at them. It went up right the first time, and all three of
+these pieces are now **settled as final**: the farm first time, the rams after two goes at their depth and one at
+their place, the pit after three at its height. Nothing here is to be moved again on a guess.
 
 Both `orc_farm` and `orc_battle_ram` carried a **floating glowstone** at a corner of their box, (15, 15, 0) and
 (9, 6, 0): the cut tool's residue, the same as the one taken out of `orc_tower` at (11, 21, 0). Both are cut.
