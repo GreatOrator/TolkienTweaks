@@ -463,7 +463,15 @@ public final class Sites extends SavedData {
         }
     }
 
-    private static final Set<String> SELF_DRESSED = Set.of(SHELTER_CAMP);
+    /**
+     * The orc pieces are on it too, and for a plainer reason: they are the builder's own, pinned against a wall or the
+     * back of a yard, and the ground they are pinned on is the ground the builder chose. Draping the yard to their
+     * rooflines - and cutting it down inside their footprints - is the pass undoing the placing. They also bring no
+     * keeper, no steed and no travel stone, since they are pieces being tried rather than places the campaign sends
+     * anyone to; if a piece ever becomes one, it comes off this list and gets its own dressing.
+     */
+    private static final Set<String> SELF_DRESSED = Set.of(SHELTER_CAMP,
+            ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2);
 
     /**
      * What the stone standing at a building's door is called, by template: the name a player reads in the travel

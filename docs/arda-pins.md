@@ -60,3 +60,12 @@ is one course above where this rule places it, and the rule is the one they aske
 `orc_hall`'s four faces are all open at ground level - it is a pillared hall on a grass floor rather than a
 walled box - so "front" is a convention here and not a doorway. The convention is +z: the face at the
 greater z is the front, which is the face that meets the yard it was built against.
+
+## The orc pieces bring no draping
+
+They are on `Sites.SELF_DRESSED` as well, so the world does not dress the ground around them: no `sweep` -
+the pass that carries the ground out to the build's roofline and cuts it down inside the footprint - and no
+`underpin` under the base. The yard they are pinned on is the yard the builder chose, and turning the ground
+over is the pass undoing the placing. The same switch also means no keeper, no steed and no travel stone at
+them, which is right for pieces being tried; the day one becomes a place the campaign sends anyone to, it
+comes off the list and gets its own dressing.
