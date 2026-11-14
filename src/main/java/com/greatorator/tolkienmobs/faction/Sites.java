@@ -428,12 +428,18 @@ public final class Sites extends SavedData {
      * Buildings whose pin marks the middle of the front rather than the north-west corner - the orc pieces, which are
      * placed by hand against a wall or the back of a yard and measured from the face that meets it.
      * <p>
-     * Read off the owner's own placing rather than chosen: an {@code orc_hall} pinned at (5533, 188, -6891) was laid by
-     * hand at (5533, 188, -6912), which is the pin twenty-one blocks north - the building's own depth, 22, less one -
-     * with its x and its y untouched. So the pin is the front's south-west corner and the piece runs back from it.
+     * The pin is the front's south-west corner and the piece runs back from it by its own depth. Read off the owner's
+     * own placing: an {@code orc_hall} pinned at (5533, 188, -6891) was laid by hand at (5533, 188, -6912), which is the
+     * pin twenty-one blocks north - the building's own depth, 22, less one.
+     * <p>
+     * And it sits **one course below** the pin, which is where the owner wants it: the pin is the block a builder stands
+     * in, and the piece's base takes the ground under their feet rather than the air they are standing in.
      */
     private static final Set<String> FRONT_CORNER = Set.of(
             ORC_RAM, ORC_TENT, ORC_TOWER, ORC_HUT, ORC_FARM, ORC_BUTCHER, ORC_HALL, ORC_HALL_2);
+
+    /** How far below the pin a front-cornered building's own base course sits: one, the ground the builder stood on. */
+    private static final int FRONT_DROP = -1;
 
     /**
      * Buildings whose template is the whole of what they are meant to be: laid and left, with nothing filled under
@@ -1228,7 +1234,7 @@ public final class Sites extends SavedData {
         // face that lands on the pin. Everything else hangs off its north-west corner, the way it always has.
         BlockPos spot = pinned == null ? null
                 : FRONT_CORNER.contains(site.structure())
-                        ? pinned.offset(0, 0, -(size.getZ() - 1))
+                        ? pinned.offset(0, FRONT_DROP, -(size.getZ() - 1))
                         : pinned;
         BlockPos anchor = spot != null ? spot : site.centre().offset(-size.getX() / 2, 0, -size.getZ() / 2);
         if (!chunksLoaded(level, anchor, size.getX(), size.getZ())) return;

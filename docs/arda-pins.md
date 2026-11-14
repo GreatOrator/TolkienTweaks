@@ -44,14 +44,18 @@ says so, and it is why a pin a block or two out in y is not an error.
 
 The orc pieces are the exception. They are placed by hand against a wall or the back of a yard, so they
 are pinned at their **front**: the pin is the front's south-west corner, the piece runs back from it by its
-own depth, and it stands on the pin's own y instead of being seated. The two lists in `Sites` are
+own depth, and it sits **one course below** the pin rather than being seated on the ground. The two lists in `Sites` are
 `FRONT_CORNER` and `ON_THE_PIN`, and they carry the same eight templates.
 
-The numbers came out of the owner's own placing rather than from a guess: an `orc_hall` pinned at
+The corner came out of the owner's own placing rather than from a guess: an `orc_hall` pinned at
 **(5533, 188, −6891)** was laid by hand at **(5533, 188, −6912)** - the pin 21 north, which is the hall's
-depth of 22 less one, with x and y untouched. Laid by the world, the same pin had put the hall at
-**(5533, 201, −6891)**: the right corner, but seated thirteen blocks up on the courtyard's surface. Both
-halves of the rule were needed - the front corner, and the pin's own height.
+depth of 22 less one. Laid by the world, the same pin had put the hall at **(5533, 201, −6891)**: the right
+corner, but seated thirteen blocks up on the courtyard's surface, which is why the pin's own height is used
+at all.
+
+The y is then ours, not the ground's: the base course sits **one below the pin**, so a pin taken in the block
+a builder stands in puts the floor on the ground they stood on. (`FRONT_DROP = -1`.) The owner's by-hand hall
+is one course above where this rule places it, and the rule is the one they asked for.
 
 `orc_hall`'s four faces are all open at ground level - it is a pillared hall on a grass floor rather than a
 walled box - so "front" is a convention here and not a doorway. The convention is +z: the face at the
