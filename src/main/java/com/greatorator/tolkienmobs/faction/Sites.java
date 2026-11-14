@@ -797,6 +797,49 @@ public final class Sites extends SavedData {
         return false;
     }
 
+    /**
+     * Whether <em>every</em> sampled block of a template stands at a corner - {@link #standsAt}'s strict reading, for
+     * pieces a mark fixes in place.
+     * <p>
+     * A majority answers whether a building is there, which is all a site needs to know before laying one: nobody minds
+     * that a camp has been lived in. A piece standing at a mark is the other case - it is meant to be exactly the
+     * template, so half of one is not a piece but damage, and it has to be laid again rather than left as it is. A
+     * building that has merely been walked into still answers yes, because the blocks that were sampled are the ones
+     * that were laid.
+     */
+    public static boolean wholeAt(ServerLevel level, String structure, BlockPos corner) {
+        Identifier id = Identifier.tryParse(structure);
+        if (id == null) return false;
+        StructureTemplate template = level.getStructureManager().get(id).orElse(null);
+        if (template == null) return false;
+        Vec3i size = template.getSize();
+        if (size.getX() <= 0 || size.getZ() <= 0) return false;
+        if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(size.getX() - 1, 0, size.getZ() - 1))) {
+            return false;
+        }
+        List<Sample> samples = samplesOf(level, id);
+        if (samples.isEmpty()) return false;
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int lift = -STANDING_BAND; lift <= STANDING_BAND; lift++) {
+            if (wholeLayer(level, samples, corner, lift, cursor)) return true;
+        }
+        return false;
+    }
+
+    /** One layer: whether every one of the template's sampled blocks stands at the corner lifted this far. */
+    private static boolean wholeLayer(ServerLevel level, List<Sample> samples, BlockPos corner, int lift,
+                                      BlockPos.MutableBlockPos cursor) {
+        int y = corner.getY() + lift;
+        for (Sample sample : samples) {
+            cursor.set(corner.getX() + sample.x(), y + sample.y(), corner.getZ() + sample.z());
+            if (!BuiltInRegistries.BLOCK.getKey(level.getBlockState(cursor).getBlock()).toString()
+                    .equals(sample.block())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /** One layer of the band: whether a majority of the template's own blocks stand at the corner lifted this far. */
     private static boolean layer(ServerLevel level, List<Sample> samples, BlockPos corner, int lift,
                                  BlockPos.MutableBlockPos cursor) {

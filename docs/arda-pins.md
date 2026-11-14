@@ -80,7 +80,9 @@ mark somebody left.
 `OrcPieces` is the table those marks are written down in: the template, and the block that marks the middle
 of its footprint. A piece is laid with half its width and depth out from the mark and its **base one block
 below** the mark, which is the same rule the orc pins follow, and `/tmplace orcs` raises every marked piece
-that is not already standing. `Sites.standsAt` is the check, so running it twice raises nothing twice.
+that is not already standing. The check is `Sites.wholeAt`, the strict reading of `standsAt`: every sampled
+block, not a majority, so running it twice raises nothing twice while a piece that something else has laid
+over — a gate's template air cutting the half of it inside the gate's footprint — is laid whole again.
 
 The eight towers on the gate are its first entries, in two ranks of four. The near rank's marks are the
 ammolite blocks **inside the gate's footprint** — x 5496 to 5655, z −6877 to −6830, on the courtyard floor at

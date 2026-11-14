@@ -59,8 +59,10 @@ public final class OrcPieces {
     /**
      * Raises every marked piece that is not already standing, and says how many went up.
      * <p>
-     * A piece already there is left alone, the way a site is: the check is {@link Sites#standsAt}, which reads the
-     * template's own blocks at the corner it would be laid from, so asking twice raises nothing twice.
+     * A piece already there is left alone, so asking twice raises nothing twice: the check is {@link Sites#wholeAt},
+     * which reads the template's own blocks at the corner it would be laid from. It is the strict reading on purpose -
+     * a piece cut in half by something else laid over its footprint is not standing, and is laid whole again rather
+     * than left as the half it was left.
      *
      * @return how many pieces were laid, which is 0 once they are all standing
      */
@@ -78,7 +80,7 @@ public final class OrcPieces {
             if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(size.getX() - 1, 0, size.getZ() - 1))) {
                 continue;
             }
-            if (Sites.standsAt(level, piece.structure(), corner)) continue;
+            if (Sites.wholeAt(level, piece.structure(), corner)) continue;
             template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
             laid++;
         }
