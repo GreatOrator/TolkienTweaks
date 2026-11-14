@@ -894,7 +894,7 @@ public final class Sites extends SavedData {
 
     /** One of a template's own blocks: where it sits from the corner, and the block the file says is there. */
     /** Where a template's own offset lands once the piece is turned, which is how {@code Rotation} turns a block. */
-    private static int[] turnedSample(Rotation rotation, int x, int z) {
+    public static int[] turnedSample(Rotation rotation, int x, int z) {
         return switch (rotation) {
             case NONE -> new int[]{x, z};
             case CLOCKWISE_90 -> new int[]{-z, x};

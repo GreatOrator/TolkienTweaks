@@ -2,14 +2,26 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The orc pieces standing where somebody walked out the spot and marked it.
@@ -21,50 +33,67 @@ import java.util.List;
  * without anybody measuring it twice.
  * <p>
  * A mark is the **middle of the footprint** rather than a corner, because that is what a person standing in a doorway
- * can judge: the piece then runs out from it by half its own width and depth, and its base course sits one block below
- * the mark - the mark stands in the first course of air, so the base takes the ground under it, which is the same rule
- * the orc pins already follow.
+ * can judge: the piece then runs out from it by half its own width and depth. A piece also carries a **drop** - how far
+ * below its mark its own base course sits - because the marks were not all made the same way. A tower's mark was placed
+ * in the air over the courtyard floor, so its base sits one course below it, on the floor; a hut's mark was placed in
+ * the plaza's own surface course, so its base sits on the mark, flush with the ground the builder stood on.
  * <p>
  * A piece may also be **turned**. A tower is four walls and reads the same any way round, but a hut has one opening in
- * it, and the huts round the plaza are placed so those openings look at the middle of it. The turn is written beside the
- * mark rather than worked out at the laying, so what goes up is what was judged when the marks were read: the template's
- * opening is in its **south face** (a single column at x 10, two courses high, with its stairs in the base below and a
- * lintel over it), and the plaza's middle is west of every hut here, so each is turned a quarter clockwise, which turns
- * that opening from south to west.
+ * it: a single column two courses high in the template's **south face**, with its stairs cut into the base below and a
+ * lintel over it. The turn is written beside the mark rather than worked out at the laying, so what goes up is what was
+ * judged when the marks were read - the three huts east of the hall are laid **unturned**, so their openings look south
+ * at the gate's own front, and the one west of the hall is turned a quarter anticlockwise, which turns that opening
+ * from south to east, at the plaza's middle.
  */
 public final class OrcPieces {
-    /** One piece: the template, the ammolite block that marks the middle of its footprint, and which way it is turned. */
-    private record Piece(String structure, BlockPos mark, Rotation rotation) {
+    /** One piece: the template, the middle of its footprint, which way it is turned, and how far its base sits below. */
+    private record Piece(String structure, BlockPos mark, Rotation rotation, int drop) {
     }
 
-    /** How far below its mark a piece's own base course sits: the mark is in the first course of air over the ground. */
-    private static final int MARK_DROP = 1;
+    /** An arrangement laid by an earlier table and still standing on the ground. */
+    private record Former(String structure, BlockPos mark, Rotation rotation, int drop) {
+    }
 
     /**
      * The pieces and their marks, read out of `run/saves/Mod Test` by scanning Arda for `tolkienmobs:block_ammolite`
      * (no template in the pack carries one, so every ammolite block in the world is a mark).
      */
     private static final List<Piece> PIECES = List.of(
-            // The near rank of towers: marks in the gate's own footprint, on the courtyard floor at 188.
-            new Piece(Sites.ORC_TOWER, new BlockPos(5539, 188, -6831), Rotation.NONE),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5557, 188, -6831), Rotation.NONE),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5598, 188, -6830), Rotation.NONE),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 188, -6830), Rotation.NONE),
+            // The near rank of towers: marks in the gate's own footprint, in the air over the courtyard floor at 188.
+            new Piece(Sites.ORC_TOWER, new BlockPos(5539, 188, -6831), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5557, 188, -6831), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5598, 188, -6830), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 188, -6830), Rotation.NONE, 1),
             // The far rank: two either side of the passage's mouth, on ground one course lower at 187.
-            new Piece(Sites.ORC_TOWER, new BlockPos(5539, 187, -6882), Rotation.NONE),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5558, 187, -6882), Rotation.NONE),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5598, 187, -6882), Rotation.NONE),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 187, -6882), Rotation.NONE),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5539, 187, -6882), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5558, 187, -6882), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5598, 187, -6882), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 187, -6882), Rotation.NONE, 1),
             // The huts on the plaza: four bodies 13 wide in the strip the mountain leaves open either side of the hall,
-            // one west of it and three east, one block between neighbours so each stands as its own building. The hall
-            // runs x 5563 to 5591, the mountain's foot closes the strip at 5538 and 5633, and the tower row takes
-            // z -6888 south, which is what leaves one row at this depth. Each hut turns its opening at the plaza's
-            // middle: the west one looks east, a quarter anticlockwise; the three east of the hall look west, a quarter
-            // clockwise.
-            new Piece(Sites.ORC_HUT, new BlockPos(5548, 187, -6899), Rotation.COUNTERCLOCKWISE_90),
-            new Piece(Sites.ORC_HUT, new BlockPos(5599, 187, -6899), Rotation.CLOCKWISE_90),
-            new Piece(Sites.ORC_HUT, new BlockPos(5613, 187, -6899), Rotation.CLOCKWISE_90),
-            new Piece(Sites.ORC_HUT, new BlockPos(5627, 187, -6899), Rotation.CLOCKWISE_90));
+            // one west of it and three east, 14 apart so each stands as its own building. Their marks are in the plaza's
+            // surface course, so they sit flush with it (drop 0). The three east of the hall look south, at the gate's
+            // front; the one west of it looks east, at the plaza's middle.
+            new Piece(Sites.ORC_HUT, new BlockPos(5548, 187, -6899), Rotation.COUNTERCLOCKWISE_90, 1),
+            new Piece(Sites.ORC_HUT, new BlockPos(5599, 187, -6899), Rotation.NONE, 0),
+            new Piece(Sites.ORC_HUT, new BlockPos(5613, 187, -6899), Rotation.NONE, 0),
+            new Piece(Sites.ORC_HUT, new BlockPos(5627, 187, -6899), Rotation.NONE, 0));
+
+    /**
+     * Arrangements these pieces were laid in before, and which still stand: the three huts east of the hall went up a
+     * course low and facing west, before the builder marked their doorways and judged them. A piece that is not whole
+     * is taken down from these first, so the new arrangement replaces the old one instead of being laid over it and
+     * leaving the old walls as debris beside the new.
+     */
+    private static final List<Former> FORMER = List.of(
+            new Former(Sites.ORC_HUT, new BlockPos(5599, 187, -6899), Rotation.CLOCKWISE_90, 1),
+            new Former(Sites.ORC_HUT, new BlockPos(5613, 187, -6899), Rotation.CLOCKWISE_90, 1),
+            new Former(Sites.ORC_HUT, new BlockPos(5627, 187, -6899), Rotation.CLOCKWISE_90, 1));
+
+    /** The template's own blocks, as offsets and block names, read once per structure and kept. */
+    private record Cell(int x, int y, int z, String name) {
+    }
+
+    private static final Map<String, List<Cell>> CELLS = new HashMap<>();
 
     private OrcPieces() {
     }
@@ -75,7 +104,8 @@ public final class OrcPieces {
      * A piece already there is left alone, so asking twice raises nothing twice: the check is {@link Sites#wholeAt},
      * which reads the template's own blocks at the corner it would be laid from, turned the way the piece is turned. It
      * is the strict reading on purpose - a piece cut in half by something else laid over its footprint is not standing,
-     * and is laid whole again rather than left as the half it was left.
+     * and is laid whole again rather than left as the half it was left. A piece that has moved - turned, lifted, or put
+     * on a mark it was not on before - fails that check too, and its earlier arrangement is taken off the ground first.
      * <p>
      * The chunks under a piece are opened before it is asked about: this runs as the server comes up, and a chunk that
      * is not loaded reads as air, which would both hide a piece that stands and lose one that is laid into it.
@@ -86,28 +116,131 @@ public final class OrcPieces {
         if (!TolkienDimensions.ARDA.equals(level.dimension())) return 0;
         int laid = 0;
         for (Piece piece : PIECES) {
-            Identifier id = Identifier.tryParse(piece.structure());
-            if (id == null) continue;
-            StructureTemplate template = level.getStructureManager().get(id).orElse(null);
+            StructureTemplate template = template(level, piece.structure());
             if (template == null) continue;
-            if (template.getSize().getX() <= 0 || template.getSize().getZ() <= 0) continue;
-            StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(piece.rotation());
-            // A turned piece fills a different box, so the box is asked of the template in the turn it will be laid in.
-            BoundingBox box = template.getBoundingBox(settings, BlockPos.ZERO);
-            int across = box.maxX() - box.minX() + 1;
-            int deep = box.maxZ() - box.minZ() + 1;
-            BlockPos origin = piece.mark().offset(-(across - 1) / 2, -MARK_DROP, -(deep - 1) / 2);
-            BlockPos anchor = origin.offset(-box.minX(), -box.minY(), -box.minZ());
-            open(level, anchor, across, deep);
+            BlockPos anchor = anchor(template, piece.mark(), piece.rotation(), piece.drop());
+            open(level, anchor, template, piece.rotation());
             if (Sites.wholeAt(level, piece.structure(), anchor, piece.rotation())) continue;
-            template.placeInWorld(level, anchor, anchor, settings, level.getRandom(), 2);
+            takeDown(level, piece);
+            template.placeInWorld(level, anchor, anchor,
+                    new StructurePlaceSettings().setRotation(piece.rotation()), level.getRandom(), 2);
             laid++;
         }
         return laid;
     }
 
+    /**
+     * Takes a piece back off the ground wherever it was laid before, so it can go up somewhere else: every cell that
+     * still holds one of the piece's own blocks becomes air, and anything the world has built over or changed is left
+     * alone. Both the arrangements in {@link #FORMER} and the current one are cleared, which is what lets a piece that
+     * has only been partly knocked about be laid whole again.
+     */
+    private static int takeDown(ServerLevel level, Piece piece) {
+        int floor = piece.mark().getY() - piece.drop();
+        int removed = 0;
+        for (Former former : FORMER) {
+            if (!former.mark().equals(piece.mark())) continue;
+            removed += clear(level, former.structure(), former.mark(), former.rotation(), former.drop(), floor);
+        }
+        removed += clear(level, piece.structure(), piece.mark(), piece.rotation(), piece.drop(), floor);
+        return removed;
+    }
+
+    /**
+     * Removes one arrangement of a piece: its own blocks only, where the world still holds them unchanged, and only from
+     * {@code floor} up. The floor is the base of the arrangement that is going up in its place, so the old piece's own
+     * base course is left in the ground - a hut lifted a course would otherwise have its old pad taken out from under it
+     * and stand over a hole.
+     */
+    private static int clear(ServerLevel level, String structure, BlockPos mark, Rotation rotation, int drop, int floor) {
+        StructureTemplate template = template(level, structure);
+        Identifier id = Identifier.tryParse(structure);
+        if (template == null || id == null) return 0;
+        BlockPos anchor = anchor(template, mark, rotation, drop);
+        open(level, anchor, template, rotation);
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        int removed = 0;
+        for (Cell cell : cellsOf(level, id)) {
+            int[] at = Sites.turnedSample(rotation, cell.x(), cell.z());
+            int y = anchor.getY() + cell.y();
+            if (y < floor) continue;
+            cursor.set(anchor.getX() + at[0], y, anchor.getZ() + at[1]);
+            if (!nameOf(level.getBlockState(cursor)).equals(cell.name())) continue;
+            level.setBlock(cursor, Blocks.AIR.defaultBlockState(), 2);
+            removed++;
+        }
+        return removed;
+    }
+
+    private static String nameOf(BlockState state) {
+        return BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
+    }
+
+    /** The template's own blocks, as offsets and block names, read once per structure out of the file it is loaded from. */
+    private static List<Cell> cellsOf(ServerLevel level, Identifier id) {
+        String key = id.toString();
+        List<Cell> known = CELLS.get(key);
+        if (known != null) return known;
+        List<Cell> cells = readCells(level, id);
+        CELLS.put(key, cells);
+        return cells;
+    }
+
+    private static List<Cell> readCells(ServerLevel level, Identifier id) {
+        Identifier file = Identifier.fromNamespaceAndPath(id.getNamespace(), "structure/" + id.getPath() + ".nbt");
+        CompoundTag tag;
+        try (InputStream stream = level.getServer().getResourceManager().getResourceOrThrow(file).open()) {
+            tag = NbtIo.readCompressed(stream, NbtAccounter.unlimitedHeap());
+        } catch (IOException | RuntimeException unreadable) {
+            return List.of();
+        }
+        ListTag palette = tag.getList("palette").orElseGet(ListTag::new);
+        ListTag blocks = tag.getList("blocks").orElseGet(ListTag::new);
+        if (palette.isEmpty() || blocks.isEmpty()) return List.of();
+        String[] names = new String[palette.size()];
+        for (int index = 0; index < palette.size(); index++) {
+            names[index] = palette.getCompoundOrEmpty(index).getStringOr("Name", "");
+        }
+        List<Cell> cells = new ArrayList<>();
+        for (int index = 0; index < blocks.size(); index++) {
+            CompoundTag block = blocks.getCompoundOrEmpty(index);
+            int state = block.getIntOr("state", -1);
+            if (state < 0 || state >= names.length) continue;
+            String name = names[state];
+            if (name.endsWith(":air") || name.endsWith("cave_air") || name.endsWith("void_air")) continue;
+            ListTag pos = block.getList("pos").orElseGet(ListTag::new);
+            if (pos.size() < 3) continue;
+            cells.add(new Cell(pos.getIntOr(0, 0), pos.getIntOr(1, 0), pos.getIntOr(2, 0), name));
+        }
+        return cells;
+    }
+
+    /**
+     * The corner a piece is laid from: half its own footprint out from the mark in the turn it will be laid in, and its
+     * base course the piece's own drop below the mark.
+     */
+    private static BlockPos anchor(StructureTemplate template, BlockPos mark, Rotation rotation, int drop) {
+        BoundingBox box = template.getBoundingBox(new StructurePlaceSettings().setRotation(rotation), BlockPos.ZERO);
+        int across = box.maxX() - box.minX() + 1;
+        int deep = box.maxZ() - box.minZ() + 1;
+        BlockPos origin = mark.offset(-(across - 1) / 2, -drop, -(deep - 1) / 2);
+        return origin.offset(-box.minX(), -box.minY(), -box.minZ());
+    }
+
+    private static StructureTemplate template(ServerLevel level, String structure) {
+        Identifier id = Identifier.tryParse(structure);
+        if (id == null) return null;
+        StructureTemplate template = level.getStructureManager().get(id).orElse(null);
+        if (template == null) return null;
+        if (template.getSize().getX() <= 0 || template.getSize().getZ() <= 0) return null;
+        return template;
+    }
+
     /** Every chunk a piece touches, opened before it is asked about or laid, the way the gate opens its own. */
-    private static void open(ServerLevel level, BlockPos at, int wide, int deep) {
+    private static void open(ServerLevel level, BlockPos at, StructureTemplate template, Rotation rotation) {
+        BoundingBox box = template.getBoundingBox(new StructurePlaceSettings().setRotation(rotation), BlockPos.ZERO);
+        int wide = box.maxX() - box.minX() + 1;
+        int deep = box.maxZ() - box.minZ() + 1;
         for (int dx = 0; dx < wide; dx += 8) {
             for (int dz = 0; dz < deep; dz += 8) {
                 level.getChunk((at.getX() + dx) >> 4, (at.getZ() + dz) >> 4);

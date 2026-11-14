@@ -110,12 +110,18 @@ The far rank stands five blocks north of the gate's back face, at **z −6882**,
 
 Four more marks stand on the plaza, whose middle is (5576, 187, −6893):
 
-| mark | body (13 wide) | door |
-|---|---|---|
-| (5548, 187, −6899) | x 5542–5554, z −6905…−6893 | east, `Rotation.COUNTERCLOCKWISE_90` |
-| (5599, 187, −6899) | x 5593–5605, z −6905…−6893 | west, `Rotation.CLOCKWISE_90` |
-| (5613, 187, −6899) | x 5607–5619, z −6905…−6893 | west, `Rotation.CLOCKWISE_90` |
-| (5627, 187, −6899) | x 5621–5633, z −6905…−6893 | west, `Rotation.CLOCKWISE_90` |
+| mark | body (13 wide) | base | door |
+|---|---|---|---|
+| (5548, 187, −6899) | x 5542–5554, z −6905…−6893 | 186 | east, `COUNTERCLOCKWISE_90` |
+| (5599, 187, −6899) | x 5594–5606, z −6904…−6892 | **187** | **south, `NONE`** |
+| (5613, 187, −6899) | x 5608–5620, z −6904…−6892 | **187** | **south, `NONE`** |
+| (5627, 187, −6899) | x 5622–5634, z −6904…−6892 | **187** | **south, `NONE`** |
+
+The three east of the hall were laid a course low and facing west first; the builder marked their
+doorways with ammolite at **(5593, 187, −6898)**, **(5607, 187, −6898)** and **(5621, 187, −6898)** — the
+west edge of each body, exactly where a player stands to walk in — and judged them: a course higher, and
+turned to look at the gate's own front (south). Those marks are the evidence for both, so they are left in
+the world as the record.
 
 The marks the builder first left were 10 to 19 blocks apart, which put all four hut bodies inside each other;
 these are spread across the strip the plaza actually leaves open. That strip is measured, not guessed: the

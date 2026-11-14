@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 - **The Misty Mountains and Mount Gundabad are clear while the gate is photographed.** Both ranges close their fog at thirty-eight and forty-four blocks, which is what a mist is and also what hides a mountain from a screenshot taken outside it, so `BiomeMaker.CLEAR_RANGE_FOG` is on and both biomes read a near plane of 512 and a far plane of 1024 instead. It is temporary and it is one switch: set it false and the two mists come back exactly as they were, since their own numbers are still written at the two calls. Nothing generated depends on it - a fog is a look, not a world rule - and every other biome in the pack keeps the fog it had.
 - **A capture's air is written, and it is the other half of a flat cut face.** Placing a structure writes the air it carries, so a build cut out of a hillside erases ground wherever it was cut with sky: the gate's eight files hold 489,812 air cells against 132,268 blocks, and the top course's east end - `gundabad_gate_3_1_0.nbt`, sixteen by thirty-three by forty-eight - is 25,344 cells and every one of them air, so that file alone clears a box the size of itself out of the mountain. The two upper pieces beside it are 94 to 99 per cent air. So a flat face left after a build is placed has two possible causes - ground not shaped to the build, or the build clearing ground it does not need - and the second is fixed at the capture: `tools/gate_capture.py --trim-sky` drops the air above the highest block of each column, and a piece that holds nothing but air can be dropped whole. Both are written into `AGENTS.md` as the rule for any build, with the warning that a passage's own air is load-bearing and only the box's sky is fair game. Nothing about the gate changes yet: its air is below the height of its wings and the pass's floor already leaves it nothing to clear inside the box.
+- **The three huts east of the hall stand a course higher and look south at the gate.** The builder marked
+          their doorways with ammolite - **(5593, 187, -6898)**, **(5607, 187, -6898)** and **(5621, 187, -6898)**, the west
+          edge of each body, where a player stands to walk in - and judged them a course low and facing west, so all three
+          are now `Rotation.NONE` (a hut's one opening is in the template's south face, and the gate's front is south of
+          them) with a **drop of 0**: their marks were placed in the plaza's own surface course rather than in the air over
+          it, so their base sits on the mark, flush with the ground, where a tower's sits one course below its own. That is
+          what `Piece` carries now - a template, a mark, a turn and a drop - because the marks were not all made the same
+          way. A piece whose arrangement changes fails `Sites.wholeAt`, so before it goes up again its **former**
+          arrangement is taken off the ground: `OrcPieces.FORMER` records the three huts as they were first laid (a quarter
+          clockwise, a course lower) and `clear` removes each of the piece's own blocks by name, read out of the template's
+          own file, only from the new base up - which leaves the old base course as the ground under the lifted hut instead
+          of taking it out from under it. The hut west of the hall is untouched: the builder did not mark it, so it keeps
+          its east-facing door and its course.
 - **The four huts are spread across the plaza instead of laid on top of each other.** The builder's marks were 10
           to 19 blocks apart and a hut body is 13 wide, so all four stood inside one another. The open strip is measured now -
           the hall runs **x 5563-5591**, the mountain's foot closes it at **5538** west and **5633** east, and the tower row takes
