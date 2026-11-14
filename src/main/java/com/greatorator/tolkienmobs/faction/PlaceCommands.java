@@ -79,6 +79,7 @@ public final class PlaceCommands {
                         .then(Commands.argument("id", StringArgumentType.word())
                                 .suggests(PlaceCommands::suggest)
                                 .executes(PlaceCommands::remove)))
+                .then(Commands.literal("orcs").executes(PlaceCommands::orcs))
                 .then(Commands.literal("build")
                         .then(Commands.argument("name", StringArgumentType.word())
                                 .suggests(PlaceCommands::suggestBuilds)
@@ -114,6 +115,25 @@ public final class PlaceCommands {
         if (!Places.remove(source.getLevel(), id)) throw NOT_SET.create(label);
         source.sendSuccess(() -> Component.translatable("command.tolkienmobs.place.removed", label), true);
         return 1;
+    }
+
+    /**
+     * Raises the orc pieces whose spots were marked with ammolite and written down in {@link OrcPieces} - the four towers
+     * on the gate's own footprint. Each stands with the middle of its footprint on its mark and its base one block
+     * below, and a piece already standing is left alone, so running this twice raises nothing twice.
+     */
+    private static int orcs(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getLevel() instanceof ServerLevel level)) {
+            source.sendFailure(Component.literal("The marks are ground in Arda - ask this in a world."));
+            return 0;
+        }
+        int laid = OrcPieces.raise(level);
+        int marked = OrcPieces.marked();
+        source.sendSuccess(() -> Component.literal(laid == 0
+                ? "All " + marked + " marked orc pieces are already standing - nothing laid."
+                : "Raised " + laid + " of " + marked + " marked orc pieces."), true);
+        return laid;
     }
 
     /**

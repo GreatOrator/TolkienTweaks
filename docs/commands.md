@@ -13,7 +13,7 @@ Read this before reaching for one. **Five roots touch blocks, and only one of th
 
 | root | what it is for | blocks |
 |---|---|---|
-| `/tmplace` | **the general one.** `build <name>` lays that building at your feet, facing your way; `add <id> [radius]`, `remove <id>`, `list`, `where`, `forget <targets>` put a name on ground and take it off. | lays a template |
+| `/tmplace` | **the general one.** `build <name>` lays that building at your feet, facing your way; `orcs` raises the pieces whose spots were marked with ammolite (`OrcPieces`, the four towers on the gate); `add <id> [radius]`, `remove <id>`, `list`, `where`, `forget <targets>` put a name on ground and take it off. | lays a template |
 | `/tmpin` | **writes a spot down and nothing else.** `place <id>` pins named ground, `build <name>` pins a template, `list`, `checklist`, `remove <name>`. A pinned build is raised later by the page that names it, not here. | none — it writes |
 | `/tmgate` | the Gundabad gate. `place` / `site` lays it at its own site in the pass, `here` lays it at your feet, `undress` strips the old skirt behind it, `clear` and `clear here` take it out again. It also stands by itself when a world starts. | lays, fills |
 | `/tmcave` | the goblin cave, cut out of ground the world already made: `cut` behind the pin, `dress` to lay the hall from its structure. The campaign does this on its own as a player comes near. | cuts, fills |

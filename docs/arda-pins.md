@@ -69,3 +69,28 @@ the pass that carries the ground out to the build's roofline and cuts it down in
 over is the pass undoing the placing. The same switch also means no keeper, no steed and no travel stone at
 them, which is right for pieces being tried; the day one becomes a place the campaign sends anyone to, it
 comes off the list and gets its own dressing.
+
+## A mark instead of a pin
+
+Some spots are easier to stand on than to type: a builder marks the middle of a footprint with a block of
+`tolkienmobs:block_ammolite`, and the spot is read out of the world. No template in the pack carries
+ammolite — the gate, the keep and all eight orc pieces were checked — so every ammolite block in a save is a
+mark somebody left.
+
+`OrcPieces` is the table those marks are written down in: the template, and the block that marks the middle
+of its footprint. A piece is laid with half its width and depth out from the mark and its **base one block
+below** the mark, which is the same rule the orc pins follow, and `/tmplace orcs` raises every marked piece
+that is not already standing. `Sites.standsAt` is the check, so running it twice raises nothing twice.
+
+The four towers on the gate are its first entries. Their marks are the ammolite blocks **inside the gate's
+footprint** — x 5496 to 5655, z −6877 to −6830:
+
+| mark | piece's box |
+|---|---|
+| (5539, 188, −6831) | x 5534–5545, y 187–208, z −6837…−6825 |
+| (5557, 188, −6831) | x 5552–5563, y 187–208, z −6837…−6825 |
+| (5598, 188, −6830) | x 5593–5604, y 187–208, z −6836…−6824 |
+| (5628, 188, −6830) | x 5623–5634, y 187–208, z −6836…−6824 |
+
+Four more marks stand five blocks north of the gate's back face, at **z −6882** (x 5539, 5558, 5598, 5628,
+y 187). They are outside the footprint and are not in the table: earlier marks rather than this row.
