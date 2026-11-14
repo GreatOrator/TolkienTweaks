@@ -192,6 +192,20 @@ public final class Sites extends SavedData {
      * of many. This one is never generated - nothing but the page puts it anywhere - so the wall the
      * bridle is found at is that wall and no other.
      */
+    /**
+     * The orc buildings the pack carries: the pieces the next work at Gundabad is made of. They are here, with the
+     * other key structures, so that the command which pins a building and the one which lays it ask the same table
+     * for a name rather than each keeping a list of its own.
+     */
+    public static final String ORC_RAM = "tolkienmobs:orcs/orc_battle_ram";
+    public static final String ORC_TENT = "tolkienmobs:orcs/orc_tent";
+    public static final String ORC_TOWER = "tolkienmobs:orcs/orc_tower";
+    public static final String ORC_HUT = "tolkienmobs:orcs/orc_hut";
+    public static final String ORC_FARM = "tolkienmobs:orcs/orc_farm";
+    public static final String ORC_BUTCHER = "tolkienmobs:orcs/orc_butcher";
+    public static final String ORC_HALL = "tolkienmobs:orcs/orc_hall";
+    public static final String ORC_HALL_2 = "tolkienmobs:orcs/orc_hall_2";
+
     public static final String WOOD_RUIN = "tolkienmobs:key_structures/ttmruin_large_2";
     /**
      * The chapter's own buildings, which the world raises whether or not a page has named them.

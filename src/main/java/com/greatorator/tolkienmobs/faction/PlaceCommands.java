@@ -25,10 +25,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.function.Predicate;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -62,25 +59,6 @@ public final class PlaceCommands {
             id -> Component.translatable("command.tolkienmobs.place.unknown", id));
     private static final DynamicCommandExceptionType NOT_SET = new DynamicCommandExceptionType(
             name -> Component.translatable("command.tolkienmobs.place.not_set", name));
-
-    /**
-     * The orc buildings in the pack, by the short name a builder types. They are the pieces the next work at Gundabad
-     * is made of, and trying one somewhere is how the ground is judged: each is a template and nothing else, so this
-     * catalogue is the only thing between the name and the file.
-     */
-    private static final Map<String, String> BUILDS = new LinkedHashMap<>();
-
-    static {
-        BUILDS.put("ram", "tolkienmobs:orcs/orc_battle_ram");
-        BUILDS.put("battleram", "tolkienmobs:orcs/orc_battle_ram");
-        BUILDS.put("tent", "tolkienmobs:orcs/orc_tent");
-        BUILDS.put("tower", "tolkienmobs:orcs/orc_tower");
-        BUILDS.put("hut", "tolkienmobs:orcs/orc_hut");
-        BUILDS.put("farm", "tolkienmobs:orcs/orc_farm");
-        BUILDS.put("butcher", "tolkienmobs:orcs/orc_butcher");
-        BUILDS.put("hall", "tolkienmobs:orcs/orc_hall");
-        BUILDS.put("hall2", "tolkienmobs:orcs/orc_hall_2");
-    }
 
     private PlaceCommands() {
     }
@@ -153,12 +131,13 @@ public final class PlaceCommands {
             source.sendFailure(Component.literal("A building is raised in a world - be a player in one first."));
             return 0;
         }
-        String typed = StringArgumentType.getString(context, "name").toLowerCase(Locale.ROOT);
-        String id = BUILDS.get(typed);
-        if (id == null && typed.indexOf(':') >= 0) id = typed;
+        String typed = StringArgumentType.getString(context, "name");
+        // The name table is the pack's one table of building names, kept beside the command that pins a building:
+        // a name known to /tmpin build is a name this lays, and neither command keeps a list the other cannot see.
+        String id = PinCommands.buildId(typed);
         if (id == null) {
             source.sendFailure(Component.literal("No building called \"" + typed + "\" - "
-                    + String.join(", ", BUILDS.keySet()) + ", or a full template id."));
+                    + String.join(", ", PinCommands.buildNames()) + ", or a full template id."));
             return 0;
         }
         String template = id;
@@ -253,7 +232,7 @@ public final class PlaceCommands {
     private static java.util.concurrent.CompletableFuture<com.mojang.brigadier.suggestion.Suggestions> suggestBuilds(
             CommandContext<CommandSourceStack> context,
             com.mojang.brigadier.suggestion.SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(new ArrayList<>(BUILDS.keySet()), builder);
+        return SharedSuggestionProvider.suggest(PinCommands.buildNames(), builder);
     }
 
     /** One name, or a count when several were named at once. */

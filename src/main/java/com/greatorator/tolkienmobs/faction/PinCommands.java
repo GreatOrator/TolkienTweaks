@@ -78,6 +78,36 @@ public final class PinCommands {
         BUILDINGS.put("weathertop", Sites.WEATHERTOP);
         BUILDINGS.put("castle", Sites.BOSS_CASTLE);
         BUILDINGS.put("arena", Sites.BOSS_ARENA);
+        // The orc buildings, which are pieces to try against the ground rather than places a page sends anyone to.
+        // The wild tent keeps "tent": this pack's tent is the quest's, and an orc one is asked for by its own name.
+        BUILDINGS.put("ram", Sites.ORC_RAM);
+        BUILDINGS.put("orcram", Sites.ORC_RAM);
+        BUILDINGS.put("orctent", Sites.ORC_TENT);
+        BUILDINGS.put("tower", Sites.ORC_TOWER);
+        BUILDINGS.put("hut", Sites.ORC_HUT);
+        BUILDINGS.put("farm", Sites.ORC_FARM);
+        BUILDINGS.put("butcher", Sites.ORC_BUTCHER);
+        BUILDINGS.put("hall", Sites.ORC_HALL);
+        BUILDINGS.put("hall2", Sites.ORC_HALL_2);
+    }
+
+    /**
+     * What a typed building name means, as the template it is: the catalogue first, then a full template id typed
+     * as it is. This is the one table of building names in the pack - the command that pins a building and the one
+     * that lays it both ask here, so a name added for one is a name the other knows.
+     *
+     * @return the template id, or null when the word is neither a name in the catalogue nor a template id
+     */
+    static String buildId(String typed) {
+        String name = typed.toLowerCase(Locale.ROOT);
+        String building = BUILDINGS.get(name);
+        if (building != null) return building;
+        return typed.indexOf(':') >= 0 ? typed : null;
+    }
+
+    /** The names that table carries, for a suggestion list. */
+    static List<String> buildNames() {
+        return new ArrayList<>(BUILDINGS.keySet());
     }
 
     private PinCommands() {
