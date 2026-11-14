@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The keep's doorway has a mouth again, and it is dressed on every pass.** With the wall whole the door was still
+          unusable: south of the wall the chamber's ground stands a course high - course 190 is solid across the
+          passage's whole width - so at the height a player walks the five-wide doorway read as a one-block slot at its
+          middle column, and east of it the mountain's rock comes down from 196 over the other half. `GundabadKeep`'s
+          own dressing, `clearMouth`, takes out a box around the door: the doorway's five columns and four more either
+          side, eight courses out from the wall, from the floor's course up to the top of the opening. The floor
+          course is never touched, so the apron comes out flush with the hold's floor rather than as a trench, and the
+          wall is south of every cell it looks at. On the world this was measured in the box is 728 cells and 378 come
+          out of it - 283 stone, 84 snow, 6 ice and 5 rockpile - leaving 13 wide and 7 tall clear at every course of
+          the mouth. It runs at server start whether the hold was just laid or has stood for weeks, and `/tmgate keep`
+          runs it too and reports the count, so a door re-cut by a later gate is dressed again.
 - **The keep's own chunks are loaded by hand, and `/tmgate keep` lays it on demand.** The autospawn was written and it
           did not fire in a live world: the hold's box begins at chunk x 341, z -444, further north and west than the
           spawn chunks reach, so every chunk it needed was unloaded on the first start of a world - `hasChunkAt` answered

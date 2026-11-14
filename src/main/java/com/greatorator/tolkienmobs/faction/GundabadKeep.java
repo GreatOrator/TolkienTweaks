@@ -32,6 +32,11 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
  * that wall will stand, so the gate is laid first and the keep laid over it: the keep's own wall is then written whole,
  * with its own doorway the only way in, and the clearing the hall made is air the keep's rooms already hold. Laid the
  * other way round the hall cuts a passage as wide as the chamber through the keep's wall, and the hold has no door.
+ * <p>
+ * Once the wall is whole the doorway's mouth is dressed - {@link #clearMouth} - because the ground it opens onto is
+ * the chamber's, not the build's: the chamber's floor stands a course higher than the hold's own and the mountain's
+ * rock comes down over the eastern half of the opening, so the wall alone would leave a five-wide doorway reading as a
+ * one-block slot. The dressing is a box around the door and is safe on every pass.
  */
 public final class GundabadKeep {
     /**
@@ -48,6 +53,22 @@ public final class GundabadKeep {
     /** The south wall's own course, which is the last course of the template's depth. */
     private static final int DOOR_FACE = ArdaMap.KEEP_DEEP - 1;
 
+    /** The doorway itself: five wide and seven tall, its floor on {@link #DOOR_FLOOR}'s top course. */
+    private static final int DOOR_WIDE = 5;
+    private static final int DOOR_TALL = 7;
+
+    /**
+     * How far the mouth is dressed: four columns past the doorway on either hand and eight courses out from the wall.
+     * <p>
+     * Measured off the world the hold is laid in. South of the wall the chamber's ground stands a course high - course
+     * 190 is solid across the passage's whole width - so at the height a player walks, the doorway read as a one-block
+     * slot at its middle column with the ground covering the other four; and east of the doorway the mountain's rock
+     * comes in from 196 up, so the five-wide opening had a roof of stone over half of it. Eight courses out is where
+     * that ground ends and the passage is already open.
+     */
+    private static final int MOUTH_SIDE = 4;
+    private static final int MOUTH_REACH = 8;
+
     /**
      * Stands the keep at its plan if it is not already there: every world is drawn with the pass, and the pass was
      * shaped for the hold.
@@ -62,9 +83,14 @@ public final class GundabadKeep {
         // The doorway's own floor: the deepslate the hold's floor is cut from. The mark a builder stands on is that
         // same cell, so a keep that is already standing answers with its own block and nothing is laid over it.
         if (level.getBlockState(plan.offset(DOOR_X, DOOR_FLOOR, DOOR_FACE)).is(Blocks.DEEPSLATE)) {
+            // A hold already standing still has its mouth dressed: the ground in front of a doorway is not part of
+            // the build, and a doorway the chamber's floor stands a course across is a slot rather than a way out.
+            clearMouth(level, plan);
             return 0;
         }
-        return place(level, plan);
+        int laid = place(level, plan);
+        if (laid > 0) clearMouth(level, plan);
+        return laid;
     }
 
     /**
@@ -78,18 +104,58 @@ public final class GundabadKeep {
         if (template == null) return 0;
         Vec3i size = template.getSize();
         if (size.getX() <= 0 || size.getY() <= 0 || size.getZ() <= 0) return 0;
-        // The box sits deeper into the mountain than a world's spawn chunks reach - its south wall is fifty-three
-        // blocks past the back of the gate and its west side a further twenty-five - so on the first start of a world
-        // every one of its chunks is unloaded, and a keep asked for with a hasChunkAt test answered no and was never
-        // laid. The chunks are asked for by hand instead, which loads them and draws them if they are new ground.
-        for (int cx = plan.getX() >> 4; cx <= (plan.getX() + size.getX() - 1) >> 4; cx++) {
-            for (int cz = plan.getZ() >> 4; cz <= (plan.getZ() + size.getZ() - 1) >> 4; cz++) {
-                level.getChunk(cx, cz);
-            }
-        }
+        load(level, plan, size.getX(), size.getZ());
         StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(Rotation.NONE);
         template.placeInWorld(level, plan, plan, settings, level.getRandom(), 2);
         return size.getX() * size.getY() * size.getZ();
+    }
+
+    /**
+     * Takes the ground out of the doorway's mouth: the chamber the hold opens into stands a course higher than the
+     * hold's own floor, and the rock east of the doorway comes down over half the opening, so a hold whose wall is
+     * whole is still a hold nobody can walk into.
+     * <p>
+     * What is cleared is a box, not a shape: the doorway's five columns and four more either side, eight courses out
+     * from the wall, from the floor's own course up to the top of the opening - the height a player's head passes
+     * through. The floor course itself is never touched, so the apron comes out flush with the hold's floor rather
+     * than as a trench, and the hold's own wall is south of every cell this looks at. It is safe to run on every pass:
+     * what it clears is air the next time, and a hold whose door was re-cut by a later gate is dressed again.
+     *
+     * @return how many blocks were taken out of the mouth
+     */
+    public static int clearMouth(ServerLevel level, BlockPos plan) {
+        int face = plan.getZ() + DOOR_FACE;
+        int lowX = plan.getX() + DOOR_X - DOOR_WIDE / 2 - MOUTH_SIDE;
+        int wide = DOOR_WIDE + MOUTH_SIDE * 2;
+        int floor = plan.getY() + DOOR_FLOOR;
+        load(level, new BlockPos(lowX, 0, face + 1), wide, MOUTH_REACH);
+        int cleared = 0;
+        for (int z = face + 1; z <= face + MOUTH_REACH; z++) {
+            for (int x = lowX; x < lowX + wide; x++) {
+                for (int y = floor + 1; y <= floor + DOOR_TALL; y++) {
+                    BlockPos at = new BlockPos(x, y, z);
+                    if (level.getBlockState(at).isAir()) continue;
+                    level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                    cleared++;
+                }
+            }
+        }
+        return cleared;
+    }
+
+    /**
+     * Asks for every chunk a box touches, so a hold laid where a world keeps nothing loaded still has ground under it.
+     * <p>
+     * The keep's box begins at chunk x 341, z -444 - further north and west than a world keeps loaded around its
+     * spawn - so on a first start every one of its chunks is unloaded, and a hold asked for with a {@code hasChunkAt}
+     * test answered no and was silently never laid.
+     */
+    private static void load(ServerLevel level, BlockPos low, int wide, int deep) {
+        for (int cx = low.getX() >> 4; cx <= (low.getX() + wide - 1) >> 4; cx++) {
+            for (int cz = low.getZ() >> 4; cz <= (low.getZ() + deep - 1) >> 4; cz++) {
+                level.getChunk(cx, cz);
+            }
+        }
     }
 
     private GundabadKeep() {

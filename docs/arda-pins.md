@@ -257,3 +257,21 @@ doorway's own floor cell to leave a keep that is already standing alone.
 box's chunks are asked for by hand before the template is placed: they begin at chunk x 341, z -444, past anything a
 world keeps loaded for its spawn, and a `hasChunkAt` test there answers no on a first start, which is how a keep that
 was never laid looked exactly like one that was already standing.
+
+### The doorway's mouth
+
+A wall is not a way in. With the hold laid, the ground south of its wall still stood a course high: course 190 is
+solid across the chamber's whole width, so at the height a player walks the five-wide doorway showed as a **one-block
+slot at its middle column**, and east of it the mountain's rock came down from 196 over the other half of the opening.
+`GundabadKeep.clearMouth` takes a box out around the door:
+
+| | |
+|---|---|
+| columns | the doorway's five (5575-5579) and four more each side, **5571-5583** |
+| out from the wall | **eight courses**, z -6917 to -6910, which is where that ground ends and the chamber is already open |
+| height | the floor's course **189** is never touched; **190 to 196** is cleared, the door's own seven |
+| measured | 728 cells in the box, **378 taken out** - 283 stone, 84 snow, 6 ice, 5 rockpile |
+
+It is dressed on every pass, whether the hold was just laid or has stood for weeks, so a door re-cut by a later gate
+is dressed again. The floor stays where it is, which is what makes the apron flush with the hold's own floor instead
+of a trench outside it.

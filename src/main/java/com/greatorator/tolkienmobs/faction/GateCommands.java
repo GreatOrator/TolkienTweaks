@@ -134,10 +134,11 @@ public final class GateCommands {
                     + plan.toShortString() + "."));
             return 0;
         }
+        int cleared = GundabadKeep.clearMouth(level, plan);
         source.sendSuccess(() -> Component.literal("Laid the keep at " + plan.toShortString() + ": "
                 + ArdaMap.KEEP_WIDE + " wide, " + ArdaMap.KEEP_TALL + " tall, " + ArdaMap.KEEP_DEEP
-                + " deep, unturned. Its doorway's floor is 189 at x 5577, z -6918 - stand at 5577 190 -6915 to look"
-                + " through it."), true);
+                + " deep, unturned, " + cleared + " blocks taken out of its doorway's mouth. Its floor is 189 at"
+                + " x 5577, z -6918 - stand at 5577 190 -6915 to look through it."), true);
         return laid;
     }
 
