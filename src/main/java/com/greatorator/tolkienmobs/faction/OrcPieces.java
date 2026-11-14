@@ -92,17 +92,19 @@ public final class OrcPieces {
             new Piece(Sites.ORC_HUT, new BlockPos(5613, 187, -6899), Rotation.NONE, 0),
             new Piece(Sites.ORC_HUT, new BlockPos(5627, 187, -6899), Rotation.NONE, 0),
             // The lava pit. Its one mark is a single block in the courtyard floor, buried at 186 under the stone lip at
-            // 189, and it is the middle of the pit's 22 by 22 footprint, so it needs no push. A pit is a hole: the rim
-            // sits level with the low ground round it, which puts the base course at 172 and the lava at the bottom of
-            // that, seventeen courses under the lip - and the piece's own 6140 cells of air carve the whole 22 by 15
-            // box out of the ground, the bank to the south of it as well.
-            new Piece(Sites.ORC_LAVA_PIT, new BlockPos(5578, 186, -6813), Rotation.NONE, 14),
+            // 189, and it is the middle of the pit's 22 by 22 footprint, so it needs no push. A pit is a hole, but its
+            // rim is the courtyard's own floor: base 174, rim 188, which is the level of twenty-four of the cells around
+            // its footprint. It went in two courses lower first and read as a hole cut in the floor rather than a floor
+            // round a hole, so it was lifted. Its own 6140 cells of air carve the whole 22 by 15 box, the bank to the
+            // south of it as well.
+            new Piece(Sites.ORC_LAVA_PIT, new BlockPos(5578, 186, -6813), Rotation.NONE, 12),
             // The two battle rams at the gate. Each pair of marks is the middle of a ram's front edge, so the ram runs
             // back from it: 18 deep, pushed 9 south of the mark so that edge sits at -6829, a course clear of the gate
-            // wall at -6830 - and the head, the cobblestone tip at the template's high-z end, turned round to face the
-            // gate. Their bases sit on the courtyard floor at 188, a course under the marks.
-            new Piece(Sites.ORC_RAM, new BlockPos(5610, 189, -6830), Rotation.CLOCKWISE_180, 1, 0, 9),
-            new Piece(Sites.ORC_RAM, new BlockPos(5617, 189, -6830), Rotation.CLOCKWISE_180, 1, 0, 9),
+            // wall at -6830. Unturned, its front - the template's low-z end - is the north edge, on the gate. It went up
+            // turned right round and two courses high, and was judged from that: dropped two, to a base of 186, and
+            // turned to face the gate. The marks and the footprint do not move.
+            new Piece(Sites.ORC_RAM, new BlockPos(5610, 189, -6830), Rotation.NONE, 3, 0, 9),
+            new Piece(Sites.ORC_RAM, new BlockPos(5617, 189, -6830), Rotation.NONE, 3, 0, 9),
             // The farm. Its mark is the middle of its back edge - the back of the house, whose red wool roof is the
             // template's low-z half - rather than the middle of its footprint, so it is pushed its own half-depth, 14,
             // north: 28 deep from -6860 up to -6887, its gated cobblestone wall, the template's high-z end, looking at
@@ -118,7 +120,11 @@ public final class OrcPieces {
     private static final List<Former> FORMER = List.of(
             new Former(Sites.ORC_HUT, new BlockPos(5599, 187, -6899), Rotation.CLOCKWISE_90, 1),
             new Former(Sites.ORC_HUT, new BlockPos(5613, 187, -6899), Rotation.CLOCKWISE_90, 1),
-            new Former(Sites.ORC_HUT, new BlockPos(5627, 187, -6899), Rotation.CLOCKWISE_90, 1));
+            new Former(Sites.ORC_HUT, new BlockPos(5627, 187, -6899), Rotation.CLOCKWISE_90, 1),
+            // The pit went in two courses lower, its rim at 186, and the two rams two courses higher and turned round.
+            new Former(Sites.ORC_LAVA_PIT, new BlockPos(5578, 186, -6813), Rotation.NONE, 14),
+            new Former(Sites.ORC_RAM, new BlockPos(5610, 189, -6830), Rotation.CLOCKWISE_180, 1, 0, 9),
+            new Former(Sites.ORC_RAM, new BlockPos(5617, 189, -6830), Rotation.CLOCKWISE_180, 1, 0, 9));
 
     /** The template's own blocks, as offsets and block names, read once per structure and kept. */
     private record Cell(int x, int y, int z, String name) {
@@ -173,7 +179,7 @@ public final class OrcPieces {
         for (Former former : FORMER) {
             if (!former.mark().equals(piece.mark())) continue;
             removed += clear(level, former.structure(), former.mark(), former.rotation(), former.drop(),
-                    former.shiftX(), former.shiftZ(), floor);
+                    former.shiftX(), former.shiftZ(), Math.max(floor, former.mark().getY() - former.drop() + 1));
         }
         removed += clear(level, piece.structure(), piece.mark(), piece.rotation(), piece.drop(),
                 piece.shiftX(), piece.shiftZ(), floor);
@@ -182,9 +188,10 @@ public final class OrcPieces {
 
     /**
      * Removes one arrangement of a piece: its own blocks only, where the world still holds them unchanged, and only from
-     * {@code floor} up. The floor is the base of the arrangement that is going up in its place, so the old piece's own
-     * base course is left in the ground - a hut lifted a course would otherwise have its old pad taken out from under it
-     * and stand over a hole.
+     * {@code floor} up. Two things set the floor, and it is the higher of them: the base of the arrangement going up in
+     * its place, and the course above the old arrangement's own base. So the old piece's base course is left in the
+     * ground - a hut lifted a course would otherwise have its old pad taken out from under it and stand over a hole, and
+     * a ram dropped two would otherwise scrape the courtyard floor out from under its own new pad.
      */
     private static int clear(ServerLevel level, String structure, BlockPos mark, Rotation rotation, int drop,
                              int shiftX, int shiftZ, int floor) {

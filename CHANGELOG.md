@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 - **The Misty Mountains and Mount Gundabad are clear while the gate is photographed.** Both ranges close their fog at thirty-eight and forty-four blocks, which is what a mist is and also what hides a mountain from a screenshot taken outside it, so `BiomeMaker.CLEAR_RANGE_FOG` is on and both biomes read a near plane of 512 and a far plane of 1024 instead. It is temporary and it is one switch: set it false and the two mists come back exactly as they were, since their own numbers are still written at the two calls. Nothing generated depends on it - a fog is a look, not a world rule - and every other biome in the pack keeps the fog it had.
 - **A capture's air is written, and it is the other half of a flat cut face.** Placing a structure writes the air it carries, so a build cut out of a hillside erases ground wherever it was cut with sky: the gate's eight files hold 489,812 air cells against 132,268 blocks, and the top course's east end - `gundabad_gate_3_1_0.nbt`, sixteen by thirty-three by forty-eight - is 25,344 cells and every one of them air, so that file alone clears a box the size of itself out of the mountain. The two upper pieces beside it are 94 to 99 per cent air. So a flat face left after a build is placed has two possible causes - ground not shaped to the build, or the build clearing ground it does not need - and the second is fixed at the capture: `tools/gate_capture.py --trim-sky` drops the air above the highest block of each column, and a piece that holds nothing but air can be dropped whole. Both are written into `AGENTS.md` as the rule for any build, with the warning that a passage's own air is load-bearing and only the box's sky is fair game. Nothing about the gate changes yet: its air is below the height of its wings and the pass's floor already leaves it nothing to clear inside the box.
+- **The rams are dropped two courses and turned to face the gate, and the pit is lifted to the courtyard floor.**
+          Both were judged from the ground and both kept their marks. The rams went up turned `CLOCKWISE_180` with a base
+          of 188; they are laid `NONE` now - a ram's front is the template's low-z end, which unturned is the box's north
+          edge, on the gate - and dropped two to a base of **186**, so their 18-deep boxes, x 5606-5615 and x 5613-5622
+          by z -6829..-6812, stand as they did and only the piece in them turned and sank. The pit's rim at 186 sat below
+          the courtyard floor it was cut into and read as a hole rather than a floor round a hole, so it is lifted two:
+          **base 174, rim 188**, the level of twenty-four of the cells around its footprint. Both are in `FORMER` with the
+          arrangements they first went up in, and the take-down's floor is now the higher of the new piece's base and the
+          course above the old one's, so dropping a piece no longer scrapes the ground out from under its own pad - the
+          pit's buried lava at 172 and the rams' first grass pads stay where they are, under the new work. The farm is
+          settled as it stood and was not touched.
 - **The pit, the two rams and the farm go up on their marks.** Six ammolite blocks the builder left at Gundabad: one
           alone at (5578, 186, -6813) for `orc_lava_pit`, and two pairs on the gate's face line for the rams and the farm.
           Three of them are not footprint middles - a ten-wide ram's front edge and the farm's back have no middle block -
