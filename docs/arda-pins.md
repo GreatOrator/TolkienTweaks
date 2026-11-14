@@ -199,5 +199,28 @@ is twelve tall — and its south face, open across 28 of its 35 cells, has twelv
 far tower row, less than a 13-by-14 footprint deep. The chamber round it is the one the huts and the farm stand in
 already.
 
+## The outside camp, settled
+
+Twenty-eight pieces stand outside the keep, and every one of them is **final**:
+
+| | how many | where |
+|---|---|---|
+| towers | 8 | two ranks of four, on the gate's own footprint |
+| huts | 4 | the covered plaza behind the gate, one west of the hall and three east |
+| farm, pit, rams | 1, 1, 2 | the courtyard and the gate's front, laid from marks |
+| tents | 12 | the open ground in front of the gate, laid from the survey above |
+
+The hall itself is the one piece outside the keep that this table never carried: it was placed by hand, and when it
+was needed it was found by matching its fourteen wall torches against the world (x 5533–5567, y 187–220,
+z −6912…−6891, unturned, 14 of 14).
+
+**No lamp is left hanging anywhere.** The cut tool left a glowstone floating in the corner of every template's box —
+one block, nothing beside it, part of no building — and it has been cut out of all five files that carry one: the
+tower's (11, 21, 0) first, then the farm's (15, 15, 0) and the ram's (9, 6, 0), and now the tent's (12, 11, 0) and
+the hut's (19, 18, 0). Because the huts and the tents were laid before the last two were cut, `OrcPieces` carries
+their corners and sweeps them at every raise: the cell is cleared only where it still holds glowstone, so a piece
+that has been built around is left alone. Each of those templates keeps the glowstone set into its own base course —
+only the one hanging in the sky goes.
+
 Both `orc_farm` and `orc_battle_ram` carried a **floating glowstone** at a corner of their box, (15, 15, 0) and
 (9, 6, 0): the cut tool's residue, the same as the one taken out of `orc_tower` at (11, 21, 0). Both are cut.

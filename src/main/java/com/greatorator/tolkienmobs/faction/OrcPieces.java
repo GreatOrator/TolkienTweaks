@@ -144,6 +144,20 @@ public final class OrcPieces {
             new Former(Sites.ORC_RAM, new BlockPos(5610, 189, -6830), Rotation.NONE, 3, 0, 9),
             new Former(Sites.ORC_RAM, new BlockPos(5617, 189, -6830), Rotation.NONE, 3, 0, 9));
 
+    /**
+     * The glowstone the cut tool leaves floating in the corner of a template's box, in the template's own coordinates: one
+     * to a box, with nothing beside it and part of no building. The tower's, the farm's and the ram's were cut out of the
+     * files before they were laid; the tent's and the hut's were not, and their pieces are already standing, so a piece of
+     * one of those templates has it swept away when the server comes up instead. Both keep the glowstone that is set into
+     * their own base course - only the one hanging in the sky goes.
+     */
+    private static final Map<String, int[]> FLOATING_GLOWSTONE = Map.of(
+            Sites.ORC_TOWER, new int[]{11, 21, 0},
+            Sites.ORC_HUT, new int[]{19, 18, 0},
+            Sites.ORC_FARM, new int[]{15, 15, 0},
+            Sites.ORC_RAM, new int[]{9, 6, 0},
+            Sites.ORC_TENT, new int[]{12, 11, 0});
+
     /** The template's own blocks, as offsets and block names, read once per structure and kept. */
     private record Cell(int x, int y, int z, String name) {
     }
@@ -176,6 +190,7 @@ public final class OrcPieces {
             BlockPos anchor = anchor(template, piece.mark(), piece.rotation(), piece.drop(),
                     piece.shiftX(), piece.shiftZ());
             open(level, anchor, template, piece.rotation());
+            sweep(level, piece, anchor);
             if (Sites.wholeAt(level, piece.structure(), anchor, piece.rotation())) continue;
             takeDown(level, piece);
             template.placeInWorld(level, anchor, anchor,
@@ -230,6 +245,24 @@ public final class OrcPieces {
             removed++;
         }
         return removed;
+    }
+
+    /**
+     * Takes out the floating corner glowstone a piece of this template may still have standing, and nothing else: the cell
+     * is only cleared if it holds glowstone, so a piece that has been built over is left alone. This runs whether or not
+     * the piece is whole, because the lamp is not part of what makes it whole - it is a block no template has any more.
+     *
+     * @return how many were taken out, which is 0 or 1
+     */
+    private static int sweep(ServerLevel level, Piece piece, BlockPos anchor) {
+        int[] corner = FLOATING_GLOWSTONE.get(piece.structure());
+        if (corner == null) return 0;
+        int[] at = Sites.turnedSample(piece.rotation(), corner[0], corner[2]);
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        cursor.set(anchor.getX() + at[0], anchor.getY() + corner[1], anchor.getZ() + at[1]);
+        if (level.getBlockState(cursor).getBlock() != Blocks.GLOWSTONE) return 0;
+        level.setBlock(cursor, Blocks.AIR.defaultBlockState(), 2);
+        return 1;
     }
 
     private static String nameOf(BlockState state) {
