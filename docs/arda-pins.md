@@ -77,8 +77,9 @@ Some spots are easier to stand on than to type: a builder marks the middle of a 
 ammolite — the gate, the keep and all eight orc pieces were checked — so every ammolite block in a save is a
 mark somebody left.
 
-`OrcPieces` is the table those marks are written down in: the template, and the block that marks the middle
-of its footprint. A piece is laid with half its width and depth out from the mark and its **base one block
+`OrcPieces` is the table those marks are written down in: the template, the block that marks the middle
+of its footprint, and which way the piece is turned. It is raised from `/tmplace orcs` and again as the server
+comes up, after the gate, because the towers stand on the gate's own footprint. A piece is laid with half its width and depth out from the mark and its **base one block
 below** the mark, which is the same rule the orc pins follow, and `/tmplace orcs` raises every marked piece
 that is not already standing. The check is `Sites.wholeAt`, the strict reading of `standsAt`: every sampled
 block, not a majority, so running it twice raises nothing twice while a piece that something else has laid
@@ -104,3 +105,25 @@ The far rank stands five blocks north of the gate's back face, at **z −6882**,
 | (5558, 187, −6882) | x 5553–5564, y 186–207, z −6888…−6876 |
 | (5598, 187, −6882) | x 5593–5604, y 186–207, z −6888…−6876 |
 | (5628, 187, −6882) | x 5623–5634, y 186–207, z −6888…−6876 |
+
+## The huts on the plaza
+
+Four more marks stand on the plaza, whose middle is (5576, 187, −6893):
+
+| mark | box after the turn |
+|---|---|
+| (5604, 187, −6899) | x 5595–5613, y 186–204, z −6908…−6889 |
+| (5612, 187, −6892) | x 5603–5621, y 186–204, z −6901…−6882 |
+| (5615, 187, −6905) | x 5606–5624, y 186–204, z −6914…−6895 |
+| (5627, 187, −6903) | x 5618–5636, y 186–204, z −6912…−6893 |
+
+A hut is not four walls: it has **one opening**, a single column two courses high in its **south face** at local
+x 10, with its stairs cut into the base below and a lintel over it. All four are turned
+`Rotation.CLOCKWISE_90`, which turns that opening from south to **west**, at the plaza's middle. The turn is
+written beside each mark rather than worked out when it is laid, and `Sites.wholeAt` turns the sampled blocks
+with it, so the check for "already standing" is asked of the piece in the turn it was laid in.
+
+The four boxes overlap each other — by 11 × 13, 16 × 7 and 7 × 18 blocks in the worst pairs — because the
+marks are 10 to 19 blocks apart and a hut fills 19 by 20. Nothing is erased by that: `orc_hut` places **no
+air** (its palette names air, but no block entry uses it), so two huts that overlap interpenetrate rather than
+cut each other. It does mean the row reads as one huddle rather than four separate huts.

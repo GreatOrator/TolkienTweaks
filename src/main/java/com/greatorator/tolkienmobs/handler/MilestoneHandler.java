@@ -20,6 +20,8 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import com.greatorator.tolkienmobs.faction.GundabadGate;
+import com.greatorator.tolkienmobs.faction.OrcPieces;
+import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 import javax.annotation.Nullable;
@@ -67,6 +69,13 @@ public class MilestoneHandler extends SavedData {
         // The Gundabad gate stands at its own site in Arda rather than waiting for a page or a command: every world is
         // drawn with the pass, and the gate is part of the pass. One that is already standing is left exactly as it is.
         GundabadGate.autospawn(event.getServer());
+        // The orc pieces standing at marks somebody walked out - the two ranks of towers and the huts on the plaza - go up
+        // in the same pass, after the gate, because the towers stand on its own footprint. A piece that is whole is left
+        // exactly as it is, so a world that has them is untouched.
+        ServerLevel arda = event.getServer().getLevel(TolkienDimensions.ARDA);
+        if (arda != null) {
+            OrcPieces.raise(arda);
+        }
     }
 
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {

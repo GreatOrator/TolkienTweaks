@@ -28,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -808,6 +809,11 @@ public final class Sites extends SavedData {
      * that were laid.
      */
     public static boolean wholeAt(ServerLevel level, String structure, BlockPos corner) {
+        return wholeAt(level, structure, corner, Rotation.NONE);
+    }
+
+    /** {@link #wholeAt} for a piece laid turned: the sampled blocks are turned with it before they are looked for. */
+    public static boolean wholeAt(ServerLevel level, String structure, BlockPos corner, Rotation rotation) {
         Identifier id = Identifier.tryParse(structure);
         if (id == null) return false;
         StructureTemplate template = level.getStructureManager().get(id).orElse(null);
@@ -821,17 +827,18 @@ public final class Sites extends SavedData {
         if (samples.isEmpty()) return false;
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int lift = -STANDING_BAND; lift <= STANDING_BAND; lift++) {
-            if (wholeLayer(level, samples, corner, lift, cursor)) return true;
+            if (wholeLayer(level, samples, corner, lift, rotation, cursor)) return true;
         }
         return false;
     }
 
     /** One layer: whether every one of the template's sampled blocks stands at the corner lifted this far. */
     private static boolean wholeLayer(ServerLevel level, List<Sample> samples, BlockPos corner, int lift,
-                                      BlockPos.MutableBlockPos cursor) {
+                                      Rotation rotation, BlockPos.MutableBlockPos cursor) {
         int y = corner.getY() + lift;
         for (Sample sample : samples) {
-            cursor.set(corner.getX() + sample.x(), y + sample.y(), corner.getZ() + sample.z());
+            int[] at = turnedSample(rotation, sample.x(), sample.z());
+            cursor.set(corner.getX() + at[0], y + sample.y(), corner.getZ() + at[1]);
             if (!BuiltInRegistries.BLOCK.getKey(level.getBlockState(cursor).getBlock()).toString()
                     .equals(sample.block())) {
                 return false;
@@ -886,6 +893,16 @@ public final class Sites extends SavedData {
     }
 
     /** One of a template's own blocks: where it sits from the corner, and the block the file says is there. */
+    /** Where a template's own offset lands once the piece is turned, which is how {@code Rotation} turns a block. */
+    private static int[] turnedSample(Rotation rotation, int x, int z) {
+        return switch (rotation) {
+            case NONE -> new int[]{x, z};
+            case CLOCKWISE_90 -> new int[]{-z, x};
+            case CLOCKWISE_180 -> new int[]{-x, -z};
+            case COUNTERCLOCKWISE_90 -> new int[]{z, -x};
+        };
+    }
+
     private record Sample(int x, int y, int z, String block) {}
 
     /** A few of the template's blocks, read out of the file the template itself was loaded from. */

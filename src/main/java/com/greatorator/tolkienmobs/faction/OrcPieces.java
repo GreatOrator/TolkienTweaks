@@ -2,9 +2,10 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
@@ -24,14 +25,16 @@ import java.util.List;
  * the mark - the mark stands in the first course of air, so the base takes the ground under it, which is the same rule
  * the orc pins already follow.
  * <p>
- * The towers come in two ranks of four. The near rank is the marks inside the gate's own footprint (x 5496 to 5655,
- * z -6877 to -6830), on the courtyard floor at 188. The far rank stands five blocks north of the gate's back face, at
- * z -6882, on ground one course lower: two towers west of the passage's mouth and two east of it, closing the same
- * building from behind.
+ * A piece may also be **turned**. A tower is four walls and reads the same any way round, but a hut has one opening in
+ * it, and the huts round the plaza are placed so those openings look at the middle of it. The turn is written beside the
+ * mark rather than worked out at the laying, so what goes up is what was judged when the marks were read: the template's
+ * opening is in its **south face** (a single column at x 10, two courses high, with its stairs in the base below and a
+ * lintel over it), and the plaza's middle is west of every hut here, so each is turned a quarter clockwise, which turns
+ * that opening from south to west.
  */
 public final class OrcPieces {
-    /** One piece: the template, and the ammolite block that marks the middle of its footprint. */
-    private record Piece(String structure, BlockPos mark) {
+    /** One piece: the template, the ammolite block that marks the middle of its footprint, and which way it is turned. */
+    private record Piece(String structure, BlockPos mark, Rotation rotation) {
     }
 
     /** How far below its mark a piece's own base course sits: the mark is in the first course of air over the ground. */
@@ -42,16 +45,21 @@ public final class OrcPieces {
      * (no template in the pack carries one, so every ammolite block in the world is a mark).
      */
     private static final List<Piece> PIECES = List.of(
-            // the near rank: marks in the gate's own footprint, on the courtyard floor at 188
-            new Piece(Sites.ORC_TOWER, new BlockPos(5539, 188, -6831)),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5557, 188, -6831)),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5598, 188, -6830)),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 188, -6830)),
-            // the far rank: two either side of the passage's mouth, on ground one course lower at 187
-            new Piece(Sites.ORC_TOWER, new BlockPos(5539, 187, -6882)),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5558, 187, -6882)),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5598, 187, -6882)),
-            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 187, -6882)));
+            // The near rank of towers: marks in the gate's own footprint, on the courtyard floor at 188.
+            new Piece(Sites.ORC_TOWER, new BlockPos(5539, 188, -6831), Rotation.NONE),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5557, 188, -6831), Rotation.NONE),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5598, 188, -6830), Rotation.NONE),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 188, -6830), Rotation.NONE),
+            // The far rank: two either side of the passage's mouth, on ground one course lower at 187.
+            new Piece(Sites.ORC_TOWER, new BlockPos(5539, 187, -6882), Rotation.NONE),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5558, 187, -6882), Rotation.NONE),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5598, 187, -6882), Rotation.NONE),
+            new Piece(Sites.ORC_TOWER, new BlockPos(5628, 187, -6882), Rotation.NONE),
+            // The huts on the plaza, each turned a quarter clockwise so its opening looks west at the plaza's middle.
+            new Piece(Sites.ORC_HUT, new BlockPos(5604, 187, -6899), Rotation.CLOCKWISE_90),
+            new Piece(Sites.ORC_HUT, new BlockPos(5612, 187, -6892), Rotation.CLOCKWISE_90),
+            new Piece(Sites.ORC_HUT, new BlockPos(5615, 187, -6905), Rotation.CLOCKWISE_90),
+            new Piece(Sites.ORC_HUT, new BlockPos(5627, 187, -6903), Rotation.CLOCKWISE_90));
 
     private OrcPieces() {
     }
@@ -60,9 +68,12 @@ public final class OrcPieces {
      * Raises every marked piece that is not already standing, and says how many went up.
      * <p>
      * A piece already there is left alone, so asking twice raises nothing twice: the check is {@link Sites#wholeAt},
-     * which reads the template's own blocks at the corner it would be laid from. It is the strict reading on purpose -
-     * a piece cut in half by something else laid over its footprint is not standing, and is laid whole again rather
-     * than left as the half it was left.
+     * which reads the template's own blocks at the corner it would be laid from, turned the way the piece is turned. It
+     * is the strict reading on purpose - a piece cut in half by something else laid over its footprint is not standing,
+     * and is laid whole again rather than left as the half it was left.
+     * <p>
+     * The chunks under a piece are opened before it is asked about: this runs as the server comes up, and a chunk that
+     * is not loaded reads as air, which would both hide a piece that stands and lose one that is laid into it.
      *
      * @return how many pieces were laid, which is 0 once they are all standing
      */
@@ -74,22 +85,29 @@ public final class OrcPieces {
             if (id == null) continue;
             StructureTemplate template = level.getStructureManager().get(id).orElse(null);
             if (template == null) continue;
-            Vec3i size = template.getSize();
-            if (size.getX() <= 0 || size.getZ() <= 0) continue;
-            BlockPos corner = corner(piece, size);
-            if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(size.getX() - 1, 0, size.getZ() - 1))) {
-                continue;
-            }
-            if (Sites.wholeAt(level, piece.structure(), corner)) continue;
-            template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
+            if (template.getSize().getX() <= 0 || template.getSize().getZ() <= 0) continue;
+            StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(piece.rotation());
+            // A turned piece fills a different box, so the box is asked of the template in the turn it will be laid in.
+            BoundingBox box = template.getBoundingBox(settings, BlockPos.ZERO);
+            int across = box.maxX() - box.minX() + 1;
+            int deep = box.maxZ() - box.minZ() + 1;
+            BlockPos origin = piece.mark().offset(-(across - 1) / 2, -MARK_DROP, -(deep - 1) / 2);
+            BlockPos anchor = origin.offset(-box.minX(), -box.minY(), -box.minZ());
+            open(level, anchor, across, deep);
+            if (Sites.wholeAt(level, piece.structure(), anchor, piece.rotation())) continue;
+            template.placeInWorld(level, anchor, anchor, settings, level.getRandom(), 2);
             laid++;
         }
         return laid;
     }
 
-    /** The corner a marked piece is laid from: half its own footprint out from the mark, and its base below it. */
-    private static BlockPos corner(Piece piece, Vec3i size) {
-        return piece.mark().offset(-(size.getX() - 1) / 2, -MARK_DROP, -(size.getZ() - 1) / 2);
+    /** Every chunk a piece touches, opened before it is asked about or laid, the way the gate opens its own. */
+    private static void open(ServerLevel level, BlockPos at, int wide, int deep) {
+        for (int dx = 0; dx < wide; dx += 8) {
+            for (int dz = 0; dz < deep; dz += 8) {
+                level.getChunk((at.getX() + dx) >> 4, (at.getZ() + dz) >> 4);
+            }
+        }
     }
 
     /** How many pieces are marked, for a command that wants to say so before it raises anything. */
