@@ -176,5 +176,28 @@ cobblestone wall — the template's high-z end — looking at them. It went up r
 these pieces are now **settled as final**: the farm first time, the rams after two goes at their depth and one at
 their place, the pit after three at its height. Nothing here is to be moved again on a guess.
 
+## The war camp in front of the gate
+
+Twelve tents stand in the open in front of the gate. They are the only pieces in this table that **no builder
+marked**: they answer a measured question instead — how much ground the gate's own front leaves. Counted on the
+surface, within two courses of level, four clear courses over it and nothing already standing on it:
+
+| where | open ground | raw tent footprints |
+|---|---|---|
+| x 5548–5606, in front of the hall's doorway, sixty-four deep | 3087 cells | 17.0 |
+| x 5563–5591, the doorway's own width | 1339 cells | 7.4 |
+| the whole front, x 5492–5656, sixty-four south of the wall | 5860 cells | 32.2 |
+
+A tent is 13 by 14 and carries **no air**, so it never erases a neighbour; the only thing it needs is footprint.
+Packed 13 by 14 with **four blocks between** neighbours, twelve fit across the whole front — seven of them in the
+stretch in front of the hall's doorway — and the eight-wide corridor in front of that doorway stays empty. Three
+between would buy one more and start to look like a barracks rather than a camp; six would lose two.
+
+In front of the hall itself there is no room, and it is a measurement rather than a preference: the hall stands in a
+**covered courtyard**, a chamber whose floor is 188 to 190 under rock at 200 to 203, ten clear courses where a tent
+is twelve tall — and its south face, open across 28 of its 35 cells, has twelve blocks of floor between it and the
+far tower row, less than a 13-by-14 footprint deep. The chamber round it is the one the huts and the farm stand in
+already.
+
 Both `orc_farm` and `orc_battle_ram` carried a **floating glowstone** at a corner of their box, (15, 15, 0) and
 (9, 6, 0): the cut tool's residue, the same as the one taken out of `orc_tower` at (11, 21, 0). Both are cut.

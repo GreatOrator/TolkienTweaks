@@ -109,7 +109,25 @@ public final class OrcPieces {
             // template's low-z half - rather than the middle of its footprint, so it is pushed its own half-depth, 14,
             // north: 28 deep from -6860 up to -6887, its gated cobblestone wall, the template's high-z end, looking at
             // the huts five courses away.
-            new Piece(Sites.ORC_FARM, new BlockPos(5614, 189, -6860), Rotation.CLOCKWISE_180, 1, 0, -14));
+            new Piece(Sites.ORC_FARM, new BlockPos(5614, 189, -6860), Rotation.CLOCKWISE_180, 1, 0, -14),
+            // The war camp in front of the gate: twelve tents, and the only pieces in this table no builder marked. They
+            // are the answer to a measured question instead - how much open ground the gate's own front leaves, sixty-four
+            // courses of it, at a level within two courses and clear of everything already standing - packed 13 by 14 with
+            // four blocks between neighbours and the eight-wide corridor in front of the hall's doorway left empty. Each
+            // pad is set on the ground under its own footprint, so the tents stand on the surface they were measured from,
+            // and they are turned to no pattern beyond the first pair, which look at the gate they came out of.
+            new Piece(Sites.ORC_TENT, new BlockPos(5541, 187, -6818), Rotation.CLOCKWISE_180, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5558, 187, -6818), Rotation.CLOCKWISE_180, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5596, 187, -6817), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5560, 186, -6800), Rotation.CLOCKWISE_180, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5596, 186, -6799), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5613, 186, -6799), Rotation.CLOCKWISE_180, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5577, 186, -6789), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5541, 186, -6787), Rotation.CLOCKWISE_180, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5558, 187, -6782), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5594, 186, -6781), Rotation.CLOCKWISE_180, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5611, 186, -6781), Rotation.NONE, 1),
+            new Piece(Sites.ORC_TENT, new BlockPos(5628, 186, -6776), Rotation.CLOCKWISE_180, 1));
 
     /**
      * Arrangements these pieces were laid in before, and which still stand: the three huts east of the hall went up a
