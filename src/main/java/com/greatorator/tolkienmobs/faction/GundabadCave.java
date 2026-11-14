@@ -6,8 +6,10 @@ import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * The cave east of the gate: the second ammolite the owner laid, cut back into the mountain.
@@ -53,6 +55,25 @@ public final class GundabadCave {
 
     /** The dais: three by three, one course over the floor, on the room's middle. */
     private static final int DAIS = 3;
+
+    /**
+     * How close a player on one of the hold's pages has to be for the mountain to open: sixty-four blocks.
+     * <p>
+     * The mouth is a wall of the hillside's own stone rather than a door, so what opens it is somebody the chapter has
+     * sent: within sixty-four blocks of the mark and carrying the page that names the hold, the stair, or the captain
+     * under it. Anything else - a scout, a builder, a player who has walked past the cave out of curiosity - finds the
+     * mountain shut, which is what it looked like before anything was cut.
+     */
+    private static final int REACH = 64;
+
+    /** How far out the rule is asked at all: twice the reach, so the mouth is shut again before the last player is gone. */
+    private static final int WATCH = REACH * 2;
+
+    /** How many courses of the tunnel the wall fills: two, so it reads as rock from outside rather than a slab. */
+    private static final int PLUG = 2;
+
+    /** How close to the room's middle a player has to be to keep the mouth from being shut on them. */
+    private static final int INSIDE = 12;
 
     /**
      * Stands the cave if the mountain does not already hold it.
@@ -118,7 +139,75 @@ public final class GundabadCave {
         if (level.getBlockState(plan).is(TolkienBlocks.BLOCK_AMMOLITE.get())) {
             level.setBlock(plan, Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
+        // And the mountain closes over the way in: a new hollow is a shut one until somebody on the hold's pages
+        // walks up to it.
+        seal(level);
         return cleared;
+    }
+
+    /**
+     * Puts the mountain's wall back over the mouth, and takes it out again: the two halves of the same cut, over the
+     * cells the cave opens at the way in and no others, so the tunnel's hollow stays behind the wall rather than the
+     * wall sealing the tunnel shut.
+     *
+     * @return whether anything changed
+     */
+    public static boolean seal(ServerLevel level) {
+        return mouth(level, true);
+    }
+
+    /** {@link #seal}'s other half: the way in opened for somebody the chapter has sent. */
+    public static boolean open(ServerLevel level) {
+        return mouth(level, false);
+    }
+
+    private static boolean mouth(ServerLevel level, boolean fill) {
+        BlockPos plan = ArdaMap.gundabadCave();
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return false;
+        level.getChunk(plan.getX() >> 4, plan.getZ() >> 4);
+        BlockState wall = Blocks.STONE.defaultBlockState();
+        BlockState air = Blocks.AIR.defaultBlockState();
+        int changed = 0;
+        for (int x = plan.getX(); x < plan.getX() + PLUG; x++) {
+            for (int z = plan.getZ() - MOUTH_WIDE / 2; z < plan.getZ() - MOUTH_WIDE / 2 + MOUTH_WIDE; z++) {
+                for (int y = plan.getY() + 1; y <= plan.getY() + MOUTH_TALL; y++) {
+                    BlockPos at = new BlockPos(x, y, z);
+                    BlockState now = level.getBlockState(at);
+                    if (fill ? now.is(wall.getBlock()) : now.isAir()) continue;
+                    level.setBlock(at, fill ? wall : air, Block.UPDATE_CLIENTS);
+                    changed++;
+                }
+            }
+        }
+        return changed > 0;
+    }
+
+    /**
+     * The mouth's own rule, asked once a second for a player in Arda: shut unless somebody within sixty-four blocks is
+     * on one of the hold's pages, and never shut on somebody standing in the room.
+     * <p>
+     * The cave is cut as a player comes near it if the world never held one - it is rock rather than a template, so a
+     * world raised before it existed has nothing to open - and the rule is only asked within twice the reach, since a
+     * player a hundred blocks off has nothing to say about a mouth they cannot see.
+     */
+    public static void keep(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
+        BlockPos plan = ArdaMap.gundabadCave();
+        if (plan.distToCenterSqr(player.position()) > (double) WATCH * WATCH) return;
+        MinecraftServer server = level.getServer();
+        if (server != null) autospawn(server);
+        boolean sent = false;
+        boolean inside = false;
+        BlockPos middle = new BlockPos(plan.getX() + TUNNEL + ROOM_DEEP / 2, plan.getY(), plan.getZ());
+        for (ServerPlayer other : level.players()) {
+            if (plan.distToCenterSqr(other.position()) <= (double) REACH * REACH && Campaign.onHoldPage(other)) {
+                sent = true;
+            }
+            if (middle.distToCenterSqr(other.position()) <= (double) INSIDE * INSIDE) inside = true;
+        }
+        if (sent) open(level);
+        else if (!inside) seal(level);
     }
 
     /** How many courses the ceiling stands higher at this column: nought, one or two, by the same hash the gate's rock uses. */

@@ -342,3 +342,19 @@ It goes up with the hold, on every start, and is left alone once it stands - the
 since the mouth's cell answers air either way, the marker having stood on the shelf with the sky over it. `/tmgate cave`
 re-cuts it on demand and reports the count, and the marker itself is taken up into stone once the cave is cut, the way
 `Stones` takes up the gate's.
+
+### The mouth
+
+The way in is a wall of the hillside's own stone, not a door: `GundabadCave.seal` fills the mouth's own two-by-two cells
+and `open` takes them out again, the pair the goblin cave's ashen scroll drives. What opens it here is a player:
+
+| | |
+|---|---|
+| reach | **64 blocks** from the mark, and they have to be carrying one of the hold's pages |
+| which pages | the walk to the hold (2-3), Gimli's stair (2-6), the captain below it (2-7) - `Campaign.onHoldPage` |
+| the wall | **two courses deep** (x 5693-5694) so it reads as rock from outside, with the tunnel's hollow left behind it |
+| closing | asked once a second within **128** blocks, so the mouth is shut again before the last player is gone - never while somebody is within twelve blocks of the room's middle |
+| a fresh cut | sealed as it is cut, so a hollow nobody was sent to is shut |
+
+A world that existed before the cave simply gets it: `keep` cuts it on the first approach if the mountain has no hollow
+behind the mark, which is the same path the autospawn takes on a new world.

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The cave's mouth stands shut until somebody the chapter has sent walks up to it.** The way in is a wall of the
+          hillside's own stone rather than a door: `GundabadCave.seal` fills the mouth's own two-by-two cells two courses
+          deep, so it reads as rock from outside with the tunnel's hollow left behind it, and `open` takes it out again -
+          the pair the goblin cave's ashen scroll drives. What opens it is a player within **64 blocks** carrying one of
+          the hold's pages (the walk to it, Gimli's stair, the captain below it - `Campaign.onHoldPage`); the rule is
+          asked once a second within twice that reach, so the mouth is shut again before the last player is gone, and it
+          never shuts on somebody within twelve blocks of the room's middle. A fresh cut is sealed as it is cut, and a
+          world that existed before the cave gets it on the first approach, when `keep` cuts the hollow if the mountain
+          has none behind the mark.
 - **The cave east of the gate is cut, on the second mark the owner laid.** (5693, 186, -6676) stands on the shelf
           where the mountain begins to climb, and `GundabadCave` cuts a way in facing west: a mouth two wide and two up
           with its floor on the shelf's own ground course, a six-block tunnel, and a room seven across by nine deep -

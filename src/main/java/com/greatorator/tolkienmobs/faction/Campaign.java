@@ -1694,6 +1694,23 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * Whether this player's page is one of the hold's: the walk to it, the stair below it, or the captain under it.
+     * <p>
+     * The cave east of the gate is shut until somebody carrying one of these walks up to it, so this is the question
+     * its mouth asks - the mountain is a door the chapter opens rather than one a pickaxe does. Gimli's page is here
+     * because the stair it names is the same way in, cut under the hold's own floor, and the captain's because his hunt
+     * is the errand the stair leads to.
+     */
+    public static boolean onHoldPage(ServerPlayer player) {
+        Quest page = page(player, Alliance.WEST);
+        if (page == null) return false;
+        String target = page.target();
+        return GUNDABAD_TARGET.equals(target)
+                || Quest.personTarget(GIMLI).equals(target)
+                || DUGORIM_TARGET.equals(target);
+    }
+
+    /**
      * Whether this player is carrying page 2-2. Asked of the book rather than of {@link #carriedCampaignPage}, which
      * is the Rider's page and nothing else - a gate that asked it was never handed a page of Gloin's, and no key came
      * with one. A story page of any front is what the pages are; this asks for the one page.
@@ -3114,6 +3131,8 @@ public final class Campaign extends SavedData {
         Places.ensure(player, GoblinCave.PIN, CAMP_RADIUS);
         GoblinCave.keep(player);
         keepCaveGated(player);
+        // The cave east of the gate, whose mouth stands shut unless somebody on the hold's pages is at it.
+        GundabadCave.keep(player);
         keepElladan(player);
         keepBarachen(player);
         keepElrond(player);
