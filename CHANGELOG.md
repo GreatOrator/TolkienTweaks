@@ -3505,3 +3505,8 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   the chunk as the provider asks rather than two, the dark tower and the warg pit carry the beard-thin terrain
   adaptation their provider gives them, and the dungeon key's chest loot table is gone: nothing points at it and
   it was written by hand, so the generator had been calling it stale on every run.
+
+- **The sign post lettering sits where the board actually begins.** The plank's shaft end is eight pixels behind its
+  own cell, half a block further back than the lettering assumed, so the words started half a block along the wood
+  with a stretch of blank board out toward the arrow. Anchoring them at the true end carries the ink half a block
+  toward the post and off the arrow, which is where a fingerpost's words belong.

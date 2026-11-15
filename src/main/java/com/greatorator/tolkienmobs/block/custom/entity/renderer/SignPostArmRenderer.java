@@ -37,8 +37,12 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
     private static final float REACH = 1.15F;
     /** The board's own ink: black, as asked for, rather than the white of a floating label. */
     private static final int INK = 0xFF000000;
-    /** The board's shaft end sits eight pixels behind the cell's middle, and the lettering starts two in. */
-    private static final float PLANK_START = -8.0F / 16.0F;
+    /**
+     * The board's shaft end sits eight pixels behind the cell itself, so the wood begins a whole block back of the
+     * cell's middle - not half a block, which would leave the lettering hanging out over the open air past the end
+     * of the plank. The lettering then starts two pixels in from that end.
+     */
+    private static final float PLANK_START = -16.0F / 16.0F;
     private static final float MARGIN = 2.0F / 16.0F;
     /** Just clear of each broad face of the one pixel thick board, which spans x -1 to 0 of the cell. */
     private static final float EAST_FACE = 0.002F;
