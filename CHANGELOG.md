@@ -3491,3 +3491,17 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   pixels high and running from eight pixels inside the post's cell to twelve and a half beyond, the double eight),
   so no block shape needed changing. The generated pack was re-run alongside: the item definitions, the two spike
   loot tables and the language file now carry the provider's own output rather than the hand-written copies.
+
+- **The Gundabad and Hithaeglir fog is back to its own distances.** Those two biomes had been pulled in to 44 blocks
+  start to finish so screenshots could be taken in them, and the generated files carried that tuning; a data run
+  puts them back to the 512 to 1024 the provider gives every other mountain, so the fog no longer crowds the
+  halls when a player is walking them for real.
+- **The village templates no longer carry `structure_void` filler.** The twelve village houses had a thousand or
+  more `minecraft:structure_void` markers apiece, standing in for the air around the build; the generator now
+  writes only the blocks the template actually places. The house is unchanged - fifteen by twelve by sixteen, the
+  same air, logs, planks, stairs, grass, dirt and wool in the same counts - it is simply a smaller file, and a cell
+  absent from a template is left alone when it is placed, exactly as a void marker is.
+- **A data run settled the rest of what the sources had drifted from.** The dead bodies of Arda are placed four to
+  the chunk as the provider asks rather than two, the dark tower and the warg pit carry the beard-thin terrain
+  adaptation their provider gives them, and the dungeon key's chest loot table is gone: nothing points at it and
+  it was written by hand, so the generator had been calling it stale on every run.

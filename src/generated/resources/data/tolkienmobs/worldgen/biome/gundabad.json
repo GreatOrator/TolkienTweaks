@@ -11,12 +11,12 @@
         "probability": 0.0125
       }
     ],
-    "minecraft:visual/cloud_fog_end_distance": 44.0,
+    "minecraft:visual/cloud_fog_end_distance": 1024.0,
     "minecraft:visual/fog_color": "#c3ccd4",
-    "minecraft:visual/fog_end_distance": 44.0,
-    "minecraft:visual/fog_start_distance": 4.0,
+    "minecraft:visual/fog_end_distance": 1024.0,
+    "minecraft:visual/fog_start_distance": 512.0,
     "minecraft:visual/sky_color": "#829fff",
-    "minecraft:visual/sky_fog_end_distance": 44.0,
+    "minecraft:visual/sky_fog_end_distance": 1024.0,
     "minecraft:visual/water_fog_color": "#14283a"
   },
   "carvers": [],

@@ -3,12 +3,12 @@
     "minecraft:audio/ambient_sounds": {
       "loop": "minecraft:ambient.warped_forest.mood"
     },
-    "minecraft:visual/cloud_fog_end_distance": 38.0,
+    "minecraft:visual/cloud_fog_end_distance": 1024.0,
     "minecraft:visual/fog_color": "#d7dde0",
-    "minecraft:visual/fog_end_distance": 38.0,
-    "minecraft:visual/fog_start_distance": 0.0,
+    "minecraft:visual/fog_end_distance": 1024.0,
+    "minecraft:visual/fog_start_distance": 512.0,
     "minecraft:visual/sky_color": "#7ea2ff",
-    "minecraft:visual/sky_fog_end_distance": 38.0,
+    "minecraft:visual/sky_fog_end_distance": 1024.0,
     "minecraft:visual/water_fog_color": "#050533"
   },
   "carvers": [],

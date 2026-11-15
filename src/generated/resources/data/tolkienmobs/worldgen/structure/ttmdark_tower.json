@@ -4,5 +4,6 @@
   "companion_pool": "tolkienmobs:ttmwargpit",
   "spawn_overrides": {},
   "start_pool": "tolkienmobs:ttmdark_tower",
-  "step": "surface_structures"
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
 }

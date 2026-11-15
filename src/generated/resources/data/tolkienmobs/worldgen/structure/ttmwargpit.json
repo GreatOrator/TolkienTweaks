@@ -4,5 +4,6 @@
   "spawn_overrides": {},
   "start_pool": "tolkienmobs:ttmwargpit",
   "step": "surface_structures",
+  "terrain_adaptation": "beard_thin",
   "top_offset": 2
 }
