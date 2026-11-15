@@ -66,7 +66,9 @@ legs of one, with a `Route.Crossing` for any water on the way), pinned in `Pins.
 
 ## Quests - chapter two
 
-Eleven pages, 26 to 36, written and wired. **Nothing in the chapter has been played end to end.** The full list is
+Eleven pages, 26 to 36, written and wired. **Played in the test world through page 32 (2-7) on 15 November** - everything
+up to and including the Gundabad quests works as written, the captain's hunt was fixed and confirmed, and four pages are
+left: **33 Steps of Evil I**, **34 Steps of Evil II**, **35 Evil Tidings**, **36 Fire & Ice**. The full list is
 `docs/chapter-two-state.md`; what matters to a session picking this up:
 
 Standing, compiled, unseen: the shelter camp (seen), the goblin cave cutting and dressing itself as a player nears, the
@@ -80,11 +82,16 @@ Gundabad gate (seen) and its chamber, the keep at its plan (**on hold** - see be
 1. **Walk 26 → 36 in a fresh world.** Watch: that the camp reads as a camp; that Gundabad's site search finds ground
    level enough for a 122-by-183 footprint in the Hithaeglir; that the stair reads as the way down; and that Carn Dûm's
    border camps are findable from the page's direction.
-2. **The inner keep's stair is not gated.** It is open, so a player can walk down before the plans allow it; page 29 is
-   the beat that would open a door over it.
-3. **The chapter-one seam is not staged** - *Hasten Their Departure* is a walk back to the library; if the company is
-   ever shown leaving it belongs between pages 25 and 26, and `docs/departure-scene.md` has the scene recovered.
-4. **Chinese is deferred** for the lines the rework changed, as with chapter one. Last pass, not a running cost.
+2. **Walk 33 → 36.** The four pages left: the camps on Carn Dum's borders, the Dark Sigil carried back, the sigil to
+   Elrond's library, and the wight at Carn Dum. Watch that the border camps are findable from the page's direction and
+   that the Sigil is credited where it is taken.
+3. **The inner keep's stair is not gated** - the spiral at the hall's well, which is the way down into the keep below
+   Gundabad. It is open, so the hold can be walked into before the pages say it can; page 29 is the beat that would pay
+   for a door over it. A design decision, not a defect, and it waits on the hold's placement anyway.
+4. **The chapter-one seam is final** (15 November 2026): *Hasten Their Departure* was played in game and ran smoothly as
+   it is, so no departure scene is staged and nothing is owed there - `docs/departure-scene.md` stays as recovered notes.
+5. **Chinese is on hold until a full public release** - not deferred per line, but parked whole: the rework's lines get
+   translated when the mod is ready to go public, not before.
 
 Smaller, recorded and harmless for now: `Places` canon's the place `gloin` to `HITHAEGLIR` while the camp's site is in
 `GLADDEN`. Nothing targets `placeTarget("gloin")` today, but a page that did would point into the mountains.

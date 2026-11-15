@@ -5,10 +5,10 @@ The plan itself is `docs/chapter-two-last-refuge.md`; this is the state of it. W
 
 ## In one line
 
-All eleven pages of *Last Refuge* are written, wired into the West's line as pages 26–36, and have never
-been walked in game. Nothing after `2-11` is written, and the finale stays shut behind `FINALE_OPEN = false`
-so finishing the chapter does not open a road that is not there yet. `./gradlew compileJava` is green; that
-is the only verification any of it has had.
+All eleven pages of *Last Refuge* are written and wired into the West's line as pages 26–36, and the line has now
+been **walked in game through page 32 (2-7)** - the Gundabad quests and the captain's hunt work as written. Four pages
+are left to walk (33 to 36), and nothing after `2-11` is written; the finale stays shut behind `FINALE_OPEN = false` so
+finishing the chapter does not open a road that is not there yet.
 
 ## The pages, as built
 
@@ -57,8 +57,10 @@ creature it does not have.
 
 ## Open decisions — deliberately not made
 
-1. **The inner keep is not gated.** The spiral's stair is open, so a player can walk down before the plans
-   say they can. It wants a door that the plans open (page 29 is already the beat that would open it).
+1. **The inner keep is not gated.** The spiral's stair at the hall's well is open, so a player can walk down
+   into the keep below Gundabad before the plans say they can. It wants a door that the plans open (page 29 is
+   already the beat that would open it). Left open on purpose for now: its placement waits on a fresh world,
+   and a door hung on a stair that is going to move is a door hung twice.
 2. **The Pinnath Fenui is a bearing, not ground.** The notes put Ulmug's fires north-east of the camp; the
    page carries the direction and the prose carries the name. **Answered 12 November 2026:** it is a place
    now. `Places` already listed `goblins` and `GoblinCave.PIN` is that same string, so `Places.ensure` reads
@@ -66,10 +68,11 @@ creature it does not have.
    beside `GoblinCave.raised`, so the name is written the first time a player is in Arda and the banner reads
    *The Goblin Fires* / *Ulmug's fires in the caves of the Pinnath Fenui* on the way down to the mouth, forty-
    eight blocks round the pin.
-3. **The chapter-one seam is not staged.** *Hasten Their Departure* is a walk back to the library; if the
-   company is ever shown leaving, it belongs between pages 25 and 26.
-4. **Chinese is deferred** for the lines the rework changed, as with chapter one — the last pass, not a
-   running cost.
+3. **The chapter-one seam is final (15 November 2026).** The scene between pages 25 and 26 was played in game
+   and ran smoothly as staged - courtyard, company, Elrond's blessing, the walk out - so it needs nothing more.
+   `docs/departure-scene.md` and the seam's own note below are records rather than tasks.
+4. **Chinese is on hold until a full public release.** The rework's lines are translated when the mod is ready
+   to go public rather than line by line, so nothing is owed while the chapters are still being walked.
 
 ## Loose end worth checking before the next chapter
 
@@ -93,7 +96,8 @@ the mountains rather than at the camp.
    stair reads as the way down; and that Carn Dûm's border camps are findable from the page's direction.
 2. Then the one decision left — gating the stair behind the plans. The Pinnath Fenui stopped being a
    decision on 12 November 2026: it is a place, named from the cave's own pin.
-3. Only after that is worth spending: the cave tiles, the seam scene, and Chinese.
+3. Only after that is worth spending: the cave tiles. The seam is finished as staged, and Chinese waits for a
+   public release.
 
 ## Where things live
 
@@ -107,22 +111,47 @@ the mountains rather than at the camp.
 | Page text | `assets/tolkienmobs/lang/en_us.json` under `campaign.tolkienmobs.page.*` |
 | Commands for poking at it | `docs/commands.md` (`/tmquest`) |
 
-## The seam, now staged - 11 November 2026
-
-Open decision 3 is answered: between page 25 and page 26 there is now a scene. The courtyard is named,
-the Company is spoken over and walked out along a marked line, Elrond reads his blessing off a scroll
-that he then rolls up, and he and Bilbo go back down the road. The player keeps what they came for -
-page 26 falls into the book as the courtyard empties - and `Campaign.sayWhereThePageGoes` says, once, the
-one thing an unasked-for handover cannot: `Glóin holds the next page, at the dwarf camp at the east end
-of the High Pass.`
-
-So chapter two's first page no longer needs Elrond to be walked back to. What chapter two still wants is
-the walk itself: pages 26 to 36 have never been played, and the four things to watch are listed above.
+## The seam, staged - 11 November 2026, played and final - 15 November 2026
+
+
+
+Open decision 3 is answered: between page 25 and page 26 there is now a scene. The courtyard is named,
+
+the Company is spoken over and walked out along a marked line, Elrond reads his blessing off a scroll
+
+that he then rolls up, and he and Bilbo go back down the road. The player keeps what they came for -
+
+page 26 falls into the book as the courtyard empties - and `Campaign.sayWhereThePageGoes` says, once, the
+
+one thing an unasked-for handover cannot: `Glóin holds the next page, at the dwarf camp at the east end
+
+of the High Pass.`
+
+
+
+So chapter two's first page no longer needs Elrond to be walked back to, and on 15 November 2026 the seam was played
+in game and **ran smoothly as staged** - it is finished, not merely present. What chapter two still wants is the rest of
+the walk: pages 33 to 36.
+
+## Played - 15 November 2026
+
+The line was walked in the test world from 2-1 through 2-7 and works as written: the seam between 25 and 26, Gloin's
+camp, Ulmug's fires, the hold raised when its page is taken, the vault, Gimli at the well, and the captain below the
+stair. Two things came out of it:
+
+- **The captain of the Dourhands was stood again after every kill**, because his seat is filled from a page that stays
+  in the book until Gloin takes it. He now wears a mark of his fall on the player who ends him - the same tag answer the
+  wraith behind him has always had - and the fix was confirmed in game: felled once more, he did not come back.
+- **The keep's placement looked wrong**, and it is **on hold** rather than tuned: that world was built around the older
+  plan, so it is read from a brand-new world drawn for the rest of the walk. `docs/gundabad-keep.md` carries it.
+
+Left to walk: **33 Steps of Evil I**, **34 Steps of Evil II**, **35 Evil Tidings**, **36 Fire & Ice**.
+
 ## Where we stopped - 12 November 2026
 
-The chapter two line itself is unchanged since 4 November: eleven pages, 26 to 36, written and wired, never
-walked. What has changed is the ground those pages stand on, and one lesson about templates that is now
-written down so it cannot cost another outcrop.
+The chapter two line itself is unchanged since 4 November: eleven pages, 26 to 36, written and wired - and as of
+15 November 2026, walked in game through 2-7. What changed on the 12th was the ground those pages stand on, and one
+lesson about templates that is now written down so it cannot cost another outcrop.
 
 ### Standing, and seen in a world
 
@@ -147,7 +176,8 @@ written down so it cannot cost another outcrop.
 ### Compiled, not seen
 
 - The cave's wear, its hall dressing and the key's stocking; the camp's mouth clearing on any hill but the one
-  it was tested on; the eleven pages themselves.
+  it was tested on; the eleven pages themselves.
+
 - **Glóin's camp** - it was written down by the survey before its pin existed, so the site held a guess 900
   blocks from the pin and never built, which is why no dwarf stood at the fire. A pin now outranks an unbuilt
   site both when the page is taken and on every look, and the camp has its own name on the ground (`gloin`).

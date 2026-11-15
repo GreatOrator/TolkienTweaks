@@ -3651,3 +3651,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   current `ArdaMap` draws and whose hold autospawns at that plan; moving a hold twice is cutting a hall twice. Two
   stale lines went with it: `docs/next-up.md` still described both bridge decks as raised and unseen and still gave the
   keep's old numbers as the road's destination.
+
+- **Chapter two is walked to its Gundabad pages, and the seam and Chinese are settled.** Played in the test world from
+  the chapter-one seam at page 25 through 2-7, working as written: the courtyard scene, Gloin's camp, Ulmug's fires, the
+  hold raised from its page, the vault, Gimli at the well and the captain below the stair. The seam between 25 and 26 was
+  already staged and ran smoothly, so it is finished rather than owed - `docs/departure-scene.md` is a record, not a task.
+  Chinese is parked whole until a full public release instead of being deferred line by line. Four pages are left to
+  walk: 33 to 36. The inner keep's spiral stair stays open for now, a design decision rather than a defect, and no door
+  is hung on a stair whose hold is waiting on a freshly drawn world.
