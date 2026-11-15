@@ -3421,3 +3421,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   server from the post to the place's centre and saved with the board, never taken from the player, and the two
   lines are drawn turned to face whoever is looking, as a fingerpost's lettering is read from the road; a board
   pointing nowhere draws nothing at all.
+
+- **The sign post's four items had no model definition and so drew nothing.** 26.1 does not hand an item to the
+  renderer through `models/item` alone: it reads `assets/<mod>/items/<name>.json` for the definition, which
+  points at the model. The four new items had the model and the parent but not the definition, so the game
+  logged `Missing item model for location tolkienmobs:sign_post_plinth` four times at startup and drew the
+  plinth, shaft, cap and arm in the inventory as nothing at all - while the blocks themselves, placed in the
+  world, drew their textures as they should. The provider writes a plain definition for every item in the mod's
+  namespace, so the four are now in the generated pack beside the rest; a datagen run reproduces them.

@@ -61,6 +61,9 @@ too. Not yet seen in game, and worth watching:
 - whether the cap's two pixels line up with the shaft's top of 16 rather than sitting in the cell below it;
 - whether the plinth's own post stub (10 to 16) meets the first shaft's foot without a seam;
 - whether a board can be placed against a cap as well as a shaft, and whether it breaks when the post goes.
+- the four item definitions live in `src/generated/resources/assets/tolkienmobs/items/`; without them the items
+  draw as nothing and the log says `Missing item model`. A datagen run writes them for every item, so they are
+  only hand-written because that run has not happened since the blocks were added.
 
 ## Chapter three
 
