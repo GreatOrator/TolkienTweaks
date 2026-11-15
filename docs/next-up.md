@@ -160,8 +160,8 @@ shape of the rest: **whether Stoneyford and the Watchers are built here or alrea
   in the book until Gloin takes it, so the hunt stood a new dwarf every pass with the page already met. He now wears a
   mark of his fall on the player who ends him - `DUGORIM_DOWN_TAG`, the same scoreboard-tag answer the wraith behind him
   has had all along - so the empty seat stays empty for that hand. Seen in game and confirmed: after the fix he was
-  killed once more and did not come back. The wraith's own mark has still not been walked, though it is the same answer
-  written the same way.
+  killed once more and did not come back. The wraith behind him was never broken and needed nothing: its mark was in
+  place and it behaved - killed once, it stayed gone. The captain was the only body of the two without one.
 - **The biome canon audit is settled** - twelve findings in `docs/arda-biome-canon.md`, closed 9 November 2026 in its
   own verdict section: eleven applied (gold Lorinand, no culumalda in the Mark, the right peoples in Emyn Muil, Khand,
   Cardolan and Minhiriath, the neon greens recoloured, snow over rock on the Misty Mountains, the Gladden's marsh and its

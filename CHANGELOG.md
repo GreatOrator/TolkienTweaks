@@ -3667,3 +3667,7 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   border camps and the wight's hall the parts nobody has looked at. Two records were corrected with it: Gimli stands in
   his own cave east of the gate on `GundabadCave.post()` rather than beside the well, as the code has had him since the
   hold was walked, and page 31's ground now says so.
+
+- **Only the captain was ever missing his down mark.** The wraith behind him was walked in game on 15 November 2026 and
+  needed nothing - killed once, it stayed gone - which confirms the answer Dugorim's fix borrowed was sound all along,
+  and that the fault was one seat stood from a page with no mark of its fall, not two.

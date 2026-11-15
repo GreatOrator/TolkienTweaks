@@ -142,7 +142,9 @@ stair. Two things came out of it:
 
 - **The captain of the Dourhands was stood again after every kill**, because his seat is filled from a page that stays
   in the book until Gloin takes it. He now wears a mark of his fall on the player who ends him - the same tag answer the
-  wraith behind him has always had - and the fix was confirmed in game: felled once more, he did not come back.
+  wraith behind him has always had - and the fix was confirmed in game: felled once more, he did not come back. **The
+  wraith was never broken**: its own mark was in place and it behaved as it should, killed once and left gone, so the
+  captain was the only body of the two missing one.
 - **The keep's placement looked wrong**, and it is **on hold** rather than tuned: that world was built around the older
   plan, so it is read from a brand-new world drawn for the rest of the walk. `docs/gundabad-keep.md` carries it.
 
