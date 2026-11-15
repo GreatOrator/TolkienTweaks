@@ -1166,6 +1166,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.cave.reached", "You have reached the deepest chamber of %s, and what was keeping it is not getting up again.");
         this.add("campaign.tolkienmobs.beryl.given", "The stone is in your hand: cold, and heavier than a thing that size has any right to be.");
         this.add("campaign.tolkienmobs.keystone.given", "Gimli turns the Key-stone over in his hands once, then puts it in yours. \"The mountain answers this and not me. Hold it up at the gate and the way in opens - and hold on to it, because it is the only one there is.\"");
+        this.add("boss.tolkienmobs.dugorim", "Dugorim, Captain of the Dourhands");
         this.add("campaign.tolkienmobs.beryl.here", "This is %s, and the stone is in your hand - hold it aloft here: use it in the air rather than on the milestone.");
         this.add("campaign.tolkienmobs.beryl.returned", "The stone is back in your hand. It was lent to be carried, not put down.");
         this.add("campaign.tolkienmobs.page.beryl", "Wisdom of Lord Glorfindel II");

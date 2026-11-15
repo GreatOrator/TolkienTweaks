@@ -396,6 +396,14 @@ health to forty, since a dwarf arrives with a farmer's one point and a villager'
 blocks keeps him in the room between fights. He is killable: he is the one body in the line that carries no giver tag,
 so nothing makes him invulnerable on the way into a world.
 
+His bar is kept in the driver too, and for the same reason: the mod's other bosses each carry a `ServerBossEvent` as a
+field, which needs the body to be a class of ours, and his is the pack's dwarf. It is red, notched ten, named
+`boss.tolkienmobs.dugorim` ("Dugorim, Captain of the Dourhands"), filled from his health, shown to anyone within
+thirty-two blocks of him and taken down when he falls. The plate over his head carries the same title, and the name comes
+first on purpose: a named dwarf's art is looked for under the name he is wearing, so `DwarfRender` now asks for the words
+before the first comma as well - "Dugorim, Captain of the Dourhands" finds `dugorim.png` rather than losing his face to
+the office.
+
 ### The wraith
 
 A `tolkienmobs:entityttmnazgul` stands four paces down the carpet from the seat, at `ArdaMap.keepThroneWatch()`

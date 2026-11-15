@@ -446,7 +446,11 @@ public final class Campaign extends SavedData {
      * is the old pack's own dwarf warrior, copied in at 64x64 with nothing to convert.
      */
     private static final String DUGORIM_TARGET = "tolkienmobs:entityttmdwarf";
-    private static final String DUGORIM = "Dugorim";
+    /**
+     * What is over his head: the name first, because a named dwarf's art is looked for by the name he is wearing, and
+     * then the office, which is what makes the room read as a captain's rather than a farmer's.
+     */
+    private static final String DUGORIM_PLATE = "Dugorim, Captain of the Dourhands";
     /** His tag, read by {@link DugorimFight} as well: it is what tells the captain from any other dwarf. */
     static final String DUGORIM_TAG = "tolkienmobs:campaign_dugorim";
     /**
@@ -2056,7 +2060,7 @@ public final class Campaign extends SavedData {
         dwarf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 0.0F, 0.0F);
         dwarf.setPersistenceRequired();
         dwarf.addTag(DUGORIM_TAG);
-        dwarf.setCustomName(Component.literal(DUGORIM).withStyle(ChatFormatting.DARK_RED));
+        dwarf.setCustomName(Component.literal(DUGORIM_PLATE).withStyle(ChatFormatting.DARK_RED));
         dwarf.setCustomNameVisible(true);
         // His own feet, and a hall to use them in: a home area keeps him in the room between fights, and the fight
         // itself is written on the side that can win the argument with a villager's brain (see {@link DugorimFight}).

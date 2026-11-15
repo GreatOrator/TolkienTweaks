@@ -106,6 +106,13 @@ public class DwarfRender extends GeoEntityRenderer<DwarfEntity, TolkienGeoRender
         // The file is optional, so a dwarf nobody has drawn keeps the clothes of his folk.
         Identifier own = namedSkin(renderState.giverName);
         if (own != null && HumanRender.resourcePresent(own)) return own;
+        // A plate can carry an office after the name - "Dugorim, Captain of the Dourhands" - and the art is named for
+        // the man rather than the title, so the first word is asked for as well before the folk's coat is fallen back on.
+        int comma = renderState.giverName == null ? -1 : renderState.giverName.indexOf(',');
+        if (comma > 0) {
+            Identifier word = namedSkin(renderState.giverName.substring(0, comma));
+            if (word != null && HumanRender.resourcePresent(word)) return word;
+        }
         return LOCATION_BY_VARIANT.get(renderState.variant);
     }
 

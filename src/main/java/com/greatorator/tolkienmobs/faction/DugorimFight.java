@@ -3,9 +3,13 @@ package com.greatorator.tolkienmobs.faction;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -50,6 +54,19 @@ public final class DugorimFight {
     /** When each captain last landed a blow, keyed on the body so a reloaded one starts fresh. */
     private static final java.util.Map<java.util.UUID, Integer> LAST_BLOW = new java.util.HashMap<>();
 
+    /** How far away a player still sees the captain's bar: the hall and the stair down into it. */
+    private static final double SHOW = 32.0D;
+
+    /**
+     * One bar per captain, keyed on the body.
+     * <p>
+     * The mod's own bosses each carry a {@link ServerBossEvent} as a field, which a body can do when it is its own class.
+     * The captain is the pack's dwarf - a villager with no class of ours to hang a field on - so his bar is kept here,
+     * beside the fight that is also written here for the same reason. It is taken down with him: a bar left on the
+     * screen after the body it belonged to is gone is the one thing worse than no bar at all.
+     */
+    private static final java.util.Map<java.util.UUID, ServerBossEvent> BARS = new java.util.HashMap<>();
+
     private DugorimFight() {
     }
 
@@ -66,6 +83,26 @@ public final class DugorimFight {
                         && mob.entityTags().contains(Campaign.DUGORIM_TAG));
         for (Entity entity : captains) {
             fight(level, (Mob) entity, seat, server.getTickCount());
+            bar(level, (Mob) entity);
+        }
+        // A captain nobody can see any more takes his bar with him, whether he fell or the world let him go.
+        BARS.entrySet().removeIf(entry -> {
+            Entity body = level.getEntity(entry.getKey());
+            if (body != null && body.isAlive()) return false;
+            entry.getValue().removeAllPlayers();
+            return true;
+        });
+    }
+
+    /** The captain's bar, shown to whoever is close enough to be fighting him and filled by how he stands. */
+    private static void bar(ServerLevel level, Mob captain) {
+        ServerBossEvent bar = BARS.computeIfAbsent(captain.getUUID(), id -> new ServerBossEvent(id,
+                Component.translatable("boss.tolkienmobs.dugorim"),
+                BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_10));
+        bar.setProgress(Mth.clamp(captain.getHealth() / captain.getMaxHealth(), 0.0F, 1.0F));
+        for (ServerPlayer player : level.players()) {
+            if (player.distanceToSqr(captain) <= SHOW * SHOW) bar.addPlayer(player);
+            else bar.removePlayer(player);
         }
     }
 

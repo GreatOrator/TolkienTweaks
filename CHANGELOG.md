@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Dugorim gets a boss bar and a titled nameplate.** The bar is kept in `DugorimFight` - red, notched ten, named
+          `boss.tolkienmobs.dugorim` and filled from his health, shown within thirty-two blocks and taken down with him -
+          because the mod's other bosses own a `ServerBossEvent` as a field and his body is the pack's dwarf. His plate
+          now reads "Dugorim, Captain of the Dourhands", and `DwarfRender` asks for the words before the first comma when
+          it looks for art, so a title does not cost a named dwarf his face.
 - **Dugorim fights back.** He is armed with an iron axe and given a captain's forty health, and his side of the fight is
           written in `DugorimFight` rather than in a goal list - the pack's dwarf is a `Villager`, whose movement belongs
           to its brain, so an attack goal added beside it would be walked away from. The driver runs after every body has
