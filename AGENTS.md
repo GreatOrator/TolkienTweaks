@@ -30,11 +30,25 @@ made and mentioned.
 
 ## Reference material
 
-- **The old CustomNPCs world is where names and faces come from.**
-  `G:\GitHub\TolkienCraft-3-Return-to-Middle-earth\client\minecraft\customnpcs` holds the TolkienCraft 3
-  NPC setup: `clones/1`..`clones/5` are roughly three hundred `*.json` clones, one per body in that world,
-  and `assets/customnpcs/textures/customskins/<group>/` holds the 446 skins they wore (`middleearth`,
-  `elves`, `dwarves`, `hobbits`, `male`, `female`, `merchants`, `military`, `creatures`, `horses`).
+- **The old CustomNPCs world is where names and faces come from, and the TolkienCraft 3 client's copy is the big
+  one.** `G:\GitHub\TolkienCraft-3-Return-to-Middle-earth\client\minecraft\customnpcs` - *not* the
+  `TolkienCraft-3-Map\world\customnpcs` copy that `docs/departure-scene.md` read scenes out of, which holds 31
+  clones and no skins at all:
+  - `clones/1`..`clones/5` - **307** clone `*.json`, one per body in that world (194, 26, 45, 31, 11), which is what
+    makes it the clone database rather than a sample of one.
+  - `assets/customnpcs/textures/customskins/<group>/` - **445** skins in fourteen groups: `mobs` 100, `merchants` 61,
+    `middleearth` 54, `male` 43, `umbar` 39, `dwarves` 35, `elves` 25, `female` 20, `rangers` 20, `military` 18,
+    `hobbits` 15, `minecraftplayers` 9, `horses` 4, `creatures` 2.
+  - **276 of the 307 clones resolve their own texture inside that folder.** The 31 that do not are mostly not bodies
+    (`chest`, `cobblestone`, `endercrystal`, `cave_troll2`-`4`, `barrowwight 1`-`3`), so a factory for character
+    faces should start here and expect to find almost every one.
+  - **These are the modern 64x64 skins**: 425 of the 445 are 64x64, 10 are the legacy 64x32, and the rest are odd
+    sizes - unlike the project's own `CustomSkins/` (338 files, 337 of them 64x32). A face taken from the pack is
+    therefore copied, not converted.
+  - **Dugorim** is `clones/1/Dugorim.json`, and the skin he wore is
+    `assets/customnpcs/textures/customskins/dwarves/dwarfwarrior 4.png` (64x64). His name is not in any filename - a
+    clone's `"Texture"` is often drawn from a generic body - so search clones by name and read the texture off the
+    clone, never the other way round.
 - A clone answers what the mod cannot invent. `"Name"` and `"Title"` are how the body introduced itself
   (`"Elrond"`, `"Lord of Rivendell"`); `"Texture"` is the skin it wore
   (`customnpcs:textures/CustomSkins/MiddleEarth/Elrond.png`, the same file under
@@ -44,8 +58,8 @@ made and mentioned.
   parser rather than `json.load`.
 - A face drawn there is copied into the mod at `textures/entity/middle-earth/<name>.png`, the path
   `HumanRender` looks a named body's art up at. `elrond.png`, `legolas.png` and `glorfindel.png` came from
-  those 64x32 CustomSkins and were converted to the model's 64x64; a new named body needs the same
-  conversion, not a copied file.
+  the project's own 64x32 `CustomSkins` and were converted to the model's 64x64; a face taken from the pack's
+  `customskins` is already 64x64 and only needs copying.
 
 ## Changelog Updates
 - **Requirement**: Whenever you complete a task, fix a bug, or add a feature, you must update `CHANGELOG.md` before finishing the session.
