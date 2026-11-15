@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The orc pieces stand on stone, not grass.** All nine templates in `structure/orcs` had their `grass_block` palette
+          entry changed to `minecraft:stone` - the courtyard's own block - with the grass block's `snowy` property dropped
+          rather than carried onto a block that has none. They were cut in grass country and read as green squares set down
+          on Gundabad's paving. Block counts, footprints and the pieces' air are untouched; the templates were rewritten
+          through a reader that round-trips every one of them byte for byte before it is allowed to write.
 - **The Key-stone's vault is pinned where the chapter says it is.** The name `keystone` had no pin, so it was surveyed
           out of the middle of the country the map paints; it is now pinned to `GundabadCave.post()` - the cave's own
           dais, which is the block Gimli stands on - and page 2-5 names the place again rather than a bare point, so the

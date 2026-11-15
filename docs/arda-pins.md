@@ -57,7 +57,7 @@ The y is then ours, not the ground's: the base course sits **one below the pin**
 a builder stands in puts the floor on the ground they stood on. (`FRONT_DROP = -1`.) The owner's by-hand hall
 is one course above where this rule places it, and the rule is the one they asked for.
 
-`orc_hall`'s four faces are all open at ground level - it is a pillared hall on a grass floor rather than a
+`orc_hall`'s four faces are all open at ground level - it is a pillared hall on a stone floor rather than a
 walled box - so "front" is a convention here and not a doorway. The convention is +z: the face at the
 greater z is the front, which is the face that meets the yard it was built against.
 
@@ -158,7 +158,7 @@ written beside the mark as it was judged rather than measured out at the laying.
 
 The pit's mark is the only one in the pack that is **buried** — a block at 186 under the stone lip at 189 —
 and it turns out to be the piece's own **base course**, so it is the one mark read as a base rather than a
-middle: drop 0. The template's first course is its ground — 22 by 22 of grass and dirt round 21 cells of lava —
+middle: drop 0. The template's first course is its ground — 22 by 22 of stone and dirt round 21 cells of lava —
 and everything above it is a one-block perimeter wall round a hollow shaft, 6140 air cells in all. So the shaft
 its mouth stands at **200**, twelve courses over the courtyard floor, and its air carves the whole 22-by-15 box
 out of the ground around it, the bank rising to the south included. It went in twice lower than this first
@@ -168,7 +168,7 @@ The rams stand unturned (`NONE`) with their bases at **186**, and the face that 
 glowstone is their front: it is the box's **south** face, so their front edges stand at **−6806** — the block
 the builder pointed at — and their 18-deep boxes run north from there to −6823, seven courses off the gate wall.
 They first went up turned right round with a base of 188 and were judged too far back, so they were turned
-about, dropped two and moved six south: the marks did not move, only the push. Their 10-wide grass pads overlap
+about, dropped two and moved six south: the marks did not move, only the push. Their 10-wide stone pads overlap
 by three blocks — their centres are 7 apart — and their 7-wide bodies do not.
 
 The farm's back sits on its mark and it runs north to −6887, five courses short of the huts, with its gated
@@ -177,6 +177,12 @@ these pieces are now **settled as final**: the farm first time, the rams after t
 their place, the pit after three at its height. Nothing here is to be moved again on a guess.
 
 ## The war camp in front of the gate
+
+Every one of the nine orc pieces carries a **stone** ground course, not a grass one. They were cut in grass country and
+landed on Gundabad's courtyard as green squares, so the grass entry in each template's palette was changed to
+`minecraft:stone` - the courtyard's own block, the one `GundabadGate` writes - with the grass state's properties dropped
+rather than carried over, since `snowy` is not a state stone has. Nothing else in the templates moved: the block counts,
+the footprints, the pale and the pieces' own air are all as they were.
 
 Twelve tents stand in the open in front of the gate. They are the only pieces in this table that **no builder
 marked**: they answer a measured question instead — how much ground the gate's own front leaves. Counted on the
