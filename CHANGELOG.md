@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Chapter three, written up.** `docs/chapter-three.md` lays out *Fires in the South* from the pack's own chapter -
+          quests 56 and 60 to 69, dialogs 200 to 228 - as eleven pages (`3-1` to `3-11`), with the kind, giver and
+          turn-in of each, the prose each book and leaf will print, the standing and courage on the ladder, and the
+          ground, bodies and objects the chapter needs before the first page can be handed over. Nothing of it is in
+          `Campaign` yet: it is the plan the implementation follows.
 - **The Key-Stone's vault is in the cave beside Gundabad.** Page 2-5 named a ruin at the source of the Bruinen and walked
           to a place the map owns; it now points at `GundabadCave.post()` - the cave east of the gate, the one Gimli stands
           in - as a point with a reach of twelve, and the cave's mouth opens for that page as it does for the hold's own.
