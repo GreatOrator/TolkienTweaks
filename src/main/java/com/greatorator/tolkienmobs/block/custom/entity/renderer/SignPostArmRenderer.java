@@ -90,11 +90,12 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
 
     @Override
     public void submit(SignPostArmRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
-        if (state.destination == null) return;
-
         float height = (state.level * 4.0F + 2.0F) / 16.0F;
-        this.paint(state, poseStack, submitNodeCollector, height, lines(state.destination, state.distance));
+        if (state.destination != null) {
+            this.paint(state, poseStack, submitNodeCollector, height, lines(state.destination, state.distance));
+        }
 
+        // A double arm can have its upper board lettered on its own, so each board is drawn for itself.
         if (state.destination2 != null) {
             // The upper board of a double arm: the same board, four pixels up.
             this.paint(state, poseStack, submitNodeCollector, height + 4.0F / 16.0F,
