@@ -422,7 +422,8 @@ public final class Campaign extends SavedData {
      * because the well is the way down the plans drew and this is the page that sends the player to it.
      */
     private static final String GIMLI = "Gimli";
-    private static final String GIMLI_TAG = "tolkienmobs:campaign_gimli";
+    /** His tag, read by {@link QuestGivers} as well: it is what tells the cave's keeper from a hall's staff. */
+    static final String GIMLI_TAG = "tolkienmobs:campaign_gimli";
     private static final double GIMLI_REACH = 96.0D;
     private static final String REFUGE_TITLE = "campaign.tolkienmobs.page.refuge";
     private static final String REFUGE_PLACE = "campaign.tolkienmobs.page.refuge.place";
@@ -1975,6 +1976,9 @@ public final class Campaign extends SavedData {
         dwarf.addTag(GIMLI_TAG);
         dwarf.setCustomName(Component.literal(GIMLI).withStyle(ChatFormatting.GOLD));
         dwarf.setCustomNameVisible(true);
+        // Planted rather than walking: he keeps the dais, and a planted giver is the kind the hall's own watch
+        // turns toward whoever comes in - which is the one moving he does.
+        QuestGivers.plant(dwarf);
         level.addFreshEntity(dwarf);
         Keepers.remember(level, GIMLI_TAG, dwarf);
     }

@@ -366,3 +366,11 @@ well up in the hold, because page 2-6 sends the player down and the step down is
 stood when a player carrying that page is within ninety-six blocks of the dais, or inside the hold, which keeps a world
 that already holds him at the well to one body - `recall` walks him down rather than a second dwarf being stood. A new
 body is only placed when the player is at the cave, so nobody is popped into the rock from the far side of the massif.
+
+### His gaze
+
+He is a planted giver, not a walker: `QuestGivers.plant` gives him no AI and a home area the width of the room, and
+`QuestGivers.onPlayerTick` turns him toward whoever is nearest every two ticks, six degrees at a time - the same slow
+turn the questing halls' staff have. The one difference is reach: a hall's giver watches its room from **twelve**
+blocks, and the cave's keeper watches **twenty-four**, because the dais stands behind a six-block tunnel and a player
+coming in through the mouth should find him already facing them.

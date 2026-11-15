@@ -107,6 +107,15 @@ public final class QuestGivers {
     private static final float WATCH_STEP = 6.0F;
     /** How often the gaze is turned, in ticks: every tenth of a second is as smooth as a body needs. */
     private static final int WATCH_INTERVAL = 2;
+    /**
+     * How far the cave's keeper looks for someone to watch: twenty-four blocks.
+     * <p>
+     * A hall's twelve is the width of a room with the bench at its middle. The dwarf the chapter sends below stands
+     * on a dais with a six-block tunnel in front of him, so a player coming in through the mouth is further from him
+     * than a hall's giver ever is from its own door - and being seen the moment the room opens is the whole point of
+     * the turn.
+     */
+    private static final double KEEPER_WATCH = 24.0D;
 
     private QuestGivers() {
     }
@@ -487,6 +496,18 @@ public final class QuestGivers {
         }
     }
 
+    /**
+     * Plants a giver on the spot it was stood on: no AI, so it stays where the chapter put it, and a home area the
+     * width of its own room.
+     * <p>
+     * This is the state a hall's staff are given on the way into a world, and the one {@link #onPlayerTick} asks for
+     * before it turns anybody - so a keeper stood by code is planted here rather than left to its next load, and the
+     * dwarf in the cave watches the room from the moment he exists.
+     */
+    public static void plant(Mob giver) {
+        keepInHall(giver);
+    }
+
     @SubscribeEvent
     public static void onGiverJoin(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide()) return;
@@ -497,22 +518,35 @@ public final class QuestGivers {
     /**
      * Turns a hall's givers toward whoever is nearest, which is the only moving a planted giver does. Read
      * from the player's own tick rather than from each entity's: a gaze only matters when there is somebody
-     * in the room to see it, and the player tick is already the clock the rest of this class runs on.
+     * in the room to see it, and the player tick is already the clock the rest of this class runs on. Each
+     * giver is turned inside its own reach, since a cave's keeper has a tunnel in front of him where a
+     * hall's has a bench.
      */
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         if (player.tickCount % WATCH_INTERVAL != 0) return;
         if (!(player.level() instanceof ServerLevel level)) return;
-        List<Entity> staff = level.getEntities(player, player.getBoundingBox().inflate(WATCH),
+        List<Entity> staff = level.getEntities(player, player.getBoundingBox().inflate(KEEPER_WATCH),
                 entity -> entity instanceof Mob mob && mob.isNoAi()
                         && factionOf(entity) != null && isGiver(entity));
         for (Entity entity : staff) {
-            watch((Mob) entity, player);
+            // A hall's bench is watched from the room; a cave's dais from the tunnel as well.
+            watch((Mob) entity, player,
+                    entity.entityTags().contains(Campaign.GIMLI_TAG) ? KEEPER_WATCH : WATCH);
         }
     }
 
-    /** A slow turn toward the player, so a staffed hall reads as watching rather than as three statues. */
+    /**
+     * A slow turn toward the player, so a staffed hall reads as watching rather than as three statues, and only while
+     * they are inside this giver's own reach - a hall's room, or a cave's tunnel.
+     */
+    private static void watch(Mob giver, ServerPlayer player, double reach) {
+        if (giver.distanceToSqr(player) > reach * reach) return;
+        watch(giver, player);
+    }
+
+    /** {@link #watch(Mob, ServerPlayer, double)}, without a reach: the turn itself. */
     private static void watch(Mob giver, ServerPlayer player) {
         double dx = player.getX() - giver.getX();
         double dz = player.getZ() - giver.getZ();

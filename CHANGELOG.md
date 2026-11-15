@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The cave's keeper turns to face whoever comes in, the way a hall's staff do.** Gimli is planted where he is stood
+          (`QuestGivers.plant`: no AI, a home area the width of the room), which is the state the halls' own givers are
+          given on the way into a world, and the hall's gaze - six degrees every two ticks toward the nearest player -
+          now reaches him from **twenty-four** blocks rather than twelve: his dais stands behind a six-block tunnel, so
+          a player coming in through the mouth finds the dwarf already facing them instead of the wall. A hall's giver
+          keeps its twelve, which is the width of a room with the bench at its middle.
 - **The dev tool opens the cave's mouth, and Gimli stands inside it.** The pack's dev tool (`item_dev_tool`, either
           hand) counts as a page for the mouth's own rule, so the owner can walk in and out of a cave whose door is a
           chapter without asking the book for the page each time. And the dwarf the chapter sends below now keeps the
