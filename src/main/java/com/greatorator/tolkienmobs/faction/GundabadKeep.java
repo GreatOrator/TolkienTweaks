@@ -80,9 +80,17 @@ public final class GundabadKeep {
         ServerLevel level = server.getLevel(TolkienDimensions.ARDA);
         if (level == null) return 0;
         BlockPos plan = ArdaMap.keepPlan();
-        // The doorway's own floor: the deepslate the hold's floor is cut from. The mark a builder stands on is that
-        // same cell, so a keep that is already standing answers with its own block and nothing is laid over it.
-        if (level.getBlockState(plan.offset(DOOR_X, DOOR_FLOOR, DOOR_FACE)).is(Blocks.DEEPSLATE)) {
+        // The hold's own blocks, not a material: this asked whether the doorway's floor was deepslate, and Arda's rock
+        // under the mountain is deepslate as well, so the answer was "already standing" in every world and the keep was
+        // never laid at all. The box is opened first because a build nobody has visited cannot be read, and a hold that
+        // cannot be read must not be answered as missing - laying over one is how a template's air eats a courtyard.
+        load(level, plan, ArdaMap.KEEP_WIDE, ArdaMap.KEEP_DEEP);
+        // The chamber out of the gate is carried to the hold's own wall on every pass, because that wall's place is the
+        // keep's number rather than the gate's: a world laid against the older plan had the hall stopped twelve blocks
+        // short of where the wall now stands, and a doorway opening into that rock is a doorway with no way in. It only
+        // writes air, so a hall already at the wall costs nothing and a hold that moves takes its hall with it.
+        GundabadGate.extendHall(level, ArdaMap.gatePlan(), Rotation.NONE);
+        if (Sites.standsAt(level, Sites.GUNDABAD, plan)) {
             // A hold already standing still has its mouth dressed: the ground in front of a doorway is not part of
             // the build, and a doorway the chamber's floor stands a course across is a slot rather than a way out.
             clearMouth(level, plan);

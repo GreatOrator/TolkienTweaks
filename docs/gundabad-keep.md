@@ -55,14 +55,22 @@ nine on the west, fourteen where an inner mass stands just inside it). It is cle
 laid, so **raising the keep and then laying the gate again is what opens the door**; until a keep stands
 there it is a pocket in the rock.
 
-The keep's plan belongs in `ArdaMap` beside the gate's, because the passage's end is the keep's wall in every
-world and must not be measured off rock that the hall itself changes. The sizes are there - `KEEP_WIDE` 122,
-`KEEP_TALL` 26, `KEEP_DEEP` 183 - but **`KEEP_X`, `KEEP_Z` and `KEEP_FLOOR` still read the first plan,
-5471/-7100/176**, so the numbers in this file are the decision and the code has not caught up. `docs/gundabad-gate.md`
-(Open 1 and 2) has the measurement that has to settle which is the hold: this file's y 187 puts the keep's floor top
-on the passage's own 189 where 176 puts it eleven blocks under it, while the captain's marked throne at
-(5501, 192, -7024) sits inside the older box and outside this one. Until the two agree, `/tmgate keep` lays the hold
-wherever `keepPlan()` answers.
+The keep's plan lives in `ArdaMap` beside the gate's - `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` 187, `KEEP_WIDE`
+122, `KEEP_TALL` 26, `KEEP_DEEP` 183, `keepPlan()` and `keepWall()` - because the passage's end is the keep's wall in
+every world and must not be measured off rock that the hall itself changes. It read 5471/-7100/176 until 15 November
+2026, the first plan, which put the hold's floor eleven blocks under the passage's 189; the box this file was measured
+for is the one in the code now.
+
+**Two things followed the move.** The captain and the wraith are placed from `ArdaMap.keepThrone()` and
+`keepThroneWatch()` - the seat is thirty blocks in from the plan's corner, seventeen up and seventy-six back - so they
+now stand at (5546, 204, -7036) and (5546, 204, -7039) rather than at the old plan's (5501, 193, -7024). And the
+owner's mock-up of that seat, the dark-stone slab at (5501, 192, -7024) with red carpet over it, is left standing
+forty-five blocks west and twelve south of the hold: it is a mark, not part of the build, and can be taken out.
+
+**The guard that kept the hold out of every world is fixed with it.** `GundabadKeep.autospawn` asked whether the
+doorway's floor was `deepslate` - and the mountain's own rock is deepslate, so it answered "already standing" always.
+It now reads the template's own blocks back through `Sites.standsAt`, with the box opened first so an unvisited hold is
+read rather than assumed missing.
 
 ## Two passes that would wreck it
 

@@ -71,7 +71,7 @@ Eleven pages, 26 to 36, written and wired. **Nothing in the chapter has been pla
 
 Standing, compiled, unseen: the shelter camp (seen), the goblin cave cutting and dressing itself as a player nears, the
 Gundabad gate and its chamber, the keep at its plan, Gimli at the dais (5703, 188, -6676), the captain on the throne
-(5501, 193, -7024) with the wraith three blocks south, the coal lattice door at x 5575-5581, y 190-199, z -6856
+(5546, 204, -7036) with the wraith three blocks along at (5546, 204, -7039), the coal lattice door at x 5575-5581, y 190-199, z -6856
 (opens for `item_keystone` within 12 blocks), page 2-5's vault, and `DugorimFight`'s boss bar and plate.
 
 **Open, in the order worth taking them:**
@@ -127,13 +127,17 @@ shape of the rest: **whether Stoneyford and the Watchers are built here or alrea
   been built on the footprint since. `/tmgate place` stays the deliberate re-lay; `clear` is the way back. The cave east
   of it cuts itself the same way, and `/tmpin build keep` now refuses rather than writing a pin that would move a
   planned hold.
-- **The keep's plan is the one thing left at Gundabad, and it is a decision, not work.** `ArdaMap` says 5471/-7100/176
-  (box x 5471…5592, z -7100…-6917, floor top 178); `docs/gundabad-keep.md` says 5516/187/-7112 (box x 5516…5637,
-  z -7112…-6930, floor top 189). The built passage's floor top is 189, which the note's y gives and the code's does not;
-  the captain's own mark, the slab at (5501, 192, -7024), sits inside the code's box and fifteen blocks outside the
-  note's. **Neither hold stands in the world**: `GundabadKeep.autospawn` asks for deepslate at the doorway's floor and
-  Arda's rock is deepslate, so it has answered "already standing" since it was written. Settle which plan is the hold,
-  make that guard the build's own blocks, then `/tmgate keep`.
+- **The keep's plan is settled and its guard is fixed** (15 November 2026). `ArdaMap` now carries the plan the note
+  walked: `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` 187 - box x 5516…5637, z -7112…-6930, floor top 189, flush with the
+  passage's floor, its south wall at -6930 where the hall now ends. It read 5471/-7100/176, whose floor sat eleven
+  blocks under the passage. The captain and the wraith are placed from `keepThrone()`/`keepThroneWatch()`, so they moved
+  with the hold and now stand at **(5546, 204, -7036)**, three blocks ahead of him at (5546, 204, -7039); the owner's
+  old mock-up of the seat, the slab and red carpet at (5501, 192, -7024), is left standing west of the hold and can go.
+  `GundabadKeep.autospawn` asked whether the doorway's floor was deepslate - which the mountain's own rock is - so it
+  answered "already standing" in every world and **the hold has never been laid**; it reads the template's own blocks
+  through `Sites.standsAt` now, with the box opened first so an unvisited hold is read rather than assumed missing.
+  Nothing has been seen in game: `/tmgate keep` is the way to look at it, and a world that took the older plan would
+  keep that copy wherever it stood.
 - **The biome canon audit** - twelve findings in `docs/arda-biome-canon.md`, **none applied**. Waiting on a decision,
   not on work.
 - **A road already laid is never taken back.** `surfaceAt` reads the old embankment as ground on a re-lay, and columns

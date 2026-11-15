@@ -3599,3 +3599,22 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   template, which would move a hold whose corner is written down in `ArdaMap`; it refuses now and names `/tmgate keep`.
   The name `gundabad` no longer means the keep either - the gate is eight pieces with a plan of its own, and calling the
   keep the whole location is how that pin came to look reasonable.
+
+- **The keep is the hold the note walked, and the captain moved with it.** `ArdaMap` carried the first plan -
+  `KEEP_X` 5471, `KEEP_Z` -7100, `KEEP_FLOOR` 176 - whose floor top of 178 stood eleven blocks under the passage the hold
+  opens off, while the passage's own floor top is 189 and the box measured for the keep is x 5516…5637 by z -7112…-6930.
+  It now reads 5516/-7112/187: floor top 189, flush with the hall, its south wall at -6930 where `keepWall()` puts the
+  end of the passage. The captain and the wraith are placed from `keepThrone()` and `keepThroneWatch()`, so they follow
+  the plan to (5546, 204, -7036) and (5546, 204, -7039); the owner's slab-and-carpet mock-up of the seat at
+  (5501, 192, -7024) is a mark rather than part of the build and is left where it stands.
+- **The keep's "already standing" answer is the build's own blocks.** It asked whether the doorway's floor was
+  `deepslate`, and Arda's rock under the mountain is deepslate too, so every world answered yes and the hold was never
+  laid - measured in the test world, nothing stands in either plan's box. It reads the template back through
+  `Sites.standsAt` now, opening the hold's box first: an unvisited build is read rather than assumed missing, which is
+  the difference between a keep and eight templates' air laid over one.
+
+- **The hall out of the gate is carried to the keep's wall every pass, not once.** `keepWall()` is the keep's number,
+  so moving the hold moved the wall it opens off: a world whose gate already stood had the chamber ending at the older
+  wall -6930 short by twelve blocks, and `extendHall` only runs when the gate is laid, which a standing gate is not.
+  `GundabadKeep.autospawn` now carries it every time: it writes only where the cell is air, so a hall already at the
+  wall is nothing to do, and a hold that moves takes its hall with it.

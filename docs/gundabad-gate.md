@@ -215,19 +215,16 @@ the noise above are the answer to both.
 The gate itself is finished: it stands by itself in every world, and a gate already standing is left alone. What is
 open here is the keep behind it.
 
-1. **The keep's plan is recorded twice, and the two records disagree.** `ArdaMap` has `KEEP_X` 5471, `KEEP_Z` -7100,
-   `KEEP_FLOOR` 176 - the box x 5471…5592, z -7100…-6917, its south wall at -6918, its floor top **178**.
-   `docs/gundabad-keep.md` has the pin at **(5516, 187, -7112)** - the box x 5516…5637, z -7112…-6930, its south wall
-   at -6930, its floor top **189**. Measured in `run/saves/Mod Test`: the passage's floor top is 189 at x 5577 from
-   z -6908 out to -6916, which is what the keep note's y is for and what the code's 176 cannot meet - a hold pinned at
-   176 sits eleven blocks under the passage it is supposed to open off. But the captain's own mark, the slab at
-   (5501, 192, -7024) with the carpet over it at 193, sits inside the code's box and fifteen blocks west of the note's,
-   so the two records are not the same hold shifted: they are two different placements, and one of them is stale.
-2. **The keep has never been laid, and its guard is why.** `GundabadKeep.autospawn` answers "already standing" from
-   `(5577, 189, -6918)`, the doorway's floor course, tested with `is(Blocks.DEEPSLATE)` - and Arda's rock under the
-   mountain is deepslate too, so the answer has always been yes. Nothing stands in that world's keep box at either
-   plan. Whatever plan is chosen, that guard has to be the build's own blocks (`Sites.standsAt`) rather than a material
-   the mountain itself is made of.
+1. **The keep's plan is settled (15 November 2026).** It is `docs/gundabad-keep.md`'s: `KEEP_X` 5516, `KEEP_Z` -7112,
+   `KEEP_FLOOR` 187 - box x 5516…5637, z -7112…-6930, floor top 189. `ArdaMap` read 5471/-7100/176, the first plan,
+   whose floor top of 178 sat eleven blocks under the passage the hold opens off; the built passage's floor top is 189
+   at x 5577 from z -6908 out to -6916, which is what the settled plan's y is for. The captain's marked seat at
+   (5501, 192, -7024) fits the older box, so it and the wraith moved with the hold - they are placed from
+   `ArdaMap.keepThrone()`, and now stand at (5546, 204, -7036).
+2. **The keep had never been laid, and its guard was why - fixed with the plan.** `GundabadKeep.autospawn` answered
+   "already standing" from `is(Blocks.DEEPSLATE)` at the doorway's floor, and Arda's rock under the mountain is
+   deepslate too. It reads the template's own blocks through `Sites.standsAt` now, opening the box first so an
+   unvisited hold is read rather than assumed missing.
 3. **The sky above the wings is carried as air** — the capture lists every cell, so the box is whole.
    `tools/gate_capture.py --trim-sky` drops air above the highest block of each column when the voids
    want adjusting. Not run.

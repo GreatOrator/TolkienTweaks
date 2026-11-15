@@ -643,14 +643,21 @@ public final class ArdaMap {
      * that, so the gate is laid first and the keep laid over it: the keep's own wall and its doorway then stand whole,
      * and the cut behind them is air the keep's rooms already hold.
      */
-    public static final int KEEP_X = 5471;
-    public static final int KEEP_Z = -7100;
+    public static final int KEEP_X = 5516;
+    public static final int KEEP_Z = -7112;
     public static final int KEEP_WIDE = 122;
     public static final int KEEP_TALL = 26;
     public static final int KEEP_DEEP = 183;
 
-    /** The keep's own bottom course: the template's y 0, which puts its doorway's floor on the chamber's floor course. */
-    public static final int KEEP_FLOOR = 176;
+    /**
+     * The keep's own bottom course: the template's y 0.
+     * <p>
+     * The chamber's floor top is 189 and the template's floor is its three bottom courses, so the corner is 187 - the one
+     * number that puts the hold's floor on the hall's, its interiors both starting at 190. It read 176, the first plan,
+     * which stood the hold eleven blocks under the passage it opens off and did not match the box the keep was walked
+     * for: x 5516…5637 and z -7112…-6930, with the mountain's shallowest cover over its south wall.
+     */
+    public static final int KEEP_FLOOR = 187;
 
     /**
      * The keep's throne, from the plan's own corner: thirty along, seventeen up, seventy-six back. The owner marked the
