@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Dugorim keeps the throne, a Nazgul stands in front of it, and the key-stone lifts the gate.** The captain is the
+          stage's boss now rather than a body in the cave: he stands on the keep's own seat (5501, 193, -7024), facing
+          the hall, with one of the Nine four paces down the carpet in front of him - a real `entityttmnazgul`, given a
+          home area and left to fight. Page 2-7 is not paid for the dwarf alone: Gloin refuses it while the wraith
+          still stands, and the mark of the fall is saved on the player, so a second wraith is never stood for somebody
+          who has already killed one. Gimli hands over the `item_keystone` with the page, and the coal lattice across
+          the hall's mouth (5575-5581, y 190-199, z -6856) lifts a course every two ticks, bottom first, while a
+          player carrying the stone is within twelve blocks - and settles back the same way, never on somebody
+          standing in the opening.
 - **Gimli hands over the Key-stone with page 2-7.** The dwarven captain is the one who carries it up the stair ahead of
           the player, so the stone changes hands at the moment the page that opens the way is given rather than being
           found in a vault - `Campaign.noteHanded` puts `item_keystone` in the pack the way the beryl is put there for

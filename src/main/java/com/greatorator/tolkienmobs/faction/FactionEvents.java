@@ -61,6 +61,11 @@ public final class FactionEvents {
             CourageLedger.award(player, CourageLedger.Deed.WITCHKING_FELLED);
         } else if (victim instanceof NazgulEntity) {
             CourageLedger.award(player, CourageLedger.Deed.NAZGUL_FELLED);
+            // The one behind the captain: marked on the player, so the stair's hunt cannot stand him again and cannot
+            // be paid before he is down.
+            if (victim.entityTags().contains(Campaign.KEEP_NAZGUL_TAG)) {
+                player.addTag(Campaign.NAZGUL_DOWN_TAG);
+            }
         }
         for (Alliance alliance : Alliance.values()) {
             if (!victim.getType().builtInRegistryHolder().is(alliance.soldiers())) continue;

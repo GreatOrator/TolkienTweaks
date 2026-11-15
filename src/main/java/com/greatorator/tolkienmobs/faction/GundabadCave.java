@@ -195,15 +195,6 @@ public final class GundabadCave {
     }
 
     /**
-     * Where Dugorim holds the room: the back of it, two blocks in from the far wall and on the floor, so he is met
-     * across the dais by whoever comes up the tunnel.
-     */
-    public static BlockPos dugorim() {
-        BlockPos plan = ArdaMap.gundabadCave();
-        return new BlockPos(plan.getX() + TUNNEL + ROOM_DEEP - 2, plan.getY() + 1, plan.getZ());
-    }
-
-    /**
      * The mouth's own rule, asked once a second for a player in Arda: shut unless somebody within sixty-four blocks is
      * on one of the hold's pages, and never shut on somebody standing in the room.
      * <p>

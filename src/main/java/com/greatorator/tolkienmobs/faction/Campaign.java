@@ -10,6 +10,7 @@ import com.greatorator.tolkienmobs.network.manager.CampaignSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -445,6 +446,17 @@ public final class Campaign extends SavedData {
     private static final String DUGORIM_TARGET = "tolkienmobs:entityttmdwarf";
     private static final String DUGORIM = "Dugorim";
     private static final String DUGORIM_TAG = "tolkienmobs:campaign_dugorim";
+    /**
+     * The wraith behind the captain, and the mark of him being down.
+     * <p>
+     * Page 2-7 is the stage the pair are the bosses of: Dugorim holds the seat and a Nazgul stands in front of it, and
+     * the page is not Gloin's to take while the wraith is still up. The mark is a scoreboard tag on the player rather
+     * than a note in this class, because a scoreboard tag is saved with them - so a player who felled the wraith on
+     * Monday is not asked to do it again on Tuesday, and a second wraith is never stood for them.
+     */
+    static final String KEEP_NAZGUL_TAG = "tolkienmobs:campaign_keep_nazgul";
+    static final String NAZGUL_DOWN_TAG = "tolkienmobs:nazgul_down";
+    private static final String NAZGUL = "Nazgul";
     private static final String DUGORIM_TITLE = "campaign.tolkienmobs.page.dugorim";
     private static final String DUGORIM_PLACE = "campaign.tolkienmobs.page.dugorim.place";
     private static final String DUGORIM_CLOSING = "campaign.tolkienmobs.page.dugorim.closing";
@@ -2003,8 +2015,9 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * Stands Dugorim at the back of the cave's room while his page is the one in hand, so the hunt has a body to be
-     * about rather than only a name in the prose.
+     * Stands Dugorim on the keep's throne while his page is the one in hand, so the hunt has a body to be about rather
+     * than only a name in the prose. He is the stage's boss, and the seat is his: the keeper who held the cave's dais
+     * has been moved down here with the barrow-hall it belongs to.
      * <p>
      * He is not a giver: he holds no work, and a giver is made invulnerable and left standing, which is the one thing a
      * hunt cannot have. He is planted like one - no AI, a home area the width of the room, so he keeps the spot - and he
@@ -2015,7 +2028,7 @@ public final class Campaign extends SavedData {
         if (!(player.level() instanceof ServerLevel level)) return;
         Quest page = page(player, Alliance.WEST);
         if (page == null || !DUGORIM_TARGET.equals(page.target())) return;
-        BlockPos post = GundabadCave.dugorim();
+        BlockPos post = ArdaMap.keepThrone();
         if (post.distToCenterSqr(player.position()) > GIMLI_REACH * GIMLI_REACH) return;
         Entity keeper = keeperWith(level, DUGORIM_TAG);
         if (keeper != null) {
@@ -2030,8 +2043,8 @@ public final class Campaign extends SavedData {
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_DWARF.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob dwarf)) return;
-        // Facing the tunnel: yaw 90 looks down -X, which is the way in.
-        dwarf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 90.0F, 0.0F);
+        // Facing down the hall: yaw 0 looks along +Z, which is the way the player comes up the carpet.
+        dwarf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 0.0F, 0.0F);
         dwarf.setPersistenceRequired();
         dwarf.addTag(DUGORIM_TAG);
         dwarf.setCustomName(Component.literal(DUGORIM).withStyle(ChatFormatting.DARK_RED));
@@ -2039,6 +2052,63 @@ public final class Campaign extends SavedData {
         QuestGivers.plant(dwarf);
         level.addFreshEntity(dwarf);
         Keepers.remember(level, DUGORIM_TAG, dwarf);
+    }
+
+    /**
+     * Stands the Nazgul in front of the throne while the captain's page is in hand: the second half of the stage, and
+     * the reason the page is not paid for the dwarf alone.
+     * <p>
+     * Unlike the captain he is not planted - a wraith standing still is not a Nazgul - so he is given a home area the
+     * size of the hall instead, and he is never stood a second time for a player already carrying the mark of his fall.
+     */
+    private static void keepNazgul(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        Quest page = page(player, Alliance.WEST);
+        if (page == null || !DUGORIM_TARGET.equals(page.target())) return;
+        if (player.entityTags().contains(NAZGUL_DOWN_TAG)) return;
+        BlockPos post = ArdaMap.keepThroneWatch();
+        if (post.distToCenterSqr(player.position()) > GIMLI_REACH * GIMLI_REACH) return;
+        Entity keeper = keeperWith(level, KEEP_NAZGUL_TAG);
+        if (keeper instanceof Mob wraith) {
+            recallKeeper(level, keeper, post, 32.0D, KEEP_NAZGUL_TAG);
+            return;
+        }
+        if (keeper != null) keeper.discard();
+        BlockPos stand = floorNear(level, post);
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_NAZGUL.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob wraith)) return;
+        wraith.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 0.0F, 0.0F);
+        wraith.setPersistenceRequired();
+        wraith.addTag(KEEP_NAZGUL_TAG);
+        wraith.setCustomName(Component.literal(NAZGUL).withStyle(ChatFormatting.DARK_PURPLE));
+        wraith.setCustomNameVisible(true);
+        wraith.setHomeTo(stand, 24);
+        level.addFreshEntity(wraith);
+        Keepers.remember(level, KEEP_NAZGUL_TAG, wraith);
+    }
+
+    /**
+     * Whether this turn-in is the captain's page with the wraith still standing, which Gloin will not take.
+     * <p>
+     * The page asks for the room, not for one body in it: a captain's cellar is not cleared while the thing behind the
+     * captain is still in it. Asked only of a page whose own count is already met, so a player short of the dwarf is
+     * told that first rather than being sent back for the wrong one.
+     */
+    public static boolean nazgulHeldBack(ServerPlayer player, String name) {
+        if (!name.equalsIgnoreCase(GLOIN)) return false;
+        if (player.entityTags().contains(NAZGUL_DOWN_TAG)) return false;
+        Quest held = null;
+        for (Quest quest : QuestLedger.active(player)) {
+            if (DUGORIM_TARGET.equals(quest.target()) && quest.complete()) {
+                held = quest;
+                break;
+            }
+        }
+        if (held == null) return false;
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.page.dugorim.held_back")
+                .withStyle(ChatFormatting.GRAY));
+        return true;
     }
 
     /**
@@ -3231,6 +3301,7 @@ public final class Campaign extends SavedData {
         keepGloin(player);
         keepGimli(player);
         keepDugorim(player);
+        keepNazgul(player);
         // The seam between the chapters is walked rather than handed over: the note left at the end of
         // chapter one is answered at the courtyard, and the company leaving is what opens chapter two.
         Departure.tick(player);

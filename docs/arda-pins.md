@@ -378,10 +378,37 @@ coming in through the mouth should find him already facing them.
 ### The captain
 
 Page 2-7 is a hunt of `tolkienmobs:entityttmdwarf`, so any of the pack's dwarves settles it - but the captain the prose
-names is stood in the room's back while the page is in hand, three blocks behind the dais and facing the tunnel
-(`GundabadCave.dugorim()`, (5706, 187, -6676)). He is **not** a giver: a giver is made invulnerable on the way into a
-world, which is the one thing a hunt cannot have, so he only carries `tolkienmobs:campaign_dugorim` and is found by it
-afterwards, which is how a body already felled stays down.
+names is the stage's boss, and he holds the keep's own throne while the page is in hand: `ArdaMap.keepThrone()`, read
+back from the owner's mark as (5501, 193, -7024), the dark stone slab on its carpet, standing as he would with the hall
+in front of him. He is **not** a giver: a giver is made invulnerable on the way into a world, which is the one thing a
+hunt cannot have, so he only carries `tolkienmobs:campaign_dugorim` and is found by it afterwards, which is how a body
+already felled stays down.
+
+### The wraith
+
+A `tolkienmobs:entityttmnazgul` stands four paces down the carpet from the seat, at `ArdaMap.keepThroneWatch()`
+(5501, 193, -7021), also while 2-7 is in hand - and unlike the captain he is not planted: he is given a home area the
+width of the hall and left to fight.
+
+**The page is not paid for the dwarf alone.** When the player carries 2-7 back to Glóin with the count met but no mark
+of the wraith's fall, `Campaign.nazgulHeldBack` refuses it and says why. The mark is the scoreboard tag
+`tolkienmobs:nazgul_down`, written on the player the moment they fell a body tagged `tolkienmobs:campaign_keep_nazgul` -
+a player tag rather than a note in code, because a player tag is saved with them: no second wraith is stood for
+somebody who has already killed one, and Monday's kill is still a kill on Tuesday.
+
+### The gate
+
+The way into the hall is the coal lattice the owner built across it: seven columns (5575-5581) and ten courses (190-199)
+at z -6856, in a checker - odd courses solid, even courses coal at the odd columns, and the bottom course closed with
+dark oak stairs set top-half facing north. Its holes are one block wide each way, which is why it stops a player.
+
+`GundabadDoor` lifts it while anybody within twelve blocks **carries the Key-stone** (`item_keystone`, anywhere in the
+pack), one course per two ticks, bottom course first, so the screen shrinks up into the lintel the way a portcullis
+rises; when nobody carries the stone it comes back down the same way, and never while a player stands in the opening.
+Nothing is stored between sessions - the shape is written down from the owner's four corner marks, and how open the door
+is gets read off the door itself on the first ask of a world, so a server stopped mid-lift finishes lifting or shutting
+rather than leaving a half-open gate.
+
 
 His face is `textures/entity/middle-earth/dugorim.png`, copied straight from the old pack -
 `customnpcs/textures/customskins/dwarves/dwarfwarrior 4.png`, 64x64, nothing to convert. `DwarfRender` looks a named

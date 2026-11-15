@@ -266,6 +266,8 @@ public final class QuestGivers {
         // The same at the other end of the chapter: the rider's bridle is the proof of the report, so a
         // player who has not picked it up is told what is missing instead of being paid for the tale.
         if (Campaign.bridleHeldBack(player, name)) return;
+        // And the last of the three: the captain's cellar has a wraith in it, and the page is not paid for the dwarf.
+        if (Campaign.nazgulHeldBack(player, name)) return;
         if (QuestLedger.turnInFirst(player, name)) return;
         // A page given as words is finished by hearing them out, and is paid where they were said.
         QuestLedger.spokeTo(player, name);

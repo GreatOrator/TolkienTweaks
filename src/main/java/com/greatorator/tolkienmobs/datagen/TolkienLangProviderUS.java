@@ -1021,6 +1021,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.dugorim.reply.1", "I am ready now. What do I need to do?");
         this.add("campaign.tolkienmobs.page.dugorim.reply.2", "Let me come back when I am better prepared.");
         this.add("campaign.tolkienmobs.page.dugorim.said", "Good luck. May your battle be glorious, and may it be a short one.");
+        this.add("campaign.tolkienmobs.page.dugorim.held_back", "Gloin looks at the blood on your blade, and then past you, north, as if he could see the room himself. \"And the other one? A captain does not keep a cellar alone, and I will not write that hall down as cleared while a wraith is still standing in it. Go back up - or down - and finish it.\"");
         this.add("campaign.tolkienmobs.page.dugorim.closing", "Dugorim was the Dourhands' captain, and he did not give the keep up quietly. Gimli hears it out from the top of the stair, and then says the thing neither of you wanted said aloud: a captain does not hold a cellar on his own word. Something above him gave the order, and it has not been down here in a long time.");
         this.add("campaign.tolkienmobs.page.steps", "Steps of Evil I");
         this.add("campaign.tolkienmobs.page.steps.place", "the camps on the borders of Carn Dum");

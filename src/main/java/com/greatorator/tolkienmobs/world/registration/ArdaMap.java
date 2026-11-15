@@ -652,6 +652,20 @@ public final class ArdaMap {
     /** The keep's own bottom course: the template's y 0, which puts its doorway's floor on the chamber's floor course. */
     public static final int KEEP_FLOOR = 176;
 
+    /**
+     * The keep's throne, from the plan's own corner: thirty along, seventeen up, seventy-six back. The owner marked the
+     * seat itself - (5501, 192, -7024) is the slab the captain sits over - and this is that mark in the template's own
+     * coordinates, so moving the keep moves the seat with it.
+     */
+    public static BlockPos keepThrone() {
+        return keepPlan().offset(30, 17, 76);
+    }
+
+    /** Where the wraith stands to keep the captain's company: four paces down the carpet, facing the same way. */
+    public static BlockPos keepThroneWatch() {
+        return keepPlan().offset(30, 17, 79);
+    }
+
     /** The keep's pin: the template's north-west bottom corner, laid with no rotation. */
     public static BlockPos keepPlan() {
         return new BlockPos(KEEP_X, KEEP_FLOOR, KEEP_Z);
