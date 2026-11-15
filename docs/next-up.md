@@ -140,6 +140,13 @@ shape of the rest: **whether Stoneyford and the Watchers are built here or alrea
   through `Sites.standsAt` now, with the box opened first so an unvisited hold is read rather than assumed missing.
   Nothing has been seen in game: `/tmgate keep` is the way to look at it, and a world that took the older plan would
   keep that copy wherever it stood.
+- **The captain of the Dourhands is down once, and stays down** (15 November 2026). The quest line was walked in game
+  through 2-7, and Dugorim kept being stood again after he fell: the seat is populated from the page, and the page stays
+  in the book until Gloin takes it, so the hunt stood a new dwarf every pass with the page already met. He now wears a
+  mark of his fall on the player who ends him - `DUGORIM_DOWN_TAG`, the same scoreboard-tag answer the wraith behind him
+  has had all along - so the empty seat stays empty for that hand. Seen in game and confirmed: after the fix he was
+  killed once more and did not come back. The wraith's own mark has still not been walked, though it is the same answer
+  written the same way.
 - **The biome canon audit is settled** - twelve findings in `docs/arda-biome-canon.md`, closed 9 November 2026 in its
   own verdict section: eleven applied (gold Lorinand, no culumalda in the Mark, the right peoples in Emyn Muil, Khand,
   Cardolan and Minhiriath, the neon greens recoloured, snow over rock on the Misty Mountains, the Gladden's marsh and its

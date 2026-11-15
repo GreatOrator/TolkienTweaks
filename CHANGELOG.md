@@ -3635,3 +3635,10 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   awaiting the owner's eye; seen, they are right as they are - nothing to redraw, nothing to shade differently. With the
   Barrow-downs' deadwood kept on purpose and the other eleven findings carried into the world, every line of that audit
   is now answered.
+
+- **The captain of the Dourhands is stood once, not once per pass.** His seat is filled from page 2-7, and that page stays
+  in the player's book until Gloin takes it - so the moment Dugorim was killed he was missing from a page still in hand,
+  and the hunt stood another. Walking the line in game showed it plainly: quests through 2-7 worked, and the captain kept
+  coming back. He now carries a mark of his fall on the hand that ended him, `DUGORIM_DOWN_TAG`, which is the answer the
+  wraith behind him has always had - a scoreboard tag saved with the player - so the seat stays empty until it is paid
+  for, and a second player's own hunt is untouched. Confirmed in game: felled once after the fix, he did not come back.

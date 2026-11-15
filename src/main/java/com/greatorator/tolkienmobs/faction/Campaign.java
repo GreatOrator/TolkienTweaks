@@ -474,6 +474,15 @@ public final class Campaign extends SavedData {
      */
     static final String KEEP_NAZGUL_TAG = "tolkienmobs:campaign_keep_nazgul";
     static final String NAZGUL_DOWN_TAG = "tolkienmobs:nazgul_down";
+    /**
+     * The captain's own mark of being down, worn by the player who felled him.
+     * <p>
+     * The seat is stood from the page, and the page stays in a player's book until Gloin takes it - so a captain who was
+     * only ever found by tag was stood again the moment he was killed, and a player paying the pair off fought him over
+     * and over with the page already complete. This is the same answer the wraith has: a scoreboard tag, which is saved
+     * with the player, so the hunt is one dwarf deep for the hand that ended him and a second body is never stood.
+     */
+    static final String DUGORIM_DOWN_TAG = "tolkienmobs:dugorim_down";
     private static final String NAZGUL = "Nazgul";
     private static final String DUGORIM_TITLE = "campaign.tolkienmobs.page.dugorim";
     private static final String DUGORIM_PLACE = "campaign.tolkienmobs.page.dugorim.place";
@@ -2051,6 +2060,9 @@ public final class Campaign extends SavedData {
         if (!(player.level() instanceof ServerLevel level)) return;
         Quest page = page(player, Alliance.WEST);
         if (page == null || !DUGORIM_TARGET.equals(page.target())) return;
+        // A hand that has already ended him keeps the empty seat: the page is still in the book until Gloin takes it,
+        // so standing him again here would fight the same dwarf twice over a page already met.
+        if (player.entityTags().contains(DUGORIM_DOWN_TAG)) return;
         BlockPos post = ArdaMap.keepThrone();
         if (post.distToCenterSqr(player.position()) > GIMLI_REACH * GIMLI_REACH) return;
         Entity keeper = keeperWith(level, DUGORIM_TAG);

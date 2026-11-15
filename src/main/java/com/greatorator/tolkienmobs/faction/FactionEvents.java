@@ -56,6 +56,12 @@ public final class FactionEvents {
         QuestLedger.progressKill(player, victim);
         // A cave troll felled at depth is what clears a chamber of the stone's cave search.
         Campaign.onCaveTrollDeath(player, victim);
+        // The captain of the Dourhands is stood from a page that stays in the book until it is turned in, so without a
+        // mark of his fall the hunt stands him again the moment he is killed. The mark is on the player, like the
+        // wraith's, so one hand's kill is not another's and no second captain is stood for the hand that ended him.
+        if (victim.entityTags().contains(Campaign.DUGORIM_TAG)) {
+            player.addTag(Campaign.DUGORIM_DOWN_TAG);
+        }
         // Felling one of the Nine, or their master, is the lesson that the terror can be outlived.
         if (victim instanceof WitchKingEntity) {
             CourageLedger.award(player, CourageLedger.Deed.WITCHKING_FELLED);
