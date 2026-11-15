@@ -136,8 +136,9 @@ public final class Roads {
      * <p>
      * The survey is the pair of ammolite marks at 8481, -3668 and 8520, -3668, with thirty-three columns of water at
      * 186 between them and the bed eleven under that. Eleven blocks is a swim rather than a wade, so the crossing is a
-     * deck: 188, the banks' own height and two over the water, with the abutments based at 187 and the middles at 186,
-     * exactly as the stream's span is built because its water stands at 186 too. The near bank is the east one, which
+     * deck: 189, a block over the banks' own height and three over the water, with the abutments based at 188 and the
+     * middles at 187. Laid at the bank's own height the deck read as sunk into it, and a span whose walking surface is
+     * the ground either side of it is a low culvert rather than a bridge. The near bank is the east one, which
      * is how the pieces are stood - they run from the bank down to the far side - so the span is walked from its east
      * approach at 8536 to the west abutment at 8481, and its approach runs in the same sixteen blocks the stream's
      * crossing has.
@@ -148,9 +149,9 @@ public final class Roads {
      * The Forest River's span: 11736, -3841 to 11775, -3841, thirty-three columns of water at 167 and the bed eleven
      * under it again.
      * <p>
-     * Decked at 168, which is the bank's own height and only one over the water - as low as these pieces can stand and
-     * still be over it, their middles based at 166 and their abutments at 167. A river eleven deep is a swim, not a
-     * wade: a ford here would be a road painted on the bottom of a lake.
+     * Decked at 169 - the bank's own height and one more, two over the water - with the middles based at 167 and the
+     * abutments at 168, so the road steps up onto it from either bank rather than running into it level. A river eleven
+     * deep is a swim, not a wade: a ford here would be a road painted on the bottom of a lake.
      */
     public static final String FOREST_RIVER_BRIDGE = "tolkienmobs:roads/forest_river_bridge";
 
@@ -266,14 +267,14 @@ public final class Roads {
             // fords are the pass's own to carry.
             new Route.Riverless(OLD_FOREST_ROAD, 0, 0, 0, 0, 8231, -3641, 11842, -3877),
             // The Old Ford's span, walked from its east approach at 8536 onto the bank at 8520 and west across to
-            // 8481: deck 188, the banks' own height, over water at 186. Sixteen blocks of approach either side, as the
-            // mountain stream's crossing has, so the bridge's own grading meets the road's on the bank's block.
+            // 8481: deck 189, a block over the banks' own height, over water at 186. Sixteen blocks of approach either
+            // side, as the mountain stream's crossing has, so the bridge's own grading meets the road's on the bank.
             new Route.Crossing(OLD_FORD_BRIDGE, 0, 0, 0, 0, 8536, -3668, 8520, -3668, 8481, -3668,
-                    4, 186, 187, 188, 8, 16, "bridge_end", "bridge_middle"),
+                    4, 187, 188, 189, 8, 16, "bridge_end", "bridge_middle"),
             // The Forest River's span, from its east approach at 11791 onto the bank at 11775 and west across to
-            // 11736: deck 168 over water at 167, one block of clearance, the lowest these pieces can stand.
+            // 11736: deck 169, a block over the bank and two over the water at 167.
             new Route.Crossing(FOREST_RIVER_BRIDGE, 0, 0, 0, 0, 11791, -3841, 11775, -3841, 11736, -3841,
-                    4, 166, 167, 168, 8, 16, "bridge_end", "bridge_middle")
+                    4, 167, 168, 169, 8, 16, "bridge_end", "bridge_middle")
     );
 
     /**

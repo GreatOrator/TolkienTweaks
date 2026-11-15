@@ -3573,3 +3573,10 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   answer from the routes and not from a table kept beside them, so a span is written once - and a column counts as
   standing on one within twelve blocks of the line its pieces are stood on, because the line is the scout's and the road
   is a search between marks: matched within three, neither crossing was ever met at all.
+
+- **Both new bridge decks come up a block.** Laid at the bank's own height the Old Ford's deck read as sunk into the
+  ground either side of it, and the Forest River's the same, so each span is raised one: the Old Ford's deck 189 with
+  its abutments based at 188 and its middles at 187, the Forest River's 169 with 168 and 167 under it. The road follows
+  without being told where to go - its arrival is pinned to the crossing's own walking surface - so a re-grade steps it
+  up onto the deck instead of running into it level. The old pieces are cleared by the sweep that opens a span, so a
+  forgotten and rebuilt bridge is not two decks stacked.
