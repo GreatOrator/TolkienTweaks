@@ -554,6 +554,81 @@ public final class Roads {
         return CUTS.getOrDefault(route.id(), ordinary);
     }
 
+    /** How a road gets over a stretch of water. */
+    public enum Wet {
+        /**
+         * Through it: the road's own surface is the bed of the crossing, laid at the height the surveyor gave it with
+         * the water left standing over it to wade. A ford is shallow by definition, so the height it names is one a
+         * player walks at rather than one they swim at.
+         */
+        FORD,
+        /**
+         * Over it: the road's surface is a deck above the water, carried on a pier every fourth station of it and drawn
+         * down to the river's bed, so the water still runs open underneath rather than through a wall of stone.
+         */
+        SPAN
+    }
+
+    /**
+     * A stretch of water a road has to be told about, and how it crosses it.
+     * <p>
+     * The banks are two points on one axis, exactly as a bridge's are, because water does not always run the way the
+     * road does: a pair that differs in x is a stretch lying along x with the road crossing it, and a pair that differs
+     * in z is the same a quarter turn round. What the two banks share is the line the crossing runs on.
+     * <p>
+     * The numbers are a survey rather than a guess: {@code waterTop} is the height of the water's own surface and
+     * {@code walkOn} is the height the road is laid at across it - the bed for a ford, the deck for a span. Nothing is
+     * measured at lay time beyond the bed a pier is drawn to, because the water a river stands at is the thing most
+     * likely to have been made differently by the time a road reaches it, and a crossing that re-read it would put a
+     * step at each bank. A ford's own height also wants a bend written on the walk either side of it: the pass lowers a
+     * station toward a pinned height a step at a time, so a ford ten blocks under its banks is a ramp the marks have to
+     * ask for and the crossing only confirms.
+     */
+    public record Water(int nearX, int nearZ, int farX, int farZ, int waterTop, int walkOn, Wet kind) {
+        public Water {
+            if (nearX != farX && nearZ != farZ) throw new IllegalArgumentException("a crossing is on one axis");
+            if (nearX == farX && nearZ == farZ) throw new IllegalArgumentException("a crossing needs two banks");
+        }
+
+        /** Whether a column stands on this crossing: between its banks, and no further out than {@code across}. */
+        public boolean covers(int x, int z, int across) {
+            boolean alongX = nearZ == farZ;
+            int along = alongX ? x : z;
+            int nearAlong = alongX ? nearX : nearZ;
+            int farAlong = alongX ? farX : farZ;
+            if (along < Math.min(nearAlong, farAlong) - 1 || along > Math.max(nearAlong, farAlong) + 1) return false;
+            int lateral = alongX ? z - nearZ : x - nearX;
+            return Math.abs(lateral) <= across;
+        }
+    }
+
+    /**
+     * The water each road was told about, by route.
+     * <p>
+     * A road with no entry here crosses nothing it knows of, and every column of water in its band is left to the map
+     * except its own three middle columns - the old behaviour, and still the right one for a river a pass happens to
+     * meet on its way. A road with entries crosses each one as its survey says, which is the difference between a
+     * causeway nobody asked for and a ford or a deck somebody did.
+     */
+    private static final Map<String, List<Water>> WATERS = Map.ofEntries(
+            Map.entry(OLD_FOREST_ROAD, List.of(
+                    // The Old Ford: the scout's bank pair at 8481 and the one at 8520, with thirty-three columns of water
+                    // at 186 between them and the bed eleven under that, on z -3668. Eleven blocks is not a wade, so the
+                    // crossing is a deck at the banks' own height of 188 - two over the water - and the road runs onto
+                    // it from either side without a step.
+                    new Water(8481, -3668, 8520, -3668, 186, 188, Wet.SPAN),
+                    // The Forest River: 11736 and 11775 on z -3841, water at 167 with the bed eleven under it again,
+                    // decked at 168 - one over the water, which is as low as a deck can sit and still be over it.
+                    new Water(11736, -3841, 11775, -3841, 167, 168, Wet.SPAN))));
+
+    /** The crossing a column stands on, or null where the road meets no water it was told about. */
+    public static Water water(Route route, int x, int z, int across) {
+        for (Water water : WATERS.getOrDefault(route.id(), List.of())) {
+            if (water.covers(x, z, across)) return water;
+        }
+        return null;
+    }
+
     /**
      * The roads the bands decide, column by column, rather than one kind being laid the whole of them.
      * <p>

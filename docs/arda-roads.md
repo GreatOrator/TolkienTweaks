@@ -290,6 +290,23 @@ approach with its span and its switchback, and the two between the chapter's cam
 a section of those is promoted to a generated line only once it is walked densely enough to be described without
 searching it.
 
+## Water a road was told about
+
+A road that meets water nobody surveyed is still the river's: the pass carries its own three middle columns and leaves
+the rest, which is what a pass wandering onto a stream wants. A crossing somebody *walked* wants more than that, so a
+route names its water in `Roads.WATERS` - the two banks on one axis, the height of the water's surface, the height the
+road is laid at across it, and a kind:
+
+| kind | what the pass does |
+|---|---|
+| `FORD` | lays the road's own surface at the height given and makes the column under it solid down to the river's floor, leaving the water standing over it. The height is a bed, so a ford is only a ford when the water over it is shallow. |
+| `SPAN` | lays the deck at the height given, across the whole band, and draws a pier down to the bed every fourth station of it - read through water, since fluid is not a floor, and capped at forty-eight blocks like the bridge pieces. |
+
+The surveyed heights are what the roads are graded to, so the crossing is answered without a step at either bank, and a
+deck a block or two over the water is the lowest a span can sit. A ford ten blocks under its banks wants the bend marks
+either side of it to ask for the ramp: the pass lowers a station toward a pinned height a step at a time, so the marks
+are what make the descent walkable and the crossing only confirms it.
+
 ## The first road, as built
 
 The Rivendell approach is the first road with ground under it, and its shape is settled. It is laid with

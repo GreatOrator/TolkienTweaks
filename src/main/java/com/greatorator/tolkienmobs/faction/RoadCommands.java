@@ -1895,8 +1895,15 @@ public final class RoadCommands {
                         continue;
                     }
                     if (groundAt == WATER) {
-                        // The river is the bridge's. Only the road's own three columns are carried over it on
-                        // stone, and only where the grade stands above the water line.
+                        // Water the route was told about is crossed the way its survey says, the whole band of it at
+                        // once: a ford's bed made good under a road laid at the water's own height, or a deck carried
+                        // across on piers. A crossing nobody surveyed is still the river's, and only its own three
+                        // middle columns are carried over it.
+                        Roads.Water over = Roads.water(route, at, into, half + 1);
+                        if (over != null) {
+                            carry(level, at, into, over, dx == 0 && dz == 0 && i % 4 == 0);
+                            continue;
+                        }
                         if (Math.abs(dx) > 1 || Math.abs(dz) > 1) {
                             open++;
                             continue;
@@ -1975,6 +1982,36 @@ public final class RoadCommands {
                 }
             }
             return counted;
+        }
+
+        /**
+         * Carries the road over a stretch of water its route was told about.
+         * <p>
+         * A ford is a bed rather than a deck: the road's own surface is laid at the height the survey gives it and the
+         * column under it is made solid down to the river's floor, so a wade is a walk on stone rather than a step off a
+         * block left floating over the channel - and the water is left standing over it, because a ford pumped dry is a
+         * causeway. A span is the other way round: the deck is laid at that height and only a pier every fourth station
+         * of it is drawn down, so the water still runs open under a deck rather than through a wall of stone.
+         * <p>
+         * A pier is read through water rather than stopped by it - the columns between the deck and the bed are fluid,
+         * and fluid is not a floor - and it ends at the first block that is neither air nor water, capped at the bridge
+         * pieces' own forty-eight in case there is no bed to find.
+         */
+        private void carry(ServerLevel level, int at, int into, Roads.Water over, boolean pier) {
+            int seat = over.walkOn();
+            level.getChunk(at >> 4, into >> 4);
+            level.setBlock(new BlockPos(at, seat, into), surface(route, at, into), 2);
+            tops.put(key(at, into), seat);
+            laid++;
+            if (over.kind() != Roads.Wet.FORD && !pier) return;
+            int floor = Math.max(level.getMinY(), seat - 48);
+            for (int y = seat - 1; y >= floor; y--) {
+                BlockPos below = new BlockPos(at, y, into);
+                BlockState state = level.getBlockState(below);
+                if (!state.isAir() && state.getFluidState().isEmpty()) return;
+                level.setBlock(below, Blocks.STONE.defaultBlockState(), 2);
+                filled++;
+            }
         }
 
         /**

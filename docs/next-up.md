@@ -19,8 +19,10 @@ first, then `docs/chapter-three.md` for the chapter that comes next.
    a bend, from 8231, -3641 to 11842, -3877, thirty-eight hundred blocks, five wide. The two bank pairs at 8481
    and 8520, and 11736 and 11775, are the Old Ford and the Forest River, both thirty-three columns of water with
    the bed eleven under it, and both come out as fords of the pass's own three carried columns rather than spans.
-   Run `/tmroad build` standing on the first mark; it will take a while, and the two crossings are the worth
-   watching, since a ford is what the pass makes of water rather than what a route asks for.
+   Both crossings are named in `Roads.WATERS` as `SPAN`s - decked at 188 and 168, piers drawn to the bed every
+   fourth station - because eleven blocks of water is not a wade. Run `/tmroad build` standing on the first mark;
+   it will take a while, and the two decks are the thing to look at, since nothing has been laid since crossings
+   became something a route says rather than something a pass decides.
 3. Then walk the chapter in game: camp → cave (2-5's vault, the stone) → camp (2-6) → cave (Gimli, 2-7) →
    the coal lattice at z -6856 → the keep → the captain and the wraith → camp (turn in; Glóin takes the
    stone back).

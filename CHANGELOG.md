@@ -3520,3 +3520,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   that. The pass carries only its own three middle columns over water, and only while its grade is above the line, so
   both crossings come out as low fords of the country's own surface rather than as spans. It is laid five wide of the
   wild mix, like every other walked line. Nothing is laid yet: `/tmroad build` standing on the first mark lays it.
+
+- **Water a road is told about is crossed the way it was surveyed.** A route can now name its crossings in
+  `Roads.WATERS`: two banks on one axis, the height of the water, the height the road is laid at across it, and a kind -
+  `FORD` for a bed laid at the water's own height with the water left standing over it, `SPAN` for a deck carried over
+  the water with a pier every fourth station drawn down to the river's floor. The pass lays the whole band across a
+  surveyed crossing instead of only its own three middle columns, which is the difference between a narrow causeway
+  nobody asked for and a ford or a deck somebody did; a road that names no crossings behaves exactly as before. Both of
+  the old forest road's are spans, because eleven blocks of water is not a wade: the Old Ford is decked at 188 over
+  water at 186, and the Forest River at 168 over water at 167. Nothing has been laid, so what a deck two over the
+  Bruinen's kind of water looks like from the tow is still unseen.
