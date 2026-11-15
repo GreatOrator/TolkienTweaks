@@ -3530,3 +3530,16 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   the old forest road's are spans, because eleven blocks of water is not a wade: the Old Ford is decked at 188 over
   water at 186, and the Forest River at 168 over water at 167. Nothing has been laid, so what a deck two over the
   Bruinen's kind of water looks like from the tow is still unseen.
+
+- **The road's grade is settled on halves, and the slab is the step.** The profile used to move in whole blocks because
+  a station's height was floored to one, so every riser a road had was a block a walker had to jump, and a terrace had to
+  be edged afterwards with a slab to break it into two half steps - a pass of its own that walked every column of every
+  road, and that only edged the sides of a terrace where a neighbour on its own axis stood exactly a block lower, leaving
+  the corners and diagonals of each step open. The grade is now quantised to half a block after it settles, the step it may
+  take between stations is half a block, and a column's surface is read from its own height: the road's own block, plus a
+  bottom slab on top where the height falls between two blocks. Nothing compares a column with its neighbour any more, so
+  there is nothing to miss at a corner, and the lip stage is retired - it stays in the stage list only so a pass saved by
+  a version that had one still finishes instead of stalling. The slab goes over the block rather than into it, which is the
+  one thing this had to get right: a slab sunk in the column's own cell is half a block lower than the block beside it, so
+  a station the profile puts half a block higher would have been laid half a block lower and every rise built as a fall.
+  None of it is laid yet: the old forest road is what will show whether a five-wide stair of half steps reads as a road.

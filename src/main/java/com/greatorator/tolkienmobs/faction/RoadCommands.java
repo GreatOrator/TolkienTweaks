@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -94,8 +93,6 @@ public final class RoadCommands {
 
     /** How far a pillar may be drawn down before the pass gives up on finding a bed, in blocks. */
     private static final int PILLAR_FLOOR = 48;
-    /** The four sides a terrace's step could face, which are the four sides a lip is drawn on. */
-    private static final int[][] BESIDE = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     /** Where a pass says what each of its stages cost, which is how the step budgets are checked against real ticks. */
     private static final Logger LOGGER = LoggerFactory.getLogger(RoadCommands.class);
     /** Which of the bridge's two templates a planned piece is: the end of the span, or a middle between the ends. */
@@ -150,8 +147,19 @@ public final class RoadCommands {
      * ravine sixty blocks down is the country's business, not a road's.
      */
     private static final int HOLE_FILL = 32;
-    /** The most one station's surface may rise or fall above the one before it, in blocks. */
-    private static final double MAX_STEP = 1.0D;
+    /**
+     * The most one station's surface may rise or fall above the one before it, in blocks - and the quantum the profile
+     * is settled on, which is half a block.
+     * <p>
+     * A whole block was the old step, and a whole block is not a step a walker takes: every riser it allowed was a jump,
+     * and the terrace it left had to be edged with a slab afterwards to make two half steps of it. Graded on halves, a
+     * riser is half a block at most, and half a block is exactly what a bottom slab is - so the slab is the profile and
+     * not a patch laid over it afterwards.
+     */
+    private static final double MAX_STEP = 0.5D;
+
+    /** The same step in whole blocks, for the two places that lift a grade a whole block rather than a half. */
+    private static final int STEP_BLOCKS = 1;
     /** How many times the two step sweeps are alternated after the last pass, so both ends agree. */
     private static final int SETTLE_PASSES = 8;
     /**
@@ -388,14 +396,6 @@ public final class RoadCommands {
      * columns is the same road laid no more than a few hundred columns worth at a time.
      */
     private static final int PAVING_PER_STEP = 256;
-    /**
-     * How many laid columns one step may walk for a step between terraces.
-     * <p>
-     * The lip pass is the one that used to take the whole road at once: every terrace of two graded roads, tens of
-     * thousands of columns, in the tick after the last station. Four lookups a column is cheap work, but not that
-     * much of it at once.
-     */
-    private static final int LIPS_PER_STEP = 1024;
     /** How many candidate blocks of the descent one step may settle. */
     private static final int SEARCH_PER_STEP = 4096;
     /**
@@ -443,8 +443,7 @@ public final class RoadCommands {
      * The hand wants the road and gets it in one call; a world dressing itself has a tick, and a tick cannot carry
      * the sweep of the span, six templates, fifty pillars, a hundred and twenty thousand candidate blocks and two
      * graded roads at once. So the pass is a cursor: twelve columns of sweep, one bridge piece a step, twelve columns
-     * of pillars, four thousand settled candidates of the search, then a few hundred columns of the graded roads and a
-     * thousand of their lips. Which is the same budget each stage has always had, measured in columns walked rather
+     * of pillars, four thousand settled candidates of the search, then a few hundred columns of the graded roads. Which is the same budget each stage has always had, measured in columns walked rather
      * than in stations and pieces: a piece is a whole template and a station a band of up to a hundred and twenty-one
      * columns, so counting those was counting the wrong thing. Nothing here changes what the pass does, only when it
      * does it.
@@ -645,14 +644,12 @@ public final class RoadCommands {
                     if ((graded == null || graded.laid()) && (far == null || far.laid())) stage = Stage.STEPS;
                 }
                 case STEPS -> {
-                    int budget = LIPS_PER_STEP;
-                    if (graded != null) budget = graded.lips(level, budget);
-                    if (far != null) budget = far.lips(level, budget);
-                    if ((graded == null || graded.lipped()) && (far == null || far.lipped())) {
-                        done = new Road(cleared, pieces, pillarsDrawn, approach.size(), searched,
-                                graded.summary(), far == null ? new int[6] : far.summary());
-                        return false;
-                    }
+                    // There is no lip pass left to run. A road graded on halves lays a slab wherever its height falls
+                    // between two blocks, so every step is already half a block and every half step is already laid; the
+                    // stage stays only so a pass saved by a version that had one still finishes rather than stalling.
+                    done = new Road(cleared, pieces, pillarsDrawn, approach.size(), searched,
+                            graded.summary(), far == null ? new int[6] : far.summary());
+                    return false;
                 }
             }
             return true;
@@ -1514,12 +1511,7 @@ public final class RoadCommands {
          */
         private final int[] relief;
         private final double[] height;
-        private final Map<Long, Integer> tops = new LinkedHashMap<>();
-        /** Every column laid, in the order it was laid; taken once the lips are asked for, not while laying. */
-        private List<Long> order;
         private int at;
-        /** How many of the laid columns the lip pass has walked. */
-        private int lipsAt;
         private int laid;
         private int cut;
         private int filled;
@@ -1640,6 +1632,21 @@ public final class RoadCommands {
                     height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
                 }
             }
+            // The grade is settled on halves and on nothing finer. A profile carrying a third of a block between two
+            // stations has no block to lay it with, and whichever neighbour rounds it becomes a step the walker feels;
+            // quantised here, where the whole profile is known, the surface a column gets can be read from that column's
+            // own height alone instead of from what the column beside it happens to be - which is what left the corners
+            // and the diagonals of every terrace open, since a column with no lower neighbour on an axis was never
+            // compared against anything.
+            for (int i = 0; i < n; i++) height[i] = Math.round(height[i] * 2.0D) / 2.0D;
+            for (int settle = 0; settle < SETTLE_PASSES; settle++) {
+                for (int i = 1; i < n; i++) {
+                    height[i] = Mth.clamp(height[i], height[i - 1] - MAX_STEP, height[i - 1] + MAX_STEP);
+                }
+                for (int i = n - 2; i >= 1; i--) {
+                    height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
+                }
+            }
         }
 
         /**
@@ -1689,14 +1696,6 @@ public final class RoadCommands {
             tag.putInt("open", open);
             tag.putInt("steepest", steepest);
             tag.putInt("cleared", cleared);
-            tag.putInt("lips", lipsAt);
-            long[] drawn = new long[tops.size() * 2];
-            int index = 0;
-            for (Map.Entry<Long, Integer> top : tops.entrySet()) {
-                drawn[index++] = top.getKey();
-                drawn[index++] = top.getValue();
-            }
-            tag.putLongArray("tops", drawn);
             return tag;
         }
 
@@ -1719,9 +1718,6 @@ public final class RoadCommands {
             graded.open = tag.getIntOr("open", 0);
             graded.steepest = tag.getIntOr("steepest", 0);
             graded.cleared = tag.getIntOr("cleared", 0);
-            long[] drawn = tag.getLongArray("tops").orElse(new long[0]);
-            for (int i = 0; i + 1 < drawn.length; i += 2) graded.tops.put(drawn[i], (int) drawn[i + 1]);
-            graded.lipsAt = Math.clamp(tag.getIntOr("lips", 0), 0, graded.tops.size());
             return graded;
         }
 
@@ -1739,55 +1735,6 @@ public final class RoadCommands {
         /** Whether every station of this road is laid. */
         private boolean laid() {
             return n < 2 || at >= n;
-        }
-
-        /**
-         * Turns the edge of a terrace that stands one block over the next into a bottom slab, so a step is made of
-         * two half steps. Only road columns count: a step beside a wall is the wall's business, not the road's.
-         * <p>
-         * The slab belongs to the higher column. A bottom slab fills the bottom of its cell, so in the lower column
-         * it sits a block and a half under the terrace above it: a walker drops a step and a half onto it, and then
-         * still has to jump to come back up. In the higher column it is a lip at the terrace's edge, half a block
-         * under the floor, and the terrace below the lip is the other half. Read either way along the road that is
-         * block, slab, block, slab - a stair a walker takes without breaking stride.
-         * <p>
-         * Every side of the terrace is checked. Comparing only the two positive ones put the slab on whichever side
-         * of the step happened to face the axes and none on the other two, so a diagonal step carried a sliver of
-         * slab off one corner instead of a lip along its whole edge.
-         * <p>
-         * Walked a budget of columns at a time, in the order they were laid, because the whole road at once is tens
-         * of thousands of them and the tick after the last station was paying for every one.
-         *
-         * @return the budget left for the other road of the pass
-         */
-        private int lips(ServerLevel level, int budget) {
-            List<Long> order = order();
-            int from = lipsAt;
-            int upto = Math.min(order.size(), from + budget);
-            for (; lipsAt < upto; lipsAt++) {
-                long key = order.get(lipsAt);
-                Integer top = tops.get(key);
-                if (top == null) continue;
-                int x = (int) (key >> 32);
-                int z = (int) (key & 0xFFFFFFFFL);
-                for (int[] beside : BESIDE) {
-                    Integer other = tops.get(key(x + beside[0], z + beside[1]));
-                    if (other == null || top != other + 1) continue;
-                    level.setBlock(new BlockPos(x, top, z), Blocks.COBBLESTONE_SLAB.defaultBlockState(), 2);
-                    break;
-                }
-            }
-            return budget - (upto - from);
-        }
-
-        /** Whether every laid column has been looked at for a lip. */
-        private boolean lipped() {
-            return n < 2 || lipsAt >= order().size();
-        }
-
-        private List<Long> order() {
-            if (order == null) order = new ArrayList<>(tops.keySet());
-            return order;
         }
 
         /** The station this road has got to, clamped to its own line so a finished road still answers where it ends. */
@@ -1844,14 +1791,18 @@ public final class RoadCommands {
                 int before = i > 0 ? Mth.floor(height[i - 1]) : under;
                 boolean known = before >= level.getMinY() && before <= level.getMaxY();
                 int here = under != VOID && under != WATER ? under : before;
-                retarget(i, known ? Math.min(here, before + (int) MAX_STEP) : here);
+                retarget(i, known ? Math.min(here, before + STEP_BLOCKS) : here);
             }
             if (under != VOID && under != WATER && Mth.floor(height[i]) < under - cut) {
                 int before = i > 0 ? Mth.floor(height[i - 1]) : under - cut;
-                int lifted = Math.min(under - cut, before + (int) MAX_STEP);
+                int lifted = Math.min(under - cut, before + STEP_BLOCKS);
                 if (lifted > Mth.floor(height[i])) retarget(i, lifted);
             }
             int target = Mth.floor(height[i]);
+            // Whether this station is a half step. Every column of the station takes the same answer, and the answer is
+            // the station's own height: a road on halves cannot be a block here and a slab there along one terrace,
+            // because the profile never asks for one.
+            boolean halfStep = Math.round((height[i] - target) * 2.0D) == 1;
             if (i > 0) steepest = Math.max(steepest, Math.abs(target - Mth.floor(height[i - 1])));
             // A road that names its kind is laid at it the whole way - a main road stays seven wide across open
             // country rather than narrowing to a track between places. Every other takes its build's kind: a city's
@@ -1889,8 +1840,7 @@ public final class RoadCommands {
                     level.getChunk(at >> 4, into >> 4);
                     int groundAt = surfaceAt(level, at, into);
                     if (groundAt == VOID) {
-                        level.setBlock(new BlockPos(at, target, into), surface(route, at, into), 2);
-                        tops.put(key(at, into), target);
+                        face(level, at, into, target, halfStep);
                         laid++;
                         continue;
                     }
@@ -1914,8 +1864,7 @@ public final class RoadCommands {
                             level.setBlock(new BlockPos(at, y, into), Blocks.STONE.defaultBlockState(), 2);
                             filled++;
                         }
-                        level.setBlock(new BlockPos(at, target, into), surface(route, at, into), 2);
-                        tops.put(key(at, into), target);
+                        face(level, at, into, target, halfStep);
                         laid++;
                         continue;
                     }
@@ -1931,7 +1880,6 @@ public final class RoadCommands {
                         continue;
                     }
                     level.getChunk(at >> 4, into >> 4);
-                    BlockPos column = new BlockPos(at, target, into);
                     if (step < 0) {
                         for (int y = groundAt; y > target; y--) {
                             level.setBlock(new BlockPos(at, y, into), Blocks.AIR.defaultBlockState(), 2);
@@ -1943,8 +1891,7 @@ public final class RoadCommands {
                             filled++;
                         }
                     }
-                    level.setBlock(column, surface(route, at, into), 2);
-                    tops.put(key(at, into), target);
+                    face(level, at, into, target, halfStep);
                     laid++;
                     // A road cut through a wood leaves its canopy hanging, so the corridor's own columns are
                     // cleared of leaves and logs above the road's surface.
@@ -1985,6 +1932,21 @@ public final class RoadCommands {
         }
 
         /**
+         * One column's road surface: the block the road is made of, and, on a station that stands half a block above the
+         * whole, the slab that makes the half.
+         * <p>
+         * The slab goes on top rather than being sunk into the block, which is the one thing this rule had to get right:
+         * a bottom slab in the column's own cell is half a block lower than the block beside it, so a station the profile
+         * puts half a block higher would have been laid half a block lower - every rise built as a fall. Over the block,
+         * the surface of a column is its own height, whichever half it falls on, and a walker never drops a half step to
+         * take one.
+         */
+        private void face(ServerLevel level, int x, int z, int target, boolean halfStep) {
+            level.setBlock(new BlockPos(x, target, z), surface(route, x, z), 2);
+            if (halfStep) level.setBlock(new BlockPos(x, target + 1, z), Blocks.COBBLESTONE_SLAB.defaultBlockState(), 2);
+        }
+
+        /**
          * Carries the road over a stretch of water its route was told about.
          * <p>
          * A ford is a bed rather than a deck: the road's own surface is laid at the height the survey gives it and the
@@ -2001,7 +1963,6 @@ public final class RoadCommands {
             int seat = over.walkOn();
             level.getChunk(at >> 4, into >> 4);
             level.setBlock(new BlockPos(at, seat, into), surface(route, at, into), 2);
-            tops.put(key(at, into), seat);
             laid++;
             if (over.kind() != Roads.Wet.FORD && !pier) return;
             int floor = Math.max(level.getMinY(), seat - 48);
@@ -2226,11 +2187,6 @@ public final class RoadCommands {
         }
         line.add(new int[]{toX, toZ});
         return line;
-    }
-
-    /** A column's key in the map of what this pass has laid, packed from its x and z. */
-    private static long key(int x, int z) {
-        return ((long) x << 32) | (z & 0xFFFFFFFFL);
     }
 
     /**

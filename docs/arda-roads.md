@@ -178,14 +178,18 @@ per-block scatter with no clumps, and a hash is the one form that survives a chu
 column gets the same block whichever chunk asks for it. Grass block is placed literally everywhere,
 including sand and snow: a Harad road will have green squares in it, which is the chosen look.
 
-**Steps.** Where two neighbouring road columns differ by exactly one block, the *higher* column's top
-becomes a bottom `minecraft:cobblestone_slab`. A bottom slab fills the bottom of its own cell, so it is the
-lip of the terrace, half a block under its floor, and the terrace below the lip is the other half - walked
-either way the step is two half steps, block, slab, block, slab. In the lower column the same slab would sit
-a block and a half under the terrace above it, which is a drop to fall down and a jump to climb back up.
-The lip is laid on every side of a terrace, so it runs along the whole edge of the step rather than off one
-corner of it. Gravel in the wild band is gravity-affected:
-a wild road's gravel falls if the ground under it is ever removed - a note, not a problem.
+**Steps.** The grade the pass lays is settled on halves, so a station's height falls either on a block or
+halfway between two, and the surface of a column is read from that height alone: the road's own block, and, where the
+height falls between two blocks, a bottom `minecraft:cobblestone_slab` on top of it. Neither a block nor a slab looks at
+its neighbours to decide what it should be, which is what closes the corners and the diagonals of every terrace - a
+column whose own height was whole but which stood beside a half one used to be left open, because the old rule only
+edged a terrace where a neighbour stood exactly one block lower.
+
+The slab sits on top of the road's block rather than sunk into it. A bottom slab in the column's own cell is half a
+block lower than the block beside it, so a station the profile puts half a block *higher* would have been laid half a
+block *lower*, and every rise built as a fall. Over the block, a column's surface is its own height whichever half it
+falls on, and a walker never drops a half step in order to take one. Gravel in the wild band is gravity-affected: a
+wild road's gravel falls if the ground under it is ever removed - a note, not a problem.
 
 ## What is not decided
 
@@ -345,7 +349,8 @@ a hairpin to walk round. A road that is merely cornering - the right angle onto 
 say - keeps its ordinary width, so the bank stops bulging out over the river wherever the road turns. The surface is the ground itself, smoothed: a moving average along the alignment takes the bumps out,
 and the result is held within twelve blocks of the ground - cutting into the hill above its line and
 standing on stone where the hill falls away. The profile is also held to a step at a station: two sweeps pull
-every station within a block of its neighbours, so a fall is a stair of half-steps rather than a drop.
+every station within half a block of its neighbours, so a fall is a stair of half steps rather than a drop and no step
+in a road is ever a jump.
 The sweeps have the last word, after the last pass and after the clamp - alternated, so both of the
 pinned ends agree with the middle - because a clamp that ran last put the riser back on any station
 whose ground stood two or three blocks over its neighbours - that is the step a walker sees. The
