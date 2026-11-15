@@ -65,6 +65,16 @@ too. Not yet seen in game, and worth watching:
   draw as nothing and the log says `Missing item model`. A datagen run writes them for every item, so they are
   only hand-written because that run has not happened since the blocks were added.
 
+## Spikes
+
+`SpikeBlock`, registered as `spike_stone` and `spike_wooden`: one class, one shape of eight stepped plates taken
+from the models, two models off the two halves of `spikes.png`. Both drop themselves (loot tables written into
+the generated pack and `dropSelf` added to the loot provider) and both hurt anything inside them for two points
+of general damage, spaced by the game's own hurt timer. Not yet seen in game: whether two points a half second
+reads as a nuisance rather than a wall (it is a heart every second against a 10 point bar), whether the stepped
+shape is walkable rather than a trip hazard, and whether the stone half of the sheet lines up on the faces as the
+artist drew it.
+
 ## Chapter three
 
 `docs/chapter-three.md` is the plan: eleven pages (3-1 to 3-11) from the pack's `CH3-Fires in the South`

@@ -2161,6 +2161,14 @@ public class TolkienBlocks {
     public static final DeferredBlock<SignPostArmBlock> SIGN_POST_ARM = registerBlock("sign_post_arm", SignPostArmBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
 
+    //Spikes
+    //  One block and two materials: both read the same texture sheet, the stone off one half of it and the
+    //  wood off the other, and anything that stands on either takes a couple of points of general damage.
+    public static final DeferredBlock<SpikeBlock> SPIKE_STONE = registerBlock("spike_stone", SpikeBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.STONE).sound(SoundType.STONE).strength(1.5F, 6.0F).noOcclusion().requiresCorrectToolForDrops());
+    public static final DeferredBlock<SpikeBlock> SPIKE_WOODEN = registerBlock("spike_wooden", SpikeBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(1.0F, 3.0F).noOcclusion());
+
     //Boats
 
         // Block Entities

@@ -125,6 +125,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addBlock(TolkienBlocks.SIGN_POST_CAP, "Sign Post Cap");
             this.addBlock(TolkienBlocks.SIGN_POST_ARM, "Sign Post Arm");
             this.add("tolkienmobs.signpost.blocks", "%s blocks");
+            this.addBlock(TolkienBlocks.SPIKE_STONE, "Stone Spikes");
+            this.addBlock(TolkienBlocks.SPIKE_WOODEN, "Wooden Spikes");
             this.addBlock(TolkienBlocks.ROCKPILE, "Rockpile");
             this.addBlock(TolkienBlocks.MOSS_PATCH, "Moss Patch");
             this.addBlock(TolkienBlocks.CLOVER_PATCH, "Clover Patch");

@@ -759,6 +759,8 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropOther(TolkienBlocks.STONE_PATH, Blocks.COBBLESTONE);
         dropSelf(TolkienBlocks.PLACARD.get());
         dropSelf(TolkienBlocks.ROCKPILE.get());
+        dropSelf(TolkienBlocks.SPIKE_STONE.get());
+        dropSelf(TolkienBlocks.SPIKE_WOODEN.get());
         dropSelf(TolkienBlocks.TRINKET_TABLE.get());
         dropSelf(TolkienBlocks.FIREPLACE.get());
         dropSelf(TolkienBlocks.PIGGYBANK.get());

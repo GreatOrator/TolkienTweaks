@@ -3429,3 +3429,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   plinth, shaft, cap and arm in the inventory as nothing at all - while the blocks themselves, placed in the
   world, drew their textures as they should. The provider writes a plain definition for every item in the mod's
   namespace, so the four are now in the generated pack beside the rest; a datagen run reproduces them.
+
+- **A bed of spikes, in stone and in wood, hurt whoever stands on it.** One block, `SpikeBlock`, is registered twice:
+  `spike_stone` and `spike_wooden` share the artist's geometry - eight plates stepping from the full block at the
+  floor to four pixels at the top - and differ only in the model that draws them, the stone reading one half of the
+  `spikes.png` sheet and the wood the other half. The block is in the cactus's family rather than a trapdoor's: its
+  collision is the steps themselves, so a walker goes up and over it, and anything inside it takes two points of
+  general damage. The game's own hurt timer spaces that to a hit every half second, so a bed is a nuisance crossed
+  quickly and a hazard stood on for long, never an instant kill. Both break as their material and drop themselves.
