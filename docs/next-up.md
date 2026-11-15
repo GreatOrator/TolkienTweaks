@@ -57,9 +57,13 @@ states over four models, `sign_post_arm` and `sign_post_arm_1..3` lifted by four
 models were generated from the first, so if the artist re-exports the arm the other three must be regenerated
 too. Not yet seen in game, and worth watching:
 
-- whether the two lines are legible at `SCALE = 0.014` on a four pixel board, and whether the billboarded
-  text reads as belonging to the board or as floating free of it;
-- whether the arm's `y` rotations are the four intended ones (south 0, east 90, north 180, west 270);
+- whether the two lines are legible inked in black on the board's own faces at the pinned scale, and whether
+  the lettering sits on the wood rather than clipping through it;
+- whether the arm's `y` rotations are the four intended ones (south 0, east 90, north 180, west 270), and
+  whether the automatic facing puts the flat end against the shaft from every face one can click;
+- that a cell holds one arm: `level` slides that arm up and down within its own cell in four pixel steps, so
+  boards in cells above and below can be brought flush, but two boards inside one cell would need a model
+  that draws both;
 - whether the cap's two pixels line up with the shaft's top of 16 rather than sitting in the cell below it;
 - whether the plinth's own post stub (10 to 16) meets the first shaft's foot without a seam;
 - whether a board can be placed against a cap as well as a shaft, and whether it breaks when the post goes.
