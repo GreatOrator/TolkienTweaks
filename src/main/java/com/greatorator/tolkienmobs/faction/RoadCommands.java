@@ -1614,7 +1614,18 @@ public final class RoadCommands {
             // grade is brought down to the mark's own level where that is within what this road may cut of the ground
             // under it, and the stations either side are walked down to meet it a step at a time, which is how the
             // arms of a switchback reach the shelf they were pinned on instead of passing above it.
+            // A crossing is a height the road is at rather than one it may sink to. Every station standing on one is
+            // put at the crossing's own walk height before the steps are settled, so the sweep out of the bank is a ramp
+            // up to the deck instead of a dive into the river, and it is written in as a pin as well so the settle that
+            // follows cannot walk the crossing's own stations off it. A mark may cut and may not lift; a crossing is
+            // neither - it is the survey, and the water under it is no ground to grade from at all.
             Map<Integer, Integer> pins = marks(route, line);
+            for (int i = 0; i < n; i++) {
+                Roads.Water over = Roads.water(route, line.get(i)[0], line.get(i)[1], 1);
+                if (over == null) continue;
+                height[i] = over.walkOn();
+                pins.put(i, over.walkOn());
+            }
             for (int settle = 0; settle < SETTLE_PASSES && !pins.isEmpty(); settle++) {
                 for (Map.Entry<Integer, Integer> pin : pins.entrySet()) {
                     int i = pin.getKey();
@@ -1837,6 +1848,15 @@ public final class RoadCommands {
                     }
                     // The column is read as the world has it, and the world has to have it: a chunk nobody has made
                     // yet reads as nothing at all, and a block written into it would be dropped anyway.
+                    // A surveyed crossing is laid before the ground is even read. What a column over water answers is
+                    // not what the road is meant to be there - water, a lily pad standing on it, or the bed under it -
+                    // and asking the ground first is what let a road dive into a river it had been told to cross over:
+                    // the column read as bank, the crossing never fired, and the grade followed the water down.
+                    Roads.Water over = Roads.water(route, at, into, half + 1);
+                    if (over != null) {
+                        carry(level, at, into, over, dx == 0 && dz == 0 && i % 4 == 0);
+                        continue;
+                    }
                     level.getChunk(at >> 4, into >> 4);
                     int groundAt = surfaceAt(level, at, into);
                     if (groundAt == VOID) {
@@ -1845,15 +1865,8 @@ public final class RoadCommands {
                         continue;
                     }
                     if (groundAt == WATER) {
-                        // Water the route was told about is crossed the way its survey says, the whole band of it at
-                        // once: a ford's bed made good under a road laid at the water's own height, or a deck carried
-                        // across on piers. A crossing nobody surveyed is still the river's, and only its own three
-                        // middle columns are carried over it.
-                        Roads.Water over = Roads.water(route, at, into, half + 1);
-                        if (over != null) {
-                            carry(level, at, into, over, dx == 0 && dz == 0 && i % 4 == 0);
-                            continue;
-                        }
+                        // A crossing nobody surveyed is still the river's, and only the road's own three middle
+                        // columns are carried over it.
                         if (Math.abs(dx) > 1 || Math.abs(dz) > 1) {
                             open++;
                             continue;

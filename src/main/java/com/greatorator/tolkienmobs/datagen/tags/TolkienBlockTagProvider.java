@@ -477,7 +477,19 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.LEAVES_CULUMALDA.get())
                 .add(TolkienBlocks.LEAVES_LEBETHRON.get())
                 .add(TolkienBlocks.LEAVES_FANGORNOAK.get())
-                .add(TolkienBlocks.LEAVES_DWARVEN_MAPLE.get());
+                .add(TolkienBlocks.LEAVES_DWARVEN_MAPLE.get())
+                // The hardened leaves as well, which are still leaves: they are a plain block rather than a leaves
+                // block, so nothing tagged them, and the no-leaves heightmap counted a wood's hardened canopy as
+                // ground - which is how a road came to climb into Mirkwood's trees and run along the top of them.
+                .add(TolkienBlocks.HARDENED_LEAVES_MALLORN.get())
+                .add(TolkienBlocks.HARDENED_LEAVES_PINE.get())
+                .add(TolkienBlocks.HARDENED_LEAVES_HOLLY.get())
+                .add(TolkienBlocks.HARDENED_LEAVES_CYPRESS.get())
+                .add(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get())
+                .add(TolkienBlocks.HARDENED_LEAVES_CULUMALDA.get())
+                .add(TolkienBlocks.HARDENED_LEAVES_LEBETHRON.get())
+                .add(TolkienBlocks.HARDENED_LEAVES_FANGORNOAK.get())
+                .add(TolkienBlocks.HARDENED_LEAVES_DWARVEN_MAPLE.get());
         tag(BlockTags.WOODEN_TRAPDOORS)
                 .add(TolkienBlocks.TRAPDOOR_MALLORN.get())
                 .add(TolkienBlocks.TRAPDOOR_MIRKWOOD.get())

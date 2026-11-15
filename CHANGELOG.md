@@ -3543,3 +3543,16 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   one thing this had to get right: a slab sunk in the column's own cell is half a block lower than the block beside it, so
   a station the profile puts half a block higher would have been laid half a block lower and every rise built as a fall.
   None of it is laid yet: the old forest road is what will show whether a five-wide stair of half steps reads as a road.
+
+- **The hardened leaves are leaves, and the road stops climbing into them.** `TolkienHardenedLeavesBlock` is a plain
+  block rather than a leaves block, so nothing put it in `minecraft:leaves`; the heightmap the road reads its ground
+  from ignores that tag, so a wood's hardened canopy was counted as ground and the old forest road climbed into
+  Mirkwood and ran along the top of the trees. All nine hardened leaves are now in the tag beside their own leaves,
+  which is what the no-leaves heightmap and the road's own cover list both read.
+- **A surveyed crossing is laid before the ground is read.** The pass asked what a column's ground was first, and only
+  then whether a crossing covered it - so a river column answered with water, a lily pad standing on the water, or the
+  bed under it, the crossing never fired, and the grade followed the water down: both of the old forest road's decks
+  came out as a road diving into the river and climbing out the other side. The crossing is now asked for before the
+  ground, and its height is the grade's own both ways - every station on one is put at the surveyed walk height as a
+  pin before the steps settle, so the bank sweeps up onto the deck at half a block a station instead of cutting down to
+  the water. A road already laid keeps what it has: `forget` and then `build` lays it again under both fixes.
