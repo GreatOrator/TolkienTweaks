@@ -124,11 +124,35 @@ public final class Roads {
      * two ends: every mark is a bend and the road goes where the marks go. Two of them are pairs rather than singles,
      * and both are bank marks: 8481, -3668 and 8520, -3668 either side of the Old Ford, whose water stands at 186 with
      * thirty-three columns between them, and 11736, -3841 and 11775, -3841 either side of the Forest River, whose
-     * water stands at 167 across the same thirty-three. The pass carries only its own three middle columns over water,
-     * and only while its grade stands over the water line, so both crossings come out as low fords of stone rather
-     * than as spans; a bridge at either is a route of its own when the chapter wants one.
+     * water stands at 167 across the same thirty-three. Neither is a wade, so both are spans of their own -
+     * {@link #OLD_FORD_BRIDGE} and {@link #FOREST_RIVER_BRIDGE} - and the road leaves the water to them: it stops at
+     * the bank and picks up on the far one, and the deck, its piers and its abutments are the crossing's own pieces.
+     * What the road keeps is the arrival: every station of it standing in the water is pinned to the crossing's
+     * walking surface, so the bank ramps up onto the deck half a block a station instead of diving under it.
      */
     public static final String OLD_FOREST_ROAD = "tolkienmobs:roads/old_forest_road";
+    /**
+     * The Old Ford's span: the same two pieces as the mountain stream's bridge, stood between the scout's own banks.
+     * <p>
+     * The survey is the pair of ammolite marks at 8481, -3668 and 8520, -3668, with thirty-three columns of water at
+     * 186 between them and the bed eleven under that. Eleven blocks is a swim rather than a wade, so the crossing is a
+     * deck: 188, the banks' own height and two over the water, with the abutments based at 187 and the middles at 186,
+     * exactly as the stream's span is built because its water stands at 186 too. The near bank is the east one, which
+     * is how the pieces are stood - they run from the bank down to the far side - so the span is walked from its east
+     * approach at 8536 to the west abutment at 8481, and its approach runs in the same sixteen blocks the stream's
+     * crossing has.
+     */
+    public static final String OLD_FORD_BRIDGE = "tolkienmobs:roads/old_ford_bridge";
+
+    /**
+     * The Forest River's span: 11736, -3841 to 11775, -3841, thirty-three columns of water at 167 and the bed eleven
+     * under it again.
+     * <p>
+     * Decked at 168, which is the bank's own height and only one over the water - as low as these pieces can stand and
+     * still be over it, their middles based at 166 and their abutments at 167. A river eleven deep is a swim, not a
+     * wade: a ford here would be a road painted on the bottom of a lake.
+     */
+    public static final String FOREST_RIVER_BRIDGE = "tolkienmobs:roads/forest_river_bridge";
 
     /**
      * The two cave roads of the troll caves' cluster, and the road that carries them on to the country road.
@@ -240,7 +264,16 @@ public final class Roads {
             // Forest River to the scout's last mark at 11842, -3877. No build stands behind either end, so the box is
             // empty and the walk begins on the mark it is given; the hundred marks between are its bends, and the two
             // fords are the pass's own to carry.
-            new Route.Riverless(OLD_FOREST_ROAD, 0, 0, 0, 0, 8231, -3641, 11842, -3877)
+            new Route.Riverless(OLD_FOREST_ROAD, 0, 0, 0, 0, 8231, -3641, 11842, -3877),
+            // The Old Ford's span, walked from its east approach at 8536 onto the bank at 8520 and west across to
+            // 8481: deck 188, the banks' own height, over water at 186. Sixteen blocks of approach either side, as the
+            // mountain stream's crossing has, so the bridge's own grading meets the road's on the bank's block.
+            new Route.Crossing(OLD_FORD_BRIDGE, 0, 0, 0, 0, 8536, -3668, 8520, -3668, 8481, -3668,
+                    4, 186, 187, 188, 8, 16, "bridge_end", "bridge_middle"),
+            // The Forest River's span, from its east approach at 11791 onto the bank at 11775 and west across to
+            // 11736: deck 168 over water at 167, one block of clearance, the lowest these pieces can stand.
+            new Route.Crossing(FOREST_RIVER_BRIDGE, 0, 0, 0, 0, 11791, -3841, 11775, -3841, 11736, -3841,
+                    4, 166, 167, 168, 8, 16, "bridge_end", "bridge_middle")
     );
 
     /**
@@ -520,7 +553,7 @@ public final class Roads {
     private static final Set<String> ROADS = Set.of(THORENHAD_ROAD, ELLADAN_BRANCH, MOUNTAIN_WAY, FORD_WAY,
             CAVE_WAY_NORTH, CAVE_WAY_EAST, TROLL_CAVE_WAY, WOOD_RUIN_LINK, HIGH_PASS_WAY, HIGH_PASS_CLIMB,
             HIGH_PASS_BRIDGE, GLOIN_ROAD, GLOIN_BRIDGE, GLOIN_ROAD_EAST,
-            OLD_FOREST_ROAD);
+            OLD_FOREST_ROAD, OLD_FORD_BRIDGE, FOREST_RIVER_BRIDGE);
 
     /** Whether a route is a road rather than a build's own way out, and so begins wherever it is first met. */
     public static boolean road(Route route) {
@@ -603,28 +636,29 @@ public final class Roads {
     }
 
     /**
-     * The water each road was told about, by route.
+     * The crossing a column stands on, or null where no surveyed span covers it.
      * <p>
-     * A road with no entry here crosses nothing it knows of, and every column of water in its band is left to the map
-     * except its own three middle columns - the old behaviour, and still the right one for a river a pass happens to
-     * meet on its way. A road with entries crosses each one as its survey says, which is the difference between a
-     * causeway nobody asked for and a ford or a deck somebody did.
+     * Asked of the routes themselves rather than of a table of water kept beside them: a span is a
+     * {@link Route.Crossing} already - its banks, its deck and its pieces are the survey - and a road holding its own
+     * copy of those numbers is a second place for them to drift apart. Every span answers for every road, because a
+     * span is a fact about the water rather than about which road happened to find it.
+     * <p>
+     * A column is on a crossing when it stands between the span's two banks on the span's own axis and no further out
+     * than {@code across} from the line its pieces are stood on. That line is the scout's, and a searched road does not
+     * run it exactly, so the caller names a reach of its own rather than the span's half-width.
      */
-    private static final Map<String, List<Water>> WATERS = Map.ofEntries(
-            Map.entry(OLD_FOREST_ROAD, List.of(
-                    // The Old Ford: the scout's bank pair at 8481 and the one at 8520, with thirty-three columns of water
-                    // at 186 between them and the bed eleven under that, on z -3668. Eleven blocks is not a wade, so the
-                    // crossing is a deck at the banks' own height of 188 - two over the water - and the road runs onto
-                    // it from either side without a step.
-                    new Water(8481, -3668, 8520, -3668, 186, 188, Wet.SPAN),
-                    // The Forest River: 11736 and 11775 on z -3841, water at 167 with the bed eleven under it again,
-                    // decked at 168 - one over the water, which is as low as a deck can sit and still be over it.
-                    new Water(11736, -3841, 11775, -3841, 167, 168, Wet.SPAN))));
-
-    /** The crossing a column stands on, or null where the road meets no water it was told about. */
-    public static Water water(Route route, int x, int z, int across) {
-        for (Water water : WATERS.getOrDefault(route.id(), List.of())) {
-            if (water.covers(x, z, across)) return water;
+    public static Water water(int x, int z, int across) {
+        for (Route route : ROUTES) {
+            if (!(route instanceof Route.Crossing span)) continue;
+            boolean alongX = span.alongX();
+            int along = alongX ? x : z;
+            int near = span.bank();
+            int far = span.far();
+            if (along < Math.min(near, far) - 1 || along > Math.max(near, far) + 1) continue;
+            int lateral = alongX ? z - span.line() : x - span.line();
+            if (Math.abs(lateral) > across) continue;
+            return new Water(span.bankX(), span.bankZ(), span.farX(), span.farZ(), span.deckY() - 2, span.deckY(),
+                    Wet.SPAN);
         }
         return null;
     }

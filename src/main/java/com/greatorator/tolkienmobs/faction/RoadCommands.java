@@ -143,6 +143,16 @@ public final class RoadCommands {
     /** How far either side of a column the ground is read to tell a hole from a fall line. */
     private static final int HOLE_REACH = 6;
     /**
+     * How far from a span's own line a road still counts as standing on that crossing, in blocks.
+     * <p>
+     * The line is the scout's and the road is a search between marks, so the two do not keep a block apart for long.
+     * Asking the surveyed line alone meant the crossing was never met at all: measured at the Old Ford, the walked
+     * line ran two to three blocks off the marks, and the deck reached only the columns its half-width covered, while
+     * at the Forest River it missed by more and the road dived in and climbed out the far side. A reach of a dozen
+     * covers the drift, and nothing else does.
+     */
+    private static final int CROSSING_ACROSS = 12;
+    /**
      * How deep a hole may be carried over on stone before the road gives up on it. A mouth or a shaft is bridged; a
      * ravine sixty blocks down is the country's business, not a road's.
      */
@@ -1621,7 +1631,11 @@ public final class RoadCommands {
             // neither - it is the survey, and the water under it is no ground to grade from at all.
             Map<Integer, Integer> pins = marks(route, line);
             for (int i = 0; i < n; i++) {
-                Roads.Water over = Roads.water(route, line.get(i)[0], line.get(i)[1], 1);
+                // The stations standing in the water, not a band around the surveyor's line: the eased walk does not
+                // run the marks exactly, and a crossing matched only within a block of them was never met at all - which
+                // is a grade left to dive into the river it was told to cross, and a road climbing out the far side.
+                if (ground[i] != WATER) continue;
+                Roads.Water over = Roads.water(line.get(i)[0], line.get(i)[1], CROSSING_ACROSS);
                 if (over == null) continue;
                 height[i] = over.walkOn();
                 pins.put(i, over.walkOn());
@@ -1848,17 +1862,22 @@ public final class RoadCommands {
                     }
                     // The column is read as the world has it, and the world has to have it: a chunk nobody has made
                     // yet reads as nothing at all, and a block written into it would be dropped anyway.
-                    // A surveyed crossing is laid before the ground is even read. What a column over water answers is
-                    // not what the road is meant to be there - water, a lily pad standing on it, or the bed under it -
-                    // and asking the ground first is what let a road dive into a river it had been told to cross over:
-                    // the column read as bank, the crossing never fired, and the grade followed the water down.
-                    Roads.Water over = Roads.water(route, at, into, half + 1);
-                    if (over != null) {
-                        carry(level, at, into, over, dx == 0 && dz == 0 && i % 4 == 0);
-                        continue;
-                    }
                     level.getChunk(at >> 4, into >> 4);
                     int groundAt = surfaceAt(level, at, into);
+                    // A surveyed span owns the water it stands over: the road stops at the bank and picks up on the far
+                    // one, because the deck, its piers and its abutments are the crossing route's own pieces, laid by
+                    // the pass that walks that route rather than by this one. A ford is the road's own bed and is laid
+                    // here. Asked of the ground rather than of the column's idea of itself: what a river column answers
+                    // is water, or a lily pad standing on it, and either is water to a bridge.
+                    Roads.Water over = Roads.water(at, into, CROSSING_ACROSS);
+                    if (over != null && (groundAt == WATER || groundAt == VOID)) {
+                        if (over.kind() == Roads.Wet.FORD) {
+                            carry(level, at, into, over, dx == 0 && dz == 0 && i % 4 == 0);
+                        } else {
+                            open++;
+                        }
+                        continue;
+                    }
                     if (groundAt == VOID) {
                         face(level, at, into, target, halfStep);
                         laid++;

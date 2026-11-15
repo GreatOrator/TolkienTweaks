@@ -296,20 +296,31 @@ searching it.
 
 ## Water a road was told about
 
-A road that meets water nobody surveyed is still the river's: the pass carries its own three middle columns and leaves
-the rest, which is what a pass wandering onto a stream wants. A crossing somebody *walked* wants more than that, so a
-route names its water in `Roads.WATERS` - the two banks on one axis, the height of the water's surface, the height the
-road is laid at across it, and a kind:
+A span is not lining a road lays: it is a structure of its own - two abutments and the middles between them, stood on
+piers drawn down to the bed - and it is a route already, a `Route.Crossing` with its banks, its deck, the base its
+pieces stand at and the pieces themselves. Both crossings of the old forest road are routes on that pattern,
+`OLD_FORD_BRIDGE` and `FOREST_RIVER_BRIDGE`, and `Roads.water` answers from the routes rather than from a table kept
+beside them: a span is a fact about the water, so every span answers for every road.
 
-| kind | what the pass does |
-|---|---|
-| `FORD` | lays the road's own surface at the height given and makes the column under it solid down to the river's floor, leaving the water standing over it. The height is a bed, so a ford is only a ford when the water over it is shallow. |
-| `SPAN` | lays the deck at the height given, across the whole band, and draws a pier down to the bed every fourth station of it - read through water, since fluid is not a floor, and capped at forty-eight blocks like the bridge pieces. |
+What the road does with one is stop. The pass leaves the water to the crossing - the deck, its piers and its abutments
+are that route's own pieces, laid by the pass that walks that route - and picks up on the far bank, so a road never
+paints a ribbon across a river it has a bridge for. Two things still belong to the road:
 
-The surveyed heights are what the roads are graded to, so the crossing is answered without a step at either bank, and a
-deck a block or two over the water is the lowest a span can sit. A ford ten blocks under its banks wants the bend marks
-either side of it to ask for the ramp: the pass lowers a station toward a pinned height a step at a time, so the marks
-are what make the descent walkable and the crossing only confirms it.
+- **The arrival.** Every station of it standing in the water is pinned to the crossing's walking surface before the
+  steps settle, so the bank sweeps up onto the deck at half a block a station. Left to grade itself, the road reads the
+  river as ground and dives in.
+- **The reach.** A column is on the crossing when it stands between the span's banks on the span's own axis and within
+  `CROSSING_ACROSS` - twelve blocks - of the line the pieces are stood on. That line is the scout's and the road is a
+  search between marks: matched within a block or three of the marks, neither crossing was ever met at all.
+
+The pieces are stood from the near bank *down* the span's axis, which is why a crossing is written from its east bank to
+its west one whatever direction the road walks it. Its deck sits two over the water - the middles' base is `deck - 2`
+and the abutments' `deck - 1` - and the stream's crossing east of Glóin's camp is the worked example of the numbers.
+
+`Roads.Wet` keeps the two ways a road can lay water itself, for the day a crossing wants no bridge: `FORD` lays the
+road's own surface at the surveyed height and makes the column under it solid down to the bed, leaving the water
+standing over it; `SPAN` lays a deck across the band with a pier every fourth station. Neither is used by a route today,
+since both of the old forest road's crossings are bridges.
 
 ## The first road, as built
 

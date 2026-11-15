@@ -3556,3 +3556,20 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   ground, and its height is the grade's own both ways - every station on one is put at the surveyed walk height as a
   pin before the steps settle, so the bank sweeps up onto the deck at half a block a station instead of cutting down to
   the water. A road already laid keeps what it has: `forget` and then `build` lays it again under both fixes.
+
+- **The two crossings of the old forest road are bridges, not ribbons.** The pass already builds spans - two abutments,
+  the middles between them and oak-log piers drawn to the bed - but only for a `Route.Crossing`, and the old forest road
+  is a `Riverless` line, so both rivers came out as whatever the road's own grade did in the water: at the Old Ford a
+  holey ribbon of road one block over the water, at the Forest River the road down the bank and up the far one. The Old
+  Ford and the Forest River are now crossing routes of their own beside it, `OLD_FORD_BRIDGE` and
+  `FOREST_RIVER_BRIDGE`, written from their east bank west because the pieces are stood from the near bank down the
+  span's axis: decks at 188 and 168, the banks' own heights, with the abutments based a block under and the middles two
+  under. Nine wide, the width the pieces come in, though the road either side of them is five.
+- **A road leaves the water to the span, and arrives on its deck.** What a river column answers is water, or a lily pad
+  standing on it, and either was read as ground and graded from - which is how a road came to dive in where it had a
+  bridge. The pass now asks the surveyed crossings before it grades a column: a bridge's water is left untouched and the
+  road stops at the bank, and every station of the road standing in that water is pinned to the crossing's walking
+  surface before the steps settle, so the bank sweeps up onto the deck half a block a station. The crossings themselves
+  answer from the routes and not from a table kept beside them, so a span is written once - and a column counts as
+  standing on one within twelve blocks of the line its pieces are stood on, because the line is the scout's and the road
+  is a search between marks: matched within three, neither crossing was ever met at all.
