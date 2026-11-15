@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Gimli hands over the Key-stone with page 2-7.** The dwarven captain is the one who carries it up the stair ahead of
+          the player, so the stone changes hands at the moment the page that opens the way is given rather than being
+          found in a vault - `Campaign.noteHanded` puts `item_keystone` in the pack the way the beryl is put there for
+          1-5, and a player already carrying one is left alone so a page re-handed by a reloaded world cannot double it.
 - **The two Last Refuge pages are spoken, in the old chapter's own words.** Both are in `Campaign.SPOKEN`, and the leaf
           is voiced by whoever hands the page over - which is Glóin for 2-6 and Gimli for 2-7, and so is exactly where
           the pack's four dialog nodes belong: `184`'s two halves and `185` are Glóin sending the player to the stair,

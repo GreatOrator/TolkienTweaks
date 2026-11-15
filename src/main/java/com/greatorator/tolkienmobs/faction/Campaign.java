@@ -294,6 +294,12 @@ public final class Campaign extends SavedData {
     private static final String AUDIENCE_TITLE = "campaign.tolkienmobs.page.audience";
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
+    /**
+     * What the dwarf says as he gives the key up. The old chapter's stone spends its last lodging in Gimli's keeping -
+     * he carries it and the dwarf-lore that turns it - so the page that sends the player at Dugorim is the moment it
+     * changes hands.
+     */
+    private static final String KEYSTONE_GIVEN = "campaign.tolkienmobs.keystone.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
     private static final String STONE_DAYLIGHT = "campaign.tolkienmobs.beryl.daylight";
     private static final String STONE_SHALLOW = "campaign.tolkienmobs.beryl.shallow";
@@ -1443,6 +1449,9 @@ public final class Campaign extends SavedData {
         // The one page whose subject is an object: he says hold out your hand, so the stone goes into
         // the hand here, in the room the words are said in.
         if (asksForStone(page)) giveStone(player, STONE_GIVEN);
+        // And the chapter's other object: the Key-stone is Gimli's to keep until the stair is open, so it comes
+        // with the page that sends the player down it.
+        if (page.target().equals(DUGORIM_TARGET)) giveKeyStone(player);
     }
 
     /**
@@ -2794,6 +2803,29 @@ public final class Campaign extends SavedData {
         ItemStack stone = new ItemStack(TolkienItems.ITEM_BERYL.get());
         if (!player.getInventory().add(stone)) player.drop(stone, false);
         player.sendSystemMessage(Component.translatable(line).withStyle(ChatFormatting.AQUA));
+    }
+
+    /**
+     * Puts the Key-stone in a player's hand, and says so.
+     * <p>
+     * It is given rather than found: the old chapter spends the whole beat on Gimli carrying the stone up the stair
+     * ahead of the player, so the page that opens the way is where it changes hands - and a player already holding
+     * one is left alone, so a page handed over again by a reloaded world cannot double it.
+     */
+    private static void giveKeyStone(ServerPlayer player) {
+        if (carriesKeyStone(player)) return;
+        ItemStack stone = new ItemStack(TolkienItems.ITEM_KEYSTONE.get());
+        if (!player.getInventory().add(stone)) player.drop(stone, false);
+        player.sendSystemMessage(Component.translatable(KEYSTONE_GIVEN).withStyle(ChatFormatting.AQUA));
+    }
+
+    /** Whether this player already carries the Key-stone. */
+    private static boolean carriesKeyStone(ServerPlayer player) {
+        var inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            if (inventory.getItem(slot).is(TolkienItems.ITEM_KEYSTONE.get())) return true;
+        }
+        return false;
     }
 
     /**

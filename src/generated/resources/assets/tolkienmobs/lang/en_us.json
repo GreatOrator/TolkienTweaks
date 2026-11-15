@@ -721,6 +721,7 @@
   "campaign.tolkienmobs.beryl.elsewhere": "%s is where the stone was asked for, and this is not it - %s blocks from here.",
   "campaign.tolkienmobs.beryl.finished": "The stone has said its piece and gone quiet. Take it back to Glorfindel at Rivendell.",
   "campaign.tolkienmobs.beryl.given": "The stone is in your hand: cold, and heavier than a thing that size has any right to be.",
+  "campaign.tolkienmobs.keystone.given": "Gimli turns the Key-stone over in his hands once, then puts it in yours. \"The mountain answers this and not me. Hold it up at the gate and the way in opens - and hold on to it, because it is the only one there is.\"",
   "campaign.tolkienmobs.beryl.here": "This is %s, and the stone is in your hand - hold it aloft here: use it in the air rather than on the milestone.",
   "campaign.tolkienmobs.beryl.returned": "The stone is back in your hand. It was lent to be carried, not put down.",
   "campaign.tolkienmobs.beryl.same": "You have asked it here already. It answers ground rather than hands - walk on, and hold it up again.",
