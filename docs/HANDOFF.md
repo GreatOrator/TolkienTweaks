@@ -581,3 +581,26 @@ the rock by about thirty blocks, nothing is stood up above the drawn massif, and
 The Hithaeglir's and Gundabad's fog is lifted for the screenshots (`BiomeMaker.CLEAR_RANGE_FOG`): both read a far
 plane of 1024 instead of 38 and 44. It is temporary - false puts both mists back, and their own numbers never left
 the two calls.
+
+## Where we stopped - 15 November 2026
+
+The running state is `docs/next-up.md`; this is what changed under the roads since the note above.
+
+The old forest road east of Glóin's camp is laid and seen (`OLD_FOREST_ROAD`, 8231, -3641 to 11842, -3877, five wide,
+every ammolite mark a bend), and it is graded on halves now - `MAX_STEP` 0.5 with the slab laid *on top* of the road
+block, so the slab is the step rather than a patch under it. It climbed into Mirkwood's canopy because the hardened
+leaves are a plain `Block` and nothing had tagged them, so the no-leaves heightmap read the crowns as ground; all nine
+are in `minecraft:leaves` now (`0e5e98fb`).
+
+Its two crossings are spans of their own, `OLD_FORD_BRIDGE` and `FOREST_RIVER_BRIDGE` (`015687fc`), built by the same
+pass as `GLOIN_BRIDGE` from `bridge_end`/`bridge_middle` and oak-log piers to the bed. What had gone wrong before that
+is worth remembering: the road asked a column *what its ground was* and only then whether a crossing covered it, so a
+river column answered water (or a lily pad on the water), the crossing never fired, and the grade followed the river
+down - a holey ribbon at the Old Ford and a dive at the Forest River. The pass now leaves a span's water to the span,
+and pins every station of the road standing in it to the crossing's `deckY`. `Roads.water` answers from the routes
+rather than from the old `WATERS` table, and a column counts as on a crossing within `CROSSING_ACROSS` (12) blocks of
+the span's line, because the scout's line and the searched road do not run within three.
+
+Both decks are raised a block above their banks (`ed220cc9`) - the Old Ford 189/188/187, the Forest River 169/168/167 -
+and that rebuild has not been seen in a world. The pieces are stood from the near bank *down* the span's axis, which is
+why both crossings are written east bank first.

@@ -3580,3 +3580,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   without being told where to go - its arrival is pinned to the crossing's own walking surface - so a re-grade steps it
   up onto the deck instead of running into it level. The old pieces are cleared by the sweep that opens a span, so a
   forgotten and rebuilt bridge is not two decks stacked.
+
+- **The campaign's state is written down where the next session looks first.** `docs/next-up.md` is rewritten around
+  what is actually left rather than what was next a month ago: the old forest road laid and seen, both crossings standing
+  as bridge routes with their decks raised a block and not yet rebuilt, the three rebuild commands in the order they want
+  running, the Gundabad roads still unstarted, chapter two's eleven pages wired but never walked, chapter three's plan
+  and what it needs before any code, and the loose ends outside the quests - the sign posts, the spikes, the seam
+  scene's owed marks and faces, the gate that no pin raises, the biome audit waiting on a decision, and the ford path
+  kept in the code with no route using it. `docs/HANDOFF.md` takes a dated paragraph pointing at it, so the long history
+  and the running state are not the same file drifting in two directions.
