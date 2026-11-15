@@ -517,7 +517,9 @@ the nine leave by), and eight faces - `bilbo`, `gandalf`, `aragorn`, `boromir`, 
 `merry`, `pippin`. Elrond, Legolas, Gimli and Gloin are already drawn. The ground the seam was blocked
 on is done: the camp and the pass road are pinned and built (87f2217a).
 
-Nothing of the scene is built yet.
+Nothing of the scene was built yet on the 10th - and this entry is history: the seam went in on 11 November (see
+`docs/chapter-two-state.md`, *The seam*), was played on 15 November 2026 and ran smoothly as staged, so **nothing is
+owed on it** and the faces and marker set above are no longer a task.
 
 
 ## Where we stopped - 12 November 2026
@@ -602,5 +604,45 @@ rather than from the old `WATERS` table, and a column counts as on a crossing wi
 the span's line, because the scout's line and the searched road do not run within three.
 
 Both decks are raised a block above their banks (`ed220cc9`) - the Old Ford 189/188/187, the Forest River 169/168/167 -
-and that rebuild has not been seen in a world. The pieces are stood from the near bank *down* the span's axis, which is
+and the rebuild was seen in a world and called right: each deck sits flush on its bank, the piers reach the bed, and the
+road steps up onto the deck from either side. The pieces are stood from the near bank *down* the span's axis, which is
 why both crossings are written east bank first.
+
+## The Gundabad line, and where the walk stopped - 15 November 2026 - and works on it stopped here for a side project
+
+The running state is `docs/next-up.md` - a table of what is next, what is paused and what is on hold, with the detail
+behind each - and `docs/chapter-two-state.md` is the chapter's own record. This is how the pieces came to be what they
+are, so nobody re-opens a settled thing by accident.
+
+**The gate.** `GundabadGate.autospawn` stands it at `ArdaMap.gatePlan()` as the server comes up and had one answer for
+"already standing": a netherrack course in the west wing. Break that course and the next start lays eight templates'
+air over the courtyard, so it now asks the pieces' own blocks too, through `Sites.standsAt`. `/tmgate place` stays the
+deliberate re-lay and `clear` the way back. The cave east of it cuts itself the same way.
+
+**The keep.** Its plan was written down twice and differently - `ArdaMap` had 5471/-7100/176, the note had
+5516/-7112/187 - and the built passage's floor top is 189, so the code's plan stood the hold eleven blocks under the
+hall it opens off. The note's plan won, and the constants now read 5516/-7112/187: floor top 189, south wall at -6930
+where `keepWall()` ends the hall. The captain and the wraith are placed from `keepThrone()`/`keepThroneWatch()`, so they
+moved with it, to (5546, 204, -7036) and (5546, 204, -7039); the owner's mock-up of the seat at (5501, 192, -7024) is a
+mark rather than part of the build and was left where it stood. The reason no hold had ever appeared is that
+`GundabadKeep.autospawn` asked whether the doorway's floor was `deepslate` - and Arda's rock under the mountain is
+deepslate, so every world answered "already standing". It reads the template's own blocks now, opening the box first so
+an unvisited hold is read rather than assumed missing. The keep's autospawn also carries the hall to the wall every
+pass, because a world whose gate already stood had its chamber ending at the older wall. **The placement looked off in
+game and is on hold, not tuned**: the world it was looked at in was built around the older plan, so it is read from a
+brand-new world, which is how the rest of the walk is meant to be done.
+
+**The captain's hunt.** `keepDugorim` filled the seat from page 2-7, and that page stays in the player's book until
+Glóin takes it - so killing him left a page still naming him and the hunt stood another dwarf every pass. He now wears
+`DUGORIM_DOWN_TAG` on the hand that ended him, the same scoreboard-tag answer the wraith behind him had from the start,
+which is why the wraith never had the fault: it was walked and behaved. The fix was confirmed in game - felled once
+more, he did not come back.
+
+**The decisions closed.** The inner keep's spiral stair stays **open** - the hold is a place to explore, not a lock, and
+page 29 stays dialogue. The chapter-one seam was played and ran smoothly as staged, so it is final. Chinese is parked
+whole until a public release. Sign posts wait on a second town. The spikes are decoration with incidental damage, and
+the biome audit is closed whole with its four leaf textures called right.
+
+**The walk.** Chapter two was played in the test world from the chapter-one seam through page 32 - camp, Ulmug's fires,
+the hold raised from its page, the vault, Gimli in his own cave, the captain and the wraith below the stair - and paused
+there: pages 33 to 36 are all Carn Dûm ground, and Carn Dûm is what quests go to next.

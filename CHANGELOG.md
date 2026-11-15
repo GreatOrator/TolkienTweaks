@@ -3671,3 +3671,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 - **Only the captain was ever missing his down mark.** The wraith behind him was walked in game on 15 November 2026 and
   needed nothing - killed once, it stayed gone - which confirms the answer Dugorim's fix borrowed was sound all along,
   and that the fault was one seat stood from a page with no mark of its fall, not two.
+
+- **The notes are cut back to a status-first handoff.** `docs/next-up.md` had grown into a mix of history, recipe and
+  plan, with settled decisions listed as open ones, a "walk 26 to 36" that the same section paused, and a seam said to
+  be both staged and not staged. It is now where we stopped, an eight-row table of what is next, paused, on hold or not
+  started, then the detail for each - roads final with their crossings, the chapter's bodies and coordinates, the
+  settled list so nothing is re-opened by accident, and what unblocks each hold. `docs/HANDOFF.md` gains the Gundabad
+  paragraph it was missing - the gate's doubled answer, the keep's plan and guard, the captain's down mark - and stops
+  claiming the raised decks were never seen.
