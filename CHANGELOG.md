@@ -3629,3 +3629,9 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   file is applied", and `docs/next-up.md` carried that line as an open decision. Both now say what stands, checked
   against the generated biomes: Lorinand gold-green at `#7e8b3e` over `#9da24a`, the Shire a mid green at `#77b255`,
   Emyn Muil down to wolves. The one thing still owed is the owner's eye on the four new leaf textures.
+
+- **The four new leaf textures are final, and the biome audit is closed whole.** The conifer, the fir, the holly and
+  Ithilien's southern evergreen were drawn for the shape of each tree and were left in `docs/arda-biome-canon.md` as
+  awaiting the owner's eye; seen, they are right as they are - nothing to redraw, nothing to shade differently. With the
+  Barrow-downs' deadwood kept on purpose and the other eleven findings carried into the world, every line of that audit
+  is now answered.

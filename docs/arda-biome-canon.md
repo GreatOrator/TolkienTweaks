@@ -120,5 +120,5 @@ them as decisions rather than defects.
   (sugar cane's plant, the owner's model) standing three high along the water, and a Gladden iris in beds of its own.
 - **5, 6, 9, 10: applied.** A dark conifer over Eryn Vorn and Mirkwood's fir south, holly over Eregion, and a tall
   southern evergreen over Ithilien, each with its leaves, its hardened twin and its own biome modifier. The leaf
-  textures are first drafts drawn for the shape of the tree, and the owner has them for approval before they are
-  called final.
+  textures were drawn for the shape of each tree and were seen and called right on 15 November 2026 - conifer, fir,
+  holly and the southern evergreen are final, and nothing is owed on them.

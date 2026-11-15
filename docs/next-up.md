@@ -144,9 +144,9 @@ shape of the rest: **whether Stoneyford and the Watchers are built here or alrea
   own verdict section: eleven applied (gold Lorinand, no culumalda in the Mark, the right peoples in Emyn Muil, Khand,
   Cardolan and Minhiriath, the neon greens recoloured, snow over rock on the Misty Mountains, the Gladden's marsh and its
   reeds and iris, the dark conifer, Mirkwood's fir south, Eregion's holly, Ithilien's southern evergreen), and the
-  Barrow-downs' deadwood kept on purpose - the downs read as an empty field without it. The one thing owed there is the
-  owner's eye on the four new leaf textures (conifer, fir, holly, southern evergreen), which are first drafts drawn for
-  the shape of the tree rather than finished art.
+  Barrow-downs' deadwood kept on purpose - the downs read as an empty field without it. Nothing is owed on it: the four
+  new leaf textures (conifer, fir, holly, southern evergreen) were seen and called right on 15 November 2026, so the
+  audit is closed whole.
 - **A road already laid is never taken back.** `surfaceAt` reads the old embankment as ground on a re-lay, and columns
   the old road paved or widened stay as they are; `forget` clears only the saved alignment and grade. Only pristine
   ground shows a grading change.
