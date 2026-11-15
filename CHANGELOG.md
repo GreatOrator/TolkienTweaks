@@ -3623,3 +3623,9 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   take two points of general damage on the game's hurt timer, which is the piece doing its job rather than a hazard to
   be balanced - a spike that does nothing is a texture. Nothing was raised about the stepped shape or the stone half of
   the sheet, so both stay as they are and nothing is owed here.
+
+- **The biome audit is recorded as settled, not as waiting.** `docs/arda-biome-canon.md` had its verdict at the foot -
+  eleven findings applied, the Barrow-downs' deadwood kept on purpose - while its own opening still read "nothing in this
+  file is applied", and `docs/next-up.md` carried that line as an open decision. Both now say what stands, checked
+  against the generated biomes: Lorinand gold-green at `#7e8b3e` over `#9da24a`, the Shire a mid green at `#77b255`,
+  Emyn Muil down to wolves. The one thing still owed is the owner's eye on the four new leaf textures.

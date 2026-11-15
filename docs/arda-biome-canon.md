@@ -6,8 +6,10 @@ tints, fog, features, spawns), the four `arda_*` biome tags and the modifiers th
 `tree/arda_broadleaf.json`, `tree/arda_woodland.json`, `tree/arda_mallorn.json`), the surface floors in
 `TolkienSurfaceRules`, and the tree and spawn lists in `TolkienBiomeModifiers`/`BiomeMaker`.
 
-**Nothing in this file is applied.** It is written so the decision can be made in one sitting, and so the next reader
-does not redo the survey. Items are ordered by how loud the mismatch is, not by how hard it is to fix.
+**This file is the record of a decision already taken** - the verdict at its foot, 9 November 2026, is what stands, and
+the code has carried it since: `lorinand` is gold-green, `emyn_muil` spawns wolves and nothing else, `shire` is a mid
+green rather than lime. The findings above the verdict are kept as the reasoning, so the survey is never redone. Items
+are ordered by how loud the mismatch was, not by how hard it was to fix.
 
 ## What already stands
 

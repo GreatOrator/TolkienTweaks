@@ -140,8 +140,13 @@ shape of the rest: **whether Stoneyford and the Watchers are built here or alrea
   through `Sites.standsAt` now, with the box opened first so an unvisited hold is read rather than assumed missing.
   Nothing has been seen in game: `/tmgate keep` is the way to look at it, and a world that took the older plan would
   keep that copy wherever it stood.
-- **The biome canon audit** - twelve findings in `docs/arda-biome-canon.md`, **none applied**. Waiting on a decision,
-  not on work.
+- **The biome canon audit is settled** - twelve findings in `docs/arda-biome-canon.md`, closed 9 November 2026 in its
+  own verdict section: eleven applied (gold Lorinand, no culumalda in the Mark, the right peoples in Emyn Muil, Khand,
+  Cardolan and Minhiriath, the neon greens recoloured, snow over rock on the Misty Mountains, the Gladden's marsh and its
+  reeds and iris, the dark conifer, Mirkwood's fir south, Eregion's holly, Ithilien's southern evergreen), and the
+  Barrow-downs' deadwood kept on purpose - the downs read as an empty field without it. The one thing owed there is the
+  owner's eye on the four new leaf textures (conifer, fir, holly, southern evergreen), which are first drafts drawn for
+  the shape of the tree rather than finished art.
 - **A road already laid is never taken back.** `surfaceAt` reads the old embankment as ground on a re-lay, and columns
   the old road paved or widened stay as they are; `forget` clears only the saved alignment and grade. Only pristine
   ground shows a grading change.
