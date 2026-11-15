@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Key-Stone's vault is in the cave beside Gundabad.** Page 2-5 named a ruin at the source of the Bruinen and walked
+          to a place the map owns; it now points at `GundabadCave.post()` - the cave east of the gate, the one Gimli stands
+          in - as a point with a reach of twelve, and the cave's mouth opens for that page as it does for the hold's own.
+          Walking into the vault hands the stone over, so the page pays the object it is named for.
+
+- **Glóin takes the Key-stone back.** The page that opened the stair is the last thing the stone is lent for: when he
+          takes page 2-7 at the camp he takes the stone out of the pack and keeps it, with a line of his own.
 - **Dugorim gets a boss bar and a titled nameplate.** The bar is kept in `DugorimFight` - red, notched ten, named
           `boss.tolkienmobs.dugorim` and filled from his health, shown within thirty-two blocks and taken down with him -
           because the mod's other bosses own a `ServerBossEvent` as a field and his body is the pack's dwarf. His plate

@@ -1004,8 +1004,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.plans.place", "Glóin's camp at the east end of the High Pass");
         this.add("campaign.tolkienmobs.page.plans.closing", "You lay the plans out on the camp table and Glóin reads them twice before he says anything at all. Then he puts a finger on the south room, where a stair is drawn going down into the rock, and asks whether it is still there.");
         this.add("campaign.tolkienmobs.page.keystone", "Key-Stone");
-        this.add("campaign.tolkienmobs.page.keystone.place", "the dwarf-vault at the source of the Bruinen");
-        this.add("campaign.tolkienmobs.page.keystone.closing", "The plans name a key-stone, and the vault it sits in is a ruin at the source of the Bruinen, in the hills you came down out of. The Dourhands will be reading the same drawing by now, and a hold is not taken by breaking its gate - it is taken by knowing the stone that holds it. Get there first, and bring it back.");
+        this.add("campaign.tolkienmobs.page.keystone.place", "the dwarf-vault in the cave beside Gundabad");
+        this.add("campaign.tolkienmobs.page.keystone.closing", "The plans name a key-stone, and the vault it sits in is cut into the hill beside Gundabad - the cave east of the gate, where the dwarves of the hold have been living out of the rock while they wait. The Dourhands will be reading the same drawing by now, and a hold is not taken by breaking its gate; it is taken by knowing the stone that holds it. Get there first, and bring it back.");
         this.add("campaign.tolkienmobs.page.refuge", "Last Refuge I");
         this.add("campaign.tolkienmobs.page.refuge.place", "the stair down into Gundabad's inner keep");
         this.add("campaign.tolkienmobs.page.refuge.say.1", "Now that we have the Key-stone, the back way into the Dourhand keep is open to us. You will be able to stand in front of Dugorim himself - and whatever he has kept in the dark with him.");
@@ -1166,6 +1166,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.cave.reached", "You have reached the deepest chamber of %s, and what was keeping it is not getting up again.");
         this.add("campaign.tolkienmobs.beryl.given", "The stone is in your hand: cold, and heavier than a thing that size has any right to be.");
         this.add("campaign.tolkienmobs.keystone.given", "Gimli turns the Key-stone over in his hands once, then puts it in yours. \"The mountain answers this and not me. Hold it up at the gate and the way in opens - and hold on to it, because it is the only one there is.\"");
+        this.add("campaign.tolkienmobs.keystone.kept", "Gl\u00f3in weighs the Key-stone in his palm, then closes his hand on it. \"Gimli's to keep, and mine to carry until he asks for it. You opened the stair and you walked it - the stone has done what it was cut for.\"");
         this.add("boss.tolkienmobs.dugorim", "Dugorim, Captain of the Dourhands");
         this.add("campaign.tolkienmobs.beryl.here", "This is %s, and the stone is in your hand - hold it aloft here: use it in the air rather than on the milestone.");
         this.add("campaign.tolkienmobs.beryl.returned", "The stone is back in your hand. It was lent to be carried, not put down.");

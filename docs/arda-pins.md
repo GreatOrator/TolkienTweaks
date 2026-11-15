@@ -416,6 +416,16 @@ of the wraith's fall, `Campaign.nazgulHeldBack` refuses it and says why. The mar
 a player tag rather than a note in code, because a player tag is saved with them: no second wraith is stood for
 somebody who has already killed one, and Monday's kill is still a kill on Tuesday.
 
+### The vault
+
+Page 2-5 no longer walks to a ruin at the source of the Bruinen: the Key-stone is kept in the dwarves' own cave beside
+Gundabad, which is the cave east of the gate and the cave Gimli stands in. The page's target is written off
+`GundabadCave.post()` with a reach of twelve, so it is a point rather than a name - the cave is ground the gate cut and
+the map's catalogue has no entry for it - and the mouth opens for that page the same as for the hold's own, because
+`Campaign.onHoldPage` counts it among them. Walking into the vault hands the stone over (`settle` gives it), so the page
+pays the object it is named for instead of pointing at an empty room. It goes back into a dwarf's hand at the end: Glóin
+takes it when he takes page 2-7, which is the turn-in that already waits on the wraith.
+
 ### The gate
 
 The way into the hall is the coal lattice the owner built across it: seven columns (5575-5581) and ten courses (190-199)

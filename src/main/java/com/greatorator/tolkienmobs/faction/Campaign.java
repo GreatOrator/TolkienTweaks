@@ -422,6 +422,19 @@ public final class Campaign extends SavedData {
      * to a place and the vault is standing in it.
      */
     private static final String KEYSTONE_TITLE = "campaign.tolkienmobs.page.keystone";
+    /** How near the vault's middle counts as standing in it: the room is what the page is about. */
+    private static final int KEYSTONE_REACH = 12;
+    /**
+     * Where the vault is: the cave east of the gate, which is the cave Gimli stands in.
+     * <p>
+     * It is a point rather than a named place on the map, because the cave is ground the gate cut rather than a town
+     * the drawing has an entry for - and it is written off {@link GundabadCave#post()} so the page that sends a player
+     * after the stone sends them to the dwarf's own hearth, one walk instead of two.
+     */
+    private static final String KEYSTONE_TARGET = Quest.pointTarget(GundabadCave.post().getX(),
+            GundabadCave.post().getY(), GundabadCave.post().getZ(), KEYSTONE_REACH);
+    /** What Glóin says as he takes the stone back. */
+    private static final String KEYSTONE_KEPT = "campaign.tolkienmobs.keystone.kept";
     private static final String KEYSTONE_PLACE = "campaign.tolkienmobs.page.keystone.place";
     private static final String KEYSTONE_CLOSING = "campaign.tolkienmobs.page.keystone.closing";
     /**
@@ -674,10 +687,10 @@ public final class Campaign extends SavedData {
                     // was for.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLOIN), 1, 30, 4,
                             GLOIN, GLOIN, PLANS_TITLE, PLANS_PLACE, PLANS_CLOSING),
-                    // 2-5 - Key-Stone. The plans name a stone, and the vault it sits in is the ruin at the
-                    // source of the Bruinen: ground the drawing already has, so the page walks to a place
-                    // rather than raising one.
-                    new Page(Quest.Kind.LOCATION, Quest.placeTarget("keystone"), 1, 60, 5,
+                    // 2-5 - Key-Stone. The plans name a stone, and the vault it sits in is cut into the hill beside
+                    // Gundabad: the cave east of the gate, which is also where Gimli is, so the errand that fetches
+                    // the stone and the page that sends the player down the stair are one walk and not two.
+                    new Page(Quest.Kind.LOCATION, KEYSTONE_TARGET, 1, 60, 5,
                             GLOIN, GLOIN, KEYSTONE_TITLE, KEYSTONE_PLACE, KEYSTONE_CLOSING),
                     // 2-6 - Last Refuge I. Gloin sends the player to his son at the stair into the inner
                     // keep, and Gimli is stood at the hold rather than in the hall: the well is the way
@@ -1736,6 +1749,7 @@ public final class Campaign extends SavedData {
         if (page == null) return false;
         String target = page.target();
         return GUNDABAD_TARGET.equals(target)
+                || KEYSTONE_TARGET.equals(target)
                 || Quest.personTarget(GIMLI).equals(target)
                 || DUGORIM_TARGET.equals(target);
     }
@@ -2873,6 +2887,17 @@ public final class Campaign extends SavedData {
         }
     }
 
+    /** Takes the Key-stone out of a player's pack, the way the beryl is taken back with its work. */
+    private static void takeKeyStone(ServerPlayer player) {
+        var inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            if (!inventory.getItem(slot).is(TolkienItems.ITEM_KEYSTONE.get())) continue;
+            inventory.getItem(slot).shrink(1);
+            player.sendSystemMessage(Component.translatable(KEYSTONE_KEPT).withStyle(ChatFormatting.AQUA));
+            return;
+        }
+    }
+
     /** How far apart two blocks stand, in blocks and on the level: the stone is asked about ground, not height. */
     private static double apart(BlockPos from, BlockPos to) {
         double dx = from.getX() - to.getX();
@@ -3887,6 +3912,9 @@ public final class Campaign extends SavedData {
     public static boolean settle(ServerPlayer player, Quest quest) {
         if (!(player.level() instanceof ServerLevel)) return false;
         ensureLoaded(player.level());
+        // The vault is not empty: a player who walked to the stone's own room has the stone, because the page only
+        // ever sends them there, and a page that walks somewhere and leaves the player with nothing has wasted the walk.
+        if (KEYSTONE_TARGET.equals(quest.target())) giveKeyStone(player);
         Front[] row = PROGRESS.get(player.getUUID());
         if (row == null) return false;
         for (Alliance alliance : Alliance.values()) {
@@ -3919,6 +3947,9 @@ public final class Campaign extends SavedData {
                     handOver(player, TolkienItems.ITEM_DARKSADDLE.get(), 1);
                 }
                 if (RIDER_RETURN_TITLE.equals(paid.title())) takeBridle(player);
+                // The Key-stone is the dwarves' and Gimli's to keep, so it goes back into a dwarf's hand once the
+                // stair it opened has been walked: the page that opened it is the last thing it is ever lent for.
+                if (DUGORIM_TARGET.equals(paid.target())) takeKeyStone(player);
                 // The lending is a sentence rather than an errand. Glorfindel says "take this" while he
                 // hears the report, so the stone has to be in the player's hand in that conversation -
                 // and it was not: the old rule handed it over when the survey it is lent for was taken,
