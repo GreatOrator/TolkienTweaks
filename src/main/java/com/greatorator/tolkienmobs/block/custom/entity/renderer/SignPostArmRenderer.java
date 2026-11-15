@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Writes an arm's destination and its distance on the board itself, in black, the way a fingerpost is
+ * Writes an arm's destinations and their distances on the boards themselves, in black, the way a fingerpost is
  * lettered rather than as a label hung in the air in front of the camera.
  * <p>
- * The board is four pixels tall and nineteen and a half long, so lettering is set on its two broad faces at
- * a scale small enough for two lines to fit the height, and shrunk further for a long name so a line never
- * runs off the end. Both faces are lettered, since which one a traveller reads depends on which way along the
- * road they came.
+ * A board is four pixels tall and nineteen and a half long, so lettering is set on its two broad faces at a scale
+ * small enough for two lines to fit the height, and shrunk further for a long name so a line never runs off the
+ * end. Both faces are lettered, since which one a traveller reads depends on which way along the road they came.
+ * A double arm's second board is lettered the same way, four pixels higher.
  */
 public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlockEntity, SignPostArmRenderState> {
     /** Blocks per font pixel: two lines of eight pixels come to four board pixels. */
@@ -65,17 +65,27 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
         state.destination = null;
         state.distance = null;
+        state.destination2 = null;
+        state.distance2 = null;
         state.level = blockEntity.getBlockState().getValue(SignPostArmBlock.LEVEL);
         state.facing = blockEntity.getBlockState().getValue(SignPostArmBlock.FACING);
 
-        String id = blockEntity.getDestination();
-        if (id == null || id.isEmpty()) return;
+        state.destination = label(blockEntity.getDestination());
+        if (state.destination != null && blockEntity.getDistance() >= 0) {
+            state.distance = Component.translatable("tolkienmobs.signpost.blocks", blockEntity.getDistance());
+        }
 
+        state.destination2 = label(blockEntity.getDestination(1));
+        if (state.destination2 != null && blockEntity.getDistance(1) >= 0) {
+            state.distance2 = Component.translatable("tolkienmobs.signpost.blocks", blockEntity.getDistance(1));
+        }
+    }
+
+    /** A place's name, or null when the board points at nothing. */
+    private static @Nullable Component label(String id) {
+        if (id == null || id.isEmpty()) return null;
         Places.Name name = Places.known(id);
-        state.destination = name == null ? Component.literal(id) : Component.translatable(name.key());
-
-        int distance = blockEntity.getDistance();
-        if (distance >= 0) state.distance = Component.translatable("tolkienmobs.signpost.blocks", distance);
+        return name == null ? Component.literal(id) : Component.translatable(name.key());
     }
 
     @Override
@@ -83,17 +93,25 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
         if (state.destination == null) return;
 
         float height = (state.level * 4.0F + 2.0F) / 16.0F;
-        this.paint(state, poseStack, submitNodeCollector, height, 90.0F, EAST_FACE);
-        this.paint(state, poseStack, submitNodeCollector, height, -90.0F, WEST_FACE);
+        this.paint(state, poseStack, submitNodeCollector, height, lines(state.destination, state.distance));
+
+        if (state.destination2 != null) {
+            // The upper board of a double arm: the same board, four pixels up.
+            this.paint(state, poseStack, submitNodeCollector, height + 4.0F / 16.0F,
+                    lines(state.destination2, state.distance2));
+        }
     }
 
-    /** Letters one face of the board: the pose is taken to the board's middle, turned onto that face, then scaled. */
-    private void paint(SignPostArmRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector,
-                       float height, float turn, float offset) {
+    private static List<Component> lines(Component destination, @Nullable Component distance) {
         List<Component> lines = new ArrayList<>(2);
-        lines.add(state.destination);
-        if (state.distance != null) lines.add(state.distance);
+        lines.add(destination);
+        if (distance != null) lines.add(distance);
+        return lines;
+    }
 
+    /** Letters one face of a board: the pose is taken to the board's middle, turned onto that face, then scaled. */
+    private void paint(SignPostArmRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector,
+                       float height, List<Component> lines) {
         List<FormattedCharSequence> set = new ArrayList<>(lines.size());
         float widest = 0.0F;
         for (Component line : lines) {
@@ -104,6 +122,12 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
         // A long name shrinks until it fits the board; a short one keeps the fixed scale.
         float scale = widest <= 0.0F ? SCALE : Math.min(SCALE, REACH / widest);
 
+        this.paintFace(state, poseStack, submitNodeCollector, set, height, scale, 90.0F, EAST_FACE);
+        this.paintFace(state, poseStack, submitNodeCollector, set, height, scale, -90.0F, WEST_FACE);
+    }
+
+    private void paintFace(SignPostArmRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector,
+                           List<FormattedCharSequence> set, float height, float scale, float turn, float offset) {
         poseStack.pushPose();
         poseStack.translate(0.5D, height, 0.5D);
         poseStack.mulPose(Axis.YP.rotationDegrees(yaw(state.facing)));

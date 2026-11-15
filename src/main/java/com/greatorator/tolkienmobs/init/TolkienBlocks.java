@@ -2160,6 +2160,9 @@ public class TolkienBlocks {
             BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
     public static final DeferredBlock<SignPostArmBlock> SIGN_POST_ARM = registerBlock("sign_post_arm", SignPostArmBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
+    // Two destinations down one road: one block that draws two boards, one above the other.
+    public static final DeferredBlock<SignPostDoubleArmBlock> SIGN_POST_ARM_DOUBLE = registerBlock("sign_post_arm_double", SignPostDoubleArmBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
 
     //Spikes
     //  One block and two materials: both read the same texture sheet, the stone off one half of it and the
@@ -2183,7 +2186,7 @@ public class TolkienBlocks {
                     new BlockEntityType<>(PlacardBlockEntity::new, PLACARD.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SignPostArmBlockEntity>> SIGN_POST_ARM_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("sign_post_arm", () ->
-                    new BlockEntityType<>(SignPostArmBlockEntity::new, SIGN_POST_ARM.get()));
+                    new BlockEntityType<>(SignPostArmBlockEntity::new, SIGN_POST_ARM.get(), SIGN_POST_ARM_DOUBLE.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienSignBlockEntity>> TOLKIEN_SIGN_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_sign_entity", () ->
                     new BlockEntityType<>(TolkienSignBlockEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()));

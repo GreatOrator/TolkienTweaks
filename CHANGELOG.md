@@ -3459,3 +3459,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   black, turned with the block's model so the words lie along the wood; two lines are scaled so both fit the
   board's four pixel height, a long name shrinks further so a line cannot run off the end, and both faces are
   lettered because which one a traveller reads depends on the way they came.
+
+- **A double arm carries two destinations down one road.** A cell holds one block, so a post that sends a traveller
+  two ways along the same road needs one block that draws both boards: `sign_post_arm_double` is the artist's arm
+  and a copy of it four pixels higher, eight pixels together, sitting in the lower half of the cell at `level` 0
+  (model `sign_post_arm_double`) or the upper half at `level` 2 (model `sign_post_arm_double_2`). Its block entity
+  keeps a destination for each board, measured and saved apart from the other - the second under `destination2`
+  and `distance2`, so an arm placed before this change keeps the place it had - and each board is lettered on
+  both faces in black, four pixels apart. Placing one works as a single arm does, the facing coming from the post;
+  a plain click steps the lower board's place on and a crouching one steps the upper, so the two are set one at a
+  time.

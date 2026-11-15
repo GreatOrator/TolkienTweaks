@@ -71,6 +71,16 @@ too. Not yet seen in game, and worth watching:
   draw as nothing and the log says `Missing item model`. A datagen run writes them for every item, so they are
   only hand-written because that run has not happened since the blocks were added.
 
+### The double arm
+
+`sign_post_arm_double` is one block that draws two boards in one cell - the single arm's model and a copy of it
+four pixels up - for a place that sends a traveller two ways down the same road. Its `level` is only ever 0 (the
+pair on the floor of the cell) or 2 (the pair in the top half, flush under a cap), and the second model is the
+pair lifted eight pixels. The block entity keeps two destinations; a plain click steps the lower, a crouching
+click the upper. The second board's place is saved as `destination2`/`distance2` so single arms already in a
+world are unaffected. Not yet seen in game: whether the two boards read as one sign rather than two, whether the
+upper board's lettering lands on it and not on the board below, and whether `level` 2 tucks under a cap cleanly.
+
 ## Spikes
 
 `SpikeBlock`, registered as `spike_stone` and `spike_wooden`: one class, one shape of eight stepped plates taken

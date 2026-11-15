@@ -2426,5 +2426,6 @@
   "block.tolkienmobs.sign_post_arm": "Sign Post Arm",
   "tolkienmobs.signpost.blocks": "%s blocks",
   "block.tolkienmobs.spike_stone": "Stone Spikes",
-  "block.tolkienmobs.spike_wooden": "Wooden Spikes"
+  "block.tolkienmobs.spike_wooden": "Wooden Spikes",
+  "block.tolkienmobs.sign_post_arm_double": "Sign Post Double Arm"
 }

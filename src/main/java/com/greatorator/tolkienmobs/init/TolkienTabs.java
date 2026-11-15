@@ -695,6 +695,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.SIGN_POST_SHAFT);
                         output.accept(TolkienBlocks.SIGN_POST_CAP);
                         output.accept(TolkienBlocks.SIGN_POST_ARM);
+                        output.accept(TolkienBlocks.SIGN_POST_ARM_DOUBLE);
                         output.accept(TolkienBlocks.SPIKE_STONE);
                         output.accept(TolkienBlocks.SPIKE_WOODEN);
                         output.accept(TolkienBlocks.ROCKPILE);
@@ -843,6 +844,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.SIGN_POST_SHAFT);
                         output.accept(TolkienBlocks.SIGN_POST_CAP);
                         output.accept(TolkienBlocks.SIGN_POST_ARM);
+                        output.accept(TolkienBlocks.SIGN_POST_ARM_DOUBLE);
                         output.accept(TolkienBlocks.SPIKE_STONE);
                         output.accept(TolkienBlocks.SPIKE_WOODEN);
                         output.accept(TolkienBlocks.ROCKPILE);
