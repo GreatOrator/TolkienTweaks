@@ -3,8 +3,8 @@
 The working state of the campaign, written down so a fresh session does not have to guess at it. Read this first,
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 
-**Last touched:** 15 November 2026 - the old forest road laid east of Glóin's camp, and its two crossings standing as
-bridges.
+**Last touched:** 15 November 2026 - the old forest road laid east of Glóin's camp with both crossings standing as
+bridges (final), the Gundabad gate finished, and the sign posts put on hold until there is a second town to point at.
 
 ## Where the roads stand
 
@@ -17,9 +17,9 @@ Laid and seen in game, called right by the player:
 - **Mirkwood.** The road climbed into the canopy because `TolkienHardenedLeavesBlock` is a plain `Block`, so nothing
   had tagged it: the no-leaves heightmap the road reads its ground from counted the hardened leaves as ground. All nine
   hardened leaves are in `minecraft:leaves` now, beside their own leaves (`0e5e98fb`), and the road walks the floor.
-- **The Old Ford's bridge.** Stood and seen: a nine-wide deck on `bridge_end`/`bridge_middle` pieces with oak-log piers
-  drawn to the bed. The first thing it did was read as a low culvert, so it and the Forest River's were both raised a
-  block.
+- **Both the old forest road's crossings.** Final as of 15 November: nine-wide decks on `bridge_end`/`bridge_middle`
+  pieces with oak-log piers drawn to the bed, the Old Ford at 189 and the Forest River at 169, both called right in
+  game. Nothing more to do on either.
 
 Compiled and **not yet seen** (`ed220cc9`): both decks one block up and their bases with them.
 
@@ -103,13 +103,16 @@ shape of the rest: **whether Stoneyford and the Watchers are built here or alrea
 
 ## Loose ends outside the quests
 
-- **Sign posts.** Four blocks - `sign_post_plinth`, `_shaft`, `_cap`, `_arm` - plus `sign_post_arm_double` for a place
-  that sends a traveller two ways: one cell, two boards, `level` 0 or 2, a plain click steps the lower destination and a
-  crouching click the upper (`destination2`/`distance2`). All bedrock-hard, no recipe, no drop. The generated item
-  definitions have been written by a datagen run since. Not seen in game, and worth watching: whether the two lines are
-  legible inked in black on the board's own faces, whether the arm's four `y` rotations are the intended ones (south 0,
-  east 90, north 180, west 270) and the flat end meets the shaft from every face, whether the cap's two pixels line up
-  with a shaft's top of 16, and whether the double board reads as one sign rather than two.
+- **Sign posts - on hold, and working.** Legibility is confirmed in game and the pieces seat: the shaft, plinth and
+  cap need nothing, and an arm on each side of a post reads right. Held for a reason that is not the blocks: a board can
+  only point at a place a world has planted, and **Rivendell is the only town so far**.
+  `SignPostArmBlockEntity.destinations()` offers every planted place in `Places.catalogue()`, so a board would just as
+  happily read *Matuna's Lair*. What to do when more towns exist: give `Places.Name` a kind - it is
+  `record Name(String id, @Nullable Alliance alliance, boolean beryl)` today - or add a `Places.TOWNS` set, and filter
+  `destinations()` to it, so a hand-placed board cycles `""` ↔ the towns. An automatic post is then only a placer that
+  stands an arm on the side of the post the town lies and calls `setDestination(board, place)`, which measures the
+  distance itself; the flat end against the shaft is already automatic. Nothing places posts in the world today - every
+  one is set by hand - so no posting pass is waiting on it.
 - **Spikes.** `spike_stone`, `spike_wooden`: eight stepped plates, drop themselves, two points of general damage on the
   game's hurt timer. Not seen: whether two points a half second reads as a nuisance rather than a wall, whether the
   stepped shape is walkable rather than a trip hazard, and whether the stone half of the sheet lines up.
@@ -117,11 +120,20 @@ shape of the rest: **whether Stoneyford and the Watchers are built here or alrea
   are owed by the owner before it can be: the marker set with its legend (one spot per body, plus the road the nine
   leave by) and eight faces - `bilbo`, `gandalf`, `aragorn`, `boromir`, `frodo`, `samwise`, `merry`, `pippin`. Elrond,
   Legolas, Gimli and Glóin are already drawn.
-- **The Gundabad gate** is finished (`gate-complete`) and lays itself as the server comes up, but is reached only by
-  `/tmgate place` - no pin raises it, so the "no commands on the map" rule is not met for it yet. The keep is planned
-  underground at (5516, 187, -7112); two flags must change before a page may raise it, `ON_THE_PIN` and
-  `SELF_DRESSED`, or the seating pass lifts it 78 blocks onto the crown and the sweep quarries a 122 × 183 pit.
-  `docs/gundabad-gate.md` and `docs/gundabad-keep.md` have the rest.
+- **The Gundabad gate is final.** `GundabadGate.autospawn` stands it at `ArdaMap.gatePlan()` (facade south) as the
+  server comes up - the eight pieces, the floor bedded, the seam dressed, the hall carried into the mountain - and a gate
+  already standing is now left alone on two answers rather than one: the netherrack course in the west wing, and the
+  pieces' own blocks through `Sites.standsAt`. That matters because re-laying writes the templates' air over whatever has
+  been built on the footprint since. `/tmgate place` stays the deliberate re-lay; `clear` is the way back. The cave east
+  of it cuts itself the same way, and `/tmpin build keep` now refuses rather than writing a pin that would move a
+  planned hold.
+- **The keep's plan is the one thing left at Gundabad, and it is a decision, not work.** `ArdaMap` says 5471/-7100/176
+  (box x 5471…5592, z -7100…-6917, floor top 178); `docs/gundabad-keep.md` says 5516/187/-7112 (box x 5516…5637,
+  z -7112…-6930, floor top 189). The built passage's floor top is 189, which the note's y gives and the code's does not;
+  the captain's own mark, the slab at (5501, 192, -7024), sits inside the code's box and fifteen blocks outside the
+  note's. **Neither hold stands in the world**: `GundabadKeep.autospawn` asks for deepslate at the doorway's floor and
+  Arda's rock is deepslate, so it has answered "already standing" since it was written. Settle which plan is the hold,
+  make that guard the build's own blocks, then `/tmgate keep`.
 - **The biome canon audit** - twelve findings in `docs/arda-biome-canon.md`, **none applied**. Waiting on a decision,
   not on work.
 - **A road already laid is never taken back.** `surfaceAt` reads the old embankment as ground on a re-lay, and columns

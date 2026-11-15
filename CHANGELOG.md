@@ -3589,3 +3589,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   scene's owed marks and faces, the gate that no pin raises, the biome audit waiting on a decision, and the ford path
   kept in the code with no route using it. `docs/HANDOFF.md` takes a dated paragraph pointing at it, so the long history
   and the running state are not the same file drifting in two directions.
+
+- **A gate already standing is now left alone on two answers, not one.** `GundabadGate.autospawn` read a single
+  netherrack course in the west wing, and breaking that one block would have set the whole gate laying again on the next
+  start - which writes eight templates' air over whatever had been built on the footprint since. It now also asks the
+  build itself through `Sites.standsAt` on the first piece's corner, so a gate whose marker has been mined out is still a
+  gate that stands.
+- **The keep is not a pin a hand may move.** `/tmpin build keep` wrote a pin at the caller's feet for the keep's
+  template, which would move a hold whose corner is written down in `ArdaMap`; it refuses now and names `/tmgate keep`.
+  The name `gundabad` no longer means the keep either - the gate is eight pieces with a plan of its own, and calling the
+  keep the whole location is how that pin came to look reasonable.

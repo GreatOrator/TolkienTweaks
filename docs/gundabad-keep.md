@@ -55,9 +55,14 @@ nine on the west, fourteen where an inner mass stands just inside it). It is cle
 laid, so **raising the keep and then laying the gate again is what opens the door**; until a keep stands
 there it is a pocket in the rock.
 
-The keep's plan lives in `ArdaMap` beside the gate's - `KEEP_X` 5516, `KEEP_Z` −7112, `KEEP_WIDE` 122,
-`KEEP_TALL` 26, `KEEP_DEEP` 183, `keepPlan()` and `keepWall()` - because the passage's end is the keep's
-wall in every world and must not be measured off rock that the hall itself changes.
+The keep's plan belongs in `ArdaMap` beside the gate's, because the passage's end is the keep's wall in every
+world and must not be measured off rock that the hall itself changes. The sizes are there - `KEEP_WIDE` 122,
+`KEEP_TALL` 26, `KEEP_DEEP` 183 - but **`KEEP_X`, `KEEP_Z` and `KEEP_FLOOR` still read the first plan,
+5471/-7100/176**, so the numbers in this file are the decision and the code has not caught up. `docs/gundabad-gate.md`
+(Open 1 and 2) has the measurement that has to settle which is the hold: this file's y 187 puts the keep's floor top
+on the passage's own 189 where 176 puts it eleven blocks under it, while the captain's marked throne at
+(5501, 192, -7024) sits inside the older box and outside this one. Until the two agree, `/tmgate keep` lays the hold
+wherever `keepPlan()` answers.
 
 ## Two passes that would wreck it
 

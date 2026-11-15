@@ -266,8 +266,12 @@ public final class GundabadGate {
 
     /**
      * Stands the gate at its own site as the server comes up, once per world: the eight pieces, the ground bedded to the
-     * floor, the seam dressed and the passage carried north into the mountain. A world that already has it is left alone,
-     * which the marker cell answers without laying a block.
+     * floor, the seam dressed and the passage carried north into the mountain. A world that already has it is left alone.
+     * <p>
+     * Left alone is asked twice, because laying the gate again is not harmless: the templates carry air, and air written
+     * over a footprint takes whatever was built on it since. The marker cell answers first and cheaply; the second answer
+     * reads the build's own blocks back out of the world through {@link Sites#standsAt}, so a gate whose one marker has
+     * been broken out of it is still a gate that stands, rather than a gate about to be laid over its own courtyard.
      *
      * @return how many pieces were laid, or 0 if the gate was already standing
      */
@@ -275,7 +279,11 @@ public final class GundabadGate {
         ServerLevel level = server.getLevel(TolkienDimensions.ARDA);
         if (level == null) return 0;
         BlockPos plan = ArdaMap.gatePlan();
-        if (level.getBlockState(base(plan, Rotation.NONE).offset(MARK_X, MARK_Y, MARK_Z)).is(Blocks.NETHERRACK)) {
+        BlockPos corner = base(plan, Rotation.NONE);
+        if (level.getBlockState(corner.offset(MARK_X, MARK_Y, MARK_Z)).is(Blocks.NETHERRACK)) {
+            return 0;
+        }
+        if (Sites.standsAt(level, FOLDER + "0_0_0", corner)) {
             return 0;
         }
         int laid = place(level, plan, Rotation.NONE);

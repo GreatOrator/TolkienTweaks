@@ -73,8 +73,11 @@ public final class PinCommands {
         BUILDINGS.put("gloincamp", Sites.GLOIN_CAMP);
         BUILDINGS.put("sheltercave", Sites.SHELTER_CAMP);
         BUILDINGS.put("shelter", Sites.SHELTER_CAMP);
-        BUILDINGS.put("gundabad", Sites.GUNDABAD);
+        // The keep is named, but it is not a building a hand pins: its corner is written down in ArdaMap and the world
+        // stands it there, so /tmpin build refuses it rather than writing a pin at somebody's feet. "gundabad" used to
+        // mean this template, which read as the gate; the gate is eight pieces and has a plan of its own.
         BUILDINGS.put("keep", Sites.GUNDABAD);
+        BUILDINGS.put("gundabadkeep", Sites.GUNDABAD);
         BUILDINGS.put("weathertop", Sites.WEATHERTOP);
         BUILDINGS.put("castle", Sites.BOSS_CASTLE);
         BUILDINGS.put("arena", Sites.BOSS_ARENA);
@@ -159,6 +162,12 @@ public final class PinCommands {
         ServerPlayer player = source.getPlayerOrException();
         String typed = StringArgumentType.getString(context, "build");
         String key = resolve(typed);
+        if (Sites.GUNDABAD.equals(key)) {
+            source.sendFailure(Component.literal("The keep is not pinned by hand: its corner is written down in"
+                    + " ArdaMap and the world stands it there, so a pin at your feet would move a hold that is planned."
+                    + " /tmgate keep lays it again at the plan."));
+            return 0;
+        }
         if (key == null) {
             source.sendFailure(Component.literal("No building called \"" + typed + "\" - "
                     + String.join(", ", BUILDINGS.keySet()) + ", or a full template id."));

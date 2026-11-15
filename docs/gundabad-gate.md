@@ -198,21 +198,36 @@ the noise above are the answer to both.
   a plaza an army camps on, level for thirty-two blocks (`PASS_PLAZA`), with the mountain climbing out of it on every
   side but the gate. Behind is where the camp goes, and the keep is reached through the gate or by climbing the
   massif, which is what the pass is for.
+- **A gate already standing is left alone twice over.** The netherrack course in the west wing answers first, and
+  the eight pieces' own blocks answer second (`Sites.standsAt` on the first piece's corner), because laying the gate
+  again writes its templates' air over whatever has been built on the footprint since. One broken marker is no longer
+  enough to set that off.
+- **The keep is not a pin a hand can move.** `/tmpin build keep` refuses: its corner is written down in `ArdaMap` and
+  the world stands it there, so a pin at somebody's feet would move a planned hold. `gundabad` no longer means the keep
+  either - the gate is eight pieces with a plan of its own, and naming the keep for the whole location invited exactly
+  that mistake.
 - **The drape only ever adds.** `GundabadGate.drape` walks the ring around the footprint, reads the top
   of the gate at the nearest column and fills the ground up to it with the stone it already has, capped
   with the surface that was there. A drape that cut would lower the very walls the pass was shaped for.
 
 ## Open
 
-1. **The gate is not raised by the world.** `/tmpin build` has no gate name — a pin key must be a
-   template id or one of `PinCommands.BUILDINGS`, and the gate is eight templates, so a pin on
-   `gundabad_gate_0_0_0` would raise one 48-cube. Needed: a `gundabadgate` name in `BUILDINGS`, a
-   `Sites` entry that lays all eight from one corner at the fixed rotation, and a pin under it. Until
-   then `/tmgate` is the only way the gate stands.
-2. **The keep's pin is inside the new east wall.** It is at (5655, 189, −6877), four blocks east of the
-   gate's box, and lays the keep over x 5655…5776, z −6877…−6694. The owner is moving it after the gate
-   is settled. Note the rock closes behind the gate, so the keep's ground is the courtyard **south** of
-   it, not behind it.
+The gate itself is finished: it stands by itself in every world, and a gate already standing is left alone. What is
+open here is the keep behind it.
+
+1. **The keep's plan is recorded twice, and the two records disagree.** `ArdaMap` has `KEEP_X` 5471, `KEEP_Z` -7100,
+   `KEEP_FLOOR` 176 - the box x 5471…5592, z -7100…-6917, its south wall at -6918, its floor top **178**.
+   `docs/gundabad-keep.md` has the pin at **(5516, 187, -7112)** - the box x 5516…5637, z -7112…-6930, its south wall
+   at -6930, its floor top **189**. Measured in `run/saves/Mod Test`: the passage's floor top is 189 at x 5577 from
+   z -6908 out to -6916, which is what the keep note's y is for and what the code's 176 cannot meet - a hold pinned at
+   176 sits eleven blocks under the passage it is supposed to open off. But the captain's own mark, the slab at
+   (5501, 192, -7024) with the carpet over it at 193, sits inside the code's box and fifteen blocks west of the note's,
+   so the two records are not the same hold shifted: they are two different placements, and one of them is stale.
+2. **The keep has never been laid, and its guard is why.** `GundabadKeep.autospawn` answers "already standing" from
+   `(5577, 189, -6918)`, the doorway's floor course, tested with `is(Blocks.DEEPSLATE)` - and Arda's rock under the
+   mountain is deepslate too, so the answer has always been yes. Nothing stands in that world's keep box at either
+   plan. Whatever plan is chosen, that guard has to be the build's own blocks (`Sites.standsAt`) rather than a material
+   the mountain itself is made of.
 3. **The sky above the wings is carried as air** — the capture lists every cell, so the box is whole.
    `tools/gate_capture.py --trim-sky` drops air above the highest block of each column when the voids
    want adjusting. Not run.
@@ -222,9 +237,9 @@ the noise above are the answer to both.
 5. **The Mod Test chunks are the first world's.** They carry the pass as it was before the shoulder, so
    the ground around the gate has to be made again — `tools/chunk_trim.py --radius` with the world
    closed and `--apply`, or a fresh world.
-6. **`/tmgate place` is the site, and it has to be.** `here` is the dev tool that lays it at the player's feet and
-   facing whichever way they look; `clear` takes the site's box down and `clear here` a box at the player. Every
-   screenshot of the gate is only comparable while it lands in the same place.
+6. **`/tmgate place` is the site, and it has to be.** `here` is the dev tool that lays it at the player's
+   feet and facing whichever way they look; `clear` takes the site's box down and `clear here` a box at
+   the player. Every screenshot of the gate is only comparable while it lands in the same place.
 
 ## How to see it
 
