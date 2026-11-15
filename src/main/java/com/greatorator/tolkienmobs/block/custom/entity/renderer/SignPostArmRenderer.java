@@ -43,6 +43,11 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
     /** Just clear of each broad face of the one pixel thick board, which spans x -1 to 0 of the cell. */
     private static final float EAST_FACE = 0.002F;
     private static final float WEST_FACE = 0.0625F + 0.002F;
+    /** How far apart two lines sit, a pixel tighter than the font's own nine. */
+    private static final float LINE_HEIGHT = 8.0F;
+    /** Where the lettering starts: two lines lifted three pixels, so they straddle the board rather than sink below it. */
+    private static final float TOP = -7.5F;
+    private static final float TOP_SINGLE = -3.0F;
 
     private final Font font;
 
@@ -145,11 +150,11 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
         poseStack.translate(0.0D, 0.0D, offset);
         poseStack.scale(scale, -scale, scale);
 
-        float top = set.size() > 1 ? -4.5F : 0.0F;
+        float top = set.size() > 1 ? TOP : TOP_SINGLE;
         for (int i = 0; i < set.size(); i++) {
             FormattedCharSequence text = set.get(i);
             float start = fromEnd ? (float) -this.font.width(text) : 0.0F;
-            submitNodeCollector.submitText(poseStack, start, top + i * 9.0F,
+            submitNodeCollector.submitText(poseStack, start, top + i * LINE_HEIGHT,
                     text, false, Font.DisplayMode.NORMAL, state.lightCoords, INK, 0, 0);
         }
 

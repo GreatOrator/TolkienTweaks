@@ -3476,3 +3476,8 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   board, so a name uses the board's whole length and the words run out toward the arrow; the two faces read along
   the board in opposite directions, so the face whose letters run back toward the shaft is drawn from the end of
   the string instead, and both faces then hug the same end of the wood.
+
+- **The arm's lettering sits up on the board, and its two lines closer together.** The first line started where the
+  board's middle was, so with a distance under it the pair sank through the lower edge of the wood; the block of
+  text now starts three pixels higher and the lines are set eight pixels apart rather than the font's nine, so both
+  lines lie inside the board with a pixel of wood above and below.
