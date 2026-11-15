@@ -82,12 +82,15 @@ Gundabad gate (seen) and its chamber, the keep at its plan (**on hold** - see be
 1. **Walk 26 → 36 in a fresh world.** Watch: that the camp reads as a camp; that Gundabad's site search finds ground
    level enough for a 122-by-183 footprint in the Hithaeglir; that the stair reads as the way down; and that Carn Dûm's
    border camps are findable from the page's direction.
-2. **Walk 33 → 36.** The four pages left: the camps on Carn Dum's borders, the Dark Sigil carried back, the sigil to
-   Elrond's library, and the wight at Carn Dum. Watch that the border camps are findable from the page's direction and
-   that the Sigil is credited where it is taken.
-3. **The inner keep's stair is not gated** - the spiral at the hall's well, which is the way down into the keep below
-   Gundabad. It is open, so the hold can be walked into before the pages say it can; page 29 is the beat that would pay
-   for a door over it. A design decision, not a defect, and it waits on the hold's placement anyway.
+2. **The rest of the chapter is paused, and Carn Dum is next** (15 November 2026). Pages 33 to 36 are the four left -
+   the camps on Carn Dum's borders, the Dark Sigil carried back, the sigil to Elrond's library, and the wight at Carn
+   Dum - and they are all that ground, so nothing more is walked until it is worked. When quests pick up again they pick
+   up at Carn Dum: the border camps and the wight's hall are the parts of the chapter nobody has looked at.
+   **Gimli now stands in his own cave** east of the gate, on that room's dais (`GundabadCave.post()`), rather than beside
+   the hold's well, so page 31 is met under the mountain: that is what makes him findable on the way.
+3. **The inner keep's stair is final and open** (15 November 2026) - the spiral at the hall's well, the way down into
+   the keep below Gundabad. No door goes over it: the hold is a place to explore rather than a lock, and page 29 stays
+   the dialogue it was. Closed as a decision.
 4. **The chapter-one seam is final** (15 November 2026): *Hasten Their Departure* was played in game and ran smoothly as
    it is, so no departure scene is staged and nothing is owed there - `docs/departure-scene.md` stays as recovered notes.
 5. **Chinese is on hold until a full public release** - not deferred per line, but parked whole: the rework's lines get

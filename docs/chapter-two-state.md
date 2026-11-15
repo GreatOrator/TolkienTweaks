@@ -23,7 +23,7 @@ to (a tenth); the purse is paid only where the notes put one.
 | 28 | Return to Gundabad I | `LOCATION` | Glóin → Glóin | 50 / 4 | the hold, raised when the page is taken |
 | 29 | Return to Gundabad II | `DIALOGUE` Glóin | Glóin → Glóin | 30 / 4 | the camp table |
 | 30 | Key-Stone | `LOCATION` | Glóin → Glóin | 60 / 5 | the vault at the source of the Bruinen |
-| 31 | Last Refuge I | `DIALOGUE` Gimli | Glóin → Gimli | 40 / 5 | the hold's stair, at the spiral's well |
+| 31 | Last Refuge I | `DIALOGUE` Gimli | Glóin → Gimli | 40 / 5 | Gimli's cave, east of the gate, on its dais |
 | 32 | Last Refuge II | `HUNT` ×1 dwarf | Gimli → Glóin | 80 / 6 | the inner keep, below the stair |
 | 33 | Steps of Evil I | `LOCATION` | Glóin → Glóin | 50 / 7 | the camps on Carn Dûm's borders |
 | 34 | Steps of Evil II | `FETCH` Dark Sigil | Glóin → Glóin | 60 / 7 | the same borders |
@@ -48,19 +48,20 @@ Page 36 is the front's last: settling it leaves the line finished rather than po
 
 ## The bodies
 
-`Glóin` and `Gimli` are keepers like the Elves: a tag, a name, a skin, and a body kept at one stand point so
-a reload does not stack them. Glóin wears `gloin.png` on a human model scaled to a dwarf's height; Gimli is
-stood from the hold's own site beside the stair. **Ulmug**, **Dugorim** and **Drugoth** are quarries counted
+``Glóin` and `Gimli` are keepers like the Elves: a tag, a name, a skin, and a body kept at one stand point so a
+reload does not stack them. Glóin wears `gloin.png` on a human model scaled to a dwarf's height; Gimli stands in
+**his own cave east of the gate**, on the room's own dais at `GundabadCave.post()` - the page that sends the player
+below the hold is met under the mountain rather than beside the well. **Ulmug**, **Dugorim** and **Drugoth** are quarries counted
 in prose — a goblin, a dwarf, a wight — because the pages name the fires and the room rather than tagging one
 body each. The Dragon Wight is the pack's barrow wight, named in the last page's words; the chapter needs no
 creature it does not have.
 
 ## Open decisions — deliberately not made
 
-1. **The inner keep is not gated.** The spiral's stair at the hall's well is open, so a player can walk down
-   into the keep below Gundabad before the plans say they can. It wants a door that the plans open (page 29 is
-   already the beat that would open it). Left open on purpose for now: its placement waits on a fresh world,
-   and a door hung on a stair that is going to move is a door hung twice.
+1. **The inner keep's stair is final, and it is open on purpose** (15 November 2026). The spiral at the hall's
+   well has no door over it: a player can walk down into the keep below Gundabad whenever they find it, and that
+   is the answer rather than an omission - the hold is a place to explore, not a lock, and nothing in the pages
+   needs the descent to be held back. Page 29 was the beat a door would have paid for; it stays dialogue.
 2. **The Pinnath Fenui is a bearing, not ground.** The notes put Ulmug's fires north-east of the camp; the
    page carries the direction and the prose carries the name. **Answered 12 November 2026:** it is a place
    now. `Places` already listed `goblins` and `GoblinCave.PIN` is that same string, so `Places.ensure` reads
@@ -91,11 +92,11 @@ the mountains rather than at the camp.
 
 ## Picking it up again
 
-1. Walk 26 → 36 in order in a fresh world and watch four things: that the camp reads as a camp; that
+1. Walk what is left in order in a fresh world - and not before the Carn Dûm ground is worked - watching four things: that the camp reads as a camp; that
    Gundabad's site search finds ground level enough for a 122-by-183 footprint in the Hithaeglir; that the
    stair reads as the way down; and that Carn Dûm's border camps are findable from the page's direction.
-2. Then the one decision left — gating the stair behind the plans. The Pinnath Fenui stopped being a
-   decision on 12 November 2026: it is a place, named from the cave's own pin.
+2. Nothing is left to decide at the hold: its stair is final and open, and the Pinnath Fenui stopped being a
+   decision on 12 November 2026 - it is a place, named from the cave's own pin.
 3. Only after that is worth spending: the cave tiles. The seam is finished as staged, and Chinese waits for a
    public release.
 
@@ -145,7 +146,10 @@ stair. Two things came out of it:
 - **The keep's placement looked wrong**, and it is **on hold** rather than tuned: that world was built around the older
   plan, so it is read from a brand-new world drawn for the rest of the walk. `docs/gundabad-keep.md` carries it.
 
-Left to walk: **33 Steps of Evil I**, **34 Steps of Evil II**, **35 Evil Tidings**, **36 Fire & Ice**.
+**The rest of the chapter is paused (15 November 2026).** Pages 33 to 36 - 33 Steps of Evil I, 34 Steps of Evil II,
+35 Evil Tidings, 36 Fire & Ice - are all Carn Dûm ground, and **Carn Dûm is what quests go to next**. They are not to
+be walked until that ground is worked: the border camps and the wight's hall are the parts of the chapter nobody has
+looked at yet.
 
 ## Where we stopped - 12 November 2026
 

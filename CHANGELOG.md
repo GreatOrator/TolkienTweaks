@@ -3659,3 +3659,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   Chinese is parked whole until a full public release instead of being deferred line by line. Four pages are left to
   walk: 33 to 36. The inner keep's spiral stair stays open for now, a design decision rather than a defect, and no door
   is hung on a stair whose hold is waiting on a freshly drawn world.
+
+- **The keep's stair is final and open, and the rest of chapter two is paused at Carn Dum.** The spiral at the hall's
+  well has no door over it and is not getting one: the hold is a place to explore rather than a lock, and page 29 stays
+  the dialogue it was, so the last decision open at Gundabad is closed. Pages 33 to 36 - Steps of Evil I and II, Evil
+  Tidings, Fire & Ice - are all Carn Dum ground and are paused for now; Carn Dum is what quests go to next, with its
+  border camps and the wight's hall the parts nobody has looked at. Two records were corrected with it: Gimli stands in
+  his own cave east of the gate on `GundabadCave.post()` rather than beside the well, as the code has had him since the
+  hold was walked, and page 31's ground now says so.
