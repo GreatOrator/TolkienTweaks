@@ -30,10 +30,18 @@ made and mentioned.
 
 ## Reference material
 
-- **The old CustomNPCs world is where names and faces come from, and the TolkienCraft 3 client's copy is the big
-  one.** `G:\GitHub\TolkienCraft-3-Return-to-Middle-earth\client\minecraft\customnpcs` - *not* the
-  `TolkienCraft-3-Map\world\customnpcs` copy that `docs/departure-scene.md` read scenes out of, which holds 31
-  clones and no skins at all:
+- **The old quests are `G:\GitHub\TolkienCraft-3-Map\world\customnpcs`, and that is the copy to read first.**
+  It is the TolkienCraft 3 quest database: `quests/<chapter>/<id>.json` is **233** pages, `dialogs/` is **629**
+  conversation nodes, `markets/` 50, and `factions.dat`, `recipes.dat`, `spawns.dat` and `scripts/ecmascript/` hold the
+  factions, trades, spawns and scripts. Chapter two is `quests/CH2-Last Refuge`, and its ids line up with the campaign's
+  own pages one for one - `28` Return to Gundabad I, `29` Return to Gundabad II, `30` Key-Stone, `31` Last Refuge I
+  (Gimli), `32` Last Refuge II (Gloin takes it back), `33` Steps of Evil I, `34` Steps of Evil II, `35` Evil Tidings,
+  `36` Fire n Ice - so a chapter-two page's id is its own number plus 25. Each quest carries `"Title"`, `"Text"`,
+  `"CompleteText"`, `"CompleterNpc"` and `"NextQuestId"`, which is the prose and the chain our `Page` records
+  transcribe; its talk is the `dialogs` nodes named for it, and `184`-`187` are Gimli's four Last Refuge nodes.
+- **Names and faces come from the client copy**,
+  `G:\GitHub\TolkienCraft-3-Return-to-Middle-earth\client\minecraft\customnpcs`, which is where the bodies and the
+  skins are:
   - `clones/1`..`clones/5` - **307** clone `*.json`, one per body in that world (194, 26, 45, 31, 11), which is what
     makes it the clone database rather than a sample of one.
   - `assets/customnpcs/textures/customskins/<group>/` - **445** skins in fourteen groups: `mobs` 100, `merchants` 61,
