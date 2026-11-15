@@ -3481,3 +3481,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   board's middle was, so with a distance under it the pair sank through the lower edge of the wood; the block of
   text now starts three pixels higher and the lines are set eight pixels apart rather than the font's nine, so both
   lines lie inside the board with a pixel of wood above and below.
+
+- **The sign post models were redrawn, and the level models follow them.** The plinth, shaft, cap, single arm and
+  double arm were re-exported from the artist's files; the derived models are generated from those bases rather
+  than edited by hand - `sign_post_arm_1` to `_3`, the single arm lifted four, eight and twelve pixels so each
+  level of the cell has its board, and `sign_post_arm_double_2`, the double pair lifted eight for the upper half
+  of a cell. A change to the arm now reaches every level in one step; a re-export still needs the generator run,
+  which is written down in `docs/next-up.md`. Their spans still match what the code assumes (the single arm four
+  pixels high and running from eight pixels inside the post's cell to twelve and a half beyond, the double eight),
+  so no block shape needed changing. The generated pack was re-run alongside: the item definitions, the two spike
+  loot tables and the language file now carry the provider's own output rather than the hand-written copies.
