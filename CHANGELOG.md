@@ -3618,3 +3618,8 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   wall -6930 short by twelve blocks, and `extendHall` only runs when the gate is laid, which a standing gate is not.
   `GundabadKeep.autospawn` now carries it every time: it writes only where the cell is air, so a hall already at the
   wall is nothing to do, and a hold that moves takes its hall with it.
+
+- **The spikes are settled as decoration.** Seen in game and called right: eight stepped plates that drop themselves and
+  take two points of general damage on the game's hurt timer, which is the piece doing its job rather than a hazard to
+  be balanced - a spike that does nothing is a texture. Nothing was raised about the stepped shape or the stone half of
+  the sheet, so both stay as they are and nothing is owed here.

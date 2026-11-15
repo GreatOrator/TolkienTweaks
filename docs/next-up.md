@@ -113,9 +113,11 @@ shape of the rest: **whether Stoneyford and the Watchers are built here or alrea
   stands an arm on the side of the post the town lies and calls `setDestination(board, place)`, which measures the
   distance itself; the flat end against the shaft is already automatic. Nothing places posts in the world today - every
   one is set by hand - so no posting pass is waiting on it.
-- **Spikes.** `spike_stone`, `spike_wooden`: eight stepped plates, drop themselves, two points of general damage on the
-  game's hurt timer. Not seen: whether two points a half second reads as a nuisance rather than a wall, whether the
-  stepped shape is walkable rather than a trip hazard, and whether the stone half of the sheet lines up.
+- **Spikes - settled (15 November 2026).** `spike_stone`, `spike_wooden`: eight stepped plates, drop themselves, two
+  points of general damage on the game's hurt timer. Seen in game and called right, damage included - they are
+  decoration, and a spike that does nothing is a texture, so the two points are the piece doing its job rather than a
+  figure to balance. Nothing else was raised, so the shape's walkability and the stone half of the sheet stay as they
+  are.
 - **The seam scene** - the company leaving Rivendell. Recovered in `docs/departure-scene.md`; nothing built. Two things
   are owed by the owner before it can be: the marker set with its legend (one spot per body, plus the road the nine
   leave by) and eight faces - `bilbo`, `gandalf`, `aragorn`, `boromir`, `frodo`, `samwise`, `merry`, `pippin`. Elrond,
