@@ -374,3 +374,16 @@ He is a planted giver, not a walker: `QuestGivers.plant` gives him no AI and a h
 turn the questing halls' staff have. The one difference is reach: a hall's giver watches its room from **twelve**
 blocks, and the cave's keeper watches **twenty-four**, because the dais stands behind a six-block tunnel and a player
 coming in through the mouth should find him already facing them.
+
+### The captain
+
+Page 2-7 is a hunt of `tolkienmobs:entityttmdwarf`, so any of the pack's dwarves settles it - but the captain the prose
+names is stood in the room's back while the page is in hand, three blocks behind the dais and facing the tunnel
+(`GundabadCave.dugorim()`, (5706, 187, -6676)). He is **not** a giver: a giver is made invulnerable on the way into a
+world, which is the one thing a hunt cannot have, so he only carries `tolkienmobs:campaign_dugorim` and is found by it
+afterwards, which is how a body already felled stays down.
+
+His face is `textures/entity/middle-earth/dugorim.png`, copied straight from the old pack -
+`customnpcs/textures/customskins/dwarves/dwarfwarrior 4.png`, 64x64, nothing to convert. `DwarfRender` looks a named
+dwarf's art up by the name on his plate (`middle-earth/<slug>.png`), so the custom name is what dresses him; a save
+holding him before this change gives him the art on his next load, since the lookup is per frame and not per spawn.

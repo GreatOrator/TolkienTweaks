@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Dugorim wears his own face, and stands in the cave's room while his page is in hand.** The hunt on page 2-7 is a
+          hunt of the pack's dwarves, so it never had a named body to be about: the Dourhands' captain is now stood at
+          the back of the room - three blocks behind the dais, facing the tunnel - while 2-7 is the page carried, and
+          found by his own tag afterwards so a body already felled stays down. He is deliberately not a giver, since a
+          giver is made invulnerable on the way into a world and a hunt needs something that can fall. His art is the
+          old pack's `dwarfwarrior 4` copied in as `middle-earth/dugorim.png` - a named dwarf's skin is looked for by
+          the name he wears, so the face and the nameplate are the same fact.
 - **The cave's keeper turns to face whoever comes in, the way a hall's staff do.** Gimli is planted where he is stood
           (`QuestGivers.plant`: no AI, a home area the width of the room), which is the state the halls' own givers are
           given on the way into a world, and the hall's gaze - six degrees every two ticks toward the nearest player -

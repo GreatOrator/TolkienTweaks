@@ -428,8 +428,17 @@ public final class Campaign extends SavedData {
     private static final String REFUGE_TITLE = "campaign.tolkienmobs.page.refuge";
     private static final String REFUGE_PLACE = "campaign.tolkienmobs.page.refuge.place";
     private static final String REFUGE_CLOSING = "campaign.tolkienmobs.page.refuge.closing";
-    /** 2-7 - Last Refuge II, walked below the stair and carried back to Gloin at the camp. */
+    /**
+     * 2-7 - Last Refuge II, walked below the stair and carried back to Gloin at the camp.
+     * <p>
+     * The hunt's target is the pack's dwarf rather than one tagged body, so any of them settles the page - but the
+     * captain the page names is stood in the cave's room while it is in hand, and that is the body the prose is about.
+     * His face is `middle-earth/dugorim.png`, which {@code DwarfRender} looks for by the name he is wearing: the art
+     * is the old pack's own dwarf warrior, copied in at 64x64 with nothing to convert.
+     */
     private static final String DUGORIM_TARGET = "tolkienmobs:entityttmdwarf";
+    private static final String DUGORIM = "Dugorim";
+    private static final String DUGORIM_TAG = "tolkienmobs:campaign_dugorim";
     private static final String DUGORIM_TITLE = "campaign.tolkienmobs.page.dugorim";
     private static final String DUGORIM_PLACE = "campaign.tolkienmobs.page.dugorim.place";
     private static final String DUGORIM_CLOSING = "campaign.tolkienmobs.page.dugorim.closing";
@@ -1984,6 +1993,45 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * Stands Dugorim at the back of the cave's room while his page is the one in hand, so the hunt has a body to be
+     * about rather than only a name in the prose.
+     * <p>
+     * He is not a giver: he holds no work, and a giver is made invulnerable and left standing, which is the one thing a
+     * hunt cannot have. He is planted like one - no AI, a home area the width of the room, so he keeps the spot - and he
+     * wears the captain's name so the pack's own art for him is found by it. A world that has already felled him keeps
+     * him down: the body is looked for by tag before another is stood, and a dead one is not there to find.
+     */
+    private static void keepDugorim(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        Quest page = page(player, Alliance.WEST);
+        if (page == null || !DUGORIM_TARGET.equals(page.target())) return;
+        BlockPos post = GundabadCave.dugorim();
+        if (post.distToCenterSqr(player.position()) > GIMLI_REACH * GIMLI_REACH) return;
+        Entity keeper = keeperWith(level, DUGORIM_TAG);
+        if (keeper != null) {
+            if (keeper instanceof Mob dwarf) {
+                // A pace or two, not the hall's reach: he is meant to stand where he was put, and be found there.
+                recallKeeper(level, keeper, post, 3.0D, DUGORIM_TAG);
+                return;
+            }
+            keeper.discard();
+        }
+        BlockPos stand = floorNear(level, post);
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_DWARF.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob dwarf)) return;
+        // Facing the tunnel: yaw 90 looks down -X, which is the way in.
+        dwarf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 90.0F, 0.0F);
+        dwarf.setPersistenceRequired();
+        dwarf.addTag(DUGORIM_TAG);
+        dwarf.setCustomName(Component.literal(DUGORIM).withStyle(ChatFormatting.DARK_RED));
+        dwarf.setCustomNameVisible(true);
+        QuestGivers.plant(dwarf);
+        level.addFreshEntity(dwarf);
+        Keepers.remember(level, DUGORIM_TAG, dwarf);
+    }
+
+    /**
      * Stands Elladan at the camp of Thorenhad while the cave search is the step in hand.
      * <p>
      * The notes end the cave search at his camp rather than at the valley: the stone is his to carry back
@@ -3149,6 +3197,7 @@ public final class Campaign extends SavedData {
         Places.ensure(player, GLOIN_PLACE, CAMP_RADIUS);
         keepGloin(player);
         keepGimli(player);
+        keepDugorim(player);
         // The seam between the chapters is walked rather than handed over: the note left at the end of
         // chapter one is answered at the courtyard, and the company leaving is what opens chapter two.
         Departure.tick(player);
