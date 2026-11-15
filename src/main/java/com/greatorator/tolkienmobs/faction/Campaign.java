@@ -417,22 +417,20 @@ public final class Campaign extends SavedData {
     private static final String PLANS_PLACE = "campaign.tolkienmobs.page.plans.place";
     private static final String PLANS_CLOSING = "campaign.tolkienmobs.page.plans.closing";
     /**
-     * 2-5 - Key-Stone. The vault at the source of the Bruinen, which the notes name and the plans point
-     * at. It is named ground rather than a site: the ruins are on the drawing already, so the page walks
-     * to a place and the vault is standing in it.
+     * 2-5 - Key-Stone. The vault in the cave beside Gundabad, which is the cave Gimli stands in: named ground rather
+     * than a site, because the cave was cut by the gate and the name is pinned at its dais.
      */
     private static final String KEYSTONE_TITLE = "campaign.tolkienmobs.page.keystone";
     /** How near the vault's middle counts as standing in it: the room is what the page is about. */
-    private static final int KEYSTONE_REACH = 12;
+    private static final int KEYSTONE_REACH = 16;
     /**
-     * Where the vault is: the cave east of the gate, which is the cave Gimli stands in.
-     * <p>
-     * It is a point rather than a named place on the map, because the cave is ground the gate cut rather than a town
-     * the drawing has an entry for - and it is written off {@link GundabadCave#post()} so the page that sends a player
-     * after the stone sends them to the dwarf's own hearth, one walk instead of two.
+     * The vault's name, which is a name and not a point so the needle has something to say and the book a line to print.
+     * Its pin is the cave's own dais ({@link Pins} holds "keystone" at {@link GundabadCave#post()}), so the ground the
+     * page names and the ground the place stands on are the same block - which is the whole of the chapter's rule that
+     * the vault is in the cave beside Gundabad and not in a ruin on the far side of the map.
      */
-    private static final String KEYSTONE_TARGET = Quest.pointTarget(GundabadCave.post().getX(),
-            GundabadCave.post().getY(), GundabadCave.post().getZ(), KEYSTONE_REACH);
+    private static final String KEYSTONE_GROUND = "keystone";
+    private static final String KEYSTONE_TARGET = Quest.placeTarget(KEYSTONE_GROUND);
     /** What Glóin says as he takes the stone back. */
     private static final String KEYSTONE_KEPT = "campaign.tolkienmobs.keystone.kept";
     private static final String KEYSTONE_PLACE = "campaign.tolkienmobs.page.keystone.place";
@@ -3352,6 +3350,9 @@ public final class Campaign extends SavedData {
         keepCaveGated(player);
         // The cave east of the gate, whose mouth stands shut unless somebody on the hold's pages is at it.
         GundabadCave.keep(player);
+        // The vault is a place as well as a room, and its name is not on the drawing: pinned to the cave's own dais, so
+        // page 2-5's needle carries a name and the walk it measures is measured around the stone's own floor.
+        Places.ensure(player, KEYSTONE_GROUND, KEYSTONE_REACH);
         keepElladan(player);
         keepBarachen(player);
         keepElrond(player);

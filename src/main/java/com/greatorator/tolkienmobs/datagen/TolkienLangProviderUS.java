@@ -1209,7 +1209,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("place.tolkienmobs.vault", "Gundabad's Vault");
         this.add("place.tolkienmobs.vault.line", "the eastern road under the mountain, where the plans were laid");
         this.add("place.tolkienmobs.keystone", "the Key-stone's Vault");
-        this.add("place.tolkienmobs.keystone.line", "a dwarf-vault in the ruins at the source of the Bruinen");
+        this.add("place.tolkienmobs.keystone.line", "a dwarf-vault cut into the cave beside Gundabad");
         this.add("place.tolkienmobs.carndum", "Carn Dûm");
         this.add("place.tolkienmobs.carndum.line", "the Witch-king's capital in Angmar");
         this.add("place.tolkienmobs.oldforest", "The Old Forest");

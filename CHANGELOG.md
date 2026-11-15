@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Key-stone's vault is pinned where the chapter says it is.** The name `keystone` had no pin, so it was surveyed
+          out of the middle of the country the map paints; it is now pinned to `GundabadCave.post()` - the cave's own
+          dais, which is the block Gimli stands on - and page 2-5 names the place again rather than a bare point, so the
+          needle carries "the Key-stone's Vault" and the walk is measured around the room it is in. `Places.ensure`
+          stands the name every tick, the way Glóin's camp and the goblin fires are stood.
+
+- **Where the work stands is now a file.** `docs/next-up.md` records the state of chapter two, everything committed but
+          never seen in game, the chapter-three plan's next step and the roads from Glóin's camp to Gundabad that are
+          still to be laid, and `AGENTS.md` sends a fresh session to it first.
 - **Chapter three, written up.** `docs/chapter-three.md` lays out *Fires in the South* from the pack's own chapter -
           quests 56 and 60 to 69, dialogs 200 to 228 - as eleven pages (`3-1` to `3-11`), with the kind, giver and
           turn-in of each, the prose each book and leaf will print, the standing and courage on the ladder, and the

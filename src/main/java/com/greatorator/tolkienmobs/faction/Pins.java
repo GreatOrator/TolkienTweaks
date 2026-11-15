@@ -76,6 +76,12 @@ public final class Pins extends SavedData {
             // marked floor was measured into - so a page that names Gundabad is pointed at the hold that stands
             // rather than at a second one surveyed out of the country's middle.
             Map.entry(Sites.GUNDABAD, ArdaMap.keepPlan()),
+            // The Key-stone's vault, which is not a ruin at the source of the Bruinen: it is the cave east of the gate,
+            // and the stone is kept in it. Pinned to the room's own dais - the mark Gimli stands on, read through the
+            // cave's own instance so a pin and a body cannot drift apart - because the name was never pinned and a name
+            // without a pin is surveyed out of the middle of the country the map paints, which left page 2-5 pointed at
+            // a hill a chapter's walk from anywhere the chapter had been.
+            Map.entry("keystone", GundabadCave.post()),
             // Chapter one, walked in the scouting world: the names on the ground their pages are spoken on, and
             // the camps and the four crags on the hillsides they were found on. The y is where the scout stood;
             // the laying measures the ground under a footprint and seats it, so the block is a target and not a
@@ -300,7 +306,7 @@ public final class Pins extends SavedData {
             new Need("thorenhad", "Thorenhad - Elladan's camp"),
             new Need("barachen", "Barachen's fire"),
             new Need("ford", "the ford the beryl is carried to"),
-            new Need("keystone", "the vault at the source of the Bruinen"),
+            new Need("keystone", "the Key-stone's vault in the cave beside Gundabad"),
             new Need("carndum", "Carn Dum"),
             new Need(Sites.ELLADAN_CAMP, "Elladan's camp at Thorenhad"),
             new Need(Sites.WOOD_RUIN, "the wood ruin the black horse lies in"),

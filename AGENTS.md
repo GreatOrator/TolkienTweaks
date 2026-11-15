@@ -83,6 +83,11 @@ made and mentioned.
 
 ## Campaign Direction
 
+**Where the work stands is written down in `docs/next-up.md`, and it is the first file to read.** It carries the state
+of the chapter being walked, the list of things that are committed but never seen in game, and the task the session is
+picking up next. Read it before anything else; keep it current in the same commit as the work it describes, because a
+summarised session loses everything that is only in the conversation.
+
 - **No page leaves a player without a direction.** The campaign comes from quest pages whose design rule
   was that a player is never left not knowing what to do next: a completed page is always replaced by the
   next one, or by the name of the body and the ground where the next one is handed over. Every new page,
