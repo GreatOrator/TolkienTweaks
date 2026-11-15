@@ -387,3 +387,18 @@ His face is `textures/entity/middle-earth/dugorim.png`, copied straight from the
 `customnpcs/textures/customskins/dwarves/dwarfwarrior 4.png`, 64x64, nothing to convert. `DwarfRender` looks a named
 dwarf's art up by the name on his plate (`middle-earth/<slug>.png`), so the custom name is what dresses him; a save
 holding him before this change gives him the art on his next load, since the lookup is per frame and not per spawn.
+
+### The words
+
+Both Last Refuge pages are read aloud now rather than summarised: they are in `Campaign.SPOKEN`, and the leaf is spoken by
+whoever hands the page over, which is why the old chapter's four dialog nodes land where they do.
+
+| our page | handed over by | says | then |
+|---|---|---|---|
+| 2-6 Last Refuge I | Glóin, at the camp | dialog `184`'s two halves - the Key-stone has opened the back way, and he sends Gimli ahead with the stone and the lore | dialog `185` - the way is marked in the journal, speak to Gimli at the stair |
+| 2-7 Last Refuge II | Gimli, in the cave | dialog `186` - go now into the mountains and finish Dugorim and the last of the Dourhands | dialog `187` - good luck, may the battle be glorious |
+
+The two replies on each leaf are the pack's own options, kept word for word: *I am ready now. What do I need to do?* and
+*Let me come back when I am better prepared.* The closings were already written and are unchanged; the `place` lines say
+where each leaf is heard. `zh_cn` has no chapter-two keys at all, so Chinese falls back to the English for these pages,
+as it already did for their titles.

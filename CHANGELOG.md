@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The two Last Refuge pages are spoken, in the old chapter's own words.** Both are in `Campaign.SPOKEN`, and the leaf
+          is voiced by whoever hands the page over - which is Glóin for 2-6 and Gimli for 2-7, and so is exactly where
+          the pack's four dialog nodes belong: `184`'s two halves and `185` are Glóin sending the player to the stair,
+          `186` and `187` are Gimli sending them at Dugorim and wishing them a short, glorious battle. The replies are
+          the pack's own two options - *I am ready now. What do I need to do?* and *Let me come back when I am better
+          prepared.* - and the closings were already written, so they are untouched.
 - **Dugorim wears his own face, and stands in the cave's room while his page is in hand.** The hunt on page 2-7 is a
           hunt of the pack's dwarves, so it never had a named body to be about: the Dourhands' captain is now stood at
           the back of the room - three blocks behind the dais, facing the tunnel - while 2-7 is the page carried, and

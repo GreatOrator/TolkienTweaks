@@ -812,7 +812,8 @@ public final class Campaign extends SavedData {
      * the campaign opens and where the script's argument for a conversation is made.
      */
     private static final Set<String> SPOKEN = Set.of("campaign.tolkienmobs.page.wisdom",
-            "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.caves");
+            "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.caves",
+            REFUGE_TITLE, DUGORIM_TITLE);
 
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
     /** What {@link #instance} answers with when there is no server to hold a file. */
