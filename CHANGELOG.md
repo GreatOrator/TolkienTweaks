@@ -3679,3 +3679,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   settled list so nothing is re-opened by accident, and what unblocks each hold. `docs/HANDOFF.md` gains the Gundabad
   paragraph it was missing - the gate's doubled answer, the keep's plan and guard, the captain's down mark - and stops
   claiming the raised decks were never seen.
+
+- **The cutter writes its piece table, and can be told to leave named blocks out.** `cut_world.py` streamed a build
+  into 48-cubes and then died at the last line: `parts` carries seven fields - the file, its offset and its own size -
+  but the table was formatted for four, so every cut it made ended without a `.parts` and `Sites` had nothing to place
+  it by. It writes `name dx dy dz wide deep tall` now, which is exactly what `CityCommands.parts` reads and what
+  `TolkienStructureProvider.readCut` tolerates. It also takes `--without`, a comma-separated list of blocks to leave
+  out, for the one thing in a cut that is not the build: the scout's ammolite markers. Nothing else is ever dropped -
+  no material is swapped for air and no layer is thinned - which is the difference between cutting a map and deciding
+  what part of it was worth keeping. Checked on a 48-cube holding one marker: 87,089 non-air blocks in the volume, one
+  of them ammolite, 87,088 in the tile, and nothing else missing.

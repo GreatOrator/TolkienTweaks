@@ -50,7 +50,10 @@ def main():
     parser.add_argument("--out", required=True, help="folder to write the pieces into")
     parser.add_argument("--name", default="build", help="what the pieces are called")
     parser.add_argument("--tile", type=int, default=TILE, help="piece width; vanilla's own limit is 48")
+    parser.add_argument("--without", default="",
+                        help="blocks to leave out, comma separated; everything else in the box is cut as it stands")
     args = parser.parse_args()
+    dropped = {name.strip() for name in args.without.split(",") if name.strip()}
 
     low = tuple(int(v) for v in args.low.split(","))
     high = tuple(int(v) for v in args.high.split(","))
@@ -104,7 +107,9 @@ def main():
                 else:
                     values = np.zeros(4096, dtype=np.uint64)
                 slots = values.astype(np.int64)
-                air = np.array([name[0] == "minecraft:air" for name in names], dtype=bool)
+                # The scout's own marker blocks are the one thing a cut leaves out; every other block in the
+                # box is part of the build, so nothing else is dropped and no material is swapped for air.
+                air = np.array([name[0] == "minecraft:air" or name[0] in dropped for name in names], dtype=bool)
                 x = (index & np.uint64(15)).astype(np.int64) + base_x
                 z = ((index >> np.uint64(4)) & np.uint64(15)).astype(np.int64) + base_z
                 y = (index >> np.uint64(8)).astype(np.int64) + section_y
@@ -162,7 +167,7 @@ def main():
                           dims[0], dims[2], dims[1]))
             written += len(blocks)
     (out / (args.name + ".parts")).write_text(
-        "".join("%s %d %d %d\n" % part for part in parts), encoding="utf-8")
+        "".join("%s %d %d %d %d %d %d\n" % part for part in parts), encoding="utf-8")
     print("wrote  %d pieces, %d blocks, into %s" % (len(parts), written, out))
     return 0
 
