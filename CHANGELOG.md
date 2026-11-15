@@ -3469,3 +3469,10 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   both faces in black, four pixels apart. Placing one works as a single arm does, the facing coming from the post;
   a plain click steps the lower board's place on and a crouching one steps the upper, so the two are set one at a
   time.
+
+- **The arm's lettering lost its shadow and starts at the shaft end of the board.** The drop shadow that made the
+  words look embossed - and doubled them at a distance - is off, so the ink is flat like paint. The pose is now
+  set down at the board's shaft end, two pixels in from where it meets the post, rather than at the middle of the
+  board, so a name uses the board's whole length and the words run out toward the arrow; the two faces read along
+  the board in opposite directions, so the face whose letters run back toward the shaft is drawn from the end of
+  the string instead, and both faces then hug the same end of the wood.

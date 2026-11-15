@@ -37,8 +37,9 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
     private static final float REACH = 1.15F;
     /** The board's own ink: black, as asked for, rather than the white of a floating label. */
     private static final int INK = 0xFF000000;
-    /** The board runs from eight pixels behind the cell to twelve and a half past it, so its middle is here. */
-    private static final float PLANK_MIDLINE = 2.25F / 16.0F;
+    /** The board's shaft end sits eight pixels behind the cell's middle, and the lettering starts two in. */
+    private static final float PLANK_START = -8.0F / 16.0F;
+    private static final float MARGIN = 2.0F / 16.0F;
     /** Just clear of each broad face of the one pixel thick board, which spans x -1 to 0 of the cell. */
     private static final float EAST_FACE = 0.002F;
     private static final float WEST_FACE = 0.0625F + 0.002F;
@@ -123,16 +124,23 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
         // A long name shrinks until it fits the board; a short one keeps the fixed scale.
         float scale = widest <= 0.0F ? SCALE : Math.min(SCALE, REACH / widest);
 
-        this.paintFace(state, poseStack, submitNodeCollector, set, height, scale, 90.0F, EAST_FACE);
-        this.paintFace(state, poseStack, submitNodeCollector, set, height, scale, -90.0F, WEST_FACE);
+        this.paintFace(state, poseStack, submitNodeCollector, set, height, scale, 90.0F, EAST_FACE, true);
+        this.paintFace(state, poseStack, submitNodeCollector, set, height, scale, -90.0F, WEST_FACE, false);
     }
 
+    /**
+     * Letters one face of a board. The pose is set down at the board's shaft end, so the words start where the
+     * board meets the post and run out toward the arrow rather than sitting in the middle of it; the two faces
+     * read along the board in opposite directions, so the one whose letters run back toward the shaft is drawn
+     * from the end of the string instead, and both then hug the same end of the wood.
+     */
     private void paintFace(SignPostArmRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector,
-                           List<FormattedCharSequence> set, float height, float scale, float turn, float offset) {
+                           List<FormattedCharSequence> set, float height, float scale, float turn, float offset,
+                           boolean fromEnd) {
         poseStack.pushPose();
         poseStack.translate(0.5D, height, 0.5D);
         poseStack.mulPose(Axis.YP.rotationDegrees(yaw(state.facing)));
-        poseStack.translate(0.0D, 0.0D, PLANK_MIDLINE);
+        poseStack.translate(0.0D, 0.0D, PLANK_START + MARGIN);
         poseStack.mulPose(Axis.YP.rotationDegrees(turn));
         poseStack.translate(0.0D, 0.0D, offset);
         poseStack.scale(scale, -scale, scale);
@@ -140,8 +148,9 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
         float top = set.size() > 1 ? -4.5F : 0.0F;
         for (int i = 0; i < set.size(); i++) {
             FormattedCharSequence text = set.get(i);
-            submitNodeCollector.submitText(poseStack, (float) -this.font.width(text) / 2.0F, top + i * 9.0F,
-                    text, true, Font.DisplayMode.NORMAL, state.lightCoords, INK, 0, 0);
+            float start = fromEnd ? (float) -this.font.width(text) : 0.0F;
+            submitNodeCollector.submitText(poseStack, start, top + i * 9.0F,
+                    text, false, Font.DisplayMode.NORMAL, state.lightCoords, INK, 0, 0);
         }
 
         poseStack.popPose();
