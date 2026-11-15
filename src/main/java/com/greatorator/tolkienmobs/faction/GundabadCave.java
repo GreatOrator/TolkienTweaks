@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
@@ -183,8 +184,22 @@ public final class GundabadCave {
     }
 
     /**
+     * Where the keeper stands: on the dais, one course over the room's floor.
+     * <p>
+     * Gimli is met here rather than beside the hold's well, and the dais is the mark the room was cut around, so the
+     * dwarf stands on it - the page that sends the player below is heard on the step down into the mountain.
+     */
+    public static BlockPos post() {
+        BlockPos plan = ArdaMap.gundabadCave();
+        return new BlockPos(plan.getX() + TUNNEL + ROOM_DEEP / 2, plan.getY() + 2, plan.getZ());
+    }
+
+    /**
      * The mouth's own rule, asked once a second for a player in Arda: shut unless somebody within sixty-four blocks is
      * on one of the hold's pages, and never shut on somebody standing in the room.
+     * <p>
+     * The pack's dev tool opens it too, either hand: the owner needs to walk in and out of a cave whose door is a
+     * chapter, and asking the book for the page every time is a worse way to look at a room than carrying the tool.
      * <p>
      * The cave is cut as a player comes near it if the world never held one - it is rock rather than a template, so a
      * world raised before it existed has nothing to open - and the rule is only asked within twice the reach, since a
@@ -201,13 +216,20 @@ public final class GundabadCave {
         boolean inside = false;
         BlockPos middle = new BlockPos(plan.getX() + TUNNEL + ROOM_DEEP / 2, plan.getY(), plan.getZ());
         for (ServerPlayer other : level.players()) {
-            if (plan.distToCenterSqr(other.position()) <= (double) REACH * REACH && Campaign.onHoldPage(other)) {
+            if (plan.distToCenterSqr(other.position()) <= (double) REACH * REACH
+                    && (Campaign.onHoldPage(other) || devTool(other))) {
                 sent = true;
             }
             if (middle.distToCenterSqr(other.position()) <= (double) INSIDE * INSIDE) inside = true;
         }
         if (sent) open(level);
         else if (!inside) seal(level);
+    }
+
+    /** Whether this player holds the pack's dev tool, either hand. */
+    private static boolean devTool(ServerPlayer player) {
+        return player.getMainHandItem().is(TolkienItems.ITEM_DEV_TOOL.get())
+                || player.getOffhandItem().is(TolkienItems.ITEM_DEV_TOOL.get());
     }
 
     /** How many courses the ceiling stands higher at this column: nought, one or two, by the same hash the gate's rock uses. */

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The dev tool opens the cave's mouth, and Gimli stands inside it.** The pack's dev tool (`item_dev_tool`, either
+          hand) counts as a page for the mouth's own rule, so the owner can walk in and out of a cave whose door is a
+          chapter without asking the book for the page each time. And the dwarf the chapter sends below now keeps the
+          cave rather than the hold's well: his post is the room's dais - `GundabadCave.post()`, (5703, 188, -6676) -
+          reached from either the cave or the hold's middle, so a world that already holds him at the well has him
+          recalled down rather than a second Gimli stood, and no new body is placed until a player with page 2-6 is at
+          the cave itself.
 - **The cave's mouth stands shut until somebody the chapter has sent walks up to it.** The way in is a wall of the
           hillside's own stone rather than a door: `GundabadCave.seal` fills the mouth's own two-by-two cells two courses
           deep, so it reads as rock from outside with the tunnel's hollow left behind it, and `open` takes it out again -

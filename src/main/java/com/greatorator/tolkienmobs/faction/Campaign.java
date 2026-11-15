@@ -424,15 +424,6 @@ public final class Campaign extends SavedData {
     private static final String GIMLI = "Gimli";
     private static final String GIMLI_TAG = "tolkienmobs:campaign_gimli";
     private static final double GIMLI_REACH = 96.0D;
-    /** Where he stands, from the middle of the hold's footprint: the spiral room, beside its well. */
-    private static final int[] GIMLI_STAND = {38, 61};
-    /**
-     * How far above that middle the floor he stands on is: the hold's plan is its own bottom corner, so the middle of
-     * its footprint is the course the build starts at and its rooms are fourteen above it. Without the lift the step is
-     * read thirteen courses under the room it is meant to be in, {@code floorOf} cannot reach it from there, and the
-     * dwarf was stood beside the player instead of at the well.
-     */
-    private static final int GIMLI_LIFT = 13;
     private static final String REFUGE_TITLE = "campaign.tolkienmobs.page.refuge";
     private static final String REFUGE_PLACE = "campaign.tolkienmobs.page.refuge.place";
     private static final String REFUGE_CLOSING = "campaign.tolkienmobs.page.refuge.closing";
@@ -1937,16 +1928,26 @@ public final class Campaign extends SavedData {
     private static void keepGimli(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
         if (!carriesWordFor(player, GIMLI) && !holdsOrTakes(player, GIMLI)) return;
+        // He keeps the cave east of the gate now, on the room's own dais: the page that sends the player
+        // below the hold is met under the mountain rather than beside the well. The hold's own middle is
+        // still asked about as well, so a world that has the dwarf stood at the well keeps one keeper -
+        // recall moves him rather than a second being stood.
+        BlockPos cave = GundabadCave.post();
+        double reach = GIMLI_REACH;
+        boolean atCave = cave.distToCenterSqr(player.position()) <= reach * reach;
+        boolean near = atCave;
         Sites.Site site = Sites.siteOf(player);
-        if (site == null || !Sites.GUNDABAD.equals(site.structure()) || !site.built()) return;
-        if (!site.dimension().equals(level.dimension())) return;
-        BlockPos middle = site.centre();
-        // The hold is a hundred and twenty by a hundred and eighty, so its middle is a hundred blocks
-        // from its own door: measured to the middle with a reach meant for a camp, a player standing in
-        // the hall was out of it and nobody keeping the hold was ever stood. The reach grows with it.
-        double reach = Math.max(GIMLI_REACH, Sites.span(level, site) + 24.0D);
-        if (middle.distToCenterSqr(player.position()) > reach * reach) return;
-        BlockPos post = floorNear(level, middle.offset(GIMLI_STAND[0], GIMLI_LIFT, GIMLI_STAND[1]));
+        if (!near && site != null && Sites.GUNDABAD.equals(site.structure()) && site.built()
+                && site.dimension().equals(level.dimension())) {
+            BlockPos middle = site.centre();
+            // The hold is a hundred and twenty by a hundred and eighty, so its middle is a hundred blocks
+            // from its own door: measured to the middle with a reach meant for a camp, a player standing in
+            // the hall was out of it and nobody keeping the hold was ever stood. The reach grows with it.
+            reach = Math.max(GIMLI_REACH, Sites.span(level, site) + 24.0D);
+            near = middle.distToCenterSqr(player.position()) <= reach * reach;
+        }
+        if (!near) return;
+        BlockPos post = floorNear(level, cave);
         Entity keeper = keeperWith(level, GIMLI_TAG);
         if (keeper != null) {
             // Before the dwarf model had his face he was stood as a scaled man. That body is retired
@@ -1957,8 +1958,10 @@ public final class Campaign extends SavedData {
             }
             keeper.discard();
         }
-        BlockPos stand = post != null ? post
-                : floorNear(level, middle.offset(GIMLI_STAND[0], GIMLI_LIFT, GIMLI_STAND[1]), player);
+        // A body is stood at the post itself rather than called across the valley: a player at the hold is
+        // close enough to keep the one already there, but not close enough to have him put in the rock.
+        if (!atCave) return;
+        BlockPos stand = post != null ? post : floorNear(level, cave, player);
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_DWARF.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob dwarf)) return;

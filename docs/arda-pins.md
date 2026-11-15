@@ -358,3 +358,11 @@ and `open` takes them out again, the pair the goblin cave's ashen scroll drives.
 
 A world that existed before the cave simply gets it: `keep` cuts it on the first approach if the mountain has no hollow
 behind the mark, which is the same path the autospawn takes on a new world.
+
+### The keeper
+
+Gimli is met here now. His post is the room's dais - `GundabadCave.post()`, (5703, 188, -6676) - rather than the spiral's
+well up in the hold, because page 2-6 sends the player down and the step down is this cave. The reach is unchanged: he is
+stood when a player carrying that page is within ninety-six blocks of the dais, or inside the hold, which keeps a world
+that already holds him at the well to one body - `recall` walks him down rather than a second dwarf being stood. A new
+body is only placed when the player is at the cave, so nobody is popped into the rock from the far side of the massif.
