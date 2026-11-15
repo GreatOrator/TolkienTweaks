@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom.entity.renderer.state;
 
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,4 +12,6 @@ public class SignPostArmRenderState extends BlockEntityRenderState {
     public @Nullable Component distance;
     /** Which four pixel step of the cell the board hangs in. */
     public int level;
+    /** Which way the board points, so its lettering can be turned onto the same face. */
+    public Direction facing = Direction.SOUTH;
 }

@@ -72,10 +72,27 @@ public class SignPostArmBlock extends Block implements EntityBlock {
         return shape(state.getValue(FACING), state.getValue(LEVEL));
     }
 
+    /** Whether a post - a shaft or a cap - is what this block is. */
+    public static boolean isPost(BlockState state) {
+        return state.getBlock() instanceof SignPostShaftBlock || state.getBlock() instanceof SignPostCapBlock;
+    }
+
+    /**
+     * Which way an arm in this cell has to point, read from the post beside it: the board faces the way its
+     * post does not, so the flat end always sits against the shaft and the arrow out. Null when no post
+     * touches the cell, which is the only reason an arm cannot go there.
+     */
+    @Nullable
+    public static Direction facingFromPost(LevelReader level, BlockPos pos) {
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            if (isPost(level.getBlockState(pos.relative(side)))) return side.getOpposite();
+        }
+        return null;
+    }
+
     @Override
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        BlockState behind = level.getBlockState(pos.relative(state.getValue(FACING).getOpposite()));
-        return behind.getBlock() instanceof SignPostShaftBlock || behind.getBlock() instanceof SignPostCapBlock;
+        return isPost(level.getBlockState(pos.relative(state.getValue(FACING).getOpposite())));
     }
 
     @Override
@@ -85,13 +102,15 @@ public class SignPostArmBlock extends Block implements EntityBlock {
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        Direction clicked = context.getClickedFace();
-        Direction facing = clicked.getAxis().isHorizontal() ? clicked : context.getHorizontalDirection();
-        BlockState state = this.defaultBlockState().setValue(FACING, facing);
-        if (!state.canSurvive(context.getLevel(), context.getClickedPos())) return null;
+        // The post decides which way the board points, not the click: whatever face was hit and whichever
+        // way the player happens to stand, the flat end goes to the shaft and the arrow out along the road.
+        Direction facing = facingFromPost(context.getLevel(), context.getClickedPos());
+        if (facing == null) return null;
 
         double height = context.getClickLocation().y - context.getClickedPos().getY();
-        return state.setValue(LEVEL, Mth.clamp((int) (height * 4.0D), 0, 3));
+        return this.defaultBlockState()
+                .setValue(FACING, facing)
+                .setValue(LEVEL, Mth.clamp((int) (height * 4.0D), 0, 3));
     }
 
     @Override

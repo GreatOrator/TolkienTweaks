@@ -3446,3 +3446,16 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   draws as a board attached to the post. The three lifted models are generated from the changed one, so levels
   1-3 carry the same reach, and the two broad faces got longer uv slices so the wood keeps one texel per pixel
   instead of stretching across the extra length.
+
+- **An arm now takes its facing from the post, so the flat end always sits against the shaft.** Where the board
+  points used to come from the face the player clicked or the way they stood, a board could arrive with its arrow
+  at the post and its flat end out - which is what a hand-placed arm did. The placement now looks at the four
+  sides of the cell for a shaft or a cap and points the board away from it, so the arrow goes out along the road
+  whichever face was hit; a cell with no post beside it refuses the arm outright, which is the only real
+  condition on placing one.
+- **The arm's lettering is painted in black on the board itself.** The destination and the distance used to be
+  drawn as a white label turned to face the camera and hung in the air in front of the post, which washed out
+  against the sky and read at nothing but close range. They are now set onto the board's own two broad faces, in
+  black, turned with the block's model so the words lie along the wood; two lines are scaled so both fit the
+  board's four pixel height, a long name shrinks further so a line cannot run off the end, and both faces are
+  lettered because which one a traveller reads depends on the way they came.
