@@ -120,6 +120,11 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             // The placard's item is its own registry entry without the block description prefix, so it
             // needs its own name and lore or it shows both as raw translation keys.
             this.addItemWithLore(TolkienBlocks.PLACARD_ITEM.get(), "Country Signs", "Shift right-click on sign to cycle types");
+            this.addBlock(TolkienBlocks.SIGN_POST_PLINTH, "Sign Post Plinth");
+            this.addBlock(TolkienBlocks.SIGN_POST_SHAFT, "Sign Post Shaft");
+            this.addBlock(TolkienBlocks.SIGN_POST_CAP, "Sign Post Cap");
+            this.addBlock(TolkienBlocks.SIGN_POST_ARM, "Sign Post Arm");
+            this.add("tolkienmobs.signpost.blocks", "%s blocks");
             this.addBlock(TolkienBlocks.ROCKPILE, "Rockpile");
             this.addBlock(TolkienBlocks.MOSS_PATCH, "Moss Patch");
             this.addBlock(TolkienBlocks.CLOVER_PATCH, "Clover Patch");

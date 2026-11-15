@@ -3,7 +3,7 @@
 The working state of the campaign, written down so a fresh session does not have to guess at it. Read this
 first, then `docs/chapter-three.md` for the chapter that comes next.
 
-**Last touched:** chapter two through page 2-7, and the chapter-three write-up.
+**Last touched:** the four sign post blocks (plinth, shaft, cap, arm) and the arm's destination label.
 
 ## First thing in the morning
 
@@ -41,6 +41,26 @@ Done, committed, and **not yet seen in game**:
 - whether 2-5's place circle (16 blocks around the dais) is entered from the cave floor without stepping
   outside it;
 - the gate door's timing (about four seconds) and whether the wrapper around it reads as a door.
+
+## Sign posts
+
+Four blocks, `sign_post_plinth`, `sign_post_shaft`, `sign_post_cap` and `sign_post_arm`, all bedrock-hard with
+no recipe and no drop. The models under `models/block/sign_post_*.json` are the artist's and each is one block
+tall: the plinth and the shaft fill the cell, the cap is two pixels at the bottom of its cell (so it reads as
+the shaft's crown), and the arm is one pixel thin, four high and reaches 12.5 pixels; it is drawn pointing
+south, so an arm facing south has its post to the north.
+
+Block states: the three post parts have one state each. The arm carries `facing` and `level` (0-3), sixteen
+states over four models, `sign_post_arm` and `sign_post_arm_1..3` lifted by four pixels each - the lifted
+models were generated from the first, so if the artist re-exports the arm the other three must be regenerated
+too. Not yet seen in game, and worth watching:
+
+- whether the two lines are legible at `SCALE = 0.014` on a four pixel board, and whether the billboarded
+  text reads as belonging to the board or as floating free of it;
+- whether the arm's `y` rotations are the four intended ones (south 0, east 90, north 180, west 270);
+- whether the cap's two pixels line up with the shaft's top of 16 rather than sitting in the cell below it;
+- whether the plinth's own post stub (10 to 16) meets the first shaft's foot without a seam;
+- whether a board can be placed against a cap as well as a shaft, and whether it breaks when the post goes.
 
 ## Chapter three
 

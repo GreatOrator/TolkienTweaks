@@ -3403,3 +3403,21 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 - The damage one gem and one material undo is a config value, `trinket_repair_amount`, defaulting to 1000.
 - What repairs what is a data pack's decision too: an entry under `data/<pack>/tolkienmobs/repair_material/` names the tools, by item or by tag, and the material that mends them. An entry covering a tool replaces the anvil's rule for that tool, so a pack can hand the table a material the anvil would refuse or take away the one it would use.
 - The mod ships no entries of its own and the anvil's rule stays the fallback, so an unmodified game repairs exactly as before. Entries are read when the world loads.
+
+- **A sign post is four blocks, and none of them can be taken away.** The plinth is the foot and asks for solid
+  ground under it; a shaft stands on a plinth or on another shaft, so a post is as tall as the road needs; the
+  cap, two pixels of it, goes up only on a shaft; and an arm hangs off a shaft or a cap with the post behind it.
+  All four carry bedrock's own strength, `strength(-1.0F, 3600000.0F)`, keep no loot table and have no recipe,
+  so a post planted as scenery stays planted - there is no way to break it, and no way to get one back as an
+  item, short of creative.
+- **An arm stands in one of four steps of its cell.** The board is four pixels high and its block state carries
+  a `level` of 0 to 3, one step for each four pixel band of the block, with a model lifted by the matching
+  number of pixels, so arms stack tight up the post and four boards can hang at four heights from one shaft.
+  The height is taken from where the player clicked the post, and the direction from the face they clicked, so
+  a board placed on a shaft's north face points north with the post behind it.
+- **An arm says where it points and how far that is.** Right-clicking one steps it through the places this world
+  has actually planted - the catalogue of `Places`, filtered to those with a place in this world, with a blank
+  first so a board can be left empty - and shift-right-clicking steps it back. The distance is measured on the
+  server from the post to the place's centre and saved with the board, never taken from the player, and the two
+  lines are drawn turned to face whoever is looking, as a fingerpost's lettering is read from the road; a board
+  pointing nowhere draws nothing at all.

@@ -36,6 +36,7 @@ public class TolkienRegistration {
         event.registerBlockEntityRenderer(TolkienBlocks.LIGHTNINGBUG_BLOCK_ENTITY.get(), LightningBugRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.LOCUST_BLOCK_ENTITY.get(), LocustRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.PLACARD_BLOCK_ENTITY.get(), PlacardRenderer::new);
+        event.registerBlockEntityRenderer(TolkienBlocks.SIGN_POST_ARM_BLOCK_ENTITY.get(), SignPostArmRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TRINKET_TABLE_BLOCK_ENTITY.get(), TrinketTableRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.FIREPLACE_BLOCK_ENTITY.get(), FireplaceRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TOLKIEN_SIGN_BLOCK_ENTITY.get(), StandingSignRenderer::new);
@@ -111,4 +112,4 @@ public class TolkienRegistration {
         event.registerLayerDefinition(TolkienModelLayers.DWARVEN_MAPLE_BOAT, BoatModel::createBoatModel);
         event.registerLayerDefinition(TolkienModelLayers.DWARVEN_MAPLE_CHEST_BOAT, BoatModel::createChestBoatModel);
     }
-}
+}

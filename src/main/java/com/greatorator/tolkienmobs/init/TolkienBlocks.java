@@ -2148,6 +2148,19 @@ public class TolkienBlocks {
             BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f));
     public static final DeferredItem<PlacardItem> PLACARD_ITEM = ITEMS.registerItem("placard", properties -> new PlacardItem(PLACARD.get(), properties), () -> new Item.Properties());
 
+    //Sign posts
+    //  A post is a plinth, any number of shafts and a cap, with arms that each carry a destination.
+    //  They are scenery: bedrock-hard, no recipe and no drop, so a post planted as part of a road stays
+    //  where the road put it.
+    public static final DeferredBlock<SignPostPlinthBlock> SIGN_POST_PLINTH = registerBlock("sign_post_plinth", SignPostPlinthBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.STONE).sound(SoundType.STONE).strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
+    public static final DeferredBlock<SignPostShaftBlock> SIGN_POST_SHAFT = registerBlock("sign_post_shaft", SignPostShaftBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
+    public static final DeferredBlock<SignPostCapBlock> SIGN_POST_CAP = registerBlock("sign_post_cap", SignPostCapBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
+    public static final DeferredBlock<SignPostArmBlock> SIGN_POST_ARM = registerBlock("sign_post_arm", SignPostArmBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
+
     //Boats
 
         // Block Entities
@@ -2160,6 +2173,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlacardBlockEntity>> PLACARD_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("placard_tile", () ->
                     new BlockEntityType<>(PlacardBlockEntity::new, PLACARD.get()));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SignPostArmBlockEntity>> SIGN_POST_ARM_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("sign_post_arm", () ->
+                    new BlockEntityType<>(SignPostArmBlockEntity::new, SIGN_POST_ARM.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienSignBlockEntity>> TOLKIEN_SIGN_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_sign_entity", () ->
                     new BlockEntityType<>(TolkienSignBlockEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()));
@@ -2267,4 +2283,4 @@ public class TolkienBlocks {
         WOOD_TYPES.register(eventBus);
         ATTACHMENT_TYPES.register(eventBus);
     }
-}
+}

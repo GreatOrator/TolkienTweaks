@@ -722,7 +722,7 @@
   "campaign.tolkienmobs.beryl.finished": "The stone has said its piece and gone quiet. Take it back to Glorfindel at Rivendell.",
   "campaign.tolkienmobs.beryl.given": "The stone is in your hand: cold, and heavier than a thing that size has any right to be.",
   "campaign.tolkienmobs.keystone.given": "Gimli turns the Key-stone over in his hands once, then puts it in yours. \"The mountain answers this and not me. Hold it up at the gate and the way in opens - and hold on to it, because it is the only one there is.\"",
-  "campaign.tolkienmobs.keystone.kept": "Gl\u00f3in weighs the Key-stone in his palm, then closes his hand on it. \"Gimli's to keep, and mine to carry until he asks for it. You opened the stair and you walked it - the stone has done what it was cut for.\"",
+  "campaign.tolkienmobs.keystone.kept": "Glóin weighs the Key-stone in his palm, then closes his hand on it. \"Gimli's to keep, and mine to carry until he asks for it. You opened the stair and you walked it - the stone has done what it was cut for.\"",
   "boss.tolkienmobs.dugorim": "Dugorim, Captain of the Dourhands",
   "campaign.tolkienmobs.beryl.here": "This is %s, and the stone is in your hand - hold it aloft here: use it in the air rather than on the milestone.",
   "campaign.tolkienmobs.beryl.returned": "The stone is back in your hand. It was lent to be carried, not put down.",
@@ -2419,5 +2419,10 @@
   "tooltip.tolkienmobs.ranged.power": " %sx Shooting Power",
   "trim_material.tolkienmobs.ammolite": "Ammolite",
   "trim_material.tolkienmobs.mithril": "Mithril",
-  "trim_material.tolkienmobs.morguliron": "Morgul Iron"
+  "trim_material.tolkienmobs.morguliron": "Morgul Iron",
+  "block.tolkienmobs.sign_post_plinth": "Sign Post Plinth",
+  "block.tolkienmobs.sign_post_shaft": "Sign Post Shaft",
+  "block.tolkienmobs.sign_post_cap": "Sign Post Cap",
+  "block.tolkienmobs.sign_post_arm": "Sign Post Arm",
+  "tolkienmobs.signpost.blocks": "%s blocks"
 }

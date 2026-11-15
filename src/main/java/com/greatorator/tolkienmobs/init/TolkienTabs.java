@@ -691,6 +691,10 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.BLOCK_HALLOWED);
                         output.accept(TolkienBlocks.STONE_PATH);
                         output.accept(TolkienBlocks.PLACARD);
+                        output.accept(TolkienBlocks.SIGN_POST_PLINTH);
+                        output.accept(TolkienBlocks.SIGN_POST_SHAFT);
+                        output.accept(TolkienBlocks.SIGN_POST_CAP);
+                        output.accept(TolkienBlocks.SIGN_POST_ARM);
                         output.accept(TolkienBlocks.ROCKPILE);
                     }).build());
 
@@ -833,6 +837,10 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.STONE_PATH);
                         output.accept(TolkienBlocks.LIVING_ROOTS);
                         output.accept(TolkienBlocks.PLACARD);
+                        output.accept(TolkienBlocks.SIGN_POST_PLINTH);
+                        output.accept(TolkienBlocks.SIGN_POST_SHAFT);
+                        output.accept(TolkienBlocks.SIGN_POST_CAP);
+                        output.accept(TolkienBlocks.SIGN_POST_ARM);
                         output.accept(TolkienBlocks.ROCKPILE);
                         output.accept(TolkienBlocks.WALL_DECAY_BLOOM);
                         output.accept(TolkienBlocks.WALL_MUSHROOM_RED);
