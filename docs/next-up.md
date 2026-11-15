@@ -4,7 +4,10 @@ The working state of the campaign, written down so a fresh session does not have
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 
 **Last touched:** 15 November 2026 - the old forest road laid east of Glóin's camp with both crossings standing as
-bridges (final), the Gundabad gate finished, and the sign posts put on hold until there is a second town to point at.
+bridges (final), the Gundabad gate finished, the captain of the Dourhands felled once and staying down, and the sign
+posts on hold until there is a second town to point at. The keep's placement is on hold too: it looked off in game, and
+it is not to be tuned against a world that was built around the older plan - a brand-new world for the quest walk is
+what it gets read from.
 
 ## Where the roads stand
 
@@ -21,22 +24,19 @@ Laid and seen in game, called right by the player:
   pieces with oak-log piers drawn to the bed, the Old Ford at 189 and the Forest River at 169, both called right in
   game. Nothing more to do on either.
 
-Compiled and **not yet seen** (`ed220cc9`): both decks one block up and their bases with them.
+Both decks were raised one block with their bases and called right in game (`ed220cc9`), which is the last of the road
+work: **nothing on the road is outstanding.**
 
 | crossing | route | banks (east → west) | deck | abutments' base | middles' base | water |
 | --- | --- | --- | --- | --- | --- | --- |
 | Old Ford | `OLD_FORD_BRIDGE` | 8520, -3668 → 8481, -3668 | 189 | 188 | 187 | 186 |
 | Forest River | `FOREST_RIVER_BRIDGE` | 11775, -3841 → 11736, -3841 | 169 | 168 | 167 | 167 |
 
-**The next move is the rebuild, and it is three runs of one command:**
-
-1. At each crossing, `/tmroad forget` then `/tmroad build`. The sweep clears the span's old timbers before it stands
-   the new pieces, so a forgotten and rebuilt bridge is one deck, not two stacked.
-2. At the road's camp end (8231, -3641), `/tmroad forget` then `/tmroad build`, so the approaches re-grade up onto
-   189 and 169. A road already laid keeps its saved heights otherwise.
-
-What to look at: whether each deck sits flush on its bank (that is the whole point of the raise), whether the piers
-reach the bed under both spans, and whether the road now steps *up* onto the deck from either side.
+If a deck ever has to move again it is three runs of one command: `/tmroad forget` then `/tmroad build` at the
+crossing (the sweep clears the old timbers before it stands the pieces, so a rebuilt bridge is one deck and not two
+stacked), and again at the road's camp end (8231, -3641), because a road already laid keeps its saved heights and the
+approaches have to re-grade onto the deck. Seen at both crossings now: each deck sits flush on its bank, the piers
+reach the bed, and the road steps up onto the deck from either side.
 
 ### How a crossing works now
 
@@ -59,7 +59,7 @@ consequences worth knowing before touching them:
 
 **The roads from Glóin's camp to Gundabad.** Asked for on 15 November, not begun. `ROUTES` stops at the old forest
 road: `GLOIN_ROAD_EAST` runs 6493, -3662 → 8234, -3590 and the camp's own spur is at 8215..8242, -3674..-3553.
-Nothing goes west or north toward the hold at `ArdaMap.keepPlan()` (5471, 176, -7100), whose gate approach is around
+Nothing goes west or north toward the hold at `ArdaMap.keepPlan()` (5516, 187, -7112), whose gate approach is around
 5577, -6830 - and pages 2-1 to 2-3 are a walk a player takes, so the walk needs a road under it: a new `Route` (or
 legs of one, with a `Route.Crossing` for any water on the way), pinned in `Pins.SOURCE` if it needs a mark.
 `/tmroad` is the tool. **Work the line out from the map; do not guess it from these numbers.**
@@ -70,7 +70,8 @@ Eleven pages, 26 to 36, written and wired. **Nothing in the chapter has been pla
 `docs/chapter-two-state.md`; what matters to a session picking this up:
 
 Standing, compiled, unseen: the shelter camp (seen), the goblin cave cutting and dressing itself as a player nears, the
-Gundabad gate and its chamber, the keep at its plan, Gimli at the dais (5703, 188, -6676), the captain on the throne
+Gundabad gate (seen) and its chamber, the keep at its plan (**on hold** - see below), Gimli at the dais
+(5703, 188, -6676), the captain on the throne
 (5546, 204, -7036) with the wraith three blocks along at (5546, 204, -7039), the coal lattice door at x 5575-5581, y 190-199, z -6856
 (opens for `item_keystone` within 12 blocks), page 2-5's vault, and `DugorimFight`'s boss bar and plate.
 
@@ -138,8 +139,12 @@ shape of the rest: **whether Stoneyford and the Watchers are built here or alrea
   `GundabadKeep.autospawn` asked whether the doorway's floor was deepslate - which the mountain's own rock is - so it
   answered "already standing" in every world and **the hold has never been laid**; it reads the template's own blocks
   through `Sites.standsAt` now, with the box opened first so an unvisited hold is read rather than assumed missing.
-  Nothing has been seen in game: `/tmgate keep` is the way to look at it, and a world that took the older plan would
-  keep that copy wherever it stood.
+  The placement looked **off in game** on 15 November, and it is on hold rather than tuned: the test world was built
+  around the older plan and carries that gate's hall, the owner's mock-up of the seat at (5501, 192, -7024), and no hold
+  at all, so nothing measured there can say whether the new plan sits right. It gets read from a **brand-new world**
+  generated for the quest walk - that world's ground is drawn by the current `ArdaMap`, its keep is laid by autospawn at
+  the plan above, and its throne is where `keepThrone()` puts the captain - and only then is anything moved. Until then
+  the constants stay as they are: a hold that is moved twice is a hall cut twice.
 - **The captain of the Dourhands is down once, and stays down** (15 November 2026). The quest line was walked in game
   through 2-7, and Dugorim kept being stood again after he fell: the seat is populated from the page, and the page stays
   in the book until Gloin takes it, so the hunt stood a new dwarf every pass with the page already met. He now wears a

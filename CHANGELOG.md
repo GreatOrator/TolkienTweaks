@@ -3642,3 +3642,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   coming back. He now carries a mark of his fall on the hand that ended him, `DUGORIM_DOWN_TAG`, which is the answer the
   wraith behind him has always had - a scoreboard tag saved with the player - so the seat stays empty until it is paid
   for, and a second player's own hunt is untouched. Confirmed in game: felled once after the fix, he did not come back.
+
+- **The keep's placement is on hold until a world is drawn for it.** Seen in game and called off: the hold at
+  5516/-7112/187 does not read right, but the world it was looked at in was built around the older plan - the gate and
+  its hall end where 5471/-7100/176 put them, the owner's mock-up of the seat sits forty-five blocks west of the new
+  hold, and no keep stands at either plan - so nothing measured there can say whether the new one sits true. It is left
+  exactly where the note walked it and read from a brand-new world generated for the quest walk, whose ground the
+  current `ArdaMap` draws and whose hold autospawns at that plan; moving a hold twice is cutting a hall twice. Two
+  stale lines went with it: `docs/next-up.md` still described both bridge decks as raised and unseen and still gave the
+  keep's old numbers as the road's destination.

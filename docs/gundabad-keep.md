@@ -61,6 +61,14 @@ every world and must not be measured off rock that the hall itself changes. It r
 2026, the first plan, which put the hold's floor eleven blocks under the passage's 189; the box this file was measured
 for is the one in the code now.
 
+**On hold, 15 November 2026.** The plan above is what the code carries, but the placement it gives looked wrong in
+game, and the world it was looked at in was built around the older plan - an old gate, its hall ending at the older
+wall, and the mock-up seat forty-five blocks west of the hold. Nothing measured in that world can settle it, so the
+placement is not being tuned against it: it is read from a **brand-new world** generated for the quest walk, whose
+ground is drawn by the current `ArdaMap` and whose keep autospawns at this plan. The constants stay put until that
+world says otherwise - `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` 187 - because moving a hold twice is cutting a hall
+twice, and the hall out of the gate follows `keepWall()` wherever it goes.
+
 **Two things followed the move.** The captain and the wraith are placed from `ArdaMap.keepThrone()` and
 `keepThroneWatch()` - the seat is thirty blocks in from the plan's corner, seventeen up and seventy-six back - so they
 now stand at (5546, 204, -7036) and (5546, 204, -7039) rather than at the old plan's (5501, 193, -7024). And the
