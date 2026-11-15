@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Dugorim fights back.** He is armed with an iron axe and given a captain's forty health, and his side of the fight is
+          written in `DugorimFight` rather than in a goal list - the pack's dwarf is a `Villager`, whose movement belongs
+          to its brain, so an attack goal added beside it would be walked away from. The driver runs after every body has
+          ticked, wakes for a player within twenty-four blocks of the throne, closes to arm's length and swings once a
+          second for six with a shove behind it, and a sixteen-block home area keeps him in the hall between fights. He
+          stays killable, which is the whole point of him.
 - **Dugorim keeps the throne, a Nazgul stands in front of it, and the key-stone lifts the gate.** The captain is the
           stage's boss now rather than a body in the cave: he stands on the keep's own seat (5501, 193, -7024), facing
           the hall, with one of the Nine four paces down the carpet in front of him - a real `entityttmnazgul`, given a

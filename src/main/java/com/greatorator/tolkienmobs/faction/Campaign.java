@@ -25,6 +25,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -445,7 +447,8 @@ public final class Campaign extends SavedData {
      */
     private static final String DUGORIM_TARGET = "tolkienmobs:entityttmdwarf";
     private static final String DUGORIM = "Dugorim";
-    private static final String DUGORIM_TAG = "tolkienmobs:campaign_dugorim";
+    /** His tag, read by {@link DugorimFight} as well: it is what tells the captain from any other dwarf. */
+    static final String DUGORIM_TAG = "tolkienmobs:campaign_dugorim";
     /**
      * The wraith behind the captain, and the mark of him being down.
      * <p>
@@ -2019,6 +2022,10 @@ public final class Campaign extends SavedData {
      * than only a name in the prose. He is the stage's boss, and the seat is his: the keeper who held the cave's dais
      * has been moved down here with the barrow-hall it belongs to.
      * <p>
+     * He is not planted like the hall's staff. He is armed, given a home area the size of the hall, and left on his own
+     * feet, because {@link DugorimFight} is what makes the dwarf fight - the folk he is made of have no attack of their
+     * own - and he is the one body in the line that is both killable and meant to be killed.
+     * <p>
      * He is not a giver: he holds no work, and a giver is made invulnerable and left standing, which is the one thing a
      * hunt cannot have. He is planted like one - no AI, a home area the width of the room, so he keeps the spot - and he
      * wears the captain's name so the pack's own art for him is found by it. A world that has already felled him keeps
@@ -2033,8 +2040,10 @@ public final class Campaign extends SavedData {
         Entity keeper = keeperWith(level, DUGORIM_TAG);
         if (keeper != null) {
             if (keeper instanceof Mob dwarf) {
-                // A pace or two, not the hall's reach: he is meant to stand where he was put, and be found there.
-                recallKeeper(level, keeper, post, 3.0D, DUGORIM_TAG);
+                // The hall's own reach, not a pace: he is meant to fight inside it, so a few blocks off the seat is
+                // where he is supposed to be, and only a body that has left the room is walked back to it.
+                recallKeeper(level, keeper, post, 24.0D, DUGORIM_TAG);
+                armCaptain(dwarf);
                 return;
             }
             keeper.discard();
@@ -2049,7 +2058,10 @@ public final class Campaign extends SavedData {
         dwarf.addTag(DUGORIM_TAG);
         dwarf.setCustomName(Component.literal(DUGORIM).withStyle(ChatFormatting.DARK_RED));
         dwarf.setCustomNameVisible(true);
-        QuestGivers.plant(dwarf);
+        // His own feet, and a hall to use them in: a home area keeps him in the room between fights, and the fight
+        // itself is written on the side that can win the argument with a villager's brain (see {@link DugorimFight}).
+        dwarf.setHomeTo(stand, 16);
+        armCaptain(dwarf);
         level.addFreshEntity(dwarf);
         Keepers.remember(level, DUGORIM_TAG, dwarf);
     }
@@ -2887,6 +2899,26 @@ public final class Campaign extends SavedData {
         ItemStack stone = new ItemStack(TolkienItems.ITEM_KEYSTONE.get());
         if (!player.getInventory().add(stone)) player.drop(stone, false);
         player.sendSystemMessage(Component.translatable(KEYSTONE_GIVEN).withStyle(ChatFormatting.AQUA));
+    }
+
+    /**
+     * Puts a blade in the captain's hand, and the weight behind his blows.
+     * <p>
+     * The pack's dwarf is a villager, so nothing about him arrives armed or strong: left as he is he fights with his
+     * fists for one point, which is a body the player can stand beside and ignore. The axe is the Dourhands' own, and
+     * the health is a captain's rather than a farmer's, so the room is a fight and not a formality.
+     */
+    private static void armCaptain(Mob captain) {
+        if (captain.getMainHandItem().isEmpty()) {
+            captain.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_AXE));
+        }
+        var attack = captain.getAttribute(Attributes.ATTACK_DAMAGE);
+        if (attack != null && attack.getBaseValue() < 6.0D) attack.setBaseValue(6.0D);
+        var health = captain.getAttribute(Attributes.MAX_HEALTH);
+        if (health != null && health.getBaseValue() < 40.0D) {
+            health.setBaseValue(40.0D);
+            captain.setHealth(40.0F);
+        }
     }
 
     /** Whether this player already carries the Key-stone. */

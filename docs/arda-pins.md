@@ -384,6 +384,18 @@ in front of him. He is **not** a giver: a giver is made invulnerable on the way 
 hunt cannot have, so he only carries `tolkienmobs:campaign_dugorim` and is found by it afterwards, which is how a body
 already felled stays down.
 
+### The fight
+
+He is armed, and the fight is written in `DugorimFight` rather than in a goal list, because the body the chapter stands
+him in cannot have one: the pack's dwarf is a `Villager`, whose movement belongs to its brain - it walks to a work site
+and panics when hurt, and an attack goal added beside the brain would simply be walked away from. So the driver runs on
+`ServerTickEvent.Post`, which is after every body has ticked and therefore the last word each tick: he wakes for a
+player within twenty-four blocks of the seat, turns to them, closes to arm's length and swings for six, once a second,
+with a shove behind it. He carries an iron axe (`armCaptain` puts it in his hand and sets the attack up to six and his
+health to forty, since a dwarf arrives with a farmer's one point and a villager's twenty), and a home area of sixteen
+blocks keeps him in the room between fights. He is killable: he is the one body in the line that carries no giver tag,
+so nothing makes him invulnerable on the way into a world.
+
 ### The wraith
 
 A `tolkienmobs:entityttmnazgul` stands four paces down the carpet from the seat, at `ArdaMap.keepThroneWatch()`
