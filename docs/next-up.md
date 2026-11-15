@@ -47,8 +47,10 @@ Done, committed, and **not yet seen in game**:
 Four blocks, `sign_post_plinth`, `sign_post_shaft`, `sign_post_cap` and `sign_post_arm`, all bedrock-hard with
 no recipe and no drop. The models under `models/block/sign_post_*.json` are the artist's and each is one block
 tall: the plinth and the shaft fill the cell, the cap is two pixels at the bottom of its cell (so it reads as
-the shaft's crown), and the arm is one pixel thin, four high and reaches 12.5 pixels; it is drawn pointing
-south, so an arm facing south has its post to the north.
+the shaft's crown), and the arm is one pixel thin, four high and runs from z -8 (eight pixels back inside the
+post's own cell, so board and post meet) out to 12.5; it is drawn pointing south, so an arm facing south has its
+post to the north. The block's shape follows the model outside its cell, and the three lifted level models are
+generated from the base, uv slices included.
 
 Block states: the three post parts have one state each. The arm carries `facing` and `level` (0-3), sixteen
 states over four models, `sign_post_arm` and `sign_post_arm_1..3` lifted by four pixels each - the lifted

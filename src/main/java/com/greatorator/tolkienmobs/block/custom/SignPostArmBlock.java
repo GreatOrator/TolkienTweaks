@@ -45,15 +45,20 @@ public class SignPostArmBlock extends Block implements EntityBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.SOUTH).setValue(LEVEL, 0));
     }
 
-    /** The board as the model draws it: one pixel thin, four high, reaching 12.5 pixels from the post. */
+    /**
+     * The board as the model draws it: one pixel thin, four high, reaching back eight pixels into the post's
+     * own cell so the two meet, and out 12.5 pixels past this one. That the inner end lies outside this
+     * block's space is the point - the post is two pixels wide in a cell of its own, and a board that stopped
+     * at the cell boundary would hang in the air beside it.
+     */
     public static VoxelShape shape(Direction facing, int level) {
         double low = level * 4.0D;
         double high = low + 4.0D;
         return switch (facing) {
-            case NORTH -> Block.box(7.0D, low, 3.5D, 8.0D, high, 16.0D);
-            case EAST -> Block.box(0.0D, low, 7.0D, 12.5D, high, 8.0D);
-            case WEST -> Block.box(3.5D, low, 7.0D, 16.0D, high, 8.0D);
-            default -> Block.box(7.0D, low, 0.0D, 8.0D, high, 12.5D);
+            case NORTH -> Block.box(7.0D, low, 3.5D, 8.0D, high, 24.0D);
+            case EAST -> Block.box(-8.0D, low, 7.0D, 12.5D, high, 8.0D);
+            case WEST -> Block.box(3.5D, low, 7.0D, 24.0D, high, 8.0D);
+            default -> Block.box(7.0D, low, -8.0D, 8.0D, high, 12.5D);
         };
     }
 

@@ -3437,3 +3437,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   collision is the steps themselves, so a walker goes up and over it, and anything inside it takes two points of
   general damage. The game's own hurt timer spaces that to a hit every half second, so a bed is a nuisance crossed
   quickly and a hazard stood on for long, never an instant kill. Both break as their material and drop themselves.
+
+- **An arm's board now reaches back into the post's cell, so it meets the shaft it hangs on.** The post is two
+  pixels wide in a cell of its own, so its face sits eight pixels inside the cell a board hangs in; a board drawn
+  from the cell boundary outward therefore hung in mid air beside the post, with the same gap on every arm, laid
+  by hand or generated. The plank starts at z -8 rather than 0 now, so the model runs 12.5 pixels out and eight
+  back into the post, and the block's own shape follows the model outside its cell - which vanilla allows and
+  draws as a board attached to the post. The three lifted models are generated from the changed one, so levels
+  1-3 carry the same reach, and the two broad faces got longer uv slices so the wood keeps one texel per pixel
+  instead of stretching across the extra length.
