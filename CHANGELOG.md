@@ -3510,3 +3510,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   own cell, half a block further back than the lettering assumed, so the words started half a block along the wood
   with a stretch of blank board out toward the arrow. Anchoring them at the true end carries the ink half a block
   toward the post and off the arrow, which is where a fingerpost's words belong.
+
+- **The old forest road is written down from the walk that scouted it.** A hundred and one ammolite marks were read
+  back out of the scouting world and chained into one line: from the mark on Glóin's camp's own ground at 8231, -3641
+  east to the last one at 11842, -3877, thirty-eight hundred blocks, with every mark a bend so the road goes where the
+  walk went rather than where a search would have guessed. Two of them are bank pairs rather than bends: 8481 and 8520
+  either side of the Old Ford, whose water stands at 186 across thirty-three columns with its bed eleven under it, and
+  11736 and 11775 either side of the Forest River, water at 167 across the same thirty-three and its bed eleven under
+  that. The pass carries only its own three middle columns over water, and only while its grade is above the line, so
+  both crossings come out as low fords of the country's own surface rather than as spans. It is laid five wide of the
+  wild mix, like every other walked line. Nothing is laid yet: `/tmroad build` standing on the first mark lays it.

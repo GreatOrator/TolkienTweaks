@@ -3,7 +3,7 @@
 The working state of the campaign, written down so a fresh session does not have to guess at it. Read this
 first, then `docs/chapter-three.md` for the chapter that comes next.
 
-**Last touched:** the four sign post blocks (plinth, shaft, cap, arm) and the arm's destination label.
+**Last touched:** the old forest road, recorded from the scout's ammolite walk east out of Glóin's camp.
 
 ## First thing in the morning
 
@@ -14,7 +14,14 @@ first, then `docs/chapter-three.md` for the chapter that comes next.
    so the walk needs a road: a new `Route` (or legs of one, with a `Route.Crossing` for any water on the way),
    pinned in `Pins.SOURCE` if it needs a mark. `/tmroad` is the tool. **Work out the line from the map, do not
    guess it from these numbers.**
-2. Then walk the chapter in game: camp → cave (2-5's vault, the stone) → camp (2-6) → cave (Gimli, 2-7) →
+2. **The old forest road is recorded, and waits to be laid.** The walk east out of Glóin's camp - the Old
+   Ford and the forest road beyond it - is in `Roads` as `OLD_FOREST_ROAD`: a hundred and one markers, every one
+   a bend, from 8231, -3641 to 11842, -3877, thirty-eight hundred blocks, five wide. The two bank pairs at 8481
+   and 8520, and 11736 and 11775, are the Old Ford and the Forest River, both thirty-three columns of water with
+   the bed eleven under it, and both come out as fords of the pass's own three carried columns rather than spans.
+   Run `/tmroad build` standing on the first mark; it will take a while, and the two crossings are the worth
+   watching, since a ford is what the pass makes of water rather than what a route asks for.
+3. Then walk the chapter in game: camp → cave (2-5's vault, the stone) → camp (2-6) → cave (Gimli, 2-7) →
    the coal lattice at z -6856 → the keep → the captain and the wraith → camp (turn in; Glóin takes the
    stone back).
 

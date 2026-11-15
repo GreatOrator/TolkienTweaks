@@ -117,6 +117,20 @@ public final class Roads {
     public static final String GLOIN_ROAD_EAST = "tolkienmobs:roads/gloin_road_east";
 
     /**
+     * The old forest road: out of Glóin's camp and east, over the Old Ford and the Forest River and on into Mirkwood.
+     * <p>
+     * The scout walked it in one go and set a mark every forty blocks or so - a hundred and one of them, denser than
+     * any road here so far - so the line is the walk itself rather than a search that has to find its own way between
+     * two ends: every mark is a bend and the road goes where the marks go. Two of them are pairs rather than singles,
+     * and both are bank marks: 8481, -3668 and 8520, -3668 either side of the Old Ford, whose water stands at 186 with
+     * thirty-three columns between them, and 11736, -3841 and 11775, -3841 either side of the Forest River, whose
+     * water stands at 167 across the same thirty-three. The pass carries only its own three middle columns over water,
+     * and only while its grade stands over the water line, so both crossings come out as low fords of stone rather
+     * than as spans; a bridge at either is a route of its own when the chapter wants one.
+     */
+    public static final String OLD_FOREST_ROAD = "tolkienmobs:roads/old_forest_road";
+
+    /**
      * The two cave roads of the troll caves' cluster, and the road that carries them on to the country road.
      * <p>
      * Three caves stand close enough together in the north-west that their roads were walked as one place: the scout
@@ -220,7 +234,13 @@ public final class Roads {
             // Gloin's camp's own track: out of the door at 8229, -3652 and south-east up to the junction at 8211,
             // -3594 where the road east of the pass passes. The box is the camp's own ground, 28 by 22 from the
             // corner the pin names, so the track meets its wall and goes no further in.
-            new Route.Riverless(Sites.GLOIN_CAMP, 8215, 8242, -3674, -3653, 8229, -3652, 8211, -3594)
+            new Route.Riverless(Sites.GLOIN_CAMP, 8215, 8242, -3674, -3653, 8229, -3652, 8211, -3594),
+            // The old forest road east out of Glóin's camp: from the mark on the camp's own ground at 8231, -3641,
+            // down the vale under the range, over the Old Ford, east through Mirkwood's western eaves and over the
+            // Forest River to the scout's last mark at 11842, -3877. No build stands behind either end, so the box is
+            // empty and the walk begins on the mark it is given; the hundred marks between are its bends, and the two
+            // fords are the pass's own to carry.
+            new Route.Riverless(OLD_FOREST_ROAD, 0, 0, 0, 0, 8231, -3641, 11842, -3877)
     );
 
     /**
@@ -356,7 +376,36 @@ public final class Roads {
             Map.entry(GLOIN_ROAD_EAST, List.of(new BlockPos(8124, 233, -3593), new BlockPos(8177, 227, -3593),
                     new BlockPos(8201, 225, -3594), new BlockPos(8211, 224, -3594))),
             // The camp's track, out of the door and up onto the junction: the two marks between are its bends.
-            Map.entry(Sites.GLOIN_CAMP, List.of(new BlockPos(8224, 222, -3633), new BlockPos(8211, 224, -3609)))
+            Map.entry(Sites.GLOIN_CAMP, List.of(new BlockPos(8224, 222, -3633), new BlockPos(8211, 224, -3609))),
+            // The old forest road, every mark the scout walked: east out of the camp along the vale, down onto the Old
+            // Ford's near bank, over the water and on east through the wood to the Forest River and the last mark. The
+            // two bank pairs sit where the road meets water, and the marks either side of them are the approaches the
+            // grade is walked in on, so the road comes down to a ford and climbs away from it instead of stepping.
+            Map.entry(OLD_FOREST_ROAD, List.of(new BlockPos(8252, 218, -3642), new BlockPos(8266, 216, -3653), new BlockPos(8265, 216, -3666), new BlockPos(8271, 215, -3676),
+                                               new BlockPos(8279, 214, -3680), new BlockPos(8316, 207, -3675), new BlockPos(8336, 204, -3670), new BlockPos(8365, 202, -3664),
+                                               new BlockPos(8385, 202, -3675), new BlockPos(8404, 197, -3689), new BlockPos(8435, 197, -3693), new BlockPos(8446, 197, -3668),
+                                               new BlockPos(8481, 188, -3668), new BlockPos(8520, 188, -3668), new BlockPos(8539, 188, -3668), new BlockPos(8588, 190, -3677),
+                                               new BlockPos(8626, 190, -3673), new BlockPos(8646, 190, -3670), new BlockPos(8680, 190, -3679), new BlockPos(8704, 190, -3683),
+                                               new BlockPos(8741, 189, -3691), new BlockPos(8805, 189, -3699), new BlockPos(8821, 189, -3701), new BlockPos(8897, 189, -3707),
+                                               new BlockPos(8934, 191, -3705), new BlockPos(8983, 193, -3706), new BlockPos(9009, 194, -3703), new BlockPos(9037, 196, -3700),
+                                               new BlockPos(9079, 196, -3697), new BlockPos(9098, 196, -3702), new BlockPos(9118, 195, -3707), new BlockPos(9142, 195, -3709),
+                                               new BlockPos(9192, 193, -3717), new BlockPos(9236, 194, -3706), new BlockPos(9295, 194, -3700), new BlockPos(9322, 194, -3691),
+                                               new BlockPos(9356, 193, -3695), new BlockPos(9408, 193, -3691), new BlockPos(9437, 193, -3688), new BlockPos(9505, 193, -3685),
+                                               new BlockPos(9562, 193, -3685), new BlockPos(9602, 192, -3686), new BlockPos(9666, 191, -3685), new BlockPos(9717, 191, -3696),
+                                               new BlockPos(9775, 191, -3694), new BlockPos(9797, 190, -3678), new BlockPos(9847, 190, -3679), new BlockPos(9884, 189, -3674),
+                                               new BlockPos(9924, 189, -3677), new BlockPos(9986, 189, -3667), new BlockPos(10032, 189, -3663), new BlockPos(10079, 190, -3661),
+                                               new BlockPos(10126, 190, -3656), new BlockPos(10147, 191, -3655), new BlockPos(10163, 191, -3651), new BlockPos(10202, 192, -3651),
+                                               new BlockPos(10253, 193, -3650), new BlockPos(10309, 193, -3645), new BlockPos(10344, 191, -3631), new BlockPos(10380, 190, -3629),
+                                               new BlockPos(10416, 190, -3629), new BlockPos(10435, 190, -3628), new BlockPos(10467, 190, -3629), new BlockPos(10494, 190, -3624),
+                                               new BlockPos(10526, 190, -3619), new BlockPos(10576, 188, -3616), new BlockPos(10624, 186, -3611), new BlockPos(10661, 185, -3615),
+                                               new BlockPos(10717, 184, -3616), new BlockPos(10730, 183, -3615), new BlockPos(10783, 184, -3614), new BlockPos(10830, 183, -3615),
+                                               new BlockPos(10884, 183, -3612), new BlockPos(10957, 183, -3613), new BlockPos(11072, 183, -3619), new BlockPos(11082, 184, -3618),
+                                               new BlockPos(11118, 184, -3629), new BlockPos(11153, 184, -3617), new BlockPos(11223, 183, -3618), new BlockPos(11241, 183, -3616),
+                                               new BlockPos(11276, 182, -3611), new BlockPos(11306, 180, -3619), new BlockPos(11332, 179, -3612), new BlockPos(11371, 177, -3619),
+                                               new BlockPos(11405, 175, -3619), new BlockPos(11415, 175, -3627), new BlockPos(11433, 174, -3646), new BlockPos(11460, 173, -3671),
+                                               new BlockPos(11490, 173, -3687), new BlockPos(11515, 173, -3699), new BlockPos(11556, 173, -3715), new BlockPos(11589, 173, -3741),
+                                               new BlockPos(11627, 172, -3791), new BlockPos(11664, 171, -3822), new BlockPos(11705, 169, -3842), new BlockPos(11736, 169, -3841),
+                                               new BlockPos(11775, 168, -3841), new BlockPos(11828, 168, -3841), new BlockPos(11838, 168, -3855)))
     );
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
@@ -451,7 +500,9 @@ public final class Roads {
             Map.entry(GLOIN_ROAD, Kind.WILD_WIDE),
             Map.entry(GLOIN_BRIDGE, Kind.WILD_WIDE),
             Map.entry(GLOIN_ROAD_EAST, Kind.WILD_WIDE),
-            Map.entry(Sites.GLOIN_CAMP, Kind.WILD_WIDE));
+            Map.entry(Sites.GLOIN_CAMP, Kind.WILD_WIDE),
+            // The old forest road is laid five wide of the country's own ground, like every other walked line.
+            Map.entry(OLD_FOREST_ROAD, Kind.WILD_WIDE));
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {
@@ -468,7 +519,8 @@ public final class Roads {
      */
     private static final Set<String> ROADS = Set.of(THORENHAD_ROAD, ELLADAN_BRANCH, MOUNTAIN_WAY, FORD_WAY,
             CAVE_WAY_NORTH, CAVE_WAY_EAST, TROLL_CAVE_WAY, WOOD_RUIN_LINK, HIGH_PASS_WAY, HIGH_PASS_CLIMB,
-            HIGH_PASS_BRIDGE, GLOIN_ROAD, GLOIN_BRIDGE, GLOIN_ROAD_EAST);
+            HIGH_PASS_BRIDGE, GLOIN_ROAD, GLOIN_BRIDGE, GLOIN_ROAD_EAST,
+            OLD_FOREST_ROAD);
 
     /** Whether a route is a road rather than a build's own way out, and so begins wherever it is first met. */
     public static boolean road(Route route) {
