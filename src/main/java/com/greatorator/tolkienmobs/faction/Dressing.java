@@ -120,11 +120,34 @@ public final class Dressing {
      */
     static CityCommands.Drape drape(ServerLevel level, Path folder, List<CityCommands.Part> parts,
                                     BlockPos origin, CityCommands.Box box) {
-        Job whole = new Job("", folder, parts, origin, box, false, false);
+        return drape(level, folder, Pieces.ofCity(folder), parts, origin, box);
+    }
+
+    /**
+     * The same drape for a cut that is not the city's: the pieces come from wherever the caller says.
+     * <p>
+     * The city's own drape reads its outline through {@link CityCommands#raw}, which knows the city's folder and the
+     * cut in the jar. A build cut the same way and laid by `/tmcut` is a different folder, so the reading is the one
+     * thing the two cannot share; everything after it - the outline, the ring, the water left alone, the filling of
+     * the build's holes - is the same pass, and is meant to be, because two drape rules for two builds is how a
+     * country ends up with two different ideas about where a wall stops.
+     */
+    static CityCommands.Drape drape(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
+                                    BlockPos origin, CityCommands.Box box) {
+        Job whole = new Job("", folder, pieces, parts, origin, box, false, false);
         while (whole.piece < parts.size()) whole.takePieces();
         whole.grow();
         while (whole.chunk < whole.ring.size()) whole.dressChunks(level);
         return new CityCommands.Drape(whole.cut, whole.filled, whole.open);
+    }
+
+    /** Where a job reads its pieces' NBT from: the city's cut, or any other cut a hand names. */
+    interface Pieces {
+        CompoundTag raw(String name) throws IOException;
+
+        static Pieces ofCity(Path folder) {
+            return name -> CityCommands.raw(folder, name);
+        }
     }
 
     /** A job for a city this world has stood and not yet dressed, or null when there is nothing to do. */
@@ -155,7 +178,7 @@ public final class Dressing {
                 finished = key;
                 return null;
             }
-            return new Job(key, folder, parts, corner, box, done[0], roadDown);
+            return new Job(key, folder, Pieces.ofCity(folder), parts, corner, box, done[0], roadDown);
         } catch (IOException unreadable) {
             LOGGER.warn("Rivendell: the cut could not be read, so the ground is not dressed: {}",
                     unreadable.getMessage());
@@ -172,6 +195,7 @@ public final class Dressing {
         /** This job's city, as dimension and corner: what {@code _dressed.txt} is keyed on. */
         private final String key;
         private final Path folder;
+        private final Pieces pieces;
         private final List<CityCommands.Part> parts;
         private final BlockPos origin;
         private final CityCommands.Box box;
@@ -196,10 +220,11 @@ public final class Dressing {
         private int filled;
         private int open;
 
-        private Job(String key, Path folder, List<CityCommands.Part> parts, BlockPos origin,
+        private Job(String key, Path folder, Pieces pieces, List<CityCommands.Part> parts, BlockPos origin,
                     CityCommands.Box box, boolean dressed, boolean road) {
             this.key = key;
             this.folder = folder;
+            this.pieces = pieces;
             this.parts = parts;
             this.origin = origin;
             this.box = box;
@@ -254,7 +279,7 @@ public final class Dressing {
                 CityCommands.Part part = parts.get(piece);
                 CompoundTag tag;
                 try {
-                    tag = CityCommands.raw(folder, part.name());
+                    tag = pieces.raw(part.name());
                 } catch (IOException unreadable) {
                     // A piece that cannot be read is not a reason to dress the rest of the ring to a hole.
                     LOGGER.warn("Rivendell: {} could not be read for the outline", part.name());

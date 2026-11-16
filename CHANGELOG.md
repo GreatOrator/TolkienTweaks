@@ -3736,3 +3736,29 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   world column now holds both: each palette's block list is walked once, air skipped by name, and the per-column answer
   is kept for the session. The Shire cut's ceilings run 95 to 166 at the pin at y 87 - the pond's water at the low end,
   its tallest tree at the high - and every one of its 257,868 columns has one. Compiles; not yet run in a world.
+
+- **`/tmcut clear` now takes the country out of the box as well as off the top of it.** Clearing what stood above a
+  build was half the job and looked like it: Arda's ground survived *inside* the footprint wherever it fell below the
+  cut's own top, which under a tree's canopy is nearly everywhere, and its gravel survived where an old riverbed
+  reached the build's height. Both read as stone standing in a village. The second half of the pass walks every column
+  from the cut's top down to its bottom and takes the country out of every position the cut leaves empty, keeping the
+  cut's own blocks exactly as they were cut and never touching the ground below the cut's base. The shape it reads
+  from is the cut itself: each piece's palette and block list walked once, a bit per position, with each column's own
+  span kept so the walk is bounded - 257,868 columns and 5,079,392 positions for the Shire map, held for the session.
+  Compiles; not yet run in a world.
+- **The city's drape now dresses any cut, and `/tmcut drape` calls it.** The pass that settles the ring of ground
+  outside a build to the build's own outline was written for Rivendell and read its pieces through `CityCommands.raw`,
+  which knows the city's folder and the cut in the jar - so a build laid by `/tmcut` from the save's own `cuts` folder
+  could not be dressed without renaming it to the city. `Dressing` takes a `Pieces` source now: the city supplies one
+  bound to its cut, `/tmcut` supplies one bound to the named cut, and everything after the reading - the outline, the
+  ring, the water left alone, the holes filled - is the same pass for both, because two drape rules for two builds is
+  how a country ends up with two ideas about where a wall stops. Compiles; not yet run in a world.
+- **The Shire's drawn river is rerouted round the Hobbiton footprint.** The channel crossed the build's north-west
+  corner and the village's own river left on two edges that met nothing: one dead-ending in the hillside, one against
+  the far wall. `rivers.png` now bends the channel west before the footprint - down at x -762, clear of the west wall
+  by 20 to 44 blocks - and rejoins the old course at z -160, and a tributary runs from the village's south-arm mouth
+  (x -586…-436 at z -45) west along the foot of the terrace to meet it at x -752. Drawn at eight blocks to the pixel
+  with the same falloff the map's own channels have, checked against the mask's 30% water threshold: the rendered
+  before-and-after shows the river running outside the west edge and the tributary along the south, where both used to
+  run through and dead-end. Only chunks generated after the edit carry it, so the test world that already holds the old
+  course has to be replaced to see it.

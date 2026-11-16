@@ -55,12 +55,13 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * {@code rivendell} and dropping it into a copy of the save, which also drags in the drape, the apron and the outflow
  * pass - three things tuned to that one city and answerable to nothing about this one.
  * <p>
- * So this is the plain hand, with four words and no opinion about what it is laying: {@code list}, which says what
+ * So this is the plain hand, with five words and no opinion about what it is laying: {@code list}, which says what
  * cuts the world is holding; {@code table}, which reads one and says how big it is without laying a block of it;
- * {@code place}, which lays every piece of one from a corner; and {@code clear}, which takes the world's own ground back
- * off the top of a cut that is already standing. It plants no marker, dresses no ground, stands nobody and opens no
- * road - a cut laid with it is exactly the blocks that were cut, which is what makes it usable for asking questions of
- * a map rather than for putting a city in a world.
+ * {@code place}, which lays every piece of one from a corner; {@code clear}, which strips the country out of a cut
+ * that is already standing, off its top and out of its box; and {@code drape}, which dresses the ring of ground
+ * round it to the cut's own outline. It plants no marker, stands nobody and opens no road - a cut laid with it is
+ * exactly the blocks that were cut and the ground dressed to them, which is what makes it usable for asking
+ * questions of a map rather than for putting a city in a world.
  * <p>
  * A cut is a folder: the pieces, named as the cutter named them, and a table called {@code <cut>.parts} listing each
  * one's offset and its own size, lowest band first. It is read from the world's own {@code tolkienmobs/cuts} folder, so
@@ -94,8 +95,8 @@ public final class CutCommands {
     private static final int TILE = 48;
     /** Templates already read this session, keyed by cut and piece, so a cut laid twice is parsed once. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
-    /** The height of a cut's own top in each of its columns, keyed by cut, so a sky is cleared off one answer. */
-    private static final Map<String, int[]> TOPS = new HashMap<>();
+    /** A cut's own shape, keyed by cut, so a clearing or a drape is answered once. */
+    private static final Map<String, Shape> SHAPES = new HashMap<>();
 
     private CutCommands() {
     }
@@ -146,7 +147,12 @@ public final class CutCommands {
                         .then(Commands.argument("cut", StringArgumentType.word())
                                 .executes(context -> clear(context, null))
                                 .then(Commands.argument("corner", BlockPosArgument.blockPos())
-                                        .executes(context -> clear(context, BlockPosArgument.getBlockPos(context, "corner")))))));
+                                        .executes(context -> clear(context, BlockPosArgument.getBlockPos(context, "corner"))))))
+                .then(Commands.literal("drape")
+                        .then(Commands.argument("cut", StringArgumentType.word())
+                                .executes(context -> drape(context, null))
+                                .then(Commands.argument("corner", BlockPosArgument.blockPos())
+                                        .executes(context -> drape(context, BlockPosArgument.getBlockPos(context, "corner")))))));
     }
 
     /** Says which cuts this world is holding: the folders in the save, one cut each. */
@@ -247,20 +253,20 @@ public final class CutCommands {
     }
 
     /**
-     * Clears the air over a cut that is already standing: every block above the cut's own top, down to the cut.
+     * Clears the country out of a cut that is already standing: the hill off its top, and the country's own blocks out
+     * of its box.
      * <p>
-     * A build laid into a country that has already drawn its ground arrives interred. A hill over the village's grass,
-     * a stand of trees over its roofs and, where a drawn river crosses the footprint, a channel of water standing in the
-     * air over a yard - none of that is wrong, and none of it can be read against the ground it came with until it is
-     * off. This takes it off: column by column inside the footprint, from whatever the country's own surface is down to
-     * the highest block the cut puts in that column, and no lower. The cut's shape is what survives, so its roads and
-     * roofs and trees stay where they were cut, and the country is cut away rather than filled - which leaves the wall
-     * round the edge and the scar the caller asked for, and is the point of it: what the build does against the ground it
-     * was put on can be seen at a glance instead of inferred from a hole.
+     * A build laid into Arda arrives interred, and clearing only what stands over it is half a job. The other half is
+     * what the country leaves <em>inside</em> the footprint: its ground under a tree's canopy, because the canopy is
+     * that column's top and the ground under it is below it; its gravel where an old riverbed reaches the build's own
+     * height; a shelf of stone wherever a hillside crosses the build's surface. None of that is above the cut, so a
+     * pass that stops at the cut's top never sees it, and it reads as stone standing in a village.
      * <p>
-     * The top is read from the cut rather than from the world, because the world's own column now holds both: every
-     * piece's blocks are walked once and the highest of them is that column's ceiling. A column the cut leaves empty is
-     * left alone - there is nothing there to say how high the air above it should be cleared to.
+     * So this does both, column by column. Above the cut's own top, everything down to that top comes off - hills, the
+     * country's trees, a drawn channel standing in the air over a yard. Then, between the cut's top and its bottom,
+     * every position the cut leaves empty has the country taken out of it: the cut's own blocks stay exactly as they
+     * were cut, and anything that is not one of them is air. What is below the cut is left alone, because below the
+     * cut is the country's own ground and the build stands on it.
      */
     private static int clear(CommandContext<CommandSourceStack> context, BlockPos corner) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
@@ -273,28 +279,33 @@ public final class CutCommands {
                 return 0;
             }
             BlockPos pointed = corner == null ? feetOnGround(level, source) : corner;
-            BlockPos planted = new BlockPos(pointed.getX() - lowest(parts, Part::dx),
-                    pointed.getY() - lowest(parts, Part::dy),
-                    pointed.getZ() - lowest(parts, Part::dz));
+            BlockPos planted = plantedAt(parts, pointed);
             Box box = Box.of(parts, planted);
-            int wide = box.highX() - box.lowX() + 1;
-            int deep = box.highZ() - box.lowZ() + 1;
-            int[] tops = tops(level, name, parts);
+            Shape shape = shape(level, name, parts);
+            int wide = shape.wide();
             int columns = 0;
             int deepest = 0;
             long removed = 0L;
             BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
             for (int xi = 0; xi < wide; xi++) {
                 int x = box.lowX() + xi;
-                for (int zi = 0; zi < deep; zi++) {
+                for (int zi = 0; zi < shape.deep(); zi++) {
                     int z = box.lowZ() + zi;
-                    int top = tops[zi * wide + xi];
+                    int column = zi * wide + xi;
+                    int top = shape.top()[column];
                     if (top == Integer.MIN_VALUE) continue;
                     level.getChunk(x >> 4, z >> 4);
                     int ceiling = planted.getY() + top;
                     int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
                     int taken = 0;
                     for (int y = surface; y > ceiling; y--) {
+                        at.set(x, y, z);
+                        if (level.getBlockState(at).isAir()) continue;
+                        level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                        taken++;
+                    }
+                    for (int y = ceiling; y >= planted.getY() + shape.bottom()[column]; y--) {
+                        if (shape.solid(column, y - planted.getY())) continue;
                         at.set(x, y, z);
                         if (level.getBlockState(at).isAir()) continue;
                         level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
@@ -310,8 +321,8 @@ public final class CutCommands {
             int cleared = columns;
             int most = deepest;
             long gone = removed;
-            source.sendSuccess(() -> Component.literal("Cleared the air over " + name + ": " + cleared
-                    + " columns cut back to the build, " + gone + " blocks removed, " + most
+            source.sendSuccess(() -> Component.literal("Cleared " + name + ": " + cleared
+                    + " columns cut back to the build, " + gone + " blocks of the country removed, " + most
                     + " deep at the worst."), true);
             return cleared;
         } catch (IOException failed) {
@@ -321,47 +332,117 @@ public final class CutCommands {
     }
 
     /**
-     * The tallest block of a cut in each of its columns, as a height over the cut's own low corner.
+     * Dresses the ground round a cut that is already standing to its own outline.
      * <p>
-     * Walked once per cut and kept: a hundred and forty pieces is five million blocks, and the answer cannot change
-     * while a world is running, so the second clearing of the same cut is a lookup.
+     * The same pass the city gets, for the same reason: a build laid on Arda is a rectangle of one country dropped on
+     * another, and its edge is a wall wherever the two do not happen to meet. The drape reads the cut's own outline -
+     * the highest block the build puts in each of its columns - and settles the ring of ground outside the footprint
+     * to it, cutting down what stands over the outline and filling up what stands under it, easing back into the
+     * country over {@code Dressing.DRAPE_REACH}. Water at the build's edge is left alone, because filling beside a
+     * river is what closes its mouth.
      */
-    private static int[] tops(ServerLevel level, String cut, List<Part> parts) throws IOException {
-        int[] cached = TOPS.get(cut);
+    private static int drape(CommandContext<CommandSourceStack> context, BlockPos corner) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getLevel();
+        String name = StringArgumentType.getString(context, "cut");
+        try {
+            List<Part> parts = parts(level, name);
+            if (parts.isEmpty()) {
+                source.sendFailure(Component.literal(noTable(level, name)));
+                return 0;
+            }
+            BlockPos pointed = corner == null ? feetOnGround(level, source) : corner;
+            BlockPos planted = plantedAt(parts, pointed);
+            List<CityCommands.Part> cityParts = new ArrayList<>();
+            for (Part part : parts) {
+                cityParts.add(new CityCommands.Part(part.name(), part.dx(), part.dy(), part.dz(),
+                        part.wide(), part.deep(), part.tall()));
+            }
+            CityCommands.Box cityBox = CityCommands.Box.of(cityParts, planted);
+            CityCommands.Drape done = Dressing.drape(level, folder(level).resolve(name),
+                    piece -> raw(level, name, piece), cityParts, planted, cityBox);
+            int cut = done.cut();
+            int filled = done.filled();
+            int open = done.open();
+            source.sendSuccess(() -> Component.literal("Ground dressed round " + name + ": " + cut
+                    + " columns cut down, " + filled + " built up, " + open + " left for the water."), true);
+            return cut + filled;
+        } catch (IOException failed) {
+            source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
+            return 0;
+        }
+    }
+
+    /** The corner a cut's own low corner goes on: the block named, less the lowest offsets of its table. */
+    private static BlockPos plantedAt(List<Part> parts, BlockPos pointed) {
+        return new BlockPos(pointed.getX() - lowest(parts, Part::dx),
+                pointed.getY() - lowest(parts, Part::dy),
+                pointed.getZ() - lowest(parts, Part::dz));
+    }
+
+    /** The caller's feet on the ground under them: the corner a cut is laid at when none is named. */
+    private static BlockPos feetOnGround(ServerLevel level, CommandSourceStack source) {
+        BlockPos feet = BlockPos.containing(source.getPosition());
+        int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, feet.getX(), feet.getZ());
+        return new BlockPos(feet.getX(), groundY, feet.getZ());
+    }
+
+    /** Where a cut's own blocks are: its top and bottom in each column, and a bit for every block it places. */
+    record Shape(int wide, int deep, int tall, int low, int[] top, int[] bottom, long[] solid) {
+        boolean solid(int column, int localY) {
+            int at = column * tall + (localY - low);
+            return at >= 0 && at < solid.length * 64 && (solid[at >> 6] & (1L << (at & 63))) != 0L;
+        }
+    }
+
+    /** A cut's shape, read out of its files: walked once per cut and kept, since a cut does not change in a session. */
+    private static Shape shape(ServerLevel level, String cut, List<Part> parts) throws IOException {
+        Shape cached = SHAPES.get(cut);
         if (cached != null) return cached;
         int lowX = lowest(parts, Part::dx);
         int lowY = lowest(parts, Part::dy);
         int lowZ = lowest(parts, Part::dz);
         int wide = parts.stream().mapToInt(part -> part.dx() + part.wide() - lowX).max().orElse(0);
         int deep = parts.stream().mapToInt(part -> part.dz() + part.deep() - lowZ).max().orElse(0);
-        int[] tops = new int[wide * deep];
-        Arrays.fill(tops, Integer.MIN_VALUE);
+        int tall = parts.stream().mapToInt(part -> part.dy() + part.tall() - lowY).max().orElse(0);
+        if (wide <= 0 || deep <= 0 || tall <= 0) {
+            return new Shape(0, 0, 0, lowY, new int[0], new int[0], new long[0]);
+        }
+        int[] top = new int[wide * deep];
+        int[] bottom = new int[wide * deep];
+        Arrays.fill(top, Integer.MIN_VALUE);
+        Arrays.fill(bottom, Integer.MAX_VALUE);
+        long[] solid = new long[(wide * deep * tall + 63) >> 6];
         for (Part part : parts) {
             CompoundTag piece = raw(level, cut, part.name());
             // The cut is written one palette to a piece, and a piece of a newer cut may carry several; both shapes are
             // read here because the table says nothing about which one the file has. The blocks are taken straight out
-            // of the file rather than through a template, so nothing is placed, lit or loaded to find out how tall it is.
+            // of the file rather than through a template, so nothing is placed, lit or loaded to find out its shape.
             ListTag palettes = piece.getList("palettes").orElseGet(ListTag::new);
             if (palettes.size() > 0) {
                 for (int i = 0; i < palettes.size(); i++) {
                     CompoundTag palette = palettes.getCompoundOrEmpty(i);
                     heights(palette.getList("palette").orElseGet(ListTag::new),
                             palette.getList("blocks").orElseGet(ListTag::new),
-                            part, lowX, lowY, lowZ, wide, deep, tops);
+                            part, lowX, lowY, lowZ, wide, deep, tall, top, bottom, solid);
                 }
             } else {
                 heights(piece.getList("palette").orElseGet(ListTag::new),
                         piece.getList("blocks").orElseGet(ListTag::new),
-                        part, lowX, lowY, lowZ, wide, deep, tops);
+                        part, lowX, lowY, lowZ, wide, deep, tall, top, bottom, solid);
             }
         }
-        TOPS.put(cut, tops);
-        return tops;
+        for (int i = 0; i < bottom.length; i++) {
+            if (bottom[i] == Integer.MAX_VALUE) bottom[i] = Integer.MIN_VALUE;
+        }
+        Shape shape = new Shape(wide, deep, tall, lowY, top, bottom, solid);
+        SHAPES.put(cut, shape);
+        return shape;
     }
 
-    /** One palette's blocks, read out of the file: the highest block standing in each column is the one that wins. */
+    /** One palette's blocks: a bit for every position the cut fills, and the column's own span. */
     private static void heights(ListTag palette, ListTag blocks, Part part, int lowX, int lowY, int lowZ,
-                                int wide, int deep, int[] tops) {
+                                int wide, int deep, int tall, int[] top, int[] bottom, long[] solid) {
         String[] names = new String[palette.size()];
         for (int i = 0; i < palette.size(); i++) {
             names[i] = palette.getCompoundOrEmpty(i).getStringOr("Name", "");
@@ -377,9 +458,12 @@ public final class CutCommands {
             int x = part.dx() - lowX + pos.getIntOr(0, 0);
             int y = part.dy() - lowY + pos.getIntOr(1, 0);
             int z = part.dz() - lowZ + pos.getIntOr(2, 0);
-            if (x < 0 || x >= wide || z < 0 || z >= deep) continue;
-            int at = z * wide + x;
-            if (y > tops[at]) tops[at] = y;
+            if (x < 0 || x >= wide || z < 0 || z >= deep || y < 0 || y >= tall) continue;
+            int column = z * wide + x;
+            int at = column * tall + y;
+            solid[at >> 6] |= 1L << (at & 63);
+            if (y > top[column]) top[column] = y;
+            if (y < bottom[column]) bottom[column] = y;
         }
     }
 
@@ -389,13 +473,6 @@ public final class CutCommands {
             if (in == null) throw new IOException("no " + piece + " in the " + cut + " cut");
             return NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
         }
-    }
-
-    /** The caller's feet on the ground under them: the corner a cut is laid at when none is named. */
-    private static BlockPos feetOnGround(ServerLevel level, CommandSourceStack source) {
-        BlockPos feet = BlockPos.containing(source.getPosition());
-        int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, feet.getX(), feet.getZ());
-        return new BlockPos(feet.getX(), groundY, feet.getZ());
     }
 
     /** The lowest a table's offsets go on one axis. */

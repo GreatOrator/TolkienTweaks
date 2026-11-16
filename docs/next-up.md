@@ -74,6 +74,32 @@ column, so its shape reads against the terrain at a glance - the scar the player
 marker and dresses no ground: what goes down is the cut's blocks
 and nothing else, which is what makes it the hand for asking this question rather than for shipping the map.
 
+**The pass, in order.** `place` lays the cut, `clear` strips the country back out of it, and `drape` dresses the ground
+round it - three words, all pointed at the same corner:
+
+    /tmcut place hobbiton -700 87 -512
+    /tmcut clear hobbiton -700 87 -512
+    /tmcut drape hobbiton -700 87 -512
+
+`clear` takes two bites. Above the cut's own top it removes everything down to that top - the hill, the country's trees,
+the drawn channel standing in the air over a yard - and then, between the cut's top and its bottom, every position the
+cut leaves empty has the country taken out of it. That second half is what the first left behind: Arda's ground under
+the map's tree canopies, its gravel where an old bed reached the build's height, shelves of stone wherever a hillside
+crossed the build's surface. The cut's own blocks are never touched, and neither is the ground below the cut's base.
+`drape` is the city's own pass, generalised to read a cut that is not the city's: it settles the ring outside the
+footprint to the build's outline, easing back into the country over thirty-two blocks, and leaves edge water alone.
+
+## The Shire river - rerouted 16 November 2026
+
+The drawn channel used to cross the footprint's north-west corner, and the village's own water left on two edges that
+met nothing: one dead-ending in the hillside, the other against the far wall of the build. `rivers.png` carries a bypass
+now. The channel bends west before the footprint, runs down at **x -762** - clear of the west wall by 20 to 44 blocks -
+and rejoins its old course at z -160. A tributary leaves the village's **south arm** (the mouth at x -586…-436 on the
+south edge at z -45), runs west along the foot of the terrace and joins the bypass at x -752, so the water that used to
+dead-end flows out into the river. The arm's mouth is 150 wide and the tributary covers x -470…-752 of it, so the join
+wants looking at in game. Only chunks generated after the edit carry any of it: the current test world already holds
+the old course, so this is seen in a fresh world.
+
 ## Roads - final, nothing outstanding
 
 Laid, raised and called right in game:
