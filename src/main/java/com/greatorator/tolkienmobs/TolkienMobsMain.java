@@ -230,7 +230,11 @@ public class TolkienMobsMain {
         registrar.playToClient(SpawnFallenLeafFromPacket.TYPE, SpawnFallenLeafFromPacket.STREAM_CODEC, SpawnFallenLeafFromPacket::handle);
         registrar.playToClient(FactionStandingsSyncManager.TYPE, FactionStandingsSyncManager.STREAM_CODEC, FactionStandingsSyncManager::handle);
         registrar.playToClient(CampaignSyncManager.TYPE, CampaignSyncManager.STREAM_CODEC, CampaignSyncManager::handle);
-        registrar.playToClient(ConversationManager.TYPE, ConversationManager.STREAM_CODEC, ConversationManager::handle);
+        // The conversation payload's handler opens a screen, and this registration loads it: a dedicated server could not
+        // start the mod at all (NoClassDefFoundError: net/minecraft/client/gui/screens/Screen). Registered on the client
+        // only until the screen moves behind a client-only handler, which is the shape SpawnFallenLeafFromPacket has.
+        if (net.neoforged.fml.loading.FMLEnvironment.getDist().isClient())
+            registrar.playToClient(ConversationManager.TYPE, ConversationManager.STREAM_CODEC, ConversationManager::handle);
         registrar.playToServer(ConversationDoneManager.TYPE, ConversationDoneManager.STREAM_CODEC,
                 ConversationDoneManager::handle);
         registrar.playToClient(QuestSyncManager.TYPE, QuestSyncManager.STREAM_CODEC, QuestSyncManager::handle);

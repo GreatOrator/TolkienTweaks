@@ -189,6 +189,23 @@ line of them - ground, water, the valley's ceiling, and how much the valley take
 rather than re-derived in a script. That is the instrument for the next round of tuning, and for the rivers the owner
 walks past as the map goes on.
 
+**What the rise costs, measured, 16 November.** A dedicated server on a fresh level, nothing else running, the pass
+asked to raise the village with nobody in the world: **1326 chunks of ground** under the 551x468 footprint, asked for
+two at a time on tickets and waited for over 1996 ticks; **143 pieces laid in 9.8 s** (68.6 ms a piece, worst 349 ms);
+**1290 bands of 200 columns cleared - 257,868 columns and 1.99 million blocks - in 9.5 s**; **701 dress steps in 3.3 s**;
+the whole pass about 60 s of wall clock over 1200 ticks against a 5 ms budget. Three ways of doing it were measured and
+thrown out. `setChunkForced` on every chunk in one tick generated all 1326 on the server thread and held a tick for
+**49 s**. `ServerChunkCache.getChunkFuture` is worse than it sounds - it parks the main thread on the worker pool
+(`BlockableEventLoop.managedBlock`) and held a tick for the watchdog's full **60 s**. Laying the cut with the plain
+`2` flags ran a shape update per block, which asked the level for the neighbour chunk each time: **11 s** of laying.
+The one long tick that is left is a single `getChunk` in the readiness sweep, **43.2 s**, the game finishing the 1326
+newly generated chunks' sections and light in one go - the same 43 s that used to land in the first piece of the cut
+(`hobbiton_0_0_0.nbt`, 42.3 s). It cannot be spread from here: the drain is the engine's, not the pass's. What keeps it
+off a player's first start is the gate - the village is raised only while somebody is within `REACH` 192 of it, so the
+chunks are in a view, ticking, and being finished as the player arrives - plus `/hobbiton raise` for an admin who wants
+it up in an empty world and does not mind the wait. **Not seen in a client session**: the player-present numbers are a
+bound, not a measurement.
+
 **Where the roads go next, and it is not built.** The Shire to Bree, Bree to Rivendell, and Glóin's camp to Gundabad -
 three routes for what `Roads.ROUTES` has two of, and the village is now a town a road can end at. Nothing of it is laid;
 the Shire's own ring is dressed with no road, because `Roads.forGround` answers for the valley and a route to a village

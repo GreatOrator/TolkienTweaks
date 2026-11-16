@@ -519,7 +519,11 @@ public final class CutCommands {
         settings.setBoundingBox(new BoundingBox(at.getX(), Math.max(at.getY(), level.getMinY()), at.getZ(),
                 at.getX() + part.wide() - 1, Math.min(at.getY() + part.tall() - 1, level.getMaxY() - 1),
                 at.getZ() + part.deep() - 1));
-        template.placeInWorld(level, at, at, settings, level.getRandom(), 2);
+        // Flags 2|16: tell the clients, and do not run the shape updates. A cut is a build and not a circuit, and
+        // every shape update asked the level for the neighbour it stood against - a chunk generation per block at
+        // the edge of an ungenerated drawing, and what held one server tick for forty-nine seconds when the
+        // village was first raised.
+        template.placeInWorld(level, at, at, settings, level.getRandom(), 2 | 16);
     }
 
     /** A piece's template, read from the cut the first time it is asked for. */

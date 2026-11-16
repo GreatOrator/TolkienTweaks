@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+- **What raising the Shire costs is now a number, and a player's first start does not pay it in one tick.** The pass
+          was measured on a dedicated server against a fresh level: 1326 chunks of ground, 143 pieces laid in 9.8 s, 1290
+          bands of 200 columns - 257,868 columns and 1.99 million blocks - cleared in 9.5 s, 701 dress steps in 3.3 s, the
+          whole rise about 60 s of wall clock over 1200 ticks at a 5 ms budget. Two ways of asking for the ground were
+          measured and dropped: `setChunkForced` per chunk generated 1326 chunks on the server thread and held a tick for
+          49 s, and `getChunkFuture` parks the main thread on the worker pool and held one for the watchdog's 60. The one
+          long tick left is a single `getChunk` finishing the region's 1326 new chunks at once, 43.2 s, which is why the
+          village now waits for a player within `REACH` rather than raising itself in an empty world - a chunk nobody is
+          ticking is a chunk that cannot be finished cheaply - with `/hobbiton raise` for the rest.
+- **A cut is laid without shape updates.** `CutCommands.lay` planted the piece with flags `2`, so every block ran a
+          shape update and asked the level for the neighbour it stood against - a chunk generation per block at the edge of
+          an ungenerated build, and the sixty-second stall a server watchdog found when the village was first raised. Flags
+          `2|16` tell the clients and leave the shapes alone: the same measured cut lays in 9.8 s where it took 11.0 s,
+          and nothing in a build needs the update.
+- **The clear is cut into bands a budget can hold.** `COLUMNS_PER_UNIT` was 3000, which measured about 100 ms a band
+          against a 5 ms budget; it is 200, so the clear is 1290 bands of about 7 ms rather than 86 of a tenth of a second.
+- **The conversation payload is registered on the client only.** Its handler opens `ConversationScreen`, and the
+          registration line loads it: a dedicated server could not start the mod at all
+          (`NoClassDefFoundError: net/minecraft/client/gui/screens/Screen`). Guarded by the dist until the screen moves
+          behind a client-only handler, which is how `SpawnFallenLeafFromPacket` already does it.
 - **The drape reads its deck line from the build, not from the city.** `DECK_LIFT` was a constant of Rivendell's - a
           floor two blocks over the planted corner - and the Shire's village stands sixteen over its base, so nothing
           outside its walls was ever read as a deck and its whole ring was settled to the tops of the walls. `Dressing`
