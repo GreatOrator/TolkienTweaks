@@ -3777,3 +3777,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   water in front of it. Both mouths were read off the cut rather than guessed: the edge columns were clustered, and the
   single-column hits every edge carries - waterlogged blocks - were ignored. Only chunks generated after the edit carry
   it. Drawn and measured against the mask's 30% water threshold; not yet seen in a world.
+
+- **The river mask is back at the drawing's own course, and the reroute is parked.** The rerouted channel did what it was
+  drawn to do in the mask - clear of the west wall by 20 to 44 blocks, a spur into the west mouth reaching x -680, a
+  brook carried along the terrace to x -165 for the south mouth - and read as a canal in the world, because the drawn
+  channel runs diagonally, leaves a wide gap at both mouths, and the joins that close the gap run straight across Arda's
+  ground for worldgen to carve straight. `rivers.png` is restored to the blob it had before the change (`8ea4f0f`,
+  checked byte for byte), and the rerouted version is kept in `run/river_reroute` with the polylines, the widths, the
+  banks it produced and a drawer (`draw_mask.py`) that paints a candidate route into a copy of the mask and prints the
+  channel's banks at the footprint's wall, so the next route can be measured before it is shipped. The next question is
+  the footprint's place against the channel rather than the channel's place against a fixed footprint.

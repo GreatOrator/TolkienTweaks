@@ -38,9 +38,10 @@ brand-new world is drawn. Work stopped here to go to a side project.
 ## The Shire map - cut 15 November, placed 16 November 2026
 
 **Where it stands.** The build is cut and in a test world at pin **(-700, 87, -512)**; `place`, `clear` and `drape` have
-all three been run on it and the drawn river has been rerouted round its footprint. What has **not** happened is any of
-this being looked at after the last two fixes: the drape now reads a village's outline from under its trees, and both of
-the village's river mouths are met by the mask. That is the next thing to see.
+all three been run on it. The drawn river **was** rerouted round its footprint and that reroute was **reverted on 16
+November** - `rivers.png` is back at the drawing's own course, and the rerouted version is parked in
+`run/river_reroute` while a better route is measured. What has still not been seen in a world is the drape reading a
+village's outline from under its trees: that is the next thing to look at.
 
 **The pass, in order** (a cut lives in `<save>/tolkienmobs/cuts/<name>/`, or in the jar beside the city's):
 
@@ -84,14 +85,24 @@ came across whole.
 87, -512)**: the build's water sits 9 over its base so it lands at 96, level with the channel, and its grass line (16
 over its base) at **103, one block over the bank**. Footprint x -700…-149, z -512…-45.
 
-**The river.** The cut's water is a pond in its south-west quarter with two arms leaving it: **west at local z 309…336**
-(world z -203…-176, 28 wide) and **south at local x 466…522** (world x -234…-178, 56 wide). The drawn channel used to
-cross the footprint's north-west corner and be buried by the village, so `rivers.png` carries a bypass: the channel bends
-west before the footprint, runs down at **x -762** - clear of the west wall by 20 to 44 blocks - and rejoins its old
-course at z -160. A **spur** leaves the bypass at z -190 into the west mouth, its water reaching x -680, twenty blocks
-past the wall. A **tributary** runs from the bypass east along the foot of the terrace to **x -165**, covering the whole
-south mouth, which is the dead end that used to be there. Drawn at eight blocks to the pixel with the map's own falloff
-and measured against the game's 30% water threshold.
+**The river - the drawing's own course, reroute parked.** The cut's water is a pond in its south-west quarter with two
+arms leaving it: **west at local z 309…336** (world z -203…-176, 28 wide) and **south at local x 466…522** (world
+x -234…-178, 56 wide). The drawing's channel crosses the footprint's north-west corner and runs down its west side:
+measured against the game's 30% water threshold its east bank is x -584 at z -472, -632 at z -312, -688 at z -232 and
+-736 at z -72, so it is inside the footprint for the whole northern half of it.
+
+A reroute was drawn and built and is parked, not shipped: **`run/river_reroute/`** holds `rivers_rerouted.png` (the mask
+as it was with the reroute in it, blob `9b2c368`), `notes.md` with every polyline and width, and `draw_mask.py`, a
+drawer for trying routes on a copy before the asset is touched. That route bent the channel west to x -762 by z -480,
+put a spur east into the west mouth at z -190 and carried a brook along the foot of the terrace to x -165 to meet the
+south mouth. It worked in the mask and looked like a canal in game: the spur and the brook had to cut straight across
+Arda's ground because the diagonal channel leaves a gap, and a drawn straight channel carves a straight one.
+
+**What to measure before trying again.** The channel's own course is what the crossing has to be designed around, so the
+question is where the footprint can sit relative to it - not how to bend the river far enough to miss a fixed one. The
+drawer prints the channel's banks at every 40 blocks down the west wall, and `run/river_reroute/notes.md` has the two
+mouths' spans; the numbers that would settle a route are the channel's centreline against the footprint for a handful of
+candidate pins, and the ground height along both sides of the channel where a join would land.
 
 ## Roads - final, nothing outstanding
 
