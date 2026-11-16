@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A mouth is filled with its own water, not just cut.** Taking the bar out of the drape's ring left the ring's bed
+          standing dry between the mouth's water and the drawn channel, so the Shire's north branch left the city and
+          stopped against air over a bed three blocks down. `Dressing.openMouth` now lays water over what it takes out, up
+          to the level the mouth carries the water out at and never above it, so what the cut leaves is the channel's own
+          water rather than a dry strip. **This is a drape change: run the drape again in an existing world.**
 - **Every drawn river the ground stands well over is a valley now, not a slot.** `ArdaMap`'s bank grading had only
           ever been given to the dale and, since the last change, to the Shire's branch; the same trench is cut wherever the
           mountain mask lifts the ground over a channel, because the water keeps the drawing's level and the hillside keeps

@@ -482,12 +482,14 @@ public final class Dressing {
         }
 
         /**
-         * Takes the ground out of the way of a mouth, leaving a bed under the water it carries out.
+         * Takes the ground out of the way of a mouth and lays the water back over it, leaving a bed under it.
          * <p>
          * Only the ring is cut, and only where the ground stands over the bed: a column that is already the drawn
          * river, or already under the water, is left exactly as it is, so the join is the drawing's own channel
-         * meeting the build's rather than a trench dug through the river to reach it. A tree in the way goes with the
-         * ground, as it does everywhere else the drape cuts.
+         * meeting the build's rather than a trench dug through the river to reach it. What is taken out is filled with
+         * water up to the level the mouth carries it out at, so the build's water and the drawing's meet as one sheet
+         * rather than along the dry strip a bare cut leaves. A tree in the way goes with the ground, as it does
+         * everywhere else the drape cuts.
          *
          * @return whether anything was taken out
          */
@@ -505,6 +507,13 @@ public final class Dressing {
                 level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
             }
             level.setBlock(new BlockPos(x, bed, z), skin, 2);
+            // A bed is not a gap. The cut stopped at the bed, with the mouth's water standing in the build behind it and
+            // the drawing's channel in front, so the two sheets met along a dry strip three blocks deep: the city's
+            // water had nowhere to go but over ground. Filled to the level the mouth carries it out at - no higher, so
+            // the fill can never stand as a wall of water - the strip is the channel's own water and the join is a join.
+            for (int y = bed + 1; y <= water; y++) {
+                level.setBlock(new BlockPos(x, y, z), Blocks.WATER.defaultBlockState(), 2);
+            }
             return true;
         }
 

@@ -122,8 +122,14 @@ fills the ground over a build's outflow dams it - but the ring's columns in fron
 column, so every one of them read as water and was left alone with it, and the country's own bank stood eight blocks
 out. `Dressing.openMouth` now takes the ring's ground out at a mouth: down to `CityCommands.MOUTH_DEPTH` (3) under the
 water's top where the ground stands over that bed, and untouched where the column is already the drawn river, so the join
-is the drawing's channel meeting the build's rather than a trench dug through the river to reach it. **This is a drape
-change, not a world change: `/tmcut drape hobbiton -700 87 -512` again in the existing world clears the bar.**
+is the drawing's channel meeting the build's rather than a trench dug through the river to reach it.
+
+**The gap in the water - filled by the same cut, 16 November.** The bar went, and left the bed behind it: the mouth's
+water stands in the build, the drawing's channel stands in the ring, and between them lay a strip three blocks deep with no
+water in it at all, so the branch came out of the north mouth and stopped. `openMouth` fills what it takes out back up to
+the level the mouth carries the water out at - never higher, so the fill cannot stand as a wall of water over the country
+- and the city's water and the drawing's are one sheet across it. **This is a drape change, not a world change: `/tmcut
+drape hobbiton -700 87 -512` again in the existing world clears the bar and fills the strip.**
 
 **The river's banks - a valley instead of a slot, every drawn river, 16 November.** The save showed the Shire's branch
 as a canal in a trench: its bed is cut under water the code reads from the village, and nothing was ever told to bring the
