@@ -4,7 +4,10 @@ The working state of the campaign, written so a session picking this up cold doe
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
-**Last touched:** 15 November 2026. The whole Gundabad line is walked and settled; chapter two is proven to page 32 and
+**Last touched:** 16 November 2026 - the Shire map is placed, cleared and draped in a test world, and the drawn
+river is rerouted round it. Read *The Shire map* below for exactly where that stands before touching any of it.
+
+The whole Gundabad line is walked and settled; chapter two is proven to page 32 and
 **paused** there; the road east of Glóin's camp is final with both bridges; the keep's placement is **on hold** until a
 brand-new world is drawn. Work stopped here to go to a side project.
 
@@ -30,82 +33,65 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | 6 | **Sign posts** | on hold | below, with the recipe |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
-| 9 | **The Shire map** - Hobbiton, cut and waiting on a location | cut, unsited | `run/hobbiton_art`; see below |
+| 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **join and drape unseen after the fixes** | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
 
-## The Shire map - cut 15 November 2026, waiting on a location
+## The Shire map - cut 15 November, placed 16 November 2026
 
-The player's own map `Hobbiton_Divici` is a hand-built Shire in its overworld, marked by four ammolite blocks at
-(‑456, 6, 276), (94, 6, 276), (‑456, 6, 743) and (94, 6, 743): **551 × 468 across, base y 6, content y 8…95**. Its
-palette is vanilla throughout - 148 names, no modded blocks at all - so nothing has to be remapped.
+**Where it stands.** The build is cut and in a test world at pin **(-700, 87, -512)**; `place`, `clear` and `drape` have
+all three been run on it and the drawn river has been rerouted round its footprint. What has **not** happened is any of
+this being looked at after the last two fixes: the drape now reads a village's outline from under its trees, and both of
+the village's river mouths are met by the mask. That is the next thing to see.
 
-It is cut whole into **`run/hobbiton_art`**: 143 pieces of 48-cube plus `hobbiton.parts`, **14 MB**, every block kept
-except the four markers (`cut_world.py --without tolkienmobs:block_ammolite`), verified block for block against a
-separate count of the world - 5,079,392 distinct positions on both sides, and the cut rendered top-down to confirm the
-village, the pond and the field strips came across whole. Nothing is in the jar yet; nothing is placed.
+**The pass, in order** (a cut lives in `<save>/tolkienmobs/cuts/<name>/`, or in the jar beside the city's):
 
-**What it needs next:** a location in Arda's Shire, which is cells 8…11 by 19…21 - **x −1024…1023, z −512…1023**, drawn
-at height 68 with ±4 of relief, its centre around **(0, 70, 255)**. The parts table's offsets run from the build's own
-north-west bottom corner, so the pin that goes into `Sites` is that corner: everything extends +551 east and +468 south
-of it. Once the pin is chosen the build wants a `Sites` entry and a placement pass like the gate's.
-
-**The build's own river can be joined to a drawn one.** The cut's water is a pond in its south-west quarter with two
-arms: one leaves its **west edge at local z ≈ 318**, one leaves its **south edge at local x ≈ 150…320**. Arda's west
-channel comes into the Shire at (-600, -512) and runs south-south-west. **The Shire stands at y 102 here, not the 68 its
-cells are painted at:** read in game at (-631, -436) the bank is grass at 102 and the block under the channel's surface
-is dirt at 100. Measured against the channel's own water, the height that puts the village's river level with it is
-**y 87** - the build's water sits 9 over its base, so the channel's surface there is 96 - and that brings the village's
-grass line (16 over its base) to **103, one block over the bank at 102**, which is as near as a build of its own height
-gets to sitting on the ground it was put on.
-
-A corner at **(-700, 87, -512)** puts the west arm's mouth four blocks east of the channel's east bank - a butt join,
-no digging. What it costs is the channel above it: the drawn river runs diagonally, so any 551 x 468 box that touches it
-anywhere buries some of it, and this one covers the stretch from z -512 down to z -265 under the plateau's north-west
-strip, 249 of the channel's cells. Pins further east buy the burial back at the price of a dug connector - **(-620, 87,
--512)** covers 80 of the 249 and wants an 84-block canal from the mouth, **(-600, 87, -500)** covers 32 and wants 104.
-The south arm still ends at the plateau's edge at world x -586…-436, z 22 - a waterfall, or a short dug run, is the
-choice there, as there is no drawn water on that side to meet.
-
-**Laying it needs no city.** `/tmcut` reads any cut from the world's own `tolkienmobs/cuts/<name>/` - or the jar's
-`data/tolkienmobs/structure/<name>/` - so a test world gets the map by copying `run/hobbiton_art` to
-`<save>/tolkienmobs/cuts/hobbiton/` and running `/tmcut table hobbiton` to read the box, then
-`/tmcut place hobbiton -700 87 -512`. Then `/tmcut clear hobbiton -700 87 -512` takes Arda's own ground back off the top
-of it: the hill, the trees and the drawn channel standing over the build come down to the build's own top column by
-column, so its shape reads against the terrain at a glance - the scar the player asked for, on purpose. It plants no
-marker and dresses no ground: what goes down is the cut's blocks
-and nothing else, which is what makes it the hand for asking this question rather than for shipping the map.
-
-**The pass, in order.** `place` lays the cut, `clear` strips the country back out of it, and `drape` dresses the ground
-round it - three words, all pointed at the same corner:
-
+    cp -r run/hobbiton_art "<save>/tolkienmobs/cuts/hobbiton"
+    /tmcut table hobbiton                  (143 pieces over 2 bands, x 0..550, z 0..467, y 0..89)
     /tmcut place hobbiton -700 87 -512
     /tmcut clear hobbiton -700 87 -512
     /tmcut drape hobbiton -700 87 -512
 
-`clear` takes two bites. Above the cut's own top it removes everything down to that top - the hill, the country's trees,
-the drawn channel standing in the air over a yard - and then, between the cut's top and its bottom, every position the
-cut leaves empty has the country taken out of it. That second half is what the first left behind: Arda's ground under
-the map's tree canopies, its gravel where an old bed reached the build's height, shelves of stone wherever a hillside
-crossed the build's surface. The cut's own blocks are never touched, and neither is the ground below the cut's base.
-`drape` is the city's own pass, generalised to read a cut that is not the city's: it settles the ring outside the
-footprint to the build's outline, easing back into the country over thirty-two blocks, and leaves edge water alone.
-**One thing it had to learn for a village:** the outline is the highest block the cut puts in each column, and in a
-wooded build that is a canopy - so the first pass filled the ring up to the leaves and stood a spire of stone beside
-every tree. `/tmcut drape` now takes its outline from the ground under the trees: leaves, logs, stems and hyphae are
-skipped while the outline is read. The city keeps the reading it always had, because nothing in its own cut is a tree.
+Anything drawn in `rivers.png` only reaches chunks generated **after** the edit, so a world that already holds the old
+course has to be replaced to see the reroute - and `drape` must run after `clear` in that new world, or its outline is
+the cut buried in Arda's ground.
 
-## The Shire river - rerouted 16 November 2026
+**What each word does.** `place` lays the pieces from the cut's own low corner, no rotation. `clear` takes two bites:
+everything above the cut's top comes off, then every position the cut leaves empty between its top and its bottom has
+the country taken out, so Arda's stone under the canopies and the gravel in the old bed go. `drape` is the city's own
+pass, generalised: it settles the ring outside the footprint to the build's outline, easing back over
+`Dressing.DRAPE_REACH` (32) blocks, and leaves water at the edge alone where it is the build's outflow.
 
-The drawn channel used to cross the footprint's north-west corner, and the village's own water left on two edges that
-met nothing: one dead-ending in the hillside, the other against the far wall of the build. `rivers.png` carries a bypass
-now. The channel bends west before the footprint, runs down at **x -762** - clear of the west wall by 20 to 44 blocks -
-and rejoins its old course at z -160. A tributary leaves the village's **south arm** (the mouth at x -586…-436 on the
-south edge at z -45), runs west along the foot of the terrace and joins the bypass at x -752, so the water that used to
-dead-end flows out into the river. The village's two mouths were read off the cut rather than guessed: **west, local z 309…336 = world z -203…-176**
-(28 wide), and **south, local x 466…522 = world x -234…-178** (56 wide). The first pass covered neither properly - the
-tributary stopped at x -470, a hundred blocks short of the south mouth - so the mask now carries a **spur** east from
-the bypass at z -190 into the west mouth (water reaching x -680, twenty blocks past the wall) and the tributary is
-**carried east to x -165**, so both mouths have drawn water in front of them instead of a bank. Only chunks generated after the edit carry any of it: the current test world already holds
-the old course, so this is seen in a fresh world.
+**What is still open.** The drape's two guards were written for the city: `OUTLET_LIFT` (24, water at the build's edge
+that is outflow) and `DECK_LIFT` (2, a floor tile over the planted corner). Hobbiton's floor is sixteen blocks over its
+base, so `DECK_LIFT` never fires - everything outside its walls is read as a roofline and may be cut. The open question
+is the straight band running down the middle of the water at the build's south edge: if it is the drawn channel's own
+edge showing through the wider carved river it is fine, and if it is the village's cut wall standing in the water then
+the drape needs a guard it does not have - never cut the ring below the country's own ground where the wall is water.
+
+**What has been checked, and what has not.** Every step compiled (`./gradlew compileJava -x createMinecraftArtifacts`)
+and the mask work was measured against the game's own 30% water threshold. None of the last round has been run in a
+world; the tree reading, the two joins and the drape's behaviour on a wooded build are all unseen.
+
+**The cut.** The player's own map `Hobbiton_Divici` is a hand-built Shire in its overworld, marked by four ammolite
+blocks at (‑456, 6, 276), (94, 6, 276), (‑456, 6, 743) and (94, 6, 743): **551 × 468 across, base y 6, content y 8…95**,
+palette vanilla throughout - 148 names, no modded blocks - so nothing had to be remapped. It is cut whole into
+`run/hobbiton_art`: 143 pieces of 48-cube plus `hobbiton.parts`, 14 MB, every block kept except the four markers
+(`cut_world.py --without tolkienmobs:block_ammolite`), verified block for block against a separate count of the world -
+5,079,392 distinct positions on both sides - and rendered top-down to confirm the village, the pond and the field strips
+came across whole.
+
+**The height.** The Shire stands at **y 102** where the build goes, not the 68 its cells are painted at: read in game at
+(-631, -436) the bank is grass at 102. Measured against the drawn channel's own water - 96 there - the pin is **(-700,
+87, -512)**: the build's water sits 9 over its base so it lands at 96, level with the channel, and its grass line (16
+over its base) at **103, one block over the bank**. Footprint x -700…-149, z -512…-45.
+
+**The river.** The cut's water is a pond in its south-west quarter with two arms leaving it: **west at local z 309…336**
+(world z -203…-176, 28 wide) and **south at local x 466…522** (world x -234…-178, 56 wide). The drawn channel used to
+cross the footprint's north-west corner and be buried by the village, so `rivers.png` carries a bypass: the channel bends
+west before the footprint, runs down at **x -762** - clear of the west wall by 20 to 44 blocks - and rejoins its old
+course at z -160. A **spur** leaves the bypass at z -190 into the west mouth, its water reaching x -680, twenty blocks
+past the wall. A **tributary** runs from the bypass east along the foot of the terrace to **x -165**, covering the whole
+south mouth, which is the dead end that used to be there. Drawn at eight blocks to the pixel with the map's own falloff
+and measured against the game's 30% water threshold.
 
 ## Roads - final, nothing outstanding
 
