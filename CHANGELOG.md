@@ -3697,3 +3697,20 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   the four markers, checked against an independent count of the world (5,079,392 distinct positions on both sides) and
   rendered top-down to see the village, the pond and the field strips come across whole. Nothing ships and nothing is
   placed: it waits on a pin in Arda's Shire, whose cells are x -1024 to 1023 and z -512 to 1023.
+
+- **A cut that is not the city can be laid from a corner.** `CityCommands` stands Rivendell up and knows it by heart -
+  the folder a re-cut is worked out in, the table the pieces are listed in, the jar path they are read from and the
+  dressing that settles the valley's ground to its walls are four constants with the city's name on them - so any other
+  build, cut the same way into 48-cubes with a `.parts` table beside it, could only be looked at by renaming it to
+  `rivendell` and dropping it into a copy of a save, which also dragged in the drape, the apron and the outflow pass: three
+  passes tuned to that one city and answerable to nothing about this one. `CutCommands` is the plain hand for the plain
+  case. `/tmcut list` says what cuts a world is holding; `/tmcut table <cut>` reads one's table and reports its pieces,
+  its bands and its box without laying a block; `/tmcut place <cut> [x y z]` lays every piece of one from a corner,
+  lowest band first, with the corner read as the cut's own low corner the way a pin is - so a table whose offsets start
+  at zero and one whose offsets start forty blocks in both land their north-west bottom block on the block named. Given
+  no corner it uses the caller's feet on the ground, which suits a shed and not a map, and says so. A cut is a folder of
+  pieces and a `<cut>.parts` table, read from the save's own `tolkienmobs/cuts` so a build under test travels with its
+  world, and from the jar's `data/tolkienmobs/structure` beside the city's so a shipped cut needs nothing beside it, jar
+  first so a folder left over from an older cut cannot quietly win. It plants no marker, dresses no ground, stands nobody
+  and opens no road: what it lays is the blocks that were cut, which is what makes it the tool for putting a map down to
+  look at a question of rivers rather than for shipping one. Compiles; nothing of it has been run in game.

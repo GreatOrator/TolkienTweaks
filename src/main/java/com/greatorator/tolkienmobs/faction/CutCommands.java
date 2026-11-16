@@ -1,0 +1,348 @@
+package com.greatorator.tolkienmobs.faction;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.storage.LevelResource;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
+import java.util.stream.Stream;
+
+import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+
+/**
+ * The hand for laying a cut that is not the city.
+ * <p>
+ * {@code /tmcity} stands Rivendell up, and it knows the city by heart: the folder its re-cuts are worked out in, the
+ * table its pieces are listed in, the cut in the jar it is read from, and the dressing that settles the valley's ground
+ * to its walls are four constants and a name. That is the right shape for a cut the pack ships and the campaign walks
+ * through, and the wrong shape for the thing this exists for: any other build, cut the same way into 48-cubes with a
+ * {@code .parts} table beside it, put down somewhere to be looked at. Before this, doing that meant renaming a build to
+ * {@code rivendell} and dropping it into a copy of the save, which also drags in the drape, the apron and the outflow
+ * pass - three things tuned to that one city and answerable to nothing about this one.
+ * <p>
+ * So this is the plain hand, with three words and no opinion about what it is laying: {@code list}, which says what
+ * cuts the world is holding; {@code table}, which reads one and says how big it is without laying a block of it; and
+ * {@code place}, which lays every piece of one from a corner. It plants no marker, dresses no ground, stands nobody and
+ * opens no road - a cut laid with it is exactly the blocks that were cut, which is what makes it usable for asking
+ * questions of a map rather than for putting a city in a world.
+ * <p>
+ * A cut is a folder: the pieces, named as the cutter named them, and a table called {@code <cut>.parts} listing each
+ * one's offset and its own size, lowest band first. It is read from the world's own {@code tolkienmobs/cuts} folder, so
+ * a build under test can be dropped into a save that travels with it, and from the jar's {@code
+ * data/tolkienmobs/structure} beside the city's, so a cut that ships needs nothing beside it. The jar is asked first
+ * for the same reason the city's is: a folder left over from an older cut cannot quietly win.
+ * <p>
+ * The corner is the cut's own low corner, in the frame the pieces were cut against rather than in the frame of whoever
+ * cut them: a table that starts its offsets at zero and a table that starts them at minus forty both land their
+ * north-west bottom block on the block the caller names. Given no corner, it uses the caller's feet on the ground under
+ * them, which is the right answer for a building and the wrong one for a map: a build four hundred blocks across laid
+ * at whatever height the caller was standing leaves half of itself under the ground and half of it in the air, so a
+ * pinned height is worth typing.
+ */
+@EventBusSubscriber(modid = MODID)
+public final class CutCommands {
+    /** Gamemaster-level operators, and anyone building in creative. */
+    private static final Predicate<CommandSourceStack> MAY_BUILD = source -> {
+        ServerPlayer player = source.getPlayer();
+        return (player != null && player.isCreative())
+                || Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source);
+    };
+
+    /** Where a world keeps the cuts of its own: one folder per cut, in the save. */
+    private static final String FOLDER = "cuts";
+    /** Where a cut ships: one folder per cut, beside the city's own, in the jar. */
+    private static final String JAR_CUT = "/data/tolkienmobs/structure/";
+    /** The table inside a cut's folder that says where each piece stands and how big it is. */
+    private static final String TABLE = ".parts";
+    /** A piece this wide and this tall is one the cutter wrote no size for. */
+    private static final int TILE = 48;
+    /** Templates already read this session, keyed by cut and piece, so a cut laid twice is parsed once. */
+    private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
+
+    private CutCommands() {
+    }
+
+    /** One piece: its file, where its corner sits in the frame the cut was taken in, and its own size. */
+    record Part(String name, int dx, int dy, int dz, int wide, int deep, int tall) {
+        /** A piece out of a cut that did not write its sizes was one whole tile each way. */
+        Part(String name, int dx, int dy, int dz) {
+            this(name, dx, dy, dz, TILE, TILE, TILE);
+        }
+    }
+
+    /** The ground a cut covers once its corner is planted, in world coordinates. */
+    record Box(int lowX, int lowY, int lowZ, int highX, int highY, int highZ) {
+        static Box of(List<Part> parts, BlockPos corner) {
+            int lowX = parts.stream().mapToInt(Part::dx).min().orElse(0);
+            int lowY = parts.stream().mapToInt(Part::dy).min().orElse(0);
+            int lowZ = parts.stream().mapToInt(Part::dz).min().orElse(0);
+            int highX = parts.stream().mapToInt(part -> part.dx() + part.wide() - 1).max().orElse(0);
+            int highY = parts.stream().mapToInt(part -> part.dy() + part.tall() - 1).max().orElse(0);
+            int highZ = parts.stream().mapToInt(part -> part.dz() + part.deep() - 1).max().orElse(0);
+            return new Box(corner.getX() + lowX, corner.getY() + lowY, corner.getZ() + lowZ,
+                    corner.getX() + highX, corner.getY() + highY, corner.getZ() + highZ);
+        }
+
+        /** The box as a sentence, in the order a person reads a map: across, then depth, then height. */
+        String spoken() {
+            return "x " + lowX + " to " + highX + ", z " + lowZ + " to " + highZ
+                    + ", y " + lowY + " to " + highY;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRegisterCommands(RegisterCommandsEvent event) {
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+        dispatcher.register(Commands.literal("tmcut")
+                .requires(MAY_BUILD)
+                .then(Commands.literal("list").executes(CutCommands::list))
+                .then(Commands.literal("table")
+                        .then(Commands.argument("cut", StringArgumentType.word())
+                                .executes(CutCommands::table)))
+                .then(Commands.literal("place")
+                        .then(Commands.argument("cut", StringArgumentType.word())
+                                .executes(context -> place(context, null))
+                                .then(Commands.argument("corner", BlockPosArgument.blockPos())
+                                        .executes(context -> place(context, BlockPosArgument.getBlockPos(context, "corner")))))));
+    }
+
+    /** Says which cuts this world is holding: the folders in the save, one cut each. */
+    private static int list(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        Path folder = folder(source.getLevel());
+        List<String> names = new ArrayList<>();
+        try {
+            if (Files.isDirectory(folder)) {
+                try (Stream<Path> walk = Files.list(folder)) {
+                    walk.filter(Files::isDirectory)
+                            .map(path -> path.getFileName().toString())
+                            .sorted()
+                            .forEach(names::add);
+                }
+            }
+        } catch (IOException failed) {
+            source.sendFailure(Component.literal("The world's cuts could not be read: " + failed.getMessage()));
+            return 0;
+        }
+        if (names.isEmpty()) {
+            source.sendSuccess(() -> Component.literal("No cuts in " + folder
+                    + " - drop a cut in there as one folder holding its pieces and its .parts table."), false);
+            return 0;
+        }
+        String spoken = String.join(", ", names);
+        source.sendSuccess(() -> Component.literal("Cuts in this world: " + spoken
+                + ". /tmcut table <cut> reads one, /tmcut place <cut> lays it."), false);
+        return names.size();
+    }
+
+    /** Reads a cut's table and says how big it is, without laying a block of it. */
+    private static int table(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        String name = StringArgumentType.getString(context, "cut");
+        try {
+            List<Part> parts = parts(source.getLevel(), name);
+            if (parts.isEmpty()) {
+                source.sendFailure(Component.literal(noTable(source.getLevel(), name)));
+                return 0;
+            }
+            Box box = Box.of(parts, BlockPos.ZERO);
+            String spoken = box.spoken();
+            int pieces = parts.size();
+            int bands = bands(parts).size();
+            source.sendSuccess(() -> Component.literal(name + ": " + pieces + " pieces over " + bands
+                    + " bands, " + spoken + " from its own corner. /tmcut place " + name
+                    + " <x> <y> <z> lays it there."), false);
+            return pieces;
+        } catch (IOException failed) {
+            source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
+            return 0;
+        }
+    }
+
+    /**
+     * Lays every piece of a cut from a corner, lowest band first, in one word.
+     * <p>
+     * A corner given is the cut's own low corner, and the cut's lowest offsets are taken off it exactly as the city's
+     * planting takes them off a pin: a table that starts its offsets at zero lands its north-west bottom block on the
+     * block named, and so does one that starts them forty blocks in. A corner not given is the caller's feet at the
+     * ground under them, which suits a shed and not a map, so the height is worth typing when the height matters.
+     */
+    private static int place(CommandContext<CommandSourceStack> context, BlockPos corner) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getLevel();
+        String name = StringArgumentType.getString(context, "cut");
+        try {
+            List<Part> parts = parts(level, name);
+            if (parts.isEmpty()) {
+                source.sendFailure(Component.literal(noTable(level, name)));
+                return 0;
+            }
+            BlockPos pointed = corner;
+            if (pointed == null) {
+                BlockPos feet = BlockPos.containing(source.getPosition());
+                int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, feet.getX(), feet.getZ());
+                pointed = new BlockPos(feet.getX(), groundY, feet.getZ());
+            }
+            BlockPos planted = new BlockPos(pointed.getX() - lowest(parts, Part::dx),
+                    pointed.getY() - lowest(parts, Part::dy),
+                    pointed.getZ() - lowest(parts, Part::dz));
+            Box box = Box.of(parts, planted);
+            if (box.highY() >= level.getMaxY()) {
+                int tall = box.highY() - box.lowY() + 1;
+                int overflow = box.highY() - level.getMaxY() + 1;
+                source.sendFailure(Component.literal("That is " + tall + " blocks tall, so " + overflow
+                        + " of it stand above the sky and cannot be laid. Place the corner at y "
+                        + (level.getMaxY() - tall) + " or lower to stand all of it."));
+            }
+            for (Part part : parts) {
+                lay(level, name, part, planted);
+            }
+            String spoken = box.spoken();
+            int pieces = parts.size();
+            source.sendSuccess(() -> Component.literal("Laid " + pieces + " pieces of " + name + ": " + spoken
+                    + ". Nothing was dressed, planted or stood - the cut is the blocks that were cut."), true);
+            return pieces;
+        } catch (IOException failed) {
+            source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
+            return 0;
+        }
+    }
+
+    /** The lowest a table's offsets go on one axis. */
+    private static int lowest(List<Part> parts, ToIntFunction<Part> axis) {
+        return parts.stream().mapToInt(axis).min().orElse(0);
+    }
+
+    /** One piece, with its chunks made first: a chunk that is not loaded cannot take blocks. */
+    private static void lay(ServerLevel level, String cut, Part part, BlockPos origin) throws IOException {
+        StructureTemplate template = template(level, cut, part.name());
+        BlockPos at = origin.offset(part.dx(), part.dy(), part.dz());
+        for (int dx = 0; dx < part.wide(); dx += 16) {
+            for (int dz = 0; dz < part.deep(); dz += 16) {
+                level.getChunk((at.getX() + dx) >> 4, (at.getZ() + dz) >> 4);
+            }
+        }
+        // The piece is clipped to the sky it stands under rather than trusted to fit it, which is the same clip the
+        // city's own laying makes and for the same reason: a block written above the ceiling is dropped without a word,
+        // and its block entity is not.
+        if (at.getY() >= level.getMaxY()) return;
+        StructurePlaceSettings settings = new StructurePlaceSettings();
+        settings.setBoundingBox(new BoundingBox(at.getX(), Math.max(at.getY(), level.getMinY()), at.getZ(),
+                at.getX() + part.wide() - 1, Math.min(at.getY() + part.tall() - 1, level.getMaxY() - 1),
+                at.getZ() + part.deep() - 1));
+        template.placeInWorld(level, at, at, settings, level.getRandom(), 2);
+    }
+
+    /** A piece's template, read from the cut the first time it is asked for. */
+    private static StructureTemplate template(ServerLevel level, String cut, String piece) throws IOException {
+        String key = cut + "/" + piece;
+        StructureTemplate cached = LOADED.get(key);
+        if (cached != null) return cached;
+        CompoundTag tag;
+        try (InputStream in = open(level, cut, piece)) {
+            if (in == null) throw new IOException("no " + piece + " in the " + cut + " cut");
+            tag = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
+        }
+        StructureTemplate template = new StructureTemplate();
+        template.load(level.holderLookup(Registries.BLOCK), tag);
+        LOADED.put(key, template);
+        return template;
+    }
+
+    /** One file of a cut, from the jar first and the world's own folder second, or nothing at all. */
+    private static InputStream open(ServerLevel level, String cut, String file) throws IOException {
+        InputStream packed = CutCommands.class.getResourceAsStream(JAR_CUT + cut + "/" + file);
+        if (packed != null) return packed;
+        Path loose = folder(level).resolve(cut).resolve(file);
+        return Files.isRegularFile(loose) ? Files.newInputStream(loose) : null;
+    }
+
+    /** A cut's table, read in the order it is laid: lowest band first, then a sweep across it. */
+    static List<Part> parts(ServerLevel level, String cut) throws IOException {
+        List<Part> parts = new ArrayList<>();
+        try (InputStream in = open(level, cut, cut + TABLE)) {
+            if (in == null) return parts;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            for (String line : reader.lines().toList()) {
+                String[] fields = line.trim().split("\\s+");
+                if (fields.length < 4) continue;
+                try {
+                    parts.add(new Part(fields[0], Integer.parseInt(fields[1]),
+                            Integer.parseInt(fields[2]), Integer.parseInt(fields[3]),
+                            size(fields, 4), size(fields, 5), size(fields, 6)));
+                } catch (NumberFormatException skipped) {
+                    // A line that is not a piece is not a reason to refuse the rest of the cut.
+                }
+            }
+        }
+        parts.sort((left, right) -> {
+            if (left.dy() != right.dy()) return Integer.compare(left.dy(), right.dy());
+            if (left.dz() != right.dz()) return Integer.compare(left.dz(), right.dz());
+            return Integer.compare(left.dx(), right.dx());
+        });
+        return parts;
+    }
+
+    /** A size out of the table, or a whole tile when the line does not carry one. */
+    private static int size(String[] fields, int at) {
+        if (fields.length <= at) return TILE;
+        try {
+            return Math.max(1, Math.min(TILE, Integer.parseInt(fields[at])));
+        } catch (NumberFormatException notANumber) {
+            return TILE;
+        }
+    }
+
+    /** The heights the pieces sit at, lowest first: one of these is one band of the cut. */
+    private static List<Integer> bands(List<Part> parts) {
+        List<Integer> heights = new ArrayList<>();
+        for (Part part : parts) {
+            if (!heights.contains(part.dy())) heights.add(part.dy());
+        }
+        heights.sort(Integer::compareTo);
+        return heights;
+    }
+
+    /** What to say when a cut is not where it was asked for. */
+    private static String noTable(ServerLevel level, String cut) {
+        return "No cut named " + cut + " - no " + cut + TABLE + " in " + folder(level).resolve(cut)
+                + " nor in the jar's " + JAR_CUT + cut + ". /tmcut list says what this world is holding.";
+    }
+
+    /** This world's own folder for cuts: the save's, because a cut laid in a world belongs to that world. */
+    static Path folder(ServerLevel level) {
+        return level.getServer().getWorldPath(LevelResource.ROOT).resolve(MODID).resolve(FOLDER);
+    }
+}

@@ -48,6 +48,22 @@ at height 68 with ±4 of relief, its centre around **(0, 70, 255)**. The parts t
 north-west bottom corner, so the pin that goes into `Sites` is that corner: everything extends +551 east and +468 south
 of it. Once the pin is chosen the build wants a `Sites` entry and a placement pass like the gate's.
 
+**The build's own river can be joined to a drawn one.** The cut's water is a pond in its south-west quarter with two
+arms: one leaves its **west edge at local z ≈ 318**, one leaves its **south edge at local x ≈ 150…320**. Arda's west
+channel comes into the Shire at (-600, -512) and runs south-south-west, its east waterline at x -728 by z -128, so a
+corner at **(-736, y, -446)** puts the west arm's mouth eight blocks off that bank and leaves the drawn channel
+outside the footprint - the box opens away east of it, so no drawn water is buried. Pin **y 52** puts the build's
+grass line (16 over its base) on Arda's plain and its water (9 over its base) at 61, about where a drawn channel's
+surface sits; the drawn channel's own level has not been read in game, so the height is the one number still to
+confirm. The south arm still ends at the plateau's edge at world x -586…-436, z 22 - a waterfall, or a short dug
+run, is the choice there, as there is no drawn water on that side to meet.
+
+**Laying it needs no city.** `/tmcut` reads any cut from the world's own `tolkienmobs/cuts/<name>/` - or the jar's
+`data/tolkienmobs/structure/<name>/` - so a test world gets the map by copying `run/hobbiton_art` to
+`<save>/tolkienmobs/cuts/hobbiton/` and running `/tmcut table hobbiton` to read the box, then
+`/tmcut place hobbiton -736 52 -446`. It plants no marker and dresses no ground: what goes down is the cut's blocks
+and nothing else, which is what makes it the hand for asking this question rather than for shipping the map.
+
 ## Roads - final, nothing outstanding
 
 Laid, raised and called right in game:
