@@ -11,11 +11,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -32,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +55,12 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * {@code rivendell} and dropping it into a copy of the save, which also drags in the drape, the apron and the outflow
  * pass - three things tuned to that one city and answerable to nothing about this one.
  * <p>
- * So this is the plain hand, with three words and no opinion about what it is laying: {@code list}, which says what
- * cuts the world is holding; {@code table}, which reads one and says how big it is without laying a block of it; and
- * {@code place}, which lays every piece of one from a corner. It plants no marker, dresses no ground, stands nobody and
- * opens no road - a cut laid with it is exactly the blocks that were cut, which is what makes it usable for asking
- * questions of a map rather than for putting a city in a world.
+ * So this is the plain hand, with four words and no opinion about what it is laying: {@code list}, which says what
+ * cuts the world is holding; {@code table}, which reads one and says how big it is without laying a block of it;
+ * {@code place}, which lays every piece of one from a corner; and {@code clear}, which takes the world's own ground back
+ * off the top of a cut that is already standing. It plants no marker, dresses no ground, stands nobody and opens no
+ * road - a cut laid with it is exactly the blocks that were cut, which is what makes it usable for asking questions of
+ * a map rather than for putting a city in a world.
  * <p>
  * A cut is a folder: the pieces, named as the cutter named them, and a table called {@code <cut>.parts} listing each
  * one's offset and its own size, lowest band first. It is read from the world's own {@code tolkienmobs/cuts} folder, so
@@ -90,6 +94,8 @@ public final class CutCommands {
     private static final int TILE = 48;
     /** Templates already read this session, keyed by cut and piece, so a cut laid twice is parsed once. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
+    /** The height of a cut's own top in each of its columns, keyed by cut, so a sky is cleared off one answer. */
+    private static final Map<String, int[]> TOPS = new HashMap<>();
 
     private CutCommands() {
     }
@@ -135,7 +141,12 @@ public final class CutCommands {
                         .then(Commands.argument("cut", StringArgumentType.word())
                                 .executes(context -> place(context, null))
                                 .then(Commands.argument("corner", BlockPosArgument.blockPos())
-                                        .executes(context -> place(context, BlockPosArgument.getBlockPos(context, "corner")))))));
+                                        .executes(context -> place(context, BlockPosArgument.getBlockPos(context, "corner"))))))
+                .then(Commands.literal("clear")
+                        .then(Commands.argument("cut", StringArgumentType.word())
+                                .executes(context -> clear(context, null))
+                                .then(Commands.argument("corner", BlockPosArgument.blockPos())
+                                        .executes(context -> clear(context, BlockPosArgument.getBlockPos(context, "corner")))))));
     }
 
     /** Says which cuts this world is holding: the folders in the save, one cut each. */
@@ -209,12 +220,7 @@ public final class CutCommands {
                 source.sendFailure(Component.literal(noTable(level, name)));
                 return 0;
             }
-            BlockPos pointed = corner;
-            if (pointed == null) {
-                BlockPos feet = BlockPos.containing(source.getPosition());
-                int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, feet.getX(), feet.getZ());
-                pointed = new BlockPos(feet.getX(), groundY, feet.getZ());
-            }
+            BlockPos pointed = corner == null ? feetOnGround(level, source) : corner;
             BlockPos planted = new BlockPos(pointed.getX() - lowest(parts, Part::dx),
                     pointed.getY() - lowest(parts, Part::dy),
                     pointed.getZ() - lowest(parts, Part::dz));
@@ -238,6 +244,158 @@ public final class CutCommands {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
             return 0;
         }
+    }
+
+    /**
+     * Clears the air over a cut that is already standing: every block above the cut's own top, down to the cut.
+     * <p>
+     * A build laid into a country that has already drawn its ground arrives interred. A hill over the village's grass,
+     * a stand of trees over its roofs and, where a drawn river crosses the footprint, a channel of water standing in the
+     * air over a yard - none of that is wrong, and none of it can be read against the ground it came with until it is
+     * off. This takes it off: column by column inside the footprint, from whatever the country's own surface is down to
+     * the highest block the cut puts in that column, and no lower. The cut's shape is what survives, so its roads and
+     * roofs and trees stay where they were cut, and the country is cut away rather than filled - which leaves the wall
+     * round the edge and the scar the caller asked for, and is the point of it: what the build does against the ground it
+     * was put on can be seen at a glance instead of inferred from a hole.
+     * <p>
+     * The top is read from the cut rather than from the world, because the world's own column now holds both: every
+     * piece's blocks are walked once and the highest of them is that column's ceiling. A column the cut leaves empty is
+     * left alone - there is nothing there to say how high the air above it should be cleared to.
+     */
+    private static int clear(CommandContext<CommandSourceStack> context, BlockPos corner) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getLevel();
+        String name = StringArgumentType.getString(context, "cut");
+        try {
+            List<Part> parts = parts(level, name);
+            if (parts.isEmpty()) {
+                source.sendFailure(Component.literal(noTable(level, name)));
+                return 0;
+            }
+            BlockPos pointed = corner == null ? feetOnGround(level, source) : corner;
+            BlockPos planted = new BlockPos(pointed.getX() - lowest(parts, Part::dx),
+                    pointed.getY() - lowest(parts, Part::dy),
+                    pointed.getZ() - lowest(parts, Part::dz));
+            Box box = Box.of(parts, planted);
+            int wide = box.highX() - box.lowX() + 1;
+            int deep = box.highZ() - box.lowZ() + 1;
+            int[] tops = tops(level, name, parts);
+            int columns = 0;
+            int deepest = 0;
+            long removed = 0L;
+            BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
+            for (int xi = 0; xi < wide; xi++) {
+                int x = box.lowX() + xi;
+                for (int zi = 0; zi < deep; zi++) {
+                    int z = box.lowZ() + zi;
+                    int top = tops[zi * wide + xi];
+                    if (top == Integer.MIN_VALUE) continue;
+                    level.getChunk(x >> 4, z >> 4);
+                    int ceiling = planted.getY() + top;
+                    int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+                    int taken = 0;
+                    for (int y = surface; y > ceiling; y--) {
+                        at.set(x, y, z);
+                        if (level.getBlockState(at).isAir()) continue;
+                        level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                        taken++;
+                    }
+                    if (taken > 0) {
+                        columns++;
+                        removed += taken;
+                        deepest = Math.max(deepest, taken);
+                    }
+                }
+            }
+            int cleared = columns;
+            int most = deepest;
+            long gone = removed;
+            source.sendSuccess(() -> Component.literal("Cleared the air over " + name + ": " + cleared
+                    + " columns cut back to the build, " + gone + " blocks removed, " + most
+                    + " deep at the worst."), true);
+            return cleared;
+        } catch (IOException failed) {
+            source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
+            return 0;
+        }
+    }
+
+    /**
+     * The tallest block of a cut in each of its columns, as a height over the cut's own low corner.
+     * <p>
+     * Walked once per cut and kept: a hundred and forty pieces is five million blocks, and the answer cannot change
+     * while a world is running, so the second clearing of the same cut is a lookup.
+     */
+    private static int[] tops(ServerLevel level, String cut, List<Part> parts) throws IOException {
+        int[] cached = TOPS.get(cut);
+        if (cached != null) return cached;
+        int lowX = lowest(parts, Part::dx);
+        int lowY = lowest(parts, Part::dy);
+        int lowZ = lowest(parts, Part::dz);
+        int wide = parts.stream().mapToInt(part -> part.dx() + part.wide() - lowX).max().orElse(0);
+        int deep = parts.stream().mapToInt(part -> part.dz() + part.deep() - lowZ).max().orElse(0);
+        int[] tops = new int[wide * deep];
+        Arrays.fill(tops, Integer.MIN_VALUE);
+        for (Part part : parts) {
+            CompoundTag piece = raw(level, cut, part.name());
+            // The cut is written one palette to a piece, and a piece of a newer cut may carry several; both shapes are
+            // read here because the table says nothing about which one the file has. The blocks are taken straight out
+            // of the file rather than through a template, so nothing is placed, lit or loaded to find out how tall it is.
+            ListTag palettes = piece.getList("palettes").orElseGet(ListTag::new);
+            if (palettes.size() > 0) {
+                for (int i = 0; i < palettes.size(); i++) {
+                    CompoundTag palette = palettes.getCompoundOrEmpty(i);
+                    heights(palette.getList("palette").orElseGet(ListTag::new),
+                            palette.getList("blocks").orElseGet(ListTag::new),
+                            part, lowX, lowY, lowZ, wide, deep, tops);
+                }
+            } else {
+                heights(piece.getList("palette").orElseGet(ListTag::new),
+                        piece.getList("blocks").orElseGet(ListTag::new),
+                        part, lowX, lowY, lowZ, wide, deep, tops);
+            }
+        }
+        TOPS.put(cut, tops);
+        return tops;
+    }
+
+    /** One palette's blocks, read out of the file: the highest block standing in each column is the one that wins. */
+    private static void heights(ListTag palette, ListTag blocks, Part part, int lowX, int lowY, int lowZ,
+                                int wide, int deep, int[] tops) {
+        String[] names = new String[palette.size()];
+        for (int i = 0; i < palette.size(); i++) {
+            names[i] = palette.getCompoundOrEmpty(i).getStringOr("Name", "");
+        }
+        for (int i = 0; i < blocks.size(); i++) {
+            CompoundTag block = blocks.getCompoundOrEmpty(i);
+            int state = block.getIntOr("state", 0);
+            if (state < 0 || state >= names.length) continue;
+            String name = names[state];
+            if (name.endsWith(":air") || name.endsWith("cave_air") || name.endsWith("void_air")) continue;
+            ListTag pos = block.getList("pos").orElseGet(ListTag::new);
+            if (pos.size() < 3) continue;
+            int x = part.dx() - lowX + pos.getIntOr(0, 0);
+            int y = part.dy() - lowY + pos.getIntOr(1, 0);
+            int z = part.dz() - lowZ + pos.getIntOr(2, 0);
+            if (x < 0 || x >= wide || z < 0 || z >= deep) continue;
+            int at = z * wide + x;
+            if (y > tops[at]) tops[at] = y;
+        }
+    }
+
+    /** One file of a cut as the NBT it was written as. */
+    private static CompoundTag raw(ServerLevel level, String cut, String piece) throws IOException {
+        try (InputStream in = open(level, cut, piece)) {
+            if (in == null) throw new IOException("no " + piece + " in the " + cut + " cut");
+            return NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
+        }
+    }
+
+    /** The caller's feet on the ground under them: the corner a cut is laid at when none is named. */
+    private static BlockPos feetOnGround(ServerLevel level, CommandSourceStack source) {
+        BlockPos feet = BlockPos.containing(source.getPosition());
+        int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, feet.getX(), feet.getZ());
+        return new BlockPos(feet.getX(), groundY, feet.getZ());
     }
 
     /** The lowest a table's offsets go on one axis. */
