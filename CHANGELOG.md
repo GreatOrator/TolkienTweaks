@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Every drawn river the ground stands well over is a valley now, not a slot.** `ArdaMap`'s bank grading had only
+          ever been given to the dale and, since the last change, to the Shire's branch; the same trench is cut wherever the
+          mountain mask lifts the ground over a channel, because the water keeps the drawing's level and the hillside keeps
+          the mask's. `ArdaMap.buildRiverBanks` now grows one raster for the whole world from every cell drawn as river
+          water - lakes left to `SHORE_CUT`, the dale's own water left to `daleBank`, and the lower of the two ceilings
+          taken where they overlap so nothing is graded twice near Rivendell - rising at a rate read per channel from the
+          tallest country `RIVER_SAMPLE` (96) blocks round its water, between 3 and 16 blocks a cell, and reaching
+          `RIVER_BANK` (192) blocks out, far enough that the deepest crossing in the world closes before its rim.
+          `shireBank` and the branch's own half-width constants are gone; the Shire's level rule and the dale are
+          untouched. Ordinary drawn rivers measure 1 to 10 blocks under the ceiling on both banks and are not moved at
+          all. **This is world generation: chunks made before it keep the old ground.**
 - **The orc pieces stand on stone, not grass.** All nine templates in `structure/orcs` had their `grass_block` palette
           entry changed to `minecraft:stone` - the courtyard's own block - with the grass block's `snowy` property dropped
           rather than carried onto a block that has none. They were cut in grass country and read as green squares set down

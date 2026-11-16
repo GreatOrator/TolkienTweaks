@@ -237,6 +237,26 @@ final class ArdaMasks {
     }
 
     /**
+     * Whether the drawing marks a cell as river water, a cell at a time and lakes aside.
+     * <p>
+     * {@link #waterCell} answers for rivers and lakes together, which is what the bank a lake keeps its water with
+     * wants. A river's valley is grown from its channel, and a lake's shore is graded by a rule of its own, so the
+     * growing needs the rivers alone or every lake in the world would have a river's valley cut round it.
+     */
+    static boolean riverCell(int column, int row) {
+        if (column < 0 || column >= WIDTH || row < 0 || row >= HEIGHT) {
+            return false;
+        }
+        int fineColumn = Math.floorDiv(column * BLOCKS + WEST - BRUINEN_WEST, BRUINEN_BLOCKS);
+        int fineRow = Math.floorDiv(row * BLOCKS + NORTH - BRUINEN_NORTH, BRUINEN_BLOCKS);
+        if (fineColumn >= 0 && fineColumn < BRUINEN_WIDE && fineRow >= 0 && fineRow < BRUINEN_DEEP
+                && BRUINEN[fineRow * BRUINEN_WIDE + fineColumn]) {
+            return true;
+        }
+        return RIVERS.length != 0 && (RIVERS[row * WIDTH + column] & 0xFF) >= WATER * 255.0D;
+    }
+
+    /**
      * How far each cell of drawn water runs from the ford by the water's own way, on both halves of the
      * river: 0 for water the dale does not reach, and the run in cells plus one otherwise.
      * <p>

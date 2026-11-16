@@ -125,16 +125,35 @@ water's top where the ground stands over that bed, and untouched where the colum
 is the drawing's channel meeting the build's rather than a trench dug through the river to reach it. **This is a drape
 change, not a world change: `/tmcut drape hobbiton -700 87 -512` again in the existing world clears the bar.**
 
-**The branch's banks - a valley instead of a slot, 16 November.** The save showed the branch as a canal in a trench: its
-bed is cut under water the code reads from the village, and nothing else was ever told to bring the hillside down to it,
-because a drawn river normally stands at the height of the ground it is drawn on and its banks are the country. `ArdaMap`
-now has `shireBank`, the other half of the cut: from the water's own edge, a shelf of `SHIRE_SHELF` (4) at water + 1,
-then the hillside at `SHIRE_SHOULDER` (a half block per block) until it is the country's own again, reaching no further
-than `SHIRE_BANK` (96) out, with a couple of blocks of roll so the shoulder is not a cone. Measured on the drawn ground
-against the ceiling: at (-270, 40), water 93, the ground comes down from 105 to 94 at the bank and climbs 94…104…108 over
-sixty blocks to the country's 108; at (-450, 140), water 88, from 112 down to 89 and back to 109 over seventy; at
-(-650, 210), water 83, from 97 to 84 and back to the country's 94 within fifty. Every section closes at the country's own
-height, so the rim is the drawing's rather than a step. **This is world generation: it needs chunks made after it.**
+**The river's banks - a valley instead of a slot, every drawn river, 16 November.** The save showed the Shire's branch
+as a canal in a trench: its bed is cut under water the code reads from the village, and nothing was ever told to bring the
+hillside down to it, because a drawn river normally stands at the height of the ground it is drawn on and its banks are the
+country. That is only true where the channel's level is the drawing's own, though: the same trench is cut wherever the
+mountain mask lifts the ground over a river, and by the same cause. So `ArdaMap.riverBank` is the other half of every such
+cut - the dale's `daleBank` with the water's own edge taken out of it.
+
+It is a raster of the whole map, grown out from every cell the drawing marks as river water (lakes aside: their shore has
+`SHORE_CUT` of its own) one cell at a time, seeded at water + 1 and rising `RIVER_STEEP_MIN`…`RIVER_STEEP_MAX` (3…16
+blocks a cell, a third of a block to two per block of run) until the ground beside it is the country's own again, never
+further than `RIVER_BANK` (192) out. One rate could not serve both ends: at a half a block per block a valley fifty deep
+wants a hundred blocks of run, and a channel the mask has lifted two hundred blocks of ground over wants four hundred, so
+the reach would either leave a face standing at its own rim or bite a quarter of a cell into every river in the world. The
+rate is read per channel instead - the tallest country `RIVER_SAMPLE` (96) blocks round the water, less the water, divided
+by the reach, held between the two - and rounded up, so the wall always reaches the country before the raster ends. Read
+between cells like the dale's bank, with `RIVER_ROLL` (2) of roll faded by how much the valley actually takes off the
+column, so a bank it shaves by a block keeps its edge.
+
+The dale's water is left to the dale: `buildRiverBanks` seeds nothing where `ArdaMasks.daleRun` reaches, and where the two
+rasters overlap the lower wins, so the Bruinen is graded once, by `DALE_RISE` toward `DALE_BANK`, and the Shire's branch
+is graded by this pass alone - `shireBank` and its `SHIRE_SHELF`/`SHIRE_SHOULDER`/`SHIRE_BANK`/`SHIRE_ROLL` are gone, and
+the `SHIRE_WATER`/`SHIRE_GRADE`/`SHIRE_REACH` level rule is untouched.
+
+Measured on the drawn ground against the ceiling. The branch: at z 40 the ground comes down from 108 at x -380 to 94
+beside water of 93…96 and climbs back to 105 by x -220; at z 140 from 112 to 89 and back to 104 by x -260. An ordinary
+drawn river, at z -560 and z -620 west of the build, is untouched: the ceiling stands 1…10 blocks over the country along
+the whole of both banks, so nothing is graded. The deepest lift over river water in the world - 204 blocks, at (15840,
+7616) - is cut into a valley and closes to within a dozen blocks of the 285…301 country at the raster's rim. **This is
+world generation: it needs chunks made after it.**
 
 **What has not been checked.** None of the river work has been seen in a world: the bypass's new bend and its fall, the
 branch's valley and its mouth at the wall, the fork, and the merged channel's run to the bay are all unbuilt territory.

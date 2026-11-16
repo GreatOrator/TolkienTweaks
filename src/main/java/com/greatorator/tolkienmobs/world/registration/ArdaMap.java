@@ -506,33 +506,7 @@ public final class ArdaMap {
             SHIRE_LEG[leg] = Math.hypot(SHIRE_X[leg + 1] - SHIRE_X[leg], SHIRE_Z[leg + 1] - SHIRE_Z[leg]);
             total += SHIRE_LEG[leg];
         }
-        SHIRE_LENGTH = total;
     }
-
-    /** The branch's half width at the wall, and at the fork, in blocks: the channel narrows as it runs. */
-    private static final double SHIRE_HALF = 28.0D;
-    private static final double SHIRE_THROAT = 18.0D;
-    /** How far out from the branch its valley is cut, in blocks, before the country is left alone. */
-    private static final int SHIRE_BANK = 96;
-    /** Blocks of flat bank the branch keeps beside its water before the hillside starts to climb. */
-    private static final int SHIRE_SHELF = 4;
-    /**
-     * How much the hillside climbs for each block out from that shelf.
-     * <p>
-     * Half a block per block - a hillside rather than a wall. A drawn river normally stands at the height of the ground
-     * it is drawn on, so its banks are the country and there is nothing to grade; the Shire's branch is the one channel
-     * whose water is read from the village above it, which leaves it thirteen blocks under the hillside at the wall and
-     * twenty-six under the plateau in the middle of its course - and a bed cut under a level that low is a sheer slot
-     * with flat country on either side, which is what the save showed. At a half the deepest stretch closes over
-     * fifty-two blocks of run each side, and the reach is set wider than the deepest slope needs, so the ceiling is
-     * above the country at its edge everywhere and the valley's rim is the country's own rather than a step. The shelf
-     * keeps a walkable bank at the water and the roll stops the shoulder being a cone.
-     */
-    private static final double SHIRE_SHOULDER = 0.5D;
-    private static final int SHIRE_ROLL = 2;
-    private static final int SHIRE_ROLL_FADE = 12;
-    /** How long the branch is, in blocks, for reading how far along it a column stands. */
-    private static final double SHIRE_LENGTH;
 
     /**
      * The level the Shire's branch stands at over a column, or {@link Integer#MAX_VALUE} off its course.
@@ -1233,11 +1207,12 @@ public final class ArdaMap {
         if (dale != Integer.MIN_VALUE) {
             height = Math.min(height, dale);
         }
-        // The Shire's branch is a cut rather than a drawn hollow, so its ground is brought down to its water the same
-        // way the dale's is: the ceiling is the valley's own flank rather than the country.
-        int shire = shireBank(blockX, blockZ);
-        if (shire != Integer.MAX_VALUE) {
-            height = Math.min(height, shire);
+        // And the same for every drawn river the dale does not own. A channel whose water stands well under the
+        // country beside it is a slot until something brings the hillside down to meet it, and that is what this is:
+        // the valley's own flank, read off the drawing's water rather than off the country.
+        int river = riverBank(blockX, blockZ, height);
+        if (river != Integer.MAX_VALUE) {
+            height = Math.min(height, river);
         }
         return new Sample(ground.country(), height, false, ground.shore(), ground.upland());
     }
@@ -1333,53 +1308,205 @@ public final class ArdaMap {
     }
 
     /**
-     * The valley the Shire's branch is cut through, as the height its ground may not stand over.
-     * <p>
-     * The branch's water is thirteen blocks under the hillside at the wall, and a drawn river's bed is cut under its
-     * water and nothing else: the country beside it is only ever raised, never brought down. So the branch read as a
-     * slot - sheer walls, flat field on both lips, which is not a river in country but a canal in a trench. This is
-     * the other half of the cut: from the water's own edge out, the ground climbs at {@link #SHIRE_SHOULDER} until it
-     * is the country's again, and no further than {@link #SHIRE_BANK} out. Where the branch runs through ground that
-     * already stands at its own level - the last stretch to the fork, where the hillside falls to 83 over water at 80
-     * - the ceiling is above the ground and nothing is cut at all.
-     *
-     * @return the ceiling, or {@link Integer#MAX_VALUE} where the column is not the branch's.
+     * The height the ground beside any drawn river may stand at, one cell per mask cell, or null until it is built.
      */
-    private static int shireBank(int blockX, int blockZ) {
-        // Off the branch's quarter of the Shire there is nothing to answer: the branch runs inside this box, and
-        // every column in the world is asked.
-        if (blockX < -880 || blockX > -120 || blockZ < -110 || blockZ > 320) {
-            return Integer.MAX_VALUE;
-        }
-        double near = Double.MAX_VALUE;
-        double run = 0.0D;
-        for (int leg = 0; leg < SHIRE_LEG.length; leg++) {
-            double alongX = SHIRE_X[leg + 1] - SHIRE_X[leg];
-            double alongZ = SHIRE_Z[leg + 1] - SHIRE_Z[leg];
-            double at = ((blockX - SHIRE_X[leg]) * alongX + (blockZ - SHIRE_Z[leg]) * alongZ)
-                    / (alongX * alongX + alongZ * alongZ);
-            double into = Mth.clamp(at, 0.0D, 1.0D);
-            double footX = SHIRE_X[leg] + into * alongX;
-            double footZ = SHIRE_Z[leg] + into * alongZ;
-            double away = Math.hypot(blockX - footX, blockZ - footZ);
-            if (away < near) {
-                near = away;
-                run = SHIRE_START[leg] + into * SHIRE_LEG[leg];
+    private static volatile char[] riverBanks;
+    /** How much the valley's wall climbs per cell ring at each cell, in blocks: steep where the cut is deep. */
+    private static volatile byte[] riverRises;
+    /** How far out from a drawn river its valley is cut, in blocks. */
+    private static final int RIVER_BANK = 192;
+    /**
+     * How many blocks the valley's wall climbs for each cell ring it is grown out, at the shallowest and the deepest:
+     * a cell is eight blocks of run, so three is a rise of a third of a block a block and sixteen is a gorge's two.
+     * <p>
+     * One rate cannot do both jobs. At the Shire's half a block per block a valley fifty blocks deep would need a
+     * hundred blocks of run and a hill two hundred blocks over its river - which is what a drawn river crossing a
+     * range comes to, the mask lifting the ground and the channel keeping the drawing's level - would need four
+     * hundred, so the reach would either leave a wall standing at its own edge or run a quarter of a cell into every
+     * river in the world. The rate is read off the depth at the water instead: the country over the channel, divided
+     * by the reach, held between these two.
+     */
+    private static final int RIVER_STEEP_MIN = 3;
+    /** How far out the country is sampled to find the depth a valley has to climb to, in blocks. */
+    private static final int RIVER_SAMPLE = 96;
+    private static final int RIVER_STEEP_MAX = 16;
+    /** How much roll the valley's wall has, in blocks, and how far in from its foot that roll fades. */
+    private static final int RIVER_ROLL = 2;
+    private static final int RIVER_ROLL_SCALE = 48;
+
+    /**
+     * How far the country stands over a river's water, read round the channel rather than at it, in blocks.
+     * <p>
+     * At the channel the answer is nothing: the water is laid at the ground it is drawn on, so the ground under it is
+     * its own level however high the country about it stands. What the valley has to climb to is the ground a
+     * {@link #RIVER_SAMPLE} blocks out, which is sampled in eight directions and answered as the tallest.
+     */
+    private static int riverDepth(int blockX, int blockZ, int water) {
+        int deepest = 0;
+        for (int step = 0; step < 8; step++) {
+            double dirX = Math.cos(step * Math.PI / 4.0D);
+            double dirZ = Math.sin(step * Math.PI / 4.0D);
+            for (int reach = RIVER_SAMPLE; reach >= RIVER_SAMPLE / 2; reach -= RIVER_SAMPLE / 2) {
+                int px = blockX + (int) Math.round(dirX * reach);
+                int pz = blockZ + (int) Math.round(dirZ * reach);
+                int mapped = ArdaMasks.ground(px, pz);
+                if (mapped == ArdaMasks.NO_GROUND) {
+                    continue;
+                }
+                deepest = Math.max(deepest, ArdaMasks.lift(px, pz, mapped, VALLEY_CROWN) - water);
             }
         }
-        if (near > SHIRE_BANK + SHIRE_HALF) {
+        return deepest;
+    }
+
+    /**
+     * Builds the valley every drawn river is cut through: how high the ground beside it may stand, grown out from the
+     * water one cell at a time.
+     * <p>
+     * This is the dale's own bank taken over the whole world, and for the same reason. A drawn river stands at the
+     * height of the ground it is drawn on, so its banks are the country and there is nothing to grade; but wherever
+     * the channel's level is not the ground's - the Shire's branch, whose water is read from the village above it, and
+     * every river the mountain mask lifts the ground over - the bed is cut under a surface the hillside stands well
+     * over, and a bed cut under such a surface is a slot: sheer walls with flat country on both lips. Grown from the
+     * water, the ground beside it climbs to meet the country instead, and the wall's rate is read per channel from how
+     * far the country stands over that water.
+     * <p>
+     * The dale's water is left to the dale. Its bank is graded over {@link #DALE_BANK} blocks at {@link #DALE_RISE},
+     * which is a steeper, longer valley than this pass makes, and seeding both would grade the same ground twice and
+     * leave the Bruinen in a trench neither rule asked for.
+     */
+    private static void buildRiverBanks() {
+        int width = ArdaMasks.maskWidth();
+        int height = ArdaMasks.maskHeight();
+        int blocks = Math.max(1, ArdaMasks.maskBlocks());
+        int west = ArdaMasks.maskWest();
+        int north = ArdaMasks.maskNorth();
+        if (width <= 0 || height <= 0) {
+            riverBanks = new char[0];
+            riverRises = new byte[0];
+            return;
+        }
+        char[] banks = new char[width * height];
+        byte[] rises = new byte[width * height];
+        int[] queue = new int[1 << 14];
+        int tail = 0;
+        for (int row = 0; row < height; row++) {
+            int z = north + row * blocks;
+            for (int column = 0; column < width; column++) {
+                int x = west + column * blocks;
+                if (!ArdaMasks.riverCell(column, row)) {
+                    continue;
+                }
+                if (ArdaMasks.daleRun(x, z) >= 0) {
+                    continue;
+                }
+                int mapped = ArdaMasks.ground(x, z);
+                if (mapped == ArdaMasks.NO_GROUND) {
+                    continue;
+                }
+                int water = Math.max(SEA_LEVEL, drawnWater(x, z));
+                // Read round the channel rather than at it: the ground under the water is the water's own level, so the
+                // depth at the column says nothing about the country a valley has to climb to. Sampled at the reach's
+                // own width, the rise is set by the tallest ground the valley will have to meet.
+                int depth = riverDepth(x, z, water);
+                int rise = Mth.clamp((int) Math.ceil(depth * (double) blocks / RIVER_BANK),
+                        RIVER_STEEP_MIN, RIVER_STEEP_MAX);
+                banks[row * width + column] = (char) (water + 1);
+                rises[row * width + column] = (byte) rise;
+                if (tail == queue.length) {
+                    queue = java.util.Arrays.copyOf(queue, tail * 2);
+                }
+                queue[tail++] = row * width + column;
+            }
+        }
+        for (int step = 0; step < RIVER_BANK / blocks; step++) {
+            int end = tail;
+            for (int at = 0; at < end; at++) {
+                int cell = queue[at];
+                int bank = banks[cell] + rises[cell];
+                int row = cell / width;
+                int column = cell - row * width;
+                for (int dir = 0; dir < 4; dir++) {
+                    int nearRow = row + (dir == 0 ? 1 : dir == 1 ? -1 : 0);
+                    int nearColumn = column + (dir == 2 ? 1 : dir == 3 ? -1 : 0);
+                    if (nearRow < 0 || nearRow >= height || nearColumn < 0 || nearColumn >= width) {
+                        continue;
+                    }
+                    int nearCell = nearRow * width + nearColumn;
+                    if (banks[nearCell] != 0) {
+                        continue;
+                    }
+                    banks[nearCell] = (char) bank;
+                    rises[nearCell] = rises[cell];
+                    if (tail == queue.length) {
+                        queue = java.util.Arrays.copyOf(queue, tail * 2);
+                    }
+                    queue[tail++] = nearCell;
+                }
+            }
+        }
+        riverBanks = banks;
+        riverRises = rises;
+    }
+
+    /**
+     * How high the ground beside a drawn river may stand, or {@link Integer#MAX_VALUE} where no river's valley reaches.
+     * <p>
+     * Read between cells, like the dale's bank and for the same reason: a cell's own height held for eight blocks of
+     * tread would make the slope a staircase of shelves. The roll is added after the read and only by as much as the
+     * valley takes off the column, so a column the valley does not touch is not moved and a bank it shaves by a block
+     * keeps its edge.
+     */
+    private static int riverBank(int blockX, int blockZ, int standing) {
+        char[] banks = riverBanks;
+        if (banks == null) {
+            synchronized (BRUINEN_LOCK) {
+                banks = riverBanks;
+                if (banks == null) {
+                    buildRiverBanks();
+                    banks = riverBanks;
+                }
+            }
+        }
+        int width = ArdaMasks.maskWidth();
+        int height = ArdaMasks.maskHeight();
+        if (banks.length == 0 || width <= 0 || height <= 0) {
             return Integer.MAX_VALUE;
         }
-        int water = Math.max(SEA_LEVEL, SHIRE_WATER - (int) Math.round(run / SHIRE_GRADE));
-        double half = SHIRE_HALF + (SHIRE_THROAT - SHIRE_HALF) * Math.min(1.0D, run / SHIRE_LENGTH);
-        double out = near - half;
-        if (out <= 0.0D) {
-            return water + 1;
+        double across = (blockX - ArdaMasks.maskWest()) / (double) ArdaMasks.maskBlocks() - 0.5D;
+        double along = (blockZ - ArdaMasks.maskNorth()) / (double) ArdaMasks.maskBlocks() - 0.5D;
+        if (across < -0.5D || along < -0.5D || across > width - 0.5D || along > height - 0.5D) {
+            return Integer.MAX_VALUE;
         }
-        double eased = Math.max(0.0D, out - SHIRE_SHELF);
-        double roll = (fractal(blockX, blockZ, 48, 73) - 0.5D) * 2.0D * SHIRE_ROLL
-                * Math.min(1.0D, eased / SHIRE_ROLL_FADE);
-        return Math.max(water + 1, water + 1 + (int) Math.round(eased * SHIRE_SHOULDER + roll));
+        int west = (int) Math.floor(Math.max(0.0D, across));
+        int north = (int) Math.floor(Math.max(0.0D, along));
+        int east = Math.min(width - 1, west + 1);
+        int south = Math.min(height - 1, north + 1);
+        double shareX = Math.min(1.0D, Math.max(0.0D, across - west));
+        double shareZ = Math.min(1.0D, Math.max(0.0D, along - north));
+        double total = 0.0D;
+        double sum = 0.0D;
+        for (int corner = 0; corner < 4; corner++) {
+            int row = corner < 2 ? north : south;
+            int column = corner % 2 == 0 ? west : east;
+            int value = banks[row * width + column];
+            if (value == 0) {
+                continue;
+            }
+            double weight = (corner % 2 == 0 ? 1.0D - shareX : shareX) * (corner < 2 ? 1.0D - shareZ : shareZ);
+            total += weight;
+            sum += weight * value;
+        }
+        if (total <= 0.0D) {
+            return Integer.MAX_VALUE;
+        }
+        int bank = (int) Math.round(sum / total);
+        if (standing <= bank) {
+            return Integer.MAX_VALUE;
+        }
+        double roll = (fractal(blockX, blockZ, RIVER_ROLL_SCALE, 79) - 0.5D) * 2.0D * RIVER_ROLL
+                * Math.min(1.0D, (standing - bank) / (double) RIVER_ROLL);
+        return bank + (int) Math.round(roll);
     }
 
     /**
@@ -1904,6 +2031,8 @@ public final class ArdaMap {
         BRUINEN_WATER = PLANTED_FLOOR + 8 + lift;
         bruinenProfile = null;
         daleBanks = null;
+        riverBanks = null;
+        riverRises = null;
     }
 
     /** How far the valley has been raised above where the city was planted, in blocks. */
