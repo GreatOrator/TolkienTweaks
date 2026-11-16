@@ -63,6 +63,11 @@ public final class Pins extends SavedData {
             // low corner goes on, at the surface the scout stood on. /tmcity plants the corner here, so
             // the city covers x 5200..5753 by z -3370..-2859, with the crown at 318.
             Map.entry("rivendell", new BlockPos(5200, 75, -3370)),
+            // The Shire's village, at the middle of the footprint its cut was taken in: a board pointing at Hobbiton
+            // points at the village rather than at the corner its low blocks were cut from. The build is raised by
+            // Hobbiton.autospawn at another corner of its own - the pin is where the name stands, not where the cut
+            // starts.
+            Map.entry("hobbiton", ArdaMap.hobbitonCentre()),
             // The goblin cave page 27 is fought in, settled along the road at the door the scout walked: the
             // mountain rises south of it, so the cut runs into the hill there. The shelter camp beyond the way in
             // is pinned beside it, so the fires have a camp outside them in every world rather than only in the

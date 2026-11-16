@@ -148,11 +148,37 @@ public final class Dressing {
      */
     static CityCommands.Drape drape(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
                                     BlockPos origin, CityCommands.Box box, boolean trees) {
-        Job whole = new Job("", folder, pieces, parts, origin, box, false, false, trees);
+        return drape(level, folder, pieces, parts, origin, box, trees, CityCommands.DECK_LIFT);
+    }
+
+    /**
+     * The same drape with the build's own deck line.
+     * <p>
+     * {@code deck} is how high the build's floor stands over the corner it was planted on. The city's is two, and the
+     * number was written as a constant of the city's - which reads aright for the city and puts a village whose floor
+     * is sixteen up into a trench the height of its own walls. A cut that says what its floor is gets its own answer;
+     * one that says nothing gets the city's.
+     */
+    static CityCommands.Drape drape(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
+                                    BlockPos origin, CityCommands.Box box, boolean trees, int deck) {
+        Job whole = new Job("", folder, pieces, parts, origin, box, false, false, trees, deck);
         while (whole.piece < parts.size()) whole.takePieces();
         whole.grow();
         while (whole.chunk < whole.ring.size()) whole.dressChunks(level);
         return new CityCommands.Drape(whole.cut, whole.filled, whole.open);
+    }
+
+    /**
+     * The same pass as a job the caller steps itself, a tick at a time.
+     * <p>
+     * A world that raises its own village on the first start cannot hold the whole drape in one call: the ring is
+     * seven hundred blocks across and dressing it in a single tick is a stall at the very moment a player is waiting
+     * for the world. The city's own job already knows how to stop between pieces, between rings and between chunks,
+     * so a build with no city is given the same job rather than a second copy of it.
+     */
+    static Job begin(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
+                     BlockPos origin, CityCommands.Box box, boolean trees, int deck) {
+        return new Job("", folder, pieces, parts, origin, box, false, true, trees, deck);
     }
 
     /** Where a job reads its pieces' NBT from: the city's cut, or any other cut a hand names. */
@@ -192,7 +218,8 @@ public final class Dressing {
                 finished = key;
                 return null;
             }
-            return new Job(key, folder, Pieces.ofCity(folder), parts, corner, box, done[0], roadDown, false);
+            return new Job(key, folder, Pieces.ofCity(folder), parts, corner, box, done[0], roadDown, false,
+                    CityCommands.DECK_LIFT);
         } catch (IOException unreadable) {
             LOGGER.warn("Rivendell: the cut could not be read, so the ground is not dressed: {}",
                     unreadable.getMessage());
@@ -205,7 +232,7 @@ public final class Dressing {
      * ground outside the walls, dressed a chunk at a time; and the road, which is one pass because a road is a road
      * from end to end and not a thing to leave half graded.
      */
-    private static final class Job {
+    static final class Job {
         /** This job's city, as dimension and corner: what {@code _dressed.txt} is keyed on. */
         private final String key;
         private final Path folder;
@@ -215,6 +242,16 @@ public final class Dressing {
         private final List<CityCommands.Part> parts;
         private final BlockPos origin;
         private final CityCommands.Box box;
+        /**
+         * How high this build's own floor stands over its planted corner: a deck is a floor tile, and a roofline is
+         * not.
+         * <p>
+         * It was a constant of the city's, and a build whose floor is not two blocks over its corner reads every
+         * column outside its walls as a roofline and cuts the country down to it. Hobbiton's floor is sixteen over
+         * its base, so the whole village would have been dressed to the tops of its walls. The cut says what its own
+         * floor is; the city's number is only the answer when a cut says nothing.
+         */
+        private final int deck;
         private final int wide;
         private final int deep;
         /** The build's own height in every column of its footprint, and where its water stands on top of that. */
@@ -237,7 +274,8 @@ public final class Dressing {
         private int open;
 
         private Job(String key, Path folder, Pieces pieces, List<CityCommands.Part> parts, BlockPos origin,
-                    CityCommands.Box box, boolean dressed, boolean road, boolean trees) {
+                    CityCommands.Box box, boolean dressed, boolean road, boolean trees, int deck) {
+            this.deck = deck;
             this.key = key;
             this.folder = folder;
             this.pieces = pieces;
@@ -262,7 +300,7 @@ public final class Dressing {
         }
 
         /** One step of the job; false when there is nothing left to do. */
-        private boolean step(ServerLevel level) {
+        boolean step(ServerLevel level) {
             if (!dressed) {
                 if (piece < parts.size()) {
                     takePieces();
@@ -407,7 +445,7 @@ public final class Dressing {
             if (wall == Integer.MIN_VALUE) return;
             // The deck line is the build's own floor, read from the corner the city was planted at: its deck
             // tiles lie on the two blocks over it, whatever height the world has room for.
-            boolean banked = wall <= origin.getY() + CityCommands.DECK_LIFT;
+            boolean banked = wall <= origin.getY() + deck;
             // A spring at the wall is not a deck: the column is held for its water, but the ground over that
             // water is still ground the drape is for.
             boolean spring = false;

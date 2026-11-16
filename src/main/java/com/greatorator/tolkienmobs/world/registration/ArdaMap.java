@@ -466,75 +466,121 @@ public final class ArdaMap {
         COURSE_LENGTH = total;
     }
 
+    /** Hobbiton's pin: the low corner of the cut, which is the corner `/tmcut place hobbiton` is given. */
+    public static final int HOBBITON_X = -700;
+    public static final int HOBBITON_Y = 87;
+    public static final int HOBBITON_Z = -512;
+    /** How wide and how deep the village's footprint is, from the player's own map: 551 by 468. */
+    public static final int HOBBITON_WIDE = 551;
+    public static final int HOBBITON_DEEP = 468;
+    /** How high the village's own water stands over the pin: its pond's surface, nine over the floor. */
+    public static final int HOBBITON_WATER_LIFT = 9;
+    /** How high the village's ground stands over the pin: its grass line, sixteen over the floor. */
+    public static final int HOBBITON_DECK_LIFT = 16;
+    /** How many blocks of run the village's branch loses a block of height over. */
+    private static final int HOBBITON_GRADE = 40;
     /**
-     * The Shire's branch: the water the Hobbiton build carries out of its south wall.
-     * <p>
-     * The village stands at (-700, 87, -512) and its water nine over that base, so the river in it runs at 96. Its
-     * west arm comes out level with the drawn channel - 96 against the channel's 95 - and needs nothing. The south
-     * arm comes out into country the drawing stands at a hundred and five to a hundred and thirteen, so the water
-     * the mask draws there would be laid at the ground and would stand thirteen blocks over the village's own: the
-     * arm would end against its own wall, under a river running past it.
-     * <p>
-     * So the branch's level is read from the village and not from the ground: it leaves the south mouth at
-     * {@link #SHIRE_WATER} and falls one block in every {@link #SHIRE_GRADE} of run, arriving at the Y the mask
-     * draws at (-770, 246) at 80 - a block under the drawn river's own 81, which the level's own reach turns into a
-     * step at the confluence rather than a wall. Everything else the drawn-water
-     * path already does follows from that one number: the bed is cut under the surface, so the branch is a channel
-     * thirteen deep at the wall that opens out to two at the fork, and the ground beside it is graded against the
-     * water that is actually there rather than against the hillside above it.
-     * <p>
-     * The course is the mask's own, bend for bend, because the corridor has to find the columns the branch was drawn
-     * through and no others.
+     * How far from a carried course a column still belongs to it, in blocks: the channel's own half width of
+     * twenty-eight at its widest, the mask's edge, and enough margin to cover the columns the narrowing leaves at the
+     * bank.
      */
-    private static final int SHIRE_WATER = 96;
-    private static final int SHIRE_GRADE = 40;
-    /**
-     * How far from the branch's course a column still belongs to it, in blocks: the channel's own half width of
-     * twenty-eight, the mask's edge, and enough margin to cover the columns the narrowing leaves at the bank.
-     */
-    private static final int SHIRE_REACH = 64;
-    private static final int[] SHIRE_X = {-206, -230, -270, -320, -380, -450, -520, -590, -652, -712, -770};
-    private static final int[] SHIRE_Z = {-45, -6, 40, 80, 112, 140, 165, 190, 212, 232, 246};
-    /** How long each leg of the branch is, and where each leg starts along it. */
-    private static final double[] SHIRE_LEG = new double[SHIRE_X.length - 1];
-    private static final double[] SHIRE_START = new double[SHIRE_X.length - 1];
+    private static final int HOBBITON_REACH = 64;
+    /** The course the village's branch was drawn along, bend for bend: the corridor has to find its own columns. */
+    private static final int[] HOBBITON_XS = {-206, -230, -270, -320, -380, -450, -520, -590, -652, -712, -770};
+    private static final int[] HOBBITON_ZS = {-45, -6, 40, 80, 112, 140, 165, 190, 212, 232, 246};
 
-    static {
-        double total = 0.0D;
-        for (int leg = 0; leg < SHIRE_LEG.length; leg++) {
-            SHIRE_START[leg] = total;
-            SHIRE_LEG[leg] = Math.hypot(SHIRE_X[leg + 1] - SHIRE_X[leg], SHIRE_Z[leg + 1] - SHIRE_Z[leg]);
-            total += SHIRE_LEG[leg];
-        }
+    /** The corner the village's cut is laid on: the low corner of the footprint it was cut in. */
+    public static BlockPos hobbitonPlan() {
+        return new BlockPos(HOBBITON_X, HOBBITON_Y, HOBBITON_Z);
+    }
+
+    /** The middle of the village's footprint at its own ground: where a name for it is written. */
+    public static BlockPos hobbitonCentre() {
+        return new BlockPos(HOBBITON_X + HOBBITON_WIDE / 2, HOBBITON_Y + HOBBITON_DECK_LIFT,
+                HOBBITON_Z + HOBBITON_DEEP / 2);
     }
 
     /**
-     * The level the Shire's branch stands at over a column, or {@link Integer#MAX_VALUE} off its course.
+     * A drawn channel whose level is a placed build's rather than the drawing's.
      * <p>
-     * Read from the village's water and the run along the branch rather than from the drawing, which is the whole
-     * point of it: the drawing holds the hillside over this channel, and the water in it is a gorge's.
+     * A drawn river normally stands at the height of the ground it is drawn on, and needs nothing: its water is the
+     * country's. A channel that is leaving a build is the other case. Hobbiton's village stands at (-700, 87, -512)
+     * with its water nine over that base, so the river in it runs at 96. Its west arm comes out level with the drawn
+     * channel - 96 against the channel's 95 - and needs nothing. Its south arm comes out into country the drawing
+     * stands at a hundred and five to a hundred and thirteen, so water the mask draws there would be laid at the
+     * ground and would stand thirteen blocks over the village's own: the arm would end against its own wall, under a
+     * river running past it.
+     * <p>
+     * So a carried channel's level is read from the build and not from the ground: it leaves the build at
+     * {@code water} and falls one block in every {@link #grade} of run, arriving at the Y the mask draws at
+     * (-770, 246) at 80 - a block under the drawn river's own 81, which the level's own reach turns into a step at
+     * the confluence rather than a wall. Everything else the drawn-water path already does follows from that one
+     * number: the bed is cut under the surface, so the branch is a channel thirteen deep at the wall that opens out to
+     * two at the fork, and the ground beside it is graded against the water that is really there rather than against
+     * the hillside above it.
+     * <p>
+     * The level is the build's own rather than a number of the Shire's: a second build with a channel out of it is an
+     * entry in {@link #CHANNELS} with its own pin, its own water lift and its own grade, and nothing in this rule has
+     * to be copied to say so.
      */
-    private static int shireBranch(int blockX, int blockZ) {
-        double near = Double.MAX_VALUE;
-        double run = 0.0D;
-        for (int leg = 0; leg < SHIRE_LEG.length; leg++) {
-            double alongX = SHIRE_X[leg + 1] - SHIRE_X[leg];
-            double alongZ = SHIRE_Z[leg + 1] - SHIRE_Z[leg];
-            double at = ((blockX - SHIRE_X[leg]) * alongX + (blockZ - SHIRE_Z[leg]) * alongZ)
-                    / (alongX * alongX + alongZ * alongZ);
-            double into = Mth.clamp(at, 0.0D, 1.0D);
-            double footX = SHIRE_X[leg] + into * alongX;
-            double footZ = SHIRE_Z[leg] + into * alongZ;
-            double away = Math.hypot(blockX - footX, blockZ - footZ);
-            if (away < near) {
-                near = away;
-                run = SHIRE_START[leg] + into * SHIRE_LEG[leg];
+    private record Channel(String place, int water, int grade, int reach, int[] alongX, int[] alongZ,
+                           double[] legs, double[] starts) {
+        /** A channel with its legs measured: how long each is, and where each begins along the course. */
+        static Channel of(String place, int water, int grade, int reach, int[] alongX, int[] alongZ) {
+            double[] legs = new double[alongX.length - 1];
+            double[] starts = new double[alongX.length - 1];
+            double total = 0.0D;
+            for (int leg = 0; leg < legs.length; leg++) {
+                starts[leg] = total;
+                legs[leg] = Math.hypot(alongX[leg + 1] - alongX[leg], alongZ[leg + 1] - alongZ[leg]);
+                total += legs[leg];
             }
+            return new Channel(place, water, grade, reach, alongX, alongZ, legs, starts);
         }
-        if (near > SHIRE_REACH) {
-            return Integer.MAX_VALUE;
+
+        /**
+         * The level this channel stands at over a column, or {@link Integer#MAX_VALUE} off its course.
+         * <p>
+         * Read from the build's water and the run along the channel rather than from the drawing, which is the whole
+         * point of it: the drawing holds the hillside over this channel, and the water in it is a gorge's.
+         */
+        int water(int blockX, int blockZ) {
+            double near = Double.MAX_VALUE;
+            double run = 0.0D;
+            for (int leg = 0; leg < this.legs.length; leg++) {
+                double alongX = this.alongX[leg + 1] - this.alongX[leg];
+                double alongZ = this.alongZ[leg + 1] - this.alongZ[leg];
+                double at = ((blockX - this.alongX[leg]) * alongX + (blockZ - this.alongZ[leg]) * alongZ)
+                        / (alongX * alongX + alongZ * alongZ);
+                double into = Mth.clamp(at, 0.0D, 1.0D);
+                double footX = this.alongX[leg] + into * alongX;
+                double footZ = this.alongZ[leg] + into * alongZ;
+                double away = Math.hypot(blockX - footX, blockZ - footZ);
+                if (away < near) {
+                    near = away;
+                    run = this.starts[leg] + into * this.legs[leg];
+                }
+            }
+            if (near > this.reach) {
+                return Integer.MAX_VALUE;
+            }
+            return Math.max(SEA_LEVEL, this.water - (int) Math.round(run / this.grade));
         }
-        return Math.max(SEA_LEVEL, SHIRE_WATER - (int) Math.round(run / SHIRE_GRADE));
+    }
+
+    /** The channels this world carries out of a build: one entry per placed build that has one. */
+    private static final Channel[] CHANNELS = {
+            Channel.of("hobbiton", HOBBITON_Y + HOBBITON_WATER_LIFT, HOBBITON_GRADE, HOBBITON_REACH,
+                    HOBBITON_XS, HOBBITON_ZS)
+    };
+
+    /** The lowest level a placed build's channel stands at over a column, or {@link Integer#MAX_VALUE} off them. */
+    private static int carriedWater(int blockX, int blockZ) {
+        int water = Integer.MAX_VALUE;
+        for (Channel channel : CHANNELS) {
+            water = Math.min(water, channel.water(blockX, blockZ));
+        }
+        return water;
     }
 
     /** How far off the course's own line its middle stands at a share of the way along it. */
@@ -1129,6 +1175,28 @@ public final class ArdaMap {
         return read(blockX, blockZ, 0.0D, 0.0D);
     }
 
+    /**
+     * What the drawing and the grading make of one column, for a hand that wants the numbers instead of the map.
+     * <p>
+     * Read straight out of the classes the generator uses rather than re-derived: the height the column stands at,
+     * the level its water is laid at, whether it is river at all, and the ceiling the river's valley holds it to. The
+     * last is the one worth watching - the valley's rule is a rate, a reach and a depth, and a rate read wrong is a
+     * hillside cut wrong over hundreds of blocks, which no screenshot argues about as clearly as four numbers do.
+     */
+    public record Column(int x, int z, int ground, int water, boolean river, int ceiling) {
+        /** How many blocks the valley takes off this column: nothing when it stands under its own ceiling. */
+        public int taken() {
+            return this.ceiling == Integer.MAX_VALUE ? 0 : Math.max(0, this.ground - this.ceiling);
+        }
+    }
+
+    /** One column of the drawing and its grading. */
+    public static Column column(int blockX, int blockZ) {
+        Sample sample = sample(blockX, blockZ);
+        return new Column(blockX, blockZ, sample.height(), sample.water(), sample.river(),
+                riverCeiling(blockX, blockZ));
+    }
+
     /** The drawing at a column, shifted by whatever warp the caller has already read. */
     private static Sample read(int blockX, int blockZ, double shiftX, double shiftZ) {
         Sample drawn = readDrawn(blockX, blockZ, shiftX, shiftZ);
@@ -1457,7 +1525,7 @@ public final class ArdaMap {
      * valley takes off the column, so a column the valley does not touch is not moved and a bank it shaves by a block
      * keeps its edge.
      */
-    private static int riverBank(int blockX, int blockZ, int standing) {
+    private static int riverCeiling(int blockX, int blockZ) {
         char[] banks = riverBanks;
         if (banks == null) {
             synchronized (BRUINEN_LOCK) {
@@ -1500,8 +1568,18 @@ public final class ArdaMap {
         if (total <= 0.0D) {
             return Integer.MAX_VALUE;
         }
-        int bank = (int) Math.round(sum / total);
-        if (standing <= bank) {
+        return (int) Math.round(sum / total);
+    }
+
+    /**
+     * How high the ground beside a drawn river may stand, or {@link Integer#MAX_VALUE} where no river's valley reaches.
+     * <p>
+     * The ceiling with the roll on it, and only where it actually takes something off this column: a column the
+     * valley does not touch is not moved, and a bank it shaves by a block keeps its edge.
+     */
+    private static int riverBank(int blockX, int blockZ, int standing) {
+        int bank = riverCeiling(blockX, blockZ);
+        if (bank == Integer.MAX_VALUE || standing <= bank) {
             return Integer.MAX_VALUE;
         }
         double roll = (fractal(blockX, blockZ, RIVER_ROLL_SCALE, 79) - 0.5D) * 2.0D * RIVER_ROLL
@@ -1511,8 +1589,8 @@ public final class ArdaMap {
 
     /**
      * The level drawn water stands at in a column: its channel's own, held to the dale's water where the
-     * dale reaches it, or the ground where the map has none. The Shire's branch is the one stretch held to
-     * neither - see {@link #shireBranch} - because the village it leaves stands in a hollow.
+     * dale reaches it, or the ground where the map has none. A channel carried out of a build is the one stretch held
+     * to neither - see {@link #Channel} - because the build it leaves stands in a hollow.
      */
     private static int drawnWater(int blockX, int blockZ) {
         int channel = channelAt(blockX, blockZ);
@@ -1520,9 +1598,9 @@ public final class ArdaMap {
             return groundAt(blockX / (double) CELL + ORIGIN_COLUMN,
                     blockZ / (double) CELL + ORIGIN_ROW, blockX, blockZ).height();
         }
-        // The Shire's branch is the one drawn channel whose level is not the drawing's: it is read from the
-        // village it leaves. Only ever down, so nothing that is not the branch is moved.
-        return Math.min(daleWater(blockX, blockZ, channel), shireBranch(blockX, blockZ));
+        // A carried channel is the one drawn channel whose level is not the drawing's: it is read from the build it
+        // leaves. Only ever down, so nothing that is not one of them is moved.
+        return Math.min(daleWater(blockX, blockZ, channel), carriedWater(blockX, blockZ));
     }
 
     /**

@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The drape reads its deck line from the build, not from the city.** `DECK_LIFT` was a constant of Rivendell's - a
+          floor two blocks over the planted corner - and the Shire's village stands sixteen over its base, so nothing
+          outside its walls was ever read as a deck and its whole ring was settled to the tops of the walls. `Dressing`
+          now takes the number from the cut being dressed: a `deck <n>` line in the cut's own table, with the city's two
+          kept as the answer for a cut that says nothing. `hobbiton.parts` says `deck 16`.
+- **A drawn channel's level belongs to its build, not to the Shire.** `SHIRE_WATER`/`SHIRE_GRADE`/`SHIRE_REACH` and
+          `shireBranch` are now one entry in `ArdaMap.CHANNELS`: a `Channel` record holding the level a build's water
+          leaves at, the grade it falls at, the reach of its corridor and the course the mask drew, keyed by place.
+          Hobbiton's level is its own pin plus the nine its water stands over it, so the numbers are the village's rather
+          than a constant of the code's, and a second build with a channel out of it is one more entry. The levels
+          themselves are unchanged - 96 at the wall, one block in forty of run, 80 at the Y.
+- **The Shire stands itself in a new world.** `Hobbiton.autospawn` raises the village on the first start: the cut
+          shipped in the jar at `data/tolkienmobs/structure/hobbiton/`, laid at `ArdaMap.hobbitonPlan()`, the country
+          cleared out of it, and the ring dressed by the city's own `Dressing` job stepped a band at a time. A note
+          beside the cut keeps the next start from doing it again, and the three `/tmcut` commands still work for a
+          re-cut. The build no longer depends on a hand typing three commands into the right world in the right order.
+- **Boards point at towns, and the towns stand.** `Places.TOWNS` is Hobbiton, Bree and Rivendell; `Places.towns(level)`
+          offers only those a world has actually stood, so a sign board cycles the blank and the towns instead of every
+          planted name in the catalogue. Rivendell and Hobbiton are stood at their pins on the first start
+          (`Places.stand`) with a `TOWN_RADIUS` of 280 rather than a camp's 32, and the village's pin is the middle of
+          its footprint. Bree keeps its catalogue entry and has no ground yet.
+- **`/tmriver` says what the drawing makes of a column.** `at` reads the column under the hand and `along <from> <to>
+          [step]` walks a line and reads one every few blocks: ground, water, the valley's ceiling and how much the
+          valley takes off, straight out of `ArdaMap.column` rather than re-derived in a script, which had none of the
+          bilinear read, the roll or the rounding the generator actually uses.
 - **A mouth is filled with its own water, not just cut.** Taking the bar out of the drape's ring left the ring's bed
           standing dry between the mouth's water and the drawn channel, so the Shire's north branch left the city and
           stopped against air over a bed three blocks down. `Dressing.openMouth` now lays water over what it takes out, up

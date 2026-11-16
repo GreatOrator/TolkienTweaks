@@ -100,10 +100,11 @@ public class SignPostArmBlockEntity extends TolkienBlockEntity {
     private List<String> destinations() {
         List<String> places = new ArrayList<>();
         places.add("");
-        for (Places.Name name : Places.catalogue()) {
-            if (places.contains(name.id())) continue;
-            if (this.level == null || Places.place(this.level, name.id()) == null) continue;
-            places.add(name.id());
+        if (this.level == null) return places;
+        // The towns a world has actually stood, and nothing else: a board is read by somebody walking a road, and the
+        // catalogue also carries barrows, fords and a scout's fire, which a board has no room to say are not towns.
+        for (Places.Place town : Places.towns(this.level)) {
+            if (!places.contains(town.id())) places.add(town.id());
         }
         return places;
     }

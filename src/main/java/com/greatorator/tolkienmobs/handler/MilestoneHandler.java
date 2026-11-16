@@ -24,6 +24,7 @@ import com.greatorator.tolkienmobs.faction.GundabadCave;
 import com.greatorator.tolkienmobs.faction.GundabadKeep;
 import com.greatorator.tolkienmobs.faction.OrcPieces;
 import com.greatorator.tolkienmobs.faction.Stones;
+import com.greatorator.tolkienmobs.faction.Places;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -93,6 +94,11 @@ public class MilestoneHandler extends SavedData {
             arda.getChunk(stone.getX() >> 4, stone.getZ() >> 4);
             Stones.stone(arda, stone, "Gundabad", null);
             OrcPieces.raise(arda);
+            // The towns this world is given rather than surveys: a board points at a town, so the two that stand have a
+            // name from the first start, whether or not a player has walked into either. A name already written by the
+            // campaign or by a scout is left alone.
+            Places.stand(arda, "rivendell", Places.TOWN_RADIUS);
+            Places.stand(arda, "hobbiton", Places.TOWN_RADIUS);
         }
     }
 

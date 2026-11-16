@@ -73,6 +73,25 @@ public final class Places extends SavedData {
     /** How wide a place is unless it says otherwise, which is the radius the notes used. */
     public static final int DEFAULT_RADIUS = 32;
     /**
+     * How wide a town's circle is, where a camp gets {@link #DEFAULT_RADIUS}.
+     * <p>
+     * A town is a village or a valley five hundred blocks across, and a circle is the ground a player has to be
+     * standing on to be told where they are: the notes' thirty-block circle was drawn round a camp, and round a town it
+     * would name the middle of the market and nothing else. Wider than the build, so walking in from any road arrives.
+     */
+    public static final int TOWN_RADIUS = 280;
+
+    /**
+     * The names that are towns rather than country: a place a board may point a traveller at.
+     * <p>
+     * A catalogue entry is any named ground the campaign walks - a mound, a ford, the scout's own fire - and every one
+     * of them is a place a player can be told about. A sign board is a different thing: a board reading "Matuna's
+     * Lair" is a board nobody trusts, and a board has no room to explain that a name is a hill. So the boards are
+     * given the towns, and the two things a town is are that the books call it one and that it stands: Rivendell, the
+     * Shire's village, and Bree, which the catalogue has carried since the first act and no world has raised yet.
+     */
+    private static final Set<String> TOWNS = Set.of("hobbiton", "bree", "rivendell");
+    /**
      * How much ground a place needs before it is named: a circle has to be stood in, not built on, so
      * it asks the map for far less than a building does and is found far more often.
      */
@@ -369,6 +388,44 @@ public final class Places extends SavedData {
             }
             return true;
         };
+    }
+
+    /**
+     * The towns this world has actually stood, in the catalogue's order.
+     * <p>
+     * A board points at ground, not at a list: a town the drawing names but no world has raised is a board with a
+     * distance to nowhere, so only the placed ones are offered. This is what makes a board worth a hand at last - it
+     * used to offer every planted place in the catalogue, which is how a village's board came to offer a barrow.
+     */
+    public static List<Place> towns(Level level) {
+        instance(level);
+        List<Place> towns = new ArrayList<>();
+        for (Name name : CATALOGUE) {
+            if (!TOWNS.contains(name.id())) continue;
+            Place place = PLACED.get(name.id());
+            if (place != null) towns.add(place);
+        }
+        return towns;
+    }
+
+    /**
+     * A name stood where its pin is, with no player to ask.
+     * <p>
+     * {@link #ensure} is the campaign's way of naming ground a page needs, and it needs somebody standing there to ask
+     * with. A town is not that: the village stands at a corner the code knows, and the moment it stands a board can be
+     * pointed at it, whether or not a player has ever walked in. So the start of the world stands the towns the map
+     * pins, and nothing else - a name with no pin is a name the drawing has to be asked about, and the drawing is only
+     * asked when somebody is there to be told.
+     *
+     * @return the place, or null when the catalogue has no such name or it has no pin
+     */
+    @Nullable
+    public static Place stand(ServerLevel level, String id, int radius) {
+        Place existing = place(level, id);
+        if (existing != null) return existing;
+        if (known(id) == null) return null;
+        BlockPos pin = Pins.at(level, id);
+        return pin == null ? null : set(level, id, pin, radius);
     }
 
     /** Every place this world has set, in the catalogue's order. */

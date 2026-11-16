@@ -198,9 +198,10 @@ public final class CutCommands {
             String spoken = box.spoken();
             int pieces = parts.size();
             int bands = bands(parts).size();
+            int deck = deck(source.getLevel(), name);
             source.sendSuccess(() -> Component.literal(name + ": " + pieces + " pieces over " + bands
-                    + " bands, " + spoken + " from its own corner. /tmcut place " + name
-                    + " <x> <y> <z> lays it there."), false);
+                    + " bands, " + spoken + " from its own corner, floor " + deck
+                    + " over it. /tmcut place " + name + " <x> <y> <z> lays it there."), false);
             return pieces;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -282,49 +283,11 @@ public final class CutCommands {
             BlockPos planted = plantedAt(parts, pointed);
             Box box = Box.of(parts, planted);
             Shape shape = shape(level, name, parts);
-            int wide = shape.wide();
-            int columns = 0;
-            int deepest = 0;
-            long removed = 0L;
-            BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
-            for (int xi = 0; xi < wide; xi++) {
-                int x = box.lowX() + xi;
-                for (int zi = 0; zi < shape.deep(); zi++) {
-                    int z = box.lowZ() + zi;
-                    int column = zi * wide + xi;
-                    int top = shape.top()[column];
-                    if (top == Integer.MIN_VALUE) continue;
-                    level.getChunk(x >> 4, z >> 4);
-                    int ceiling = planted.getY() + top;
-                    int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
-                    int taken = 0;
-                    for (int y = surface; y > ceiling; y--) {
-                        at.set(x, y, z);
-                        if (level.getBlockState(at).isAir()) continue;
-                        level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
-                        taken++;
-                    }
-                    for (int y = ceiling; y >= planted.getY() + shape.bottom()[column]; y--) {
-                        if (shape.solid(column, y - planted.getY())) continue;
-                        at.set(x, y, z);
-                        if (level.getBlockState(at).isAir()) continue;
-                        level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
-                        taken++;
-                    }
-                    if (taken > 0) {
-                        columns++;
-                        removed += taken;
-                        deepest = Math.max(deepest, taken);
-                    }
-                }
-            }
-            int cleared = columns;
-            int most = deepest;
-            long gone = removed;
-            source.sendSuccess(() -> Component.literal("Cleared " + name + ": " + cleared
-                    + " columns cut back to the build, " + gone + " blocks of the country removed, " + most
-                    + " deep at the worst."), true);
-            return cleared;
+            Cleared done = clearColumns(level, planted, box, shape, 0, shape.wide() * shape.deep());
+            source.sendSuccess(() -> Component.literal("Cleared " + name + ": " + done.columns()
+                    + " columns cut back to the build, " + done.blocks() + " blocks of the country removed, "
+                    + done.deepest() + " deep at the worst."), true);
+            return done.columns();
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
             return 0;
@@ -353,17 +316,14 @@ public final class CutCommands {
             }
             BlockPos pointed = corner == null ? feetOnGround(level, source) : corner;
             BlockPos planted = plantedAt(parts, pointed);
-            List<CityCommands.Part> cityParts = new ArrayList<>();
-            for (Part part : parts) {
-                cityParts.add(new CityCommands.Part(part.name(), part.dx(), part.dy(), part.dz(),
-                        part.wide(), part.deep(), part.tall()));
-            }
+            List<CityCommands.Part> cityParts = cityParts(parts);
             CityCommands.Box cityBox = CityCommands.Box.of(cityParts, planted);
             CityCommands.Drape done = Dressing.drape(level, folder(level).resolve(name),
-                    piece -> raw(level, name, piece), cityParts, planted, cityBox, true);
+                    piece -> raw(level, name, piece), cityParts, planted, cityBox, true, deck(level, name));
             int cut = done.cut();
             int filled = done.filled();
             int open = done.open();
+            Hobbiton.dressed(level, name, planted);
             source.sendSuccess(() -> Component.literal("Ground dressed round " + name + ": " + cut
                     + " columns cut down, " + filled + " built up, " + open + " left for the water."), true);
             return cut + filled;
@@ -371,6 +331,68 @@ public final class CutCommands {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
             return 0;
         }
+    }
+
+    /** What one sweep of a cut's columns took out: how many columns, how many blocks, and the deepest cut. */
+    record Cleared(int columns, long blocks, int deepest) {
+    }
+
+    /**
+     * Clears a run of a cut's columns: the country off their top, and the country out of the cut's own hollows.
+     * <p>
+     * A run rather than the whole cut because the same sweep is the world's own: a village raised on the first start
+     * of a world is cleared a band of columns a tick. What it does per column is the whole of the rule - above the
+     * cut's top everything comes off, and between that top and the cut's bottom every position the cut leaves empty is
+     * the country's and goes - so a band of it is a band of the same job and not a second idea about clearing.
+     */
+    static Cleared clearColumns(ServerLevel level, BlockPos planted, Box box, Shape shape, int first, int upto) {
+        int wide = shape.wide();
+        int columns = 0;
+        int deepest = 0;
+        long removed = 0L;
+        int last = Math.min(upto, wide * shape.deep());
+        BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
+        for (int index = Math.max(0, first); index < last; index++) {
+            int xi = index % wide;
+            int zi = index / wide;
+            int x = box.lowX() + xi;
+            int z = box.lowZ() + zi;
+            int top = shape.top()[index];
+            if (top == Integer.MIN_VALUE) continue;
+            level.getChunk(x >> 4, z >> 4);
+            int ceiling = planted.getY() + top;
+            int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+            int taken = 0;
+            for (int y = surface; y > ceiling; y--) {
+                at.set(x, y, z);
+                if (level.getBlockState(at).isAir()) continue;
+                level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                taken++;
+            }
+            for (int y = ceiling; y >= planted.getY() + shape.bottom()[index]; y--) {
+                if (shape.solid(index, y - planted.getY())) continue;
+                at.set(x, y, z);
+                if (level.getBlockState(at).isAir()) continue;
+                level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                taken++;
+            }
+            if (taken > 0) {
+                columns++;
+                removed += taken;
+                deepest = Math.max(deepest, taken);
+            }
+        }
+        return new Cleared(columns, removed, deepest);
+    }
+
+    /** A cut's pieces as the shared drape reads them: the same table, in the city's own shape. */
+    static List<CityCommands.Part> cityParts(List<Part> parts) {
+        List<CityCommands.Part> city = new ArrayList<>();
+        for (Part part : parts) {
+            city.add(new CityCommands.Part(part.name(), part.dx(), part.dy(), part.dz(),
+                    part.wide(), part.deep(), part.tall()));
+        }
+        return city;
     }
 
     /** The corner a cut's own low corner goes on: the block named, less the lowest offsets of its table. */
@@ -396,7 +418,7 @@ public final class CutCommands {
     }
 
     /** A cut's shape, read out of its files: walked once per cut and kept, since a cut does not change in a session. */
-    private static Shape shape(ServerLevel level, String cut, List<Part> parts) throws IOException {
+    static Shape shape(ServerLevel level, String cut, List<Part> parts) throws IOException {
         Shape cached = SHAPES.get(cut);
         if (cached != null) return cached;
         int lowX = lowest(parts, Part::dx);
@@ -468,7 +490,7 @@ public final class CutCommands {
     }
 
     /** One file of a cut as the NBT it was written as. */
-    private static CompoundTag raw(ServerLevel level, String cut, String piece) throws IOException {
+    static CompoundTag raw(ServerLevel level, String cut, String piece) throws IOException {
         try (InputStream in = open(level, cut, piece)) {
             if (in == null) throw new IOException("no " + piece + " in the " + cut + " cut");
             return NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
@@ -481,7 +503,7 @@ public final class CutCommands {
     }
 
     /** One piece, with its chunks made first: a chunk that is not loaded cannot take blocks. */
-    private static void lay(ServerLevel level, String cut, Part part, BlockPos origin) throws IOException {
+    static void lay(ServerLevel level, String cut, Part part, BlockPos origin) throws IOException {
         StructureTemplate template = template(level, cut, part.name());
         BlockPos at = origin.offset(part.dx(), part.dy(), part.dz());
         for (int dx = 0; dx < part.wide(); dx += 16) {
@@ -522,6 +544,38 @@ public final class CutCommands {
         if (packed != null) return packed;
         Path loose = folder(level).resolve(cut).resolve(file);
         return Files.isRegularFile(loose) ? Files.newInputStream(loose) : null;
+    }
+
+    /**
+     * How high a cut's own floor stands over the corner it is planted on, in blocks.
+     * <p>
+     * The drape settles the ring outside a build to the build's outline, and a build's floor is not its roofline: a
+     * column whose top is a deck is ground the country meets, and one whose top is a wall is ground the country is cut
+     * down to. The city carries the number as a constant of its own, which is right for a floor two over its corner;
+     * a village cut out of a hillside has its floor sixteen up, and dressed to the city's number every column outside
+     * its walls reads as a roofline. So a cut says what its floor is, in its own table, as a line of its own:
+     * <p>
+     * <pre>{@code
+     * deck 16
+     * }</pre>
+     * <p>
+     * A cut that says nothing gets {@link CityCommands#DECK_LIFT}, which is what every cut laid so far means.
+     */
+    static int deck(ServerLevel level, String cut) {
+        try (InputStream in = open(level, cut, cut + TABLE)) {
+            if (in == null) return CityCommands.DECK_LIFT;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            for (String line : reader.lines().toList()) {
+                String[] fields = line.trim().split("\\s+");
+                if (fields.length < 2 || !"deck".equalsIgnoreCase(fields[0])) continue;
+                return Math.max(0, Integer.parseInt(fields[1]));
+            }
+        } catch (IOException | NumberFormatException unreadable) {
+            // A table that cannot be read is not a reason to dress the ring to the wrong line: the city's answer is
+            // the one every cut used before this line existed.
+            return CityCommands.DECK_LIFT;
+        }
+        return CityCommands.DECK_LIFT;
     }
 
     /** A cut's table, read in the order it is laid: lowest band first, then a sweep across it. */

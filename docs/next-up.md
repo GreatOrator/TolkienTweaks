@@ -61,12 +61,13 @@ the country taken out, so Arda's stone under the canopies and the gravel in the 
 pass, generalised: it settles the ring outside the footprint to the build's outline, easing back over
 `Dressing.DRAPE_REACH` (32) blocks, and leaves water at the edge alone where it is the build's outflow.
 
-**What is still open.** The drape's two guards were written for the city: `OUTLET_LIFT` (24, water at the build's edge
-that is outflow) and `DECK_LIFT` (2, a floor tile over the planted corner). Hobbiton's floor is sixteen blocks over its
-base, so `DECK_LIFT` never fires - everything outside its walls is read as a roofline and may be cut. The open question
-is the straight band running down the middle of the water at the build's south edge: if it is the drawn channel's own
-edge showing through the wider carved river it is fine, and if it is the village's cut wall standing in the water then
-the drape needs a guard it does not have - never cut the ring below the country's own ground where the wall is water.
+**The drape's two guards, and the deck line.** `OUTLET_LIFT` (24, water at the build's edge that is outflow) is the
+city's and reads aright for the village. `DECK_LIFT` (2, a floor tile over the planted corner) did not: the village's
+floor is sixteen blocks over its base, so nothing outside its walls was ever read as a deck and the whole ring was
+settled to the tops of the walls. That is fixed by the cut saying what its own floor is - a `deck 16` line in
+`hobbiton.parts` - and the drape taking the number from the cut, with the city's two kept as the answer for a cut that
+says nothing. The straight band down the south edge's water was seen in game and is not the village's wall: the drape
+works there.
 
 **What has been checked, and what has not.** Every step compiled (`./gradlew compileJava -x createMinecraftArtifacts`)
 and the mask work was measured against the game's own 30% water threshold. None of the last round has been run in a
@@ -161,6 +162,38 @@ the whole of both banks, so nothing is graded. The deepest lift over river water
 7616) - is cut into a valley and closes to within a dozen blocks of the 285…301 country at the raster's rim. **This is
 world generation: it needs chunks made after it.**
 
+**The village stands itself, and the towns have names, 16 November.** The Shire was three commands a hand had to type
+in the right order, with a world rebuilt in between if the river had moved - which is how a build is tested and no way
+to ship one. `Hobbiton.autospawn` raises it on the first start of a world, from the cut shipped in the jar at
+`data/tolkienmobs/structure/hobbiton/` (143 pieces and the table, fourteen megabytes beside the city's), at
+`ArdaMap.hobbitonPlan()`: the cut laid, the country cleared out of it, and the ring dressed, a band of columns and a
+few pieces a tick, because seven hundred blocks of ring in one call is a stall at the exact moment a player is waiting.
+The dressing is the city's own `Dressing` job, stepped by the village - a second drape rule for a second build is how a
+country ends up with two ideas about where a wall stops. A note beside the cut (`_stands.txt`) is what says the village
+is up, so the next start leaves it alone; the three commands still work and are still the way to re-cut one.
+
+The water out of the village is no longer a rule named after the Shire. `ArdaMap.Channel` is a drawn channel whose level
+is a *build's*: the level it leaves at, the grade it falls at, the reach of its corridor and the course the mask drew,
+one entry per place, with the village's level read as its pin plus the nine its water stands over it. A second build
+with a channel out of it is one more entry and no new code. The Shire's own levels are unchanged: 96 at the wall, one
+block in forty of run, 80 at the Y.
+
+The towns are `Places.TOWNS` - Hobbiton, Bree and Rivendell - and a sign board now cycles only those the world has
+actually stood, instead of every planted name in the catalogue including barrows and a scout's fire. Rivendell and
+Hobbiton are stood at their pins on the first start (`Places.stand`), each with a `TOWN_RADIUS` of 280 rather than a
+camp's 32, so walking into either from any road announces it. **Bree has a catalogue entry, a name and a place among the
+towns, and no ground yet** - the first thing it needs is a build and a pin.
+
+`/tmriver at` and `/tmriver along <from> <to> [step]` print what the drawing and the grading make of a column or of a
+line of them - ground, water, the valley's ceiling, and how much the valley takes off - read out of `ArdaMap` itself
+rather than re-derived in a script. That is the instrument for the next round of tuning, and for the rivers the owner
+walks past as the map goes on.
+
+**Where the roads go next, and it is not built.** The Shire to Bree, Bree to Rivendell, and Glóin's camp to Gundabad -
+three routes for what `Roads.ROUTES` has two of, and the village is now a town a road can end at. Nothing of it is laid;
+the Shire's own ring is dressed with no road, because `Roads.forGround` answers for the valley and a route to a village
+that had no ground until this week is a route planned against a map that did not have it in.
+
 **What has not been checked.** None of the river work has been seen in a world: the bypass's new bend and its fall, the
 branch's valley and its mouth at the wall, the fork, and the merged channel's run to the bay are all unbuilt territory.
 A world made before 16 November holds the old course and cannot show any of it. The bar's fix is the one piece that can
@@ -219,14 +252,11 @@ Eleven pages, 26 to 36, written and wired; **played through page 32** and workin
 
 ## On hold, and what unblocks each
 
-- **Sign posts** - held on a second town, not on the blocks. Legibility is confirmed and the shaft, plinth and cap seat
-  right. A board can only point at a place a world has planted, **Rivendell is the only town so far**, and
-  `SignPostArmBlockEntity.destinations()` offers every planted place in `Places.catalogue()` - so a board would happily
-  read *Matuna's Lair*. When more towns exist: give `Places.Name` a kind (it is
-  `record Name(String id, @Nullable Alliance alliance, boolean beryl)` today) or add a `Places.TOWNS` set, and filter
-  `destinations()` to it, so a hand-placed board cycles `""` ↔ the towns. An automatic post is then a placer that stands
-  an arm on the side the town lies and calls `setDestination(board, place)`, which measures the distance itself. Nothing
-  places posts today, so no posting pass waits on it.
+- **Sign posts** - the towns are the filter now (`Places.TOWNS`, stood at their pins on the first start), so a board
+  cycles the blank and Hobbiton / Bree / Rivendell and nothing else. What is left is the placer: a post stood at a
+  road's junction, its arm turned to the side the town lies, and `setDestination(board, place)` called with the
+  distance measured for it. Nothing places posts today, and no posting pass waits on it - a hand-placed post already
+  reads right.
 - **The keep's placement** - unblocked by a **brand-new world**, which is also how the rest of the quest walk is meant
   to be done. `ArdaMap` carries `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` 187 (box x 5516…5637, z -7112…-6930, floor
   top 189, south wall at -6930 where `keepWall()` ends the hall), the captain and wraith follow it, and the owner's old
