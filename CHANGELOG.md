@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The village raises itself with nobody online, counts its own ticks, and a world holding a stale one raises it again.**
+          The ground stage that asks for its chunks a chunk at a time had never been measured, and could not be: the pass
+          waits for a player within 192 blocks, and a `runServer` console does not reach the world. So there is now a
+          switch and a script. `raiseShireOnStart` in the mod's server settings (`TolkienMobsConfig`) takes the gate off at
+          start, and `tools/raise_shire.sh` boots a fresh level with that switch set, waits for the village to stand,
+          prints the two lines that matter, stops the server and restores `server.properties` and the config. The pass
+          counts its own ticks to make the line worth reading: **1210 ticks (60.5 s)** to stand the village on a fresh
+          level with nobody in the world - 1326 chunks of ground, 143 pieces, 1290 bands, 701 dress steps against a 5 ms
+          budget, and no tick anywhere near the watchdog. That is the first measurement of the ground asked for and taken
+          in the same tick, and it says the shape holds. The note beside the cut (`_stands.txt`) now says what stood the
+          village and not only where: the cut's fingerprint - its piece count and a CRC over the table and every piece, so
+          a re-cut, an added piece or a moved block all read differently - plus a `DRESS_VERSION` for the drape's own
+          rules, so a ring fixed in code reaches a world that already holds the village rather than only worlds made after
+          the fix. It also records the ground's top at five columns across the footprint, and a start that finds most of
+          them moved raises the village over what is there, which is the case of chunks trimmed or a world replaced under a
+          note that would otherwise keep half a village. The probe never asks the level for a chunk - it reads only the
+          chunks the level holds, and leaves the question to the first tick a player is near enough to make it free - so
+          the start stays free of chunk generation, which is the one rule this pass has.
 - **The new Shire code, read again with fresh eyes and cut where it was doing the same thing twice.** `Dressing` had
           a `drape` overload with a `trees` flag that nothing called but its own two forwarders, so those go straight to
           the deck-aware one; `CutCommands.deck` returned the city's answer from three places and now falls through to it

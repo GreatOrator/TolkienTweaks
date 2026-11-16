@@ -581,6 +581,42 @@ public final class CutCommands {
         return CityCommands.DECK_LIFT;
     }
 
+    /**
+     * What this cut is, in one word: its pieces and their contents, hashed.
+     * <p>
+     * The note beside a standing village records this so a world can tell a cut that has changed since from one that
+     * has not - a re-cut, a piece added, a block moved, or a table that differs only in its `deck` line all answer
+     * differently, and a world holding an older village then raises it again over what is there. Reading the fourteen
+     * megabytes of a village costs a moment once per start, which is the price of the answer being the cut's and not a
+     * version number somebody has to remember to type.
+     *
+     * @return the piece count and the hash of every piece, or what was wrong with reading them
+     */
+    static String fingerprint(ServerLevel level, String cut) {
+        java.util.zip.CRC32 crc = new java.util.zip.CRC32();
+        try (InputStream table = open(level, cut, cut + TABLE)) {
+            if (table == null) return "none";
+            byte[] buffer = new byte[8192];
+            List<String> pieces = new ArrayList<>();
+            for (String line : new BufferedReader(new InputStreamReader(table, StandardCharsets.UTF_8))
+                    .lines().toList()) {
+                String[] fields = line.trim().split("\\s+");
+                if (fields.length >= 4 && !line.isBlank()) pieces.add(fields[0]);
+                crc.update(line.trim().getBytes(StandardCharsets.UTF_8));
+            }
+            for (String piece : pieces) {
+                try (InputStream in = open(level, cut, piece)) {
+                    if (in == null) return "missing";
+                    int read;
+                    while ((read = in.read(buffer)) > 0) crc.update(buffer, 0, read);
+                }
+            }
+            return pieces.size() + "-" + Long.toHexString(crc.getValue());
+        } catch (IOException unreadable) {
+            return "unreadable";
+        }
+    }
+
     /** A cut's table, read in the order it is laid: lowest band first, then a sweep across it. */
     static List<Part> parts(ServerLevel level, String cut) throws IOException {
         List<Part> parts = new ArrayList<>();

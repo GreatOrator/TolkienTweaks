@@ -70,6 +70,7 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue SPAWNER_MAX_DELAY;
     private static final ModConfigSpec.IntValue TRINKET_CRAFT_TIME;
     private static final ModConfigSpec.IntValue FIREPLACE_CRAFT_TIME;
+    private static final ModConfigSpec.BooleanValue RAISE_SHIRE_ON_START;
 
     /* Server: the pipe's own numbers - how long a draw takes and what each strain's smoke leaves behind. */
     private static final ModConfigSpec.IntValue PIPE_DRAW_TICKS;
@@ -306,6 +307,13 @@ public class TolkienMobsConfig {
                 .comment("Ticks the fireplace takes to cook one thing, twenty to the second. A fireplace in a world",
                         "picks this up the next time it loads (Default 100, or five seconds)")
                 .defineInRange("fireplaceCookTime", 100, 1, 2000);
+        RAISE_SHIRE_ON_START = BUILDER
+                .comment("Raises the Shire's village at the start of a world with nobody near it, instead of waiting",
+                        "for a player to come within 192 blocks of it. A server that prepares its village while",
+                        "nobody is watching spends the world's own quiet time on it, and a measurement run has",
+                        "something to watch without a client. A world that already holds the village is left alone",
+                        "(Default false)")
+                .define("raiseShireOnStart", false);
         BUILDER.pop();
 
         BUILDER.comment("How a Shire pipe draws, and what each strain of pipe-weed leaves behind once it is smoked.",
@@ -564,6 +572,7 @@ public class TolkienMobsConfig {
     public static boolean paymentType;
     public static boolean disableAllBlocks;
     public static boolean disableAllItems;
+    public static boolean raiseShireOnStart;
 
     public static int distanceCost;
     public static int dimensionCost;
@@ -917,6 +926,7 @@ public class TolkienMobsConfig {
         disableFakePlayer = FAKE_PLAYER.get();
         autoUse = AUTO_USE.get();
         disableHobbitGrowth = HOBBIT_GROWTH.get();
+        raiseShireOnStart = RAISE_SHIRE_ON_START.get();
         pickupRange = PICKUP_RANGE.get();
         growthRange = GROWTH_RANGE.get();
         growthTimer = GROW_TIMER.get();

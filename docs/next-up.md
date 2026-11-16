@@ -170,7 +170,15 @@ to ship one. `Hobbiton.autospawn` raises it on the first start of a world, from 
 few pieces a tick, because seven hundred blocks of ring in one call is a stall at the exact moment a player is waiting.
 The dressing is the city's own `Dressing` job, stepped by the village - a second drape rule for a second build is how a
 country ends up with two ideas about where a wall stops. A note beside the cut (`_stands.txt`) is what says the village
-is up, so the next start leaves it alone; the three commands still work and are still the way to re-cut one.
+is up, and it says *what* stood it as well as where: the cut's own fingerprint (its piece count and a CRC over the table
+and every piece, `143-b42b3635` as shipped), a `DRESS_VERSION` a hand bumps when the drape's rules move, and the ground's
+top at five columns across the footprint. A start that finds the print or the version changed raises the village again,
+so a re-cut and a ring fixed in code now reach a world that already holds a village instead of only worlds made after
+them; a start that finds most of the probe columns moved raises it too, which is what catches chunks trimmed or a world
+replaced under the note. The probe reads only chunks the level already holds - asking the level for one would generate
+it on the start-up thread, the thing this whole pass exists to avoid - so a start that holds none leaves the question to
+the first tick somebody is near enough to make it free. The three commands still work and are still the way to re-cut
+one.
 
 The water out of the village is no longer a rule named after the Shire. `ArdaMap.Channel` is a drawn channel whose level
 is a *build's*: the level it leaves at, the grade it falls at, the reach of its corridor and the course the mask drew,
@@ -202,13 +210,17 @@ The one long tick that is left is **43.2 s**, the game finishing the 1326 newly 
 one go - the same 43 s that used to land in the first piece of the cut (`hobbiton_0_0_0.nbt`, 42.3 s). It was paid in
 one tick because the whole region had been generated before anything was written into it, and the drain is the
 engine's. The pass now asks for a chunk and takes it in the same tick, a chunk at a time, so nothing is ever pending
-for the region as a whole - **that shape is not measured yet**: a headless server cannot raise the village (the gate
-wants a player near) and its console does not reach `runServer`, so the first real check is a walk to Hobbiton. What
-keeps the cost off a player's first start either way is the gate - the village is raised only while somebody is within
-`REACH` 192 of it, so the chunks are in a view, ticking and being finished as the player arrives - plus
-`/hobbiton raise` for an admin who wants it up in an empty world. **Not seen in a client session**: the player-present numbers are a
-bound, not a measurement. The pass keeps none of those clocks now: the numbers were taken with temporary
-counters, and what is left is one line when the village starts and one when it stands.
+for the region as a whole. **That shape is measured now, 16 November, and it holds.** `raiseShireOnStart` in the mod's
+server settings takes the gate off at start, and `tools/raise_shire.sh` boots a level of its own with the switch set,
+waits for the line, prints the numbers and puts `server.properties` and the config back afterwards. On a fresh level
+with **nobody online** the village stood in **1210 ticks (60.5 s)**: a warm build, 1326 chunks of ground, 143 pieces,
+1290 bands and 701 dress steps, and no tick went near the sixty-second watchdog. That is the run that was missing, and
+it is one command away from being repeated. What keeps the cost off a player's first start is still the gate - the
+village is raised only while somebody is within `REACH` 192 of it, so the chunks are in a view, ticking and being
+finished as the player arrives - plus `/hobbiton raise` for an admin who wants it up in an empty world, and the config
+for a server that would rather prepare it in the dark. **Not seen in a client session**: whether the deck, the mouths
+and the ring look right is still a walk to Hobbiton, and 60.5 s is wall clock on a warm build, not a bound on a cold
+one. The pass keeps its own tick count now, because the measurement is the line that says it stands.
 
 **Where the roads go next, and it is not built.** The Shire to Bree, Bree to Rivendell, and Glóin's camp to Gundabad -
 three routes for what `Roads.ROUTES` has two of, and the village is now a town a road can end at. Nothing of it is laid;

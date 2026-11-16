@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import com.mojang.brigadier.context.CommandContext;
@@ -11,6 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -47,7 +50,9 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * comes so the game's finishing of its sections and light is paid a chunk's worth a tick and never a region's.</li>
  * <li><strong>Nothing is done far from anybody.</strong> A village nobody has walked to is a thousand chunks nobody has
  * looked at. The pass begins when somebody comes within {@link #REACH} of the footprint - not in an empty world, where
- * there is no player keeping the chunks ticking while they finish. `/hobbiton raise` is the way to ask for it anyway.</li>
+ * there is no player keeping the chunks ticking while they finish. `/hobbiton raise` asks for it anyway, and so does
+ * {@code raiseShireOnStart} in the mod's server settings, which is what a measurement run and a server that prepares
+ * its own ground use.</li>
  * <li><strong>What is done in a tick is bounded by time, not by a count.</strong> The job spends at most
  * {@link #BUDGET_MS} a tick and stops between pieces, bands and chunks, so the world keeps its twenty milliseconds
  * whatever the village is doing to it.</li>
@@ -77,13 +82,47 @@ public final class Hobbiton {
      */
     private static final int REACH = 192;
     /** How long after a start the pass waits before it will touch anything: a start is busy enough as it is. */
-    private static final int GRACE_TICKS = 200;    /** How many of the village's columns one unit of the clear works: a band across the footprint. */
+    private static final int GRACE_TICKS = 200;
+    /** How many of the village's columns one unit of the clear works: a band across the footprint. */
     private static final int COLUMNS_PER_UNIT = 200;
-    /** What this world has made of the village, beside its cut: the dimension and the corner it stood at. */
+    /**
+     * What this world has made of the village, beside its cut: the dimension, the corner it stood at, what the cut was,
+     * and the ground's own top at five places across it.
+     */
     private static final String MARKER = "_stands.txt";
+    /**
+     * The drape's own rules, as a number a hand bumps when it changes them.
+     * <p>
+     * The fingerprint above answers for the cut; this answers for the code that settles the ring round it. A fix to the
+     * drape - a mouth filled, a deck read from the build - has to reach a world that already holds the village, and the
+     * cut it is dressed from is unchanged, so the version is what says so.
+     */
+    private static final int DRESS_VERSION = 1;
+    /** How far a probe column's top may move and still be the village: growth, mostly, not a village taken away. */
+    private static final int PROBE_SLACK = 6;
+    /** What the note's probe answers: the ground is there, it is gone, or the level holds no chunk to ask. */
+    private static final int PRESENT = 1, GONE = 0, UNASKED = -1;
+    /** How near a player has to be for the level to hold the village's chunks, in blocks: the reach, plus half of it. */
+    private static final int NEAR = REACH + 300;
+    /**
+     * Where the note looks: the four corners of the footprint and its middle, inset from the edge.
+     * <p>
+     * The clear and the drape leave the ground inside a village where the build put it, so these heights do not move
+     * once it stands - except when the chunks are trimmed or the world is replaced, which is the case worth catching.
+     */
+    private static final int[][] PROBES = {{8, 8}, {542, 8}, {8, 459}, {542, 459}, {275, 233}};
 
     /** The village being raised, or null when there is one standing or nothing to raise. */
     private static Standing standing;
+    /**
+     * A corner this world notes a village at whose ground could not be read at start, or null.
+     * <p>
+     * A start holds almost none of the village's chunks, and asking the level to measure one it does not hold generates
+     * it there and then. So the note's ground is asked about again on the first tick somebody is near enough for the
+     * answer to be free - which is also the only moment a trimmed village matters.
+     */
+    @Nullable
+    private static BlockPos held;
 
     private Hobbiton() {
     }
@@ -99,7 +138,16 @@ public final class Hobbiton {
         ServerLevel level = server.getLevel(TolkienDimensions.ARDA);
         if (level == null) return null;
         BlockPos corner = ArdaMap.hobbitonPlan();
-        if (stands(level, corner)) return null;
+        if (stands(level, corner)) {
+            int ground = ground(level, corner);
+            if (ground != GONE) {
+                held = ground == UNASKED ? corner : null;
+                return null;
+            }
+            LOGGER.info("The Shire: this world notes the village at {}, but not its ground; raising it again",
+                    corner.toShortString());
+        }
+        held = null;
         List<CutCommands.Part> parts;
         try {
             parts = CutCommands.parts(level, CUT);
@@ -115,20 +163,83 @@ public final class Hobbiton {
         return standing;
     }
 
-    /** Whether the village is standing at its own corner in this world. */
+    /**
+     * Whether this world notes a village at that corner, made of this cut and these drape rules.
+     * <p>
+     * Three of the note's four questions are answered here, because they cost nothing: is it the same corner in the
+     * same dimension; is it the same cut, piece for piece (a re-cut is not); and did the drape's own rules move since
+     * (a fix to the ring is not a fix until it has been run on the world). The fourth - is the ground the drape left
+     * still there - needs chunks, and {@link #ground} asks it where they are held.
+     */
     private static boolean stands(ServerLevel level, BlockPos corner) {
         Path marker = marker(level);
         if (!Files.isRegularFile(marker)) return false;
         try {
             String[] fields = Files.readString(marker).trim().split("\\s+");
-            return fields.length >= 4
-                    && fields[0].equals(level.dimension().identifier().toString())
-                    && Integer.parseInt(fields[1]) == corner.getX()
-                    && Integer.parseInt(fields[2]) == corner.getY()
-                    && Integer.parseInt(fields[3]) == corner.getZ();
+            if (fields.length < 6 + PROBES.length) return false;
+            if (!fields[0].equals(level.dimension().identifier().toString())
+                    || Integer.parseInt(fields[1]) != corner.getX()
+                    || Integer.parseInt(fields[2]) != corner.getY()
+                    || Integer.parseInt(fields[3]) != corner.getZ()) return false;
+            if (!fields[4].equals(CutCommands.fingerprint(level, CUT))) return false;
+            return Integer.parseInt(fields[5]) == DRESS_VERSION;
         } catch (IOException | NumberFormatException unreadable) {
             return false;
         }
+    }
+
+    /**
+     * What the note's probe says about the ground the village was dressed into.
+     * <p>
+     * Every height is read out of a chunk the level already holds, never by asking it for one, so a column in a chunk
+     * nobody has loaded says nothing and the question waits. A tree grown over one probe column moves that one by a few
+     * blocks, which is what {@link #PROBE_SLACK} is for; a village trimmed out of the world moves most of them by the
+     * village's own height, so most of them is what has to have moved before this says the ground is gone.
+     */
+    private static int ground(ServerLevel level, BlockPos corner) {
+        Path marker = marker(level);
+        if (!Files.isRegularFile(marker)) return GONE;
+        try {
+            String[] fields = Files.readString(marker).trim().split("\\s+");
+            if (fields.length < 6 + PROBES.length) return GONE;
+            int asked = 0;
+            int moved = 0;
+            for (int at = 0; at < PROBES.length; at++) {
+                int noted = Integer.parseInt(fields[6 + at]);
+                int now = top(level, corner.getX() + PROBES[at][0], corner.getZ() + PROBES[at][1]);
+                if (noted < 0 || now < 0) continue;
+                asked++;
+                if (Math.abs(now - noted) > PROBE_SLACK) moved++;
+            }
+            if (asked == 0) return UNASKED;
+            return moved * 2 > asked ? GONE : PRESENT;
+        } catch (IOException | NumberFormatException unreadable) {
+            return GONE;
+        }
+    }
+
+    /** The top of one column, or -1 when the level does not hold its chunk: never a chunk asked for out of a tick. */
+    private static int top(ServerLevel level, int x, int z) {
+        return level.isLoaded(new BlockPos(x, 0, z))
+                ? level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) : -1;
+    }
+
+    /** The note's own places, read as they stand: -1 where the level holds no chunk to read. */
+    private static int[] probe(ServerLevel level, BlockPos corner) {
+        int[] tops = new int[PROBES.length];
+        for (int at = 0; at < PROBES.length; at++) {
+            tops[at] = top(level, corner.getX() + PROBES[at][0], corner.getZ() + PROBES[at][1]);
+        }
+        return tops;
+    }
+
+    /** Whether somebody is near enough to the village for the level to hold its chunks. */
+    private static boolean near(ServerLevel level, BlockPos corner) {
+        double reach = (double) NEAR * NEAR;
+        for (ServerPlayer player : level.players()) {
+            if (player.blockPosition().distSqr(corner) <= reach) return true;
+        }
+        return false;
     }
 
     /**
@@ -166,13 +277,27 @@ public final class Hobbiton {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         standing = null;
-        autospawn(event.getServer());
+        Standing work = autospawn(event.getServer());
+        if (work == null || !TolkienMobsConfig.raiseShireOnStart) return;
+        work.found = true;
+        LOGGER.info("The Shire: raising the village at the start, with nobody near it, as the config asks");
     }
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         Standing work = standing;
-        if (work == null) return;
+        if (work == null) {
+            // A village the note describes but whose ground the start could not read: ask again, once, now that
+            // somebody is near enough for the level to hold those chunks without generating one out of this tick.
+            if (held == null) return;
+            ServerLevel arda = event.getServer().getLevel(TolkienDimensions.ARDA);
+            if (arda == null || !near(arda, held)) return;
+            int ground = ground(arda, held);
+            if (ground == UNASKED) return;
+            held = null;
+            if (ground == GONE) autospawn(event.getServer());
+            return;
+        }
         ServerLevel level = event.getServer().getLevel(TolkienDimensions.ARDA);
         if (level == null) return;
         if (work.began < 0) {
@@ -190,12 +315,14 @@ public final class Hobbiton {
                 done = work.step(level);
                 if (elapsedMs(started) >= BUDGET_MS) break;
             }
+            work.ticks++;
             if (done) {
                 work.release(level);
                 standing = null;
                 note(level, work.planted);
-                LOGGER.info("The Shire: the village stands at {}, dressed to its own outline",
-                        work.planted.toShortString());
+                LOGGER.info("The Shire: the village stands at {} in {} ticks ({} s), dressed to its own outline",
+                        work.planted.toShortString(), work.ticks,
+                        String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D));
             }
         } catch (IOException unreadable) {
             LOGGER.warn("The Shire: the village could not be raised: {}", unreadable.getMessage());
@@ -248,8 +375,10 @@ public final class Hobbiton {
         private final int chunkDeep;
         private CutCommands.Shape shape;
         private Dressing.Job dressing;
-        /** The tick the pass began on, -1 until it does, and whether a hand asked for it rather than a player being near. */
+        /** The tick the pass began on, -1 until it does, and how many ticks it has taken. */
         private int began = -1;
+        private int ticks;
+        /** Whether a hand asked for it, or the config did, rather than a player being near. */
         private boolean found;
         /** 0 asking for ground, 1 laying, 2 clearing, 3 dressing. */
         private int stage;
@@ -368,13 +497,18 @@ public final class Hobbiton {
         return CutCommands.folder(level).resolve(CUT).resolve(MARKER);
     }
 
-    /** Writes the note that says the village stands, so the next start leaves it alone. */
+    /** Writes the note that says what the village stands on, so the next start knows whether it still holds it. */
     private static void note(ServerLevel level, BlockPos corner) {
         try {
             Path marker = marker(level);
             Files.createDirectories(marker.getParent());
-            Files.writeString(marker, level.dimension().identifier() + " " + corner.getX() + " " + corner.getY()
-                    + " " + corner.getZ());
+            StringBuilder line = new StringBuilder()
+                    .append(level.dimension().identifier()).append(' ')
+                    .append(corner.getX()).append(' ').append(corner.getY()).append(' ').append(corner.getZ())
+                    .append(' ').append(CutCommands.fingerprint(level, CUT))
+                    .append(' ').append(DRESS_VERSION);
+            for (int top : probe(level, corner)) line.append(' ').append(top);
+            Files.writeString(marker, line.toString());
         } catch (IOException unwritable) {
             LOGGER.warn("The Shire: the village stands, but that could not be written: {}", unwritable.getMessage());
         }
