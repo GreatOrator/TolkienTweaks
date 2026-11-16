@@ -24,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 /**
@@ -41,8 +43,8 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * <li><strong>The ground comes first, and the pass does not dig it.</strong> A village is thirteen hundred chunks of
  * Arda that have never been generated. Asking the level for one of them from the server thread answers by generating it
  * there, and generation out of a tick is what held a first attempt at this for the minute the watchdog allows. So the
- * chunks are held with tickets, a couple a tick, and vanilla generates them on its own threads; a piece is not laid
- * until every chunk under it is there and has been asked for once, which is the game finishing its sections and light.</li>
+ * chunks are held with tickets a chunk at a time, vanilla generates them on its own threads, and each is taken as it
+ * comes so the game's finishing of its sections and light is paid a chunk's worth a tick and never a region's.</li>
  * <li><strong>Nothing is done far from anybody.</strong> A village nobody has walked to is a thousand chunks nobody has
  * looked at. The pass begins when somebody comes within {@link #REACH} of the footprint - not in an empty world, where
  * there is no player keeping the chunks ticking while they finish. `/hobbiton raise` is the way to ask for it anyway.</li>
@@ -75,20 +77,13 @@ public final class Hobbiton {
      */
     private static final int REACH = 192;
     /** How long after a start the pass waits before it will touch anything: a start is busy enough as it is. */
-    private static final int GRACE_TICKS = 200;
-    /** How many chunks of ground are asked for a tick while the village waits for it. */
-    private static final int ASK_PER_TICK = 2;
-    /** How many of the village's columns one unit of the clear works: a band across the footprint. */
+    private static final int GRACE_TICKS = 200;    /** How many of the village's columns one unit of the clear works: a band across the footprint. */
     private static final int COLUMNS_PER_UNIT = 200;
     /** What this world has made of the village, beside its cut: the dimension and the corner it stood at. */
     private static final String MARKER = "_stands.txt";
 
     /** The village being raised, or null when there is one standing or nothing to raise. */
     private static Standing standing;
-    /** The tick the job began on. */
-    private static int began = -1;
-    /** Whether a hand has asked for the village, which stands the waiting-for-a-player rule aside for this session. */
-    private static boolean found;
 
     private Hobbiton() {
     }
@@ -96,29 +91,28 @@ public final class Hobbiton {
     /**
      * Begins raising the village if this world does not already hold it.
      *
-     * @return how many pieces are to be laid, or nil when the village already stands or the cut is not this build's
+     * @return the village being raised, or null when it already stands or the cut is not this build's
      */
-    private static int autospawn(MinecraftServer server) {
+    @Nullable
+    private static Standing autospawn(MinecraftServer server) {
+        if (standing != null) return standing;
         ServerLevel level = server.getLevel(TolkienDimensions.ARDA);
-        if (level == null) return 0;
+        if (level == null) return null;
         BlockPos corner = ArdaMap.hobbitonPlan();
-        if (stands(level, corner)) return 0;
+        if (stands(level, corner)) return null;
         List<CutCommands.Part> parts;
         try {
             parts = CutCommands.parts(level, CUT);
         } catch (IOException unreadable) {
             LOGGER.warn("The Shire: the village's cut could not be read, so it is not raised: {}",
                     unreadable.getMessage());
-            return 0;
+            return null;
         }
-        if (parts.isEmpty()) return 0;
-        if (standing == null) {
-            standing = new Standing(parts, corner, CutCommands.Box.of(parts, corner), CutCommands.deck(level, CUT));
-            LOGGER.info("The Shire: {} pieces of the village are to be laid at {} over {} chunks, when somebody is"
-                            + " within {} blocks", parts.size(), corner.toShortString(),
-                    standing.groundChunks(), REACH);
-        }
-        return parts.size();
+        if (parts.isEmpty()) return null;
+        standing = new Standing(parts, corner, CutCommands.Box.of(parts, corner), CutCommands.deck(level, CUT));
+        LOGGER.info("The Shire: {} pieces of the village are to be laid at {} over {} chunks, when somebody is"
+                        + " within {} blocks", parts.size(), corner.toShortString(), standing.groundChunks(), REACH);
+        return standing;
     }
 
     /** Whether the village is standing at its own corner in this world. */
@@ -158,22 +152,20 @@ public final class Hobbiton {
     /** Lays, clears and dresses the village now, wherever the players are, at the same budget a tick. */
     private static int raiseNow(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
-        int pieces = autospawn(source.getServer());
-        if (pieces == 0 || standing == null) {
+        Standing work = autospawn(source.getServer());
+        if (work == null) {
             source.sendFailure(Component.literal("The village already stands here, or there is no Shire cut to raise."));
             return 0;
         }
-        found = true;
-        source.sendSuccess(() -> Component.literal("Raising the Shire: " + pieces + " pieces to lay, then the "
-                + "country out of it, then the ring - at most " + BUDGET_MS + " ms a tick."), true);
-        return pieces;
+        work.found = true;
+        source.sendSuccess(() -> Component.literal("Raising the Shire: " + work.parts.size() + " pieces to lay, then"
+                + " the country out of it, then the ring - at most " + BUDGET_MS + " ms a tick."), true);
+        return work.parts.size();
     }
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         standing = null;
-        began = -1;
-        found = false;
         autospawn(event.getServer());
     }
 
@@ -183,10 +175,11 @@ public final class Hobbiton {
         if (work == null) return;
         ServerLevel level = event.getServer().getLevel(TolkienDimensions.ARDA);
         if (level == null) return;
-        if (began < 0) {
-            if (event.getServer().getTickCount() < GRACE_TICKS) return;
-            if (!found && !watched(level, work.box)) return;
-            began = event.getServer().getTickCount();
+        if (work.began < 0) {
+            // A hand's ask is taken at once; the world's own waits for the start to settle and for somebody to be near.
+            if (!work.found && event.getServer().getTickCount() < GRACE_TICKS) return;
+            if (!work.found && !watched(level, work.box)) return;
+            work.began = event.getServer().getTickCount();
             LOGGER.info("The Shire: raising the village - {} chunks of ground to wait for, then {} pieces and the"
                             + " ring, at {} ms a tick", work.groundChunks(), work.parts.size(), BUDGET_MS);
         }
@@ -234,7 +227,7 @@ public final class Hobbiton {
     }
 
     /**
-     * The village in the middle of being raised: its cut, its corner, and how far through the three stages it is.
+     * The village in the middle of being raised: its cut, its corner, and how far through the four stages it is.
      * <p>
      * The stages are the three commands with the ground taken first: wait for the chunks, lay the pieces, clear the
      * country out of the footprint, dress the ring.
@@ -255,13 +248,15 @@ public final class Hobbiton {
         private final int chunkDeep;
         private CutCommands.Shape shape;
         private Dressing.Job dressing;
+        /** The tick the pass began on, -1 until it does, and whether a hand asked for it rather than a player being near. */
+        private int began = -1;
+        private boolean found;
         /** 0 asking for ground, 1 laying, 2 clearing, 3 dressing. */
         private int stage;
         private int piece;
         private int column;
-        private boolean asked;
+        /** How far through the rectangle the ground has been asked for and taken. */
         private int askedUpto;
-        private int readyUpto;
 
         private Standing(List<CutCommands.Part> parts, BlockPos planted, CutCommands.Box box, int deck) {
             this.parts = parts;
@@ -282,6 +277,15 @@ public final class Hobbiton {
             return this.chunkWide * this.chunkDeep;
         }
 
+        /** Which chunk of the rectangle the nth chunk of it is. */
+        private int chunkX(int index) {
+            return this.chunkLowX + index / this.chunkDeep;
+        }
+
+        private int chunkZ(int index) {
+            return this.chunkLowZ + index % this.chunkDeep;
+        }
+
         /**
          * One unit of the stage it is on: a count of the ground, a piece of the cut, a band of columns, or a step of
          * the drape.
@@ -296,60 +300,28 @@ public final class Hobbiton {
         }
 
         /**
-         * Asks vanilla for the ground, and waits until it is there and ready.
+         * Asks vanilla for the ground, a chunk a tick, and takes each as it comes.
          * <p>
-         * The chunks are taken with tickets so the game generates them on its own workers and keeps them: asking the
-         * level for a block in an ungenerated chunk from the server thread generates it <em>there</em>. Tickets are the
-         * bookkeeping half of `setChunkForced`, which calls `getChunk` straight after them, and a chunk of Arda costs
-         * about a thirtieth of a second out of the tick it is asked for - so they are asked for a couple at a time.
+         * A ticket is what generates a chunk, on the game's own threads; the level's own `getChunk` is what finishes it,
+         * its sections and its light. Measured on a fresh world, that finishing costs about a thirtieth of a second a
+         * chunk - and asked for as one region it is a single drain: the first write anywhere in the 1326 chunks of the
+         * village stopped a tick for forty-three seconds. So the ground is asked for and taken a chunk at a time, which
+         * is the same cost in ticks that run long rather than in one that holds the server.
          *
          * @return false, always: the wait is the stage
          */
         private boolean awaitGround(ServerLevel level) {
-            if (!this.asked) {
-                this.asked = true;
-                LOGGER.info("The Shire: asking vanilla for {} chunks of ground under the village, {} a tick",
-                        groundChunks(), ASK_PER_TICK);
+            if (this.askedUpto == 0) {
+                LOGGER.info("The Shire: asking vanilla for {} chunks of ground under the village", groundChunks());
             }
-            int upto = Math.min(groundChunks(), this.askedUpto + ASK_PER_TICK);
-            int index = 0;
-            for (int cx = this.chunkLowX; cx < this.chunkLowX + this.chunkWide; cx++) {
-                for (int cz = this.chunkLowZ; cz < this.chunkLowZ + this.chunkDeep; cz++) {
-                    if (index >= this.askedUpto && index < upto) {
-                        level.getChunkSource().updateChunkForced(new ChunkPos(cx, cz), true);
-                    }
-                    index++;
-                }
-            }
-            this.askedUpto = upto;
-            if (this.askedUpto < groundChunks() || !held(level)) return false;
-            if (this.readyUpto < groundChunks()) {
-                // Held is generated, and generated is not yet ready to be written into: the first write into a virgin
-                // stretch of Arda waits for the region's sections and light to finish, measured at forty-three seconds
-                // when it was asked for by the first piece of the village. So the pieces' own ask is made here, a chunk
-                // a tick, and the same cost is paid out in ticks that are a little long rather than in one that stops
-                // the server.
-                int at = 0;
-                for (int cx = this.chunkLowX; cx < this.chunkLowX + this.chunkWide; cx++) {
-                    for (int cz = this.chunkLowZ; cz < this.chunkLowZ + this.chunkDeep; cz++) {
-                        if (at++ == this.readyUpto) level.getChunk(cx, cz);
-                    }
-                }
-                this.readyUpto++;
+            if (this.askedUpto < groundChunks()) {
+                int at = this.askedUpto++;
+                level.getChunkSource().updateChunkForced(new ChunkPos(chunkX(at), chunkZ(at)), true);
+                level.getChunk(chunkX(at), chunkZ(at));
                 return false;
             }
             this.stage = 1;
             return false;
-        }
-
-        /** Whether every chunk of the rectangle is loaded. */
-        private boolean held(ServerLevel level) {
-            for (int cx = this.chunkLowX; cx < this.chunkLowX + this.chunkWide; cx++) {
-                for (int cz = this.chunkLowZ; cz < this.chunkLowZ + this.chunkDeep; cz++) {
-                    if (!level.hasChunk(cx, cz)) return false;
-                }
-            }
-            return true;
         }
 
         private boolean layPiece(ServerLevel level) throws IOException {
@@ -385,13 +357,9 @@ public final class Hobbiton {
 
         /** Gives the ground back: the village is up, so nothing needs the chunks held for it. */
         private void release(ServerLevel level) {
-            if (!this.asked) return;
-            for (int cx = this.chunkLowX; cx < this.chunkLowX + this.chunkWide; cx++) {
-                for (int cz = this.chunkLowZ; cz < this.chunkLowZ + this.chunkDeep; cz++) {
-                    level.setChunkForced(cx, cz, false);
-                }
+            for (int at = 0; at < groundChunks(); at++) {
+                level.setChunkForced(chunkX(at), chunkZ(at), false);
             }
-            this.asked = false;
         }
     }
 

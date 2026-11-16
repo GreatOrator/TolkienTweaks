@@ -180,7 +180,7 @@ block in forty of run, 80 at the Y.
 
 The towns are `Places.TOWNS` - Hobbiton, Bree and Rivendell - and a sign board now cycles only those the world has
 actually stood, instead of every planted name in the catalogue including barrows and a scout's fire. Rivendell and
-Hobbiton are stood at their pins on the first start (`Places.stand`), each with a `TOWN_RADIUS` of 280 rather than a
+Hobbiton are stood at their pins on the first start (`Places.standTowns`), with a `TOWN_RADIUS` of 280 rather than a
 camp's 32, so walking into either from any road announces it. **Bree has a catalogue entry, a name and a place among the
 towns, and no ground yet** - the first thing it needs is a build and a pin.
 
@@ -198,12 +198,15 @@ thrown out. `setChunkForced` on every chunk in one tick generated all 1326 on th
 **49 s**. `ServerChunkCache.getChunkFuture` is worse than it sounds - it parks the main thread on the worker pool
 (`BlockableEventLoop.managedBlock`) and held a tick for the watchdog's full **60 s**. Laying the cut with the plain
 `2` flags ran a shape update per block, which asked the level for the neighbour chunk each time: **11 s** of laying.
-The one long tick that is left is a single `getChunk` in the readiness sweep, **43.2 s**, the game finishing the 1326
-newly generated chunks' sections and light in one go - the same 43 s that used to land in the first piece of the cut
-(`hobbiton_0_0_0.nbt`, 42.3 s). It cannot be spread from here: the drain is the engine's, not the pass's. What keeps it
-off a player's first start is the gate - the village is raised only while somebody is within `REACH` 192 of it, so the
-chunks are in a view, ticking, and being finished as the player arrives - plus `/hobbiton raise` for an admin who wants
-it up in an empty world and does not mind the wait. **Not seen in a client session**: the player-present numbers are a
+The one long tick that is left is **43.2 s**, the game finishing the 1326 newly generated chunks' sections and light in
+one go - the same 43 s that used to land in the first piece of the cut (`hobbiton_0_0_0.nbt`, 42.3 s). It was paid in
+one tick because the whole region had been generated before anything was written into it, and the drain is the
+engine's. The pass now asks for a chunk and takes it in the same tick, a chunk at a time, so nothing is ever pending
+for the region as a whole - **that shape is not measured yet**: a headless server cannot raise the village (the gate
+wants a player near) and its console does not reach `runServer`, so the first real check is a walk to Hobbiton. What
+keeps the cost off a player's first start either way is the gate - the village is raised only while somebody is within
+`REACH` 192 of it, so the chunks are in a view, ticking and being finished as the player arrives - plus
+`/hobbiton raise` for an admin who wants it up in an empty world. **Not seen in a client session**: the player-present numbers are a
 bound, not a measurement. The pass keeps none of those clocks now: the numbers were taken with temporary
 counters, and what is left is one line when the village starts and one when it stands.
 

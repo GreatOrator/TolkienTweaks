@@ -575,9 +575,8 @@ public final class CutCommands {
                 return Math.max(0, Integer.parseInt(fields[1]));
             }
         } catch (IOException | NumberFormatException unreadable) {
-            // A table that cannot be read is not a reason to dress the ring to the wrong line: the city's answer is
-            // the one every cut used before this line existed.
-            return CityCommands.DECK_LIFT;
+            // A table that cannot be read, or a `deck` line that is not a number, is not a reason to dress the ring to
+            // the wrong line: the city's answer is the one every cut used before this line existed.
         }
         return CityCommands.DECK_LIFT;
     }

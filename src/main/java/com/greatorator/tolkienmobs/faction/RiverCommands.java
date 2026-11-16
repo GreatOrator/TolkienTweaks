@@ -13,8 +13,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
-import java.util.function.Predicate;
-
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 /**
@@ -32,10 +30,6 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  */
 @EventBusSubscriber(modid = MODID)
 public final class RiverCommands {
-    /** Whoever may read the map, which is anyone the gm level is given to. */
-    private static final Predicate<CommandSourceStack> MAY_ASK = source ->
-            Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source);
-
     private RiverCommands() {
     }
 
@@ -43,7 +37,7 @@ public final class RiverCommands {
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         dispatcher.register(Commands.literal("tmriver")
-                .requires(MAY_ASK)
+                .requires(source -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source))
                 .then(Commands.literal("at")
                         .executes(RiverCommands::at))
                 .then(Commands.literal("along")

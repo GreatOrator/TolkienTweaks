@@ -104,7 +104,7 @@ public class SignPostArmBlockEntity extends TolkienBlockEntity {
         // The towns a world has actually stood, and nothing else: a board is read by somebody walking a road, and the
         // catalogue also carries barrows, fords and a scout's fire, which a board has no room to say are not towns.
         for (Places.Place town : Places.towns(this.level)) {
-            if (!places.contains(town.id())) places.add(town.id());
+            places.add(town.id());
         }
         return places;
     }

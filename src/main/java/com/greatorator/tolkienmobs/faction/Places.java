@@ -79,7 +79,7 @@ public final class Places extends SavedData {
      * standing on to be told where they are: the notes' thirty-block circle was drawn round a camp, and round a town it
      * would name the middle of the market and nothing else. Wider than the build, so walking in from any road arrives.
      */
-    public static final int TOWN_RADIUS = 280;
+    private static final int TOWN_RADIUS = 280;
 
     /**
      * The names that are towns rather than country: a place a board may point a traveller at.
@@ -409,23 +409,20 @@ public final class Places extends SavedData {
     }
 
     /**
-     * A name stood where its pin is, with no player to ask.
+     * The towns stood where their pins are, with no player to ask.
      * <p>
      * {@link #ensure} is the campaign's way of naming ground a page needs, and it needs somebody standing there to ask
      * with. A town is not that: the village stands at a corner the code knows, and the moment it stands a board can be
-     * pointed at it, whether or not a player has ever walked in. So the start of the world stands the towns the map
-     * pins, and nothing else - a name with no pin is a name the drawing has to be asked about, and the drawing is only
-     * asked when somebody is there to be told.
-     *
-     * @return the place, or null when the catalogue has no such name or it has no pin
+     * pointed at it, whether or not a player has ever walked in. So the start of the world stands every town the map
+     * pins - a town with no pin is ground the drawing has to be asked about, and the drawing is only asked when
+     * somebody is there to be told. A name already written, by the campaign or by a scout, is left alone.
      */
-    @Nullable
-    public static Place stand(ServerLevel level, String id, int radius) {
-        Place existing = place(level, id);
-        if (existing != null) return existing;
-        if (known(id) == null) return null;
-        BlockPos pin = Pins.at(level, id);
-        return pin == null ? null : set(level, id, pin, radius);
+    public static void standTowns(ServerLevel level) {
+        for (String id : TOWNS) {
+            if (known(id) == null || place(level, id) != null) continue;
+            BlockPos pin = Pins.at(level, id);
+            if (pin != null) set(level, id, pin, TOWN_RADIUS);
+        }
     }
 
     /** Every place this world has set, in the catalogue's order. */

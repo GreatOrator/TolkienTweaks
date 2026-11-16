@@ -94,11 +94,9 @@ public class MilestoneHandler extends SavedData {
             arda.getChunk(stone.getX() >> 4, stone.getZ() >> 4);
             Stones.stone(arda, stone, "Gundabad", null);
             OrcPieces.raise(arda);
-            // The towns this world is given rather than surveys: a board points at a town, so the two that stand have a
-            // name from the first start, whether or not a player has walked into either. A name already written by the
-            // campaign or by a scout is left alone.
-            Places.stand(arda, "rivendell", Places.TOWN_RADIUS);
-            Places.stand(arda, "hobbiton", Places.TOWN_RADIUS);
+            // The towns this world is given rather than surveys: a board points at a town, so the ones that stand have
+            // a name from the first start, whether or not a player has walked into any of them.
+            Places.standTowns(arda);
         }
     }
 

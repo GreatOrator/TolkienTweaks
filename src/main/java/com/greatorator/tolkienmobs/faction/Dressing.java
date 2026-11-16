@@ -120,7 +120,7 @@ public final class Dressing {
      */
     static CityCommands.Drape drape(ServerLevel level, Path folder, List<CityCommands.Part> parts,
                                     BlockPos origin, CityCommands.Box box) {
-        return drape(level, folder, Pieces.ofCity(folder), parts, origin, box, false);
+        return drape(level, folder, Pieces.ofCity(folder), parts, origin, box, false, CityCommands.DECK_LIFT);
     }
 
     /**
@@ -134,25 +134,17 @@ public final class Dressing {
      */
     static CityCommands.Drape drape(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
                                     BlockPos origin, CityCommands.Box box) {
-        return drape(level, folder, pieces, parts, origin, box, false);
+        return drape(level, folder, pieces, parts, origin, box, false, CityCommands.DECK_LIFT);
     }
 
     /**
-     * The same drape again, for a build that has trees in it.
+     * The same drape with the build's own trees and its own deck line.
      * <p>
      * The outline is the highest block the cut puts in each column, and a village's highest block is a canopy: the
      * ring would then be filled up to the leaves, which stands a wall of stone where the ground beside a tree belongs,
      * one spike per tree. {@code trees} says the cut's trees are not its shape - leaves and logs are skipped while the
      * outline is taken - so the ring meets the ground under the crown. The city keeps the reading it has always had:
      * its own stone is its shape, and nothing in its cut is a tree.
-     */
-    static CityCommands.Drape drape(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
-                                    BlockPos origin, CityCommands.Box box, boolean trees) {
-        return drape(level, folder, pieces, parts, origin, box, trees, CityCommands.DECK_LIFT);
-    }
-
-    /**
-     * The same drape with the build's own deck line.
      * <p>
      * {@code deck} is how high the build's floor stands over the corner it was planted on. The city's is two, and the
      * number was written as a constant of the city's - which reads aright for the city and puts a village whose floor

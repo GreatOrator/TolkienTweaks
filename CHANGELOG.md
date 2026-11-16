@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The new Shire code, read again with fresh eyes and cut where it was doing the same thing twice.** `Dressing` had
+          a `drape` overload with a `trees` flag that nothing called but its own two forwarders, so those go straight to
+          the deck-aware one; `CutCommands.deck` returned the city's answer from three places and now falls through to it
+          once; `Places` stood its towns with a radius every caller passed as `TOWN_RADIUS`, so `standTowns(level)` stands
+          all of them - the list of towns and the list of calls can no longer drift - and the radius is private to
+          `Places`; the board's `destinations` de-duplicated a list that `towns` cannot repeat; `MilestoneHandler` made
+          the same call twice. `Hobbiton` carried three statics where one would do (`began` and `found` live on the pass
+          itself), walked the whole chunk rectangle to find the nth chunk of it, and had a separate readiness sweep over
+          1326 chunks that, measured, only moved the engine's forty-three-second drain from the first piece to the
+          sweep. The ground is now asked for and taken a chunk a tick, so nothing is ever pending for the region as a
+          whole - **unmeasured**; see the note in `docs/next-up.md`.
 - **The village's pass is the size of what it does and no more.** Measuring the rise left its instruments behind -
           a nanosecond counter per stage, a progress line every ten seconds and a two-line report at the end: fields and
           helpers that stood the village no better than the one line saying where it stands. They are gone, with the
