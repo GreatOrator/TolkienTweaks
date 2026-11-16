@@ -3807,3 +3807,19 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   corner north of the build - the fall was chosen rather than found. The route, its widths, its levels and the reading
   of it as a plan and a profile are in `run/river_reroute` (`shire_y_interpretation.png`, `shire_y_mask.png` and the two
   scripts). Nothing of it has been seen in a world, and it needs one made after the mask change.
+
+- **The drape takes the ground out of the way of a mouth, and the Shire's branch is cut a valley instead of a slot.**
+  The save at Hobbiton's main junction showed four to six blocks of land lying across the water where the village's west
+  arm meets the drawn channel. The mouth's own columns were left open on purpose, but every column of the drape's ring
+  in front of a mouth clamps to the mouth's own column and so read as water with it, which left the country's bank
+  standing eight blocks out. `Dressing.openMouth` now takes the ring's ground down to `CityCommands.MOUTH_DEPTH` (3)
+  below the water's top wherever the ground stands over that bed, skipping any column that is already the drawn river so
+  the join is the drawing's channel meeting the build's; it is a drape change, so running the drape again clears the bar
+  in a world that already exists. The same save showed the village's southern branch as a canal in a trench - its bed is
+  cut under water the code reads from the village, and nothing brought the hillside down to it, because a drawn river
+  normally stands at the height of the ground it is drawn on and its banks are the country. `ArdaMap.shireBank` is the
+  other half of that cut: a four-block shelf at water + 1, then the hillside at half a block per block out to
+  `SHIRE_BANK` (96) blocks, with a little roll, so the branch lies in a valley that closes at the country's own height
+  rather than between two sheer walls. Measured against the drawn ground, the sections at (-270, 40), (-450, 140) and
+  (-650, 210) come down from 105, 112 and 97 to the water's edge and climb back to the country's 108, 109 and 94. The
+  bank grading is world generation and needs chunks made after it; neither change has been seen in a world.

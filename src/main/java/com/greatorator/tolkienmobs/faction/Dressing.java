@@ -419,7 +419,12 @@ public final class Dressing {
             }
             if (channel[at]) {
                 if (watered[at] - (box.lowY() - 1) <= CityCommands.OUTLET_LIFT) {
-                    // The city's outflow: the branch takes the water out at the floor, so the mouth stays open.
+                    // The city's outflow: the branch takes the water out at the floor, so the mouth stays open - and
+                    // the ground in front of it is taken out with it. Left standing, the country's own bank is a bar
+                    // across the mouth, because every column of the ring in front of a mouth clamps to the mouth's
+                    // own column and so read as water and was left alone: the water left the build and stopped
+                    // against four to six blocks of land eight blocks out.
+                    openMouth(level, x, z, watered[at]);
                     open++;
                     return;
                 }
@@ -474,6 +479,33 @@ public final class Dressing {
                         skin.isSolid() ? skin : Blocks.STONE.defaultBlockState(), 2);
                 filled++;
             }
+        }
+
+        /**
+         * Takes the ground out of the way of a mouth, leaving a bed under the water it carries out.
+         * <p>
+         * Only the ring is cut, and only where the ground stands over the bed: a column that is already the drawn
+         * river, or already under the water, is left exactly as it is, so the join is the drawing's own channel
+         * meeting the build's rather than a trench dug through the river to reach it. A tree in the way goes with the
+         * ground, as it does everywhere else the drape cuts.
+         *
+         * @return whether anything was taken out
+         */
+        private boolean openMouth(ServerLevel level, int x, int z, int water) {
+            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+            if (top <= level.getMinY()) return false;
+            BlockState skin = level.getBlockState(new BlockPos(x, top, z));
+            while (top > level.getMinY() && (skin.is(BlockTags.LEAVES) || skin.is(BlockTags.LOGS))) {
+                skin = level.getBlockState(new BlockPos(x, --top, z));
+            }
+            if (top <= level.getMinY() || !skin.getFluidState().isEmpty()) return false;
+            int bed = water - CityCommands.MOUTH_DEPTH;
+            if (top <= bed) return false;
+            for (int y = top; y > bed; y--) {
+                level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+            }
+            level.setBlock(new BlockPos(x, bed, z), skin, 2);
+            return true;
         }
 
         /** One step of the road: the hand's own pass, taken a stage at a time so no tick carries it whole. */

@@ -506,7 +506,33 @@ public final class ArdaMap {
             SHIRE_LEG[leg] = Math.hypot(SHIRE_X[leg + 1] - SHIRE_X[leg], SHIRE_Z[leg + 1] - SHIRE_Z[leg]);
             total += SHIRE_LEG[leg];
         }
+        SHIRE_LENGTH = total;
     }
+
+    /** The branch's half width at the wall, and at the fork, in blocks: the channel narrows as it runs. */
+    private static final double SHIRE_HALF = 28.0D;
+    private static final double SHIRE_THROAT = 18.0D;
+    /** How far out from the branch its valley is cut, in blocks, before the country is left alone. */
+    private static final int SHIRE_BANK = 96;
+    /** Blocks of flat bank the branch keeps beside its water before the hillside starts to climb. */
+    private static final int SHIRE_SHELF = 4;
+    /**
+     * How much the hillside climbs for each block out from that shelf.
+     * <p>
+     * Half a block per block - a hillside rather than a wall. A drawn river normally stands at the height of the ground
+     * it is drawn on, so its banks are the country and there is nothing to grade; the Shire's branch is the one channel
+     * whose water is read from the village above it, which leaves it thirteen blocks under the hillside at the wall and
+     * twenty-six under the plateau in the middle of its course - and a bed cut under a level that low is a sheer slot
+     * with flat country on either side, which is what the save showed. At a half the deepest stretch closes over
+     * fifty-two blocks of run each side, and the reach is set wider than the deepest slope needs, so the ceiling is
+     * above the country at its edge everywhere and the valley's rim is the country's own rather than a step. The shelf
+     * keeps a walkable bank at the water and the roll stops the shoulder being a cone.
+     */
+    private static final double SHIRE_SHOULDER = 0.5D;
+    private static final int SHIRE_ROLL = 2;
+    private static final int SHIRE_ROLL_FADE = 12;
+    /** How long the branch is, in blocks, for reading how far along it a column stands. */
+    private static final double SHIRE_LENGTH;
 
     /**
      * The level the Shire's branch stands at over a column, or {@link Integer#MAX_VALUE} off its course.
@@ -1207,6 +1233,12 @@ public final class ArdaMap {
         if (dale != Integer.MIN_VALUE) {
             height = Math.min(height, dale);
         }
+        // The Shire's branch is a cut rather than a drawn hollow, so its ground is brought down to its water the same
+        // way the dale's is: the ceiling is the valley's own flank rather than the country.
+        int shire = shireBank(blockX, blockZ);
+        if (shire != Integer.MAX_VALUE) {
+            height = Math.min(height, shire);
+        }
         return new Sample(ground.country(), height, false, ground.shore(), ground.upland());
     }
 
@@ -1298,6 +1330,56 @@ public final class ArdaMap {
         }
         return vale(blockX, blockZ,
                 SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL)));
+    }
+
+    /**
+     * The valley the Shire's branch is cut through, as the height its ground may not stand over.
+     * <p>
+     * The branch's water is thirteen blocks under the hillside at the wall, and a drawn river's bed is cut under its
+     * water and nothing else: the country beside it is only ever raised, never brought down. So the branch read as a
+     * slot - sheer walls, flat field on both lips, which is not a river in country but a canal in a trench. This is
+     * the other half of the cut: from the water's own edge out, the ground climbs at {@link #SHIRE_SHOULDER} until it
+     * is the country's again, and no further than {@link #SHIRE_BANK} out. Where the branch runs through ground that
+     * already stands at its own level - the last stretch to the fork, where the hillside falls to 83 over water at 80
+     * - the ceiling is above the ground and nothing is cut at all.
+     *
+     * @return the ceiling, or {@link Integer#MAX_VALUE} where the column is not the branch's.
+     */
+    private static int shireBank(int blockX, int blockZ) {
+        // Off the branch's quarter of the Shire there is nothing to answer: the branch runs inside this box, and
+        // every column in the world is asked.
+        if (blockX < -880 || blockX > -120 || blockZ < -110 || blockZ > 320) {
+            return Integer.MAX_VALUE;
+        }
+        double near = Double.MAX_VALUE;
+        double run = 0.0D;
+        for (int leg = 0; leg < SHIRE_LEG.length; leg++) {
+            double alongX = SHIRE_X[leg + 1] - SHIRE_X[leg];
+            double alongZ = SHIRE_Z[leg + 1] - SHIRE_Z[leg];
+            double at = ((blockX - SHIRE_X[leg]) * alongX + (blockZ - SHIRE_Z[leg]) * alongZ)
+                    / (alongX * alongX + alongZ * alongZ);
+            double into = Mth.clamp(at, 0.0D, 1.0D);
+            double footX = SHIRE_X[leg] + into * alongX;
+            double footZ = SHIRE_Z[leg] + into * alongZ;
+            double away = Math.hypot(blockX - footX, blockZ - footZ);
+            if (away < near) {
+                near = away;
+                run = SHIRE_START[leg] + into * SHIRE_LEG[leg];
+            }
+        }
+        if (near > SHIRE_BANK + SHIRE_HALF) {
+            return Integer.MAX_VALUE;
+        }
+        int water = Math.max(SEA_LEVEL, SHIRE_WATER - (int) Math.round(run / SHIRE_GRADE));
+        double half = SHIRE_HALF + (SHIRE_THROAT - SHIRE_HALF) * Math.min(1.0D, run / SHIRE_LENGTH);
+        double out = near - half;
+        if (out <= 0.0D) {
+            return water + 1;
+        }
+        double eased = Math.max(0.0D, out - SHIRE_SHELF);
+        double roll = (fractal(blockX, blockZ, 48, 73) - 0.5D) * 2.0D * SHIRE_ROLL
+                * Math.min(1.0D, eased / SHIRE_ROLL_FADE);
+        return Math.max(water + 1, water + 1 + (int) Math.round(eased * SHIRE_SHOULDER + roll));
     }
 
     /**

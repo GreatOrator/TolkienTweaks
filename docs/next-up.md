@@ -116,9 +116,30 @@ the bypass's water is up to 7 over the river it leaves at z -600; the game's 24-
 chute at the corner, north of the build and out of the village's sight, and everything downstream of it descends
 properly. Accepted when the route was chosen.
 
+**The bar across the mouth - fixed in the drape, 16 November.** The save showed four to six blocks of land lying across
+the water where the village's west arm meets the drawn channel. The mouth itself was left open on purpose - a pass that
+fills the ground over a build's outflow dams it - but the ring's columns in front of a mouth clamp to the mouth's own
+column, so every one of them read as water and was left alone with it, and the country's own bank stood eight blocks
+out. `Dressing.openMouth` now takes the ring's ground out at a mouth: down to `CityCommands.MOUTH_DEPTH` (3) under the
+water's top where the ground stands over that bed, and untouched where the column is already the drawn river, so the join
+is the drawing's channel meeting the build's rather than a trench dug through the river to reach it. **This is a drape
+change, not a world change: `/tmcut drape hobbiton -700 87 -512` again in the existing world clears the bar.**
+
+**The branch's banks - a valley instead of a slot, 16 November.** The save showed the branch as a canal in a trench: its
+bed is cut under water the code reads from the village, and nothing else was ever told to bring the hillside down to it,
+because a drawn river normally stands at the height of the ground it is drawn on and its banks are the country. `ArdaMap`
+now has `shireBank`, the other half of the cut: from the water's own edge, a shelf of `SHIRE_SHELF` (4) at water + 1,
+then the hillside at `SHIRE_SHOULDER` (a half block per block) until it is the country's own again, reaching no further
+than `SHIRE_BANK` (96) out, with a couple of blocks of roll so the shoulder is not a cone. Measured on the drawn ground
+against the ceiling: at (-270, 40), water 93, the ground comes down from 105 to 94 at the bank and climbs 94…104…108 over
+sixty blocks to the country's 108; at (-450, 140), water 88, from 112 down to 89 and back to 109 over seventy; at
+(-650, 210), water 83, from 97 to 84 and back to the country's 94 within fifty. Every section closes at the country's own
+height, so the rim is the drawing's rather than a step. **This is world generation: it needs chunks made after it.**
+
 **What has not been checked.** None of the river work has been seen in a world: the bypass's new bend and its fall, the
-branch's gorge and its mouth at the wall, the fork, and the merged channel's run to the bay are all unbuilt territory.
-A world made before 16 November holds the old course and cannot show any of it.
+branch's valley and its mouth at the wall, the fork, and the merged channel's run to the bay are all unbuilt territory.
+A world made before 16 November holds the old course and cannot show any of it. The bar's fix is the one piece that can
+be seen in the existing world, by running the drape again.
 
 ## Roads - final, nothing outstanding
 

@@ -153,6 +153,19 @@ public final class CityCommands {
      * is a spring held up in the build, and the ground outside it has to hold the water in.
      */
     static final int OUTLET_LIFT = 24;
+    /**
+     * How deep the ground in front of a mouth is taken out, in blocks, so the water the build carries out has a bed
+     * to run in rather than a bar of country standing across it.
+     * <p>
+     * The mouth's own column was left alone on purpose - a pass that fills the ground over the water a build drains
+     * by is a pass that dams it - but leaving it alone left everything <em>in front</em> of it alone too, and the
+     * columns of the ring are read off the wall they clamp to: every column out to the reach in front of a mouth
+     * reads as the mouth, so none of them was cut, and the country's own bank stood four to six blocks across the
+     * outflow. The build's water then ran into a wall eight blocks out. Three blocks is a river's own depth at a
+     * mouth this size, and it is taken off the ring only, never off the water: a column that is already water is
+     * left as it is.
+     */
+    static final int MOUTH_DEPTH = 3;
 
     /** What a drape did: columns cut down, columns built up, and columns left for the water. */
     record Drape(int cut, int filled, int open) {
