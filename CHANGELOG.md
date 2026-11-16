@@ -3787,3 +3787,23 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   banks it produced and a drawer (`draw_mask.py`) that paints a candidate route into a copy of the mask and prints the
   channel's banks at the footprint's wall, so the next route can be measured before it is shipped. The next question is
   the footprint's place against the channel rather than the channel's place against a fixed footprint.
+
+- **The Shire's river is rerouted round the west of the village, a branch is cut out of its south mouth, and the two are
+  brought together in a Y south of it.** The drawn channel used to cross the Hobbiton footprint's north-west corner -
+  its east bank 116 blocks inside the wall at z -472 - and leave by the west wall; it is cut at z -600 and redrawn as a
+  bend west to x -744, easing back to its own course at z -204, so its east bank now stands 20 to 28 blocks clear of
+  the wall across the whole crossing and meets the west arm's mouth on the river's own course, where the water is 95
+  against the village's 96. A branch runs from the south mouth - 56 wide at the wall narrowing to 36 at the fork - and
+  the drawn river, which stopped dead at z 40, is carried on south from its own end to meet it at (-770, 246), the two
+  running on as one channel south-west down the vale into the head of the bay at (-1000, 508). The branch needed a
+  level of its own: the country outside the south wall is drawn at 105 to 113 against the village's water at 96, and a
+  drawn river is laid at the ground, so the arm would have ended against its own wall thirteen blocks under a river
+  running past it. `ArdaMap` now reads the branch's water from the village - `SHIRE_WATER` 96 less one block per
+  `SHIRE_GRADE` 40 of run along its course, 96 at the mouth down to 80 at the fork, where the drawn river's own is 81 -
+  and takes it as a minimum within `SHIRE_REACH` 64 of that course, so nothing else in the world moves; the bed is cut
+  under the surface as it already was for every drawn river, which makes the branch a gorge thirteen deep at the wall
+  that opens to two at the fork. The bypass stands up to seven blocks over the river it leaves, because the ground west
+  of the channel is 5-9 blocks over the channel's own line, and the level reach cuts that into a short chute at the
+  corner north of the build - the fall was chosen rather than found. The route, its widths, its levels and the reading
+  of it as a plan and a profile are in `run/river_reroute` (`shire_y_interpretation.png`, `shire_y_mask.png` and the two
+  scripts). Nothing of it has been seen in a world, and it needs one made after the mask change.

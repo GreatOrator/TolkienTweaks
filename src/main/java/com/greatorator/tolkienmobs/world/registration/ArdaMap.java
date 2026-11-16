@@ -466,6 +466,77 @@ public final class ArdaMap {
         COURSE_LENGTH = total;
     }
 
+    /**
+     * The Shire's branch: the water the Hobbiton build carries out of its south wall.
+     * <p>
+     * The village stands at (-700, 87, -512) and its water nine over that base, so the river in it runs at 96. Its
+     * west arm comes out level with the drawn channel - 96 against the channel's 95 - and needs nothing. The south
+     * arm comes out into country the drawing stands at a hundred and five to a hundred and thirteen, so the water
+     * the mask draws there would be laid at the ground and would stand thirteen blocks over the village's own: the
+     * arm would end against its own wall, under a river running past it.
+     * <p>
+     * So the branch's level is read from the village and not from the ground: it leaves the south mouth at
+     * {@link #SHIRE_WATER} and falls one block in every {@link #SHIRE_GRADE} of run, arriving at the Y the mask
+     * draws at (-770, 246) at 80 - a block under the drawn river's own 81, which the level's own reach turns into a
+     * step at the confluence rather than a wall. Everything else the drawn-water
+     * path already does follows from that one number: the bed is cut under the surface, so the branch is a channel
+     * thirteen deep at the wall that opens out to two at the fork, and the ground beside it is graded against the
+     * water that is actually there rather than against the hillside above it.
+     * <p>
+     * The course is the mask's own, bend for bend, because the corridor has to find the columns the branch was drawn
+     * through and no others.
+     */
+    private static final int SHIRE_WATER = 96;
+    private static final int SHIRE_GRADE = 40;
+    /**
+     * How far from the branch's course a column still belongs to it, in blocks: the channel's own half width of
+     * twenty-eight, the mask's edge, and enough margin to cover the columns the narrowing leaves at the bank.
+     */
+    private static final int SHIRE_REACH = 64;
+    private static final int[] SHIRE_X = {-206, -230, -270, -320, -380, -450, -520, -590, -652, -712, -770};
+    private static final int[] SHIRE_Z = {-45, -6, 40, 80, 112, 140, 165, 190, 212, 232, 246};
+    /** How long each leg of the branch is, and where each leg starts along it. */
+    private static final double[] SHIRE_LEG = new double[SHIRE_X.length - 1];
+    private static final double[] SHIRE_START = new double[SHIRE_X.length - 1];
+
+    static {
+        double total = 0.0D;
+        for (int leg = 0; leg < SHIRE_LEG.length; leg++) {
+            SHIRE_START[leg] = total;
+            SHIRE_LEG[leg] = Math.hypot(SHIRE_X[leg + 1] - SHIRE_X[leg], SHIRE_Z[leg + 1] - SHIRE_Z[leg]);
+            total += SHIRE_LEG[leg];
+        }
+    }
+
+    /**
+     * The level the Shire's branch stands at over a column, or {@link Integer#MAX_VALUE} off its course.
+     * <p>
+     * Read from the village's water and the run along the branch rather than from the drawing, which is the whole
+     * point of it: the drawing holds the hillside over this channel, and the water in it is a gorge's.
+     */
+    private static int shireBranch(int blockX, int blockZ) {
+        double near = Double.MAX_VALUE;
+        double run = 0.0D;
+        for (int leg = 0; leg < SHIRE_LEG.length; leg++) {
+            double alongX = SHIRE_X[leg + 1] - SHIRE_X[leg];
+            double alongZ = SHIRE_Z[leg + 1] - SHIRE_Z[leg];
+            double at = ((blockX - SHIRE_X[leg]) * alongX + (blockZ - SHIRE_Z[leg]) * alongZ)
+                    / (alongX * alongX + alongZ * alongZ);
+            double into = Mth.clamp(at, 0.0D, 1.0D);
+            double footX = SHIRE_X[leg] + into * alongX;
+            double footZ = SHIRE_Z[leg] + into * alongZ;
+            double away = Math.hypot(blockX - footX, blockZ - footZ);
+            if (away < near) {
+                near = away;
+                run = SHIRE_START[leg] + into * SHIRE_LEG[leg];
+            }
+        }
+        if (near > SHIRE_REACH) {
+            return Integer.MAX_VALUE;
+        }
+        return Math.max(SEA_LEVEL, SHIRE_WATER - (int) Math.round(run / SHIRE_GRADE));
+    }
+
     /** How far off the course's own line its middle stands at a share of the way along it. */
     private static double wander(double share) {
         return BRUINEN_SNAKE * Math.sin(share * BRUINEN_TURNS * Math.PI) * Math.sin(Math.PI * share);
@@ -1231,7 +1302,8 @@ public final class ArdaMap {
 
     /**
      * The level drawn water stands at in a column: its channel's own, held to the dale's water where the
-     * dale reaches it, or the ground where the map has none.
+     * dale reaches it, or the ground where the map has none. The Shire's branch is the one stretch held to
+     * neither - see {@link #shireBranch} - because the village it leaves stands in a hollow.
      */
     private static int drawnWater(int blockX, int blockZ) {
         int channel = channelAt(blockX, blockZ);
@@ -1239,7 +1311,9 @@ public final class ArdaMap {
             return groundAt(blockX / (double) CELL + ORIGIN_COLUMN,
                     blockZ / (double) CELL + ORIGIN_ROW, blockX, blockZ).height();
         }
-        return daleWater(blockX, blockZ, channel);
+        // The Shire's branch is the one drawn channel whose level is not the drawing's: it is read from the
+        // village it leaves. Only ever down, so nothing that is not the branch is moved.
+        return Math.min(daleWater(blockX, blockZ, channel), shireBranch(blockX, blockZ));
     }
 
     /**

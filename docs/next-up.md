@@ -38,10 +38,10 @@ brand-new world is drawn. Work stopped here to go to a side project.
 ## The Shire map - cut 15 November, placed 16 November 2026
 
 **Where it stands.** The build is cut and in a test world at pin **(-700, 87, -512)**; `place`, `clear` and `drape` have
-all three been run on it. The drawn river **was** rerouted round its footprint and that reroute was **reverted on 16
-November** - `rivers.png` is back at the drawing's own course, and the rerouted version is parked in
-`run/river_reroute` while a better route is measured. What has still not been seen in a world is the drape reading a
-village's outline from under its trees: that is the next thing to look at.
+all three been run on it. The river is now **rerouted round the west of it, a branch drawn out of its south mouth, and
+the two brought together in a Y south of the village** (16 November - see below); the mask change needs a world made
+after it. What has still not been seen in a world is any of the river work, or the drape reading a village's outline
+from under its trees.
 
 **The pass, in order** (a cut lives in `<save>/tolkienmobs/cuts/<name>/`, or in the jar beside the city's):
 
@@ -85,24 +85,40 @@ came across whole.
 87, -512)**: the build's water sits 9 over its base so it lands at 96, level with the channel, and its grass line (16
 over its base) at **103, one block over the bank**. Footprint x -700…-149, z -512…-45.
 
-**The river - the drawing's own course, reroute parked.** The cut's water is a pond in its south-west quarter with two
-arms leaving it: **west at local z 309…336** (world z -203…-176, 28 wide) and **south at local x 466…522** (world
-x -234…-178, 56 wide). The drawing's channel crosses the footprint's north-west corner and runs down its west side:
-measured against the game's 30% water threshold its east bank is x -584 at z -472, -632 at z -312, -688 at z -232 and
--736 at z -72, so it is inside the footprint for the whole northern half of it.
+**The river - rerouted west, the branch cut, and a Y south of the village.** Drawn 16 November into `rivers.png`,
+measured against the game's own 30% water threshold, and the picture of it is `run/river_reroute/shire_y_interpretation.png`
+with the script that made it beside it (`shire_y_plan.py`). What it does:
 
-A reroute was drawn and built and is parked, not shipped: **`run/river_reroute/`** holds `rivers_rerouted.png` (the mask
-as it was with the reroute in it, blob `9b2c368`), `notes.md` with every polyline and width, and `draw_mask.py`, a
-drawer for trying routes on a copy before the asset is touched. That route bent the channel west to x -762 by z -480,
-put a spur east into the west mouth at z -190 and carried a brook along the foot of the terrace to x -165 to meet the
-south mouth. It worked in the mask and looked like a canal in game: the spur and the brook had to cut straight across
-Arda's ground because the diagonal channel leaves a gap, and a drawn straight channel carves a straight one.
+- **The bypass.** The drawn channel used to cross the footprint's north-west corner - its east bank at x -584 at
+  z -472, inside by 116 - and leave by the west wall at z -190. It is now slid west there: the channel is cut at z -600
+  and redrawn as a bend west to x -744 by z -404, easing back to its own course at z -204, so its east bank stands 20
+  to 28 blocks clear of the wall over the whole crossing and 4 at the mouth, where the water is meant to meet it. The
+  west arm of the village's river comes out at z -203..-176 against water at 95-96 - the join the pin was chosen for.
+- **The branch.** From the south mouth (28 wide at x -234..-178, water 96, bed 86) a channel runs south-west along
+  `(-206,-46) (-230,-6) (-270,40) (-320,80) (-380,112) (-450,140) (-520,165) (-590,190) (-652,212) (-712,232)
+  (-770,246)`: **56 wide at the wall narrowing to 36** at the fork, one block of fall per 40 of run.
+- **The Y.** The drawn river stopped dead at z 40 (water 80), so it is carried on south from its own end and the two
+  meet at **(-770, 246)**, water 80-81, and run on as one channel south-west down the vale - 76 at z 300, 70 by z 400 -
+  into the head of the bay at about (-1000, 508), where the heightmap is sea from (-910, 340) west.
 
-**What to measure before trying again.** The channel's own course is what the crossing has to be designed around, so the
-question is where the footprint can sit relative to it - not how to bend the river far enough to miss a fixed one. The
-drawer prints the channel's banks at every 40 blocks down the west wall, and `run/river_reroute/notes.md` has the two
-mouths' spans; the numbers that would settle a route are the channel's centreline against the footprint for a handful of
-candidate pins, and the ground height along both sides of the channel where a join would land.
+**Why the branch needs code.** The village's water is 96 and the country straight outside its south wall is drawn at
+105…113 (the drape settles the ring at the mouth back to 96-98, then the hillside is the drawing's). A drawn river's
+water is laid at the ground, so a branch drawn there would stand thirteen blocks over the village's own water and the
+south arm would end against its own wall under it. So the branch is the one drawn channel whose level is not the
+drawing's: `ArdaMap.SHIRE_WATER` (96, the village's own - base 87 plus the nine its water stands at) less one block per
+`SHIRE_GRADE` (40) of run along its course, read for any column within `SHIRE_REACH` (64) of that course and taken as a
+minimum in `drawnWater`, so nothing outside the branch moves. Everything else follows from that number: the bed is cut
+under the surface (85 at the wall, 78 at the fork), so the branch is a gorge thirteen deep at the wall that opens to two
+at the fork, and the ground beside it is graded against the water that is really there.
+
+**The fall at the corner is deliberate.** The ground west of the channel is 5-9 blocks over the channel's own line, so
+the bypass's water is up to 7 over the river it leaves at z -600; the game's 24-block level reach cuts that into a short
+chute at the corner, north of the build and out of the village's sight, and everything downstream of it descends
+properly. Accepted when the route was chosen.
+
+**What has not been checked.** None of the river work has been seen in a world: the bypass's new bend and its fall, the
+branch's gorge and its mouth at the wall, the fork, and the merged channel's run to the bay are all unbuilt territory.
+A world made before 16 November holds the old course and cannot show any of it.
 
 ## Roads - final, nothing outstanding
 
