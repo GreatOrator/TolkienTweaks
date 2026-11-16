@@ -37,6 +37,7 @@ public class TolkienRegistration {
         event.registerBlockEntityRenderer(TolkienBlocks.LOCUST_BLOCK_ENTITY.get(), LocustRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.PLACARD_BLOCK_ENTITY.get(), PlacardRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.SIGN_POST_ARM_BLOCK_ENTITY.get(), SignPostArmRenderer::new);
+        event.registerBlockEntityRenderer(TolkienBlocks.NOTICE_BOARD_BLOCK_ENTITY.get(), NoticeBoardMarkRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TRINKET_TABLE_BLOCK_ENTITY.get(), TrinketTableRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.FIREPLACE_BLOCK_ENTITY.get(), FireplaceRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TOLKIEN_SIGN_BLOCK_ENTITY.get(), StandingSignRenderer::new);

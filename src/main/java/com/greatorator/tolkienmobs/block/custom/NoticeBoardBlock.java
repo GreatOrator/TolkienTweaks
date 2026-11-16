@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom;
 
+import com.greatorator.tolkienmobs.block.custom.entity.NoticeBoardBlockEntity;
 import com.greatorator.tolkienmobs.faction.MercenaryContracts;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -11,7 +12,9 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,6 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The notice board mercenary work is posted on and handed back to.
@@ -34,8 +38,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Because the board turns to face whoever places it, there is one outline per direction. The model
  * is drawn facing south, so south is the unrotated case and the other three are the same boxes
  * turned a quarter at a time, matching the y rotations data generation writes into the blockstate.
+ * <p>
+ * The block entity it now carries holds nothing: it is there so the board can have a renderer, and the
+ * renderer is there to hang a mark over the wood that says whether the board has work for the player
+ * reading it - an answer that depends on the reader's own pack and so cannot be a blockstate.
  */
-public class NoticeBoardBlock extends Block {
+public class NoticeBoardBlock extends Block implements EntityBlock {
     public static final MapCodec<NoticeBoardBlock> CODEC = simpleCodec(NoticeBoardBlock::new);
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
@@ -94,6 +102,11 @@ public class NoticeBoardBlock extends Block {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new NoticeBoardBlockEntity(pos, state);
     }
 
     @Override

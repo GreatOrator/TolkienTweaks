@@ -53,6 +53,33 @@
       "chars": [
         "\ue003"
       ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tolkienmobs:font/quest_marks/available_locked.png",
+      "height": 11,
+      "ascent": 10,
+      "chars": [
+        "\ue006"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tolkienmobs:font/quest_marks/board_available.png",
+      "height": 11,
+      "ascent": 10,
+      "chars": [
+        "\ue007"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tolkienmobs:font/quest_marks/board_turn_in.png",
+      "height": 11,
+      "ascent": 10,
+      "chars": [
+        "\ue008"
+      ]
     }
   ]
 }

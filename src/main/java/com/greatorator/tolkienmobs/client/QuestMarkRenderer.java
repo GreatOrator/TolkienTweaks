@@ -40,8 +40,9 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  *   <li><b>The shape is the state.</b> <b>!</b> for work still to take, the same shape in white for work
  *   taken and unfinished - the same promise, without the colour - and <b>?</b> for work done and waiting
  *   to be handed in.</li>
- *   <li><b>The ink is the line.</b> Cyan for an ordinary errand, gold for the mainline, so the campaign's
- *   own business is told apart from a farmer's fence without reading either.</li>
+ *   <li><b>The ink is the line and the door.</b> Cyan for an errand carried by a traveller met on the
+ *   road, gold for the mainline, red for a hall's work this player has not the standing to be given
+ *   yet, and green for the notice boards, whose mark says whether the board has work for the reader.</li>
  * </ul>
  * A giver this player has no business with keeps a bare name, which is what makes the marks mean
  * something: an NPC that is always shouting has taught the player nothing by the time it matters.
@@ -57,6 +58,11 @@ public final class QuestMarkRenderer {
     private static final String IN_PROGRESS = "\ue002";
     private static final String TURN_IN_ERRAND = "\ue003";
     private static final String TURN_IN_MAIN = "\ue004";
+    /** Work that is here and not for this player yet: the page is in the body's hand, the rank is not. */
+    private static final String LOCKED = "\ue006";
+    /** The marks the notice boards wear: work to take, and a finished contract to hand in. */
+    public static final String BOARD_AVAILABLE = "\ue007";
+    public static final String BOARD_TURN_IN = "\ue008";
 
     private QuestMarkRenderer() {
     }
@@ -75,11 +81,18 @@ public final class QuestMarkRenderer {
         // a moment later proved the plate wrong. The mark still stops when the front has nothing left to
         // give, which is the one time he really has nothing to say.
         if (herald != null) {
-            if (mark == null && hasEarOf(herald) && Campaign.clientHasWork(herald)
-                    && holdsNextPage(entity, herald)) {
+            Component plate = withOffice(event.getContent(), herald);
+            if (mark == null && Campaign.clientHasWork(herald) && holdsNextPage(entity, herald)) {
+                // The hall's own page is behind the country's door, and this player has not made a name
+                // in it yet: the mark says so in red rather than saying nothing. Silence is the one
+                // reading a player cannot tell from a hall with no work left in it.
+                if (!hasEarOf(herald) && hallPage(herald)) {
+                    event.setContent(withIcon(LOCKED, plate));
+                    event.setCanRender(TriState.TRUE);
+                    return;
+                }
                 mark = new QuestLedger.Mark(QuestLedger.Mark.State.AVAILABLE, true);
             }
-            Component plate = withOffice(event.getContent(), herald);
             if (mark == null) {
                 // Nothing to mark, so the plate keeps the visibility it would have had: his office is
                 // worth reading at the distance a name is, and not one block further.
@@ -219,31 +232,50 @@ public final class QuestMarkRenderer {
     }
 
     /**
+     * Whether the page this herald is waiting on is his own hall's, which is the only one the rank gates.
+     * <p>
+     * A speaker down the road holds a page that is his to hand over, and that hand-over asks the country
+     * for nothing; the hall's opening page is the one behind the door. Asked of the same line the hand-over
+     * asks, so a red mark cannot stand over a body who would give his page to anyone.
+     */
+    private static boolean hallPage(Alliance herald) {
+        return Campaign.clientHolder(herald).equalsIgnoreCase(QuestGivers.campaignName(herald));
+    }
+
+    /**
      * The mark itself, as the icon the artwork draws for it. Work in hand is white whatever line it came
      * from: at that point the player is already carrying it and knows whose it is, and all the plate has to
      * say is "back here", which is the one thing the colour of the line would not add to.
      */
-    private static MutableComponent glyph(QuestLedger.Mark mark) {
-        String icon = switch (mark.state()) {
+    private static String glyph(QuestLedger.Mark mark) {
+        return switch (mark.state()) {
             case AVAILABLE -> mark.mainline() ? AVAILABLE_MAIN : AVAILABLE_ERRAND;
             case IN_PROGRESS -> IN_PROGRESS;
             case TURN_IN -> mark.mainline() ? TURN_IN_MAIN : TURN_IN_ERRAND;
         };
-        return Component.literal(icon).withStyle(style -> style.withFont(MARK_FONT));
+    }
+
+    /** One of the marks as a component in the mark font, for a mark that hangs somewhere other than a plate. */
+    public static Component icon(String glyph) {
+        return Component.literal(glyph).withStyle(style -> style.withFont(MARK_FONT));
     }
 
     /**
-     * The mark, a space, and the plate it belongs to.
+     * A mark, a space, and the plate it belongs to.
      * <p>
      * The space and the plate hang off an empty parent rather than off the icon, because a component takes
      * the style of the component it is appended to and not of the sibling before it - appended to the icon
      * they would inherit the mark font and draw every letter of the name as a missing glyph.
      */
-    private static MutableComponent withMark(QuestLedger.Mark mark, @Nullable Component plate) {
-        MutableComponent line = Component.empty().append(glyph(mark));
+    private static MutableComponent withIcon(String glyph, @Nullable Component plate) {
+        MutableComponent line = Component.empty().append(icon(glyph));
         if (plate != null) {
             line.append(" ").append(plate);
         }
         return line;
+    }
+
+    private static MutableComponent withMark(QuestLedger.Mark mark, @Nullable Component plate) {
+        return withIcon(glyph(mark), plate);
     }
 }

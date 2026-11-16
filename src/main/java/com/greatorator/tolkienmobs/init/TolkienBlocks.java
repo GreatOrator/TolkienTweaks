@@ -2187,6 +2187,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SignPostArmBlockEntity>> SIGN_POST_ARM_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("sign_post_arm", () ->
                     new BlockEntityType<>(SignPostArmBlockEntity::new, SIGN_POST_ARM.get(), SIGN_POST_ARM_DOUBLE.get()));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NoticeBoardBlockEntity>> NOTICE_BOARD_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("notice_board", () ->
+                    new BlockEntityType<>(NoticeBoardBlockEntity::new, NOTICE_BOARD.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienSignBlockEntity>> TOLKIEN_SIGN_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_sign_entity", () ->
                     new BlockEntityType<>(TolkienSignBlockEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()));

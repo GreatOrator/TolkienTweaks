@@ -334,6 +334,23 @@ Eleven pages, 26 to 36, written and wired; **played through page 32** and workin
 - **The keep** stands itself too, but its placement is on hold (item 5).
 - **Pages 33-36** are Carn Dûm ground and are paused (items 1 and 3).
 
+**Red for the door, green for the boards - 16 November.** Two more inks, both the drawn gold art with its three shades
+re-read as a ramp, so the outline and the light sit where the artist put them: `available_locked` (red `!`) and
+`board_available` / `board_turn_in` (green `!` and `?`), codes ``-`` of the same font. Red is the hall's own
+page in a herald's hand while the player is below `STRANGER`: the mark used to be silence there, and silence is the one
+reading nobody can tell from a hall with no work left. It asks `hallPage` - the herald's own front, not a speaker's page
+down the road - so a red mark cannot stand over a body who would hand his page over freely. Cyan keeps its meaning and is
+now the ink of the wandering traveller's errand, which is what `QuestGivers` has always spawned.
+
+**A mark over the notice boards - 16 November, built.** The board had no state that could carry a mark, since the paper
+lives in the player's pack and a blockstate is the same for everyone looking at the block. It therefore grew an empty
+block entity (`notice_board` type, no data, no ticker, no packets) purely to have a renderer, `NoticeBoardMarkRenderer`,
+which hangs the mark as a **nameplate** through `submitNameTag` - so the billboard, the distance scaling and the hiding
+behind ground are vanilla's, not ours - 2.35 blocks up, clear of the frame's top rail. What it says comes from
+`BoardMarks`, which reads the reader's own inventory: no contract means green `!`, a finished one means green `?`, and
+work still in hand means no mark, since the board only repeats that it is carried. Existing boards in a world get the
+entity when their chunk next loads.
+
 **The marks are the artwork, not letters - 16 November.** The sheet the owner drew (`quest-marks-v0-....webp`, two shapes by
 three inks) was cut into six icons on its own pixel grid - a 4x11 `!` and an 8x11 `?`, black outline and three shades of
 fill - and each icon is a glyph of a font of its own: `assets/tolkienmobs/font/quest_marks.json` pointing at

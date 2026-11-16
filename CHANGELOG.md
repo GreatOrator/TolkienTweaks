@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Say the door in red and stand a mark over the notice boards in green.** Two inks the sheet did not have, cut from
+          the drawn gold art by re-reading its three shades as a ramp, so the outline and the light are still the artist's:
+          red for a hall's own page while the player is below `STRANGER` (where the plate used to say nothing, which a
+          player cannot tell from a hall with no work left), and green for the boards. The notice board had no state a mark
+          could hang on, because the paper lives in the player's pack and a blockstate is the same for every reader, so it
+          grew an empty block entity whose only job is to carry a renderer: `NoticeBoardMarkRenderer` submits the mark as a
+          nameplate through `submitNameTag`, which gives it the billboard, the distance scaling and the ground occlusion of
+          every plate in the world, and `BoardMarks` answers from the reader's own inventory - no contract is green `!`, a
+          finished one is green `?`, work still in hand is nothing. Cyan keeps its old meaning and is now read as the
+          wandering traveller's errand, which is what a giver always was.
 - **Draw the quest marks as the artwork's icons instead of as punctuation.** The owner's sheet - two shapes by three
           inks - is cut into six icons on its own pixel grid (a 4x11 `!` and an 8x11 `?`, black outline and three shades of
           fill) and each one is a bitmap glyph of a mod font, `assets/tolkienmobs/font/quest_marks.json`. The plate names a
