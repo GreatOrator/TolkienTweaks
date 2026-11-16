@@ -50,18 +50,24 @@ of it. Once the pin is chosen the build wants a `Sites` entry and a placement pa
 
 **The build's own river can be joined to a drawn one.** The cut's water is a pond in its south-west quarter with two
 arms: one leaves its **west edge at local z ≈ 318**, one leaves its **south edge at local x ≈ 150…320**. Arda's west
-channel comes into the Shire at (-600, -512) and runs south-south-west, its east waterline at x -728 by z -128, so a
-corner at **(-736, y, -446)** puts the west arm's mouth eight blocks off that bank and leaves the drawn channel
-outside the footprint - the box opens away east of it, so no drawn water is buried. Pin **y 52** puts the build's
-grass line (16 over its base) on Arda's plain and its water (9 over its base) at 61, about where a drawn channel's
-surface sits; the drawn channel's own level has not been read in game, so the height is the one number still to
-confirm. The south arm still ends at the plateau's edge at world x -586…-436, z 22 - a waterfall, or a short dug
-run, is the choice there, as there is no drawn water on that side to meet.
+channel comes into the Shire at (-600, -512) and runs south-south-west. **The Shire stands at y 102 here, not the 68 its
+cells are painted at:** read in game at (-631, -436) the bank is grass at 102 and the block under the channel's surface
+is dirt at 100, so **the drawn water is at 101**. The build's water sits 9 over its base and its grass line 16, so
+**y 92** puts the village's river level with the channel's; its grass line then stands 6 over the bank, which is the
+price of a flush join and the edge that will want softening.
+
+A corner at **(-700, 92, -512)** puts the west arm's mouth four blocks east of the channel's east bank - a butt join,
+no digging. What it costs is the channel above it: the drawn river runs diagonally, so any 551 x 468 box that touches it
+anywhere buries some of it, and this one covers the stretch from z -512 down to z -265 under the plateau's north-west
+strip, 249 of the channel's cells. Pins further east buy the burial back at the price of a dug connector - **(-620, 92,
+-512)** covers 80 of the 249 and wants an 84-block canal from the mouth, **(-600, 92, -500)** covers 32 and wants 104.
+The south arm still ends at the plateau's edge at world x -586…-436, z 22 - a waterfall, or a short dug run, is the
+choice there, as there is no drawn water on that side to meet.
 
 **Laying it needs no city.** `/tmcut` reads any cut from the world's own `tolkienmobs/cuts/<name>/` - or the jar's
 `data/tolkienmobs/structure/<name>/` - so a test world gets the map by copying `run/hobbiton_art` to
 `<save>/tolkienmobs/cuts/hobbiton/` and running `/tmcut table hobbiton` to read the box, then
-`/tmcut place hobbiton -736 52 -446`. It plants no marker and dresses no ground: what goes down is the cut's blocks
+`/tmcut place hobbiton -700 92 -512`. It plants no marker and dresses no ground: what goes down is the cut's blocks
 and nothing else, which is what makes it the hand for asking this question rather than for shipping the map.
 
 ## Roads - final, nothing outstanding

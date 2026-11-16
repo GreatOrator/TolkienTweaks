@@ -3714,3 +3714,14 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   first so a folder left over from an older cut cannot quietly win. It plants no marker, dresses no ground, stands nobody
   and opens no road: what it lays is the blocks that were cut, which is what makes it the tool for putting a map down to
   look at a question of rivers rather than for shipping one. Compiles; nothing of it has been run in game.
+
+- **The Shire's pin is pinned to the channel's own level.** The plan's y 52 came from the fifty-two the Shire's cells are
+  painted at, which is not where the ground there stands: read in game at (-631, -436) the bank is grass at 102 and the
+  block under the channel's surface is dirt at 100, so the drawn river's water is at 101. The build's water sits 9 over
+  its base and its grass line 16, so **y 92** puts the village's river flush with the channel and leaves its grass line
+  6 over the bank - a raised terrace above the river rather than a sunken village. The corner moves with it, to
+  **(-700, 92, -512)**, which puts the west arm's mouth four blocks off the channel's east bank; its cost is 249 of the
+  channel's cells buried under the plateau's north-west strip, since the drawn river runs diagonally across any box that
+  touches it, and moving the box east trades that burial for a dug canal (80 cells and 84 blocks at x -620, 32 and 104
+  at x -600). The method that produced those counts is a script against the river mask and the cut's own water, not a
+  world: the join itself is still unseen.
