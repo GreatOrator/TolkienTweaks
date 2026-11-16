@@ -3762,3 +3762,18 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   before-and-after shows the river running outside the west edge and the tributary along the south, where both used to
   run through and dead-end. Only chunks generated after the edit carry it, so the test world that already holds the old
   course has to be replaced to see it.
+
+- **The drape reads a village's outline from the ground under its trees.** The outline a drape works to is the highest
+  block the cut puts in each column, which for a city is its own stone and for a village is a canopy: the ring was built
+  up to the leaves, one spire of stone beside every tree along the edge, and the ground the trees stand on was never
+  seen. `Dressing` now takes a `trees` flag - leaves, logs, stems and hyphae are skipped while the outline is read - set
+  by `/tmcut drape` and left off for the city, whose cut has no trees and whose outline is unchanged. Compiles; not yet
+  run in a world.
+- **Both of the village's river mouths are joined to the rerouted channel.** The cut's water leaves on two edges, and
+  the first mask pass met neither: the west mouth is at world z -203…-176 on the wall at x -700 while the bypass runs at
+  x -762, and the south mouth is at world x -234…-178 on the edge at z -45 while the tributary stopped at x -470 - a
+  hundred blocks short. `rivers.png` carries a spur east from the bypass at z -190 into the west mouth, its water
+  reaching x -680, twenty blocks past the wall, and the tributary is carried east to x -165 so the whole south mouth has
+  water in front of it. Both mouths were read off the cut rather than guessed: the edge columns were clustered, and the
+  single-column hits every edge carries - waterlogged blocks - were ignored. Only chunks generated after the edit carry
+  it. Drawn and measured against the mask's 30% water threshold; not yet seen in a world.

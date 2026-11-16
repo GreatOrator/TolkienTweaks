@@ -120,7 +120,7 @@ public final class Dressing {
      */
     static CityCommands.Drape drape(ServerLevel level, Path folder, List<CityCommands.Part> parts,
                                     BlockPos origin, CityCommands.Box box) {
-        return drape(level, folder, Pieces.ofCity(folder), parts, origin, box);
+        return drape(level, folder, Pieces.ofCity(folder), parts, origin, box, false);
     }
 
     /**
@@ -134,7 +134,21 @@ public final class Dressing {
      */
     static CityCommands.Drape drape(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
                                     BlockPos origin, CityCommands.Box box) {
-        Job whole = new Job("", folder, pieces, parts, origin, box, false, false);
+        return drape(level, folder, pieces, parts, origin, box, false);
+    }
+
+    /**
+     * The same drape again, for a build that has trees in it.
+     * <p>
+     * The outline is the highest block the cut puts in each column, and a village's highest block is a canopy: the
+     * ring would then be filled up to the leaves, which stands a wall of stone where the ground beside a tree belongs,
+     * one spike per tree. {@code trees} says the cut's trees are not its shape - leaves and logs are skipped while the
+     * outline is taken - so the ring meets the ground under the crown. The city keeps the reading it has always had:
+     * its own stone is its shape, and nothing in its cut is a tree.
+     */
+    static CityCommands.Drape drape(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
+                                    BlockPos origin, CityCommands.Box box, boolean trees) {
+        Job whole = new Job("", folder, pieces, parts, origin, box, false, false, trees);
         while (whole.piece < parts.size()) whole.takePieces();
         whole.grow();
         while (whole.chunk < whole.ring.size()) whole.dressChunks(level);
@@ -178,7 +192,7 @@ public final class Dressing {
                 finished = key;
                 return null;
             }
-            return new Job(key, folder, Pieces.ofCity(folder), parts, corner, box, done[0], roadDown);
+            return new Job(key, folder, Pieces.ofCity(folder), parts, corner, box, done[0], roadDown, false);
         } catch (IOException unreadable) {
             LOGGER.warn("Rivendell: the cut could not be read, so the ground is not dressed: {}",
                     unreadable.getMessage());
@@ -196,6 +210,8 @@ public final class Dressing {
         private final String key;
         private final Path folder;
         private final Pieces pieces;
+        /** Whether the cut's trees are to be left out of its outline: true for a build with a canopy over its edge. */
+        private final boolean trees;
         private final List<CityCommands.Part> parts;
         private final BlockPos origin;
         private final CityCommands.Box box;
@@ -221,10 +237,11 @@ public final class Dressing {
         private int open;
 
         private Job(String key, Path folder, Pieces pieces, List<CityCommands.Part> parts, BlockPos origin,
-                    CityCommands.Box box, boolean dressed, boolean road) {
+                    CityCommands.Box box, boolean dressed, boolean road, boolean trees) {
             this.key = key;
             this.folder = folder;
             this.pieces = pieces;
+            this.trees = trees;
             this.parts = parts;
             this.origin = origin;
             this.box = box;
@@ -297,6 +314,7 @@ public final class Dressing {
                     if (state < 0 || state >= names.length) continue;
                     String name = names[state];
                     if (name.endsWith(":air") || name.endsWith("cave_air") || name.endsWith("void_air")) continue;
+                    if (trees && tree(name)) continue;
                     ListTag pos = block.getList("pos").orElseGet(ListTag::new);
                     if (pos.size() < 3) continue;
                     int gx = origin.getX() + part.dx() + pos.getIntOr(0, 0) - box.lowX();
@@ -308,6 +326,12 @@ public final class Dressing {
                     if (name.contains("water")) watered[at] = Math.max(watered[at], y);
                 }
             }
+        }
+
+        /** Whether a block is part of a tree rather than part of the ground: leaves, a trunk, a fungus stem. */
+        private static boolean tree(String name) {
+            return name.endsWith("_leaves") || name.contains("_log") || name.contains("_wood")
+                    || name.contains("_stem") || name.contains("_hyphae");
         }
 
         /**

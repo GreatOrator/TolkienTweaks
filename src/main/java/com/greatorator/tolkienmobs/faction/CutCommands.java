@@ -360,7 +360,7 @@ public final class CutCommands {
             }
             CityCommands.Box cityBox = CityCommands.Box.of(cityParts, planted);
             CityCommands.Drape done = Dressing.drape(level, folder(level).resolve(name),
-                    piece -> raw(level, name, piece), cityParts, planted, cityBox);
+                    piece -> raw(level, name, piece), cityParts, planted, cityBox, true);
             int cut = done.cut();
             int filled = done.filled();
             int open = done.open();

@@ -88,6 +88,10 @@ the map's tree canopies, its gravel where an old bed reached the build's height,
 crossed the build's surface. The cut's own blocks are never touched, and neither is the ground below the cut's base.
 `drape` is the city's own pass, generalised to read a cut that is not the city's: it settles the ring outside the
 footprint to the build's outline, easing back into the country over thirty-two blocks, and leaves edge water alone.
+**One thing it had to learn for a village:** the outline is the highest block the cut puts in each column, and in a
+wooded build that is a canopy - so the first pass filled the ring up to the leaves and stood a spire of stone beside
+every tree. `/tmcut drape` now takes its outline from the ground under the trees: leaves, logs, stems and hyphae are
+skipped while the outline is read. The city keeps the reading it always had, because nothing in its own cut is a tree.
 
 ## The Shire river - rerouted 16 November 2026
 
@@ -96,8 +100,11 @@ met nothing: one dead-ending in the hillside, the other against the far wall of 
 now. The channel bends west before the footprint, runs down at **x -762** - clear of the west wall by 20 to 44 blocks -
 and rejoins its old course at z -160. A tributary leaves the village's **south arm** (the mouth at x -586…-436 on the
 south edge at z -45), runs west along the foot of the terrace and joins the bypass at x -752, so the water that used to
-dead-end flows out into the river. The arm's mouth is 150 wide and the tributary covers x -470…-752 of it, so the join
-wants looking at in game. Only chunks generated after the edit carry any of it: the current test world already holds
+dead-end flows out into the river. The village's two mouths were read off the cut rather than guessed: **west, local z 309…336 = world z -203…-176**
+(28 wide), and **south, local x 466…522 = world x -234…-178** (56 wide). The first pass covered neither properly - the
+tributary stopped at x -470, a hundred blocks short of the south mouth - so the mask now carries a **spur** east from
+the bypass at z -190 into the west mouth (water reaching x -680, twenty blocks past the wall) and the tributary is
+**carried east to x -165**, so both mouths have drawn water in front of them instead of a bank. Only chunks generated after the edit carry any of it: the current test world already holds
 the old course, so this is seen in a fresh world.
 
 ## Roads - final, nothing outstanding
