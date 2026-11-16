@@ -29,14 +29,22 @@ restore() {
 }
 
 stop() {
-    [ -n "$PID" ] || return 0
-    kill -0 "$PID" 2>/dev/null || return 0
-    kill -TERM "$PID" 2>/dev/null
-    for _ in $(seq 1 60); do
-        kill -0 "$PID" 2>/dev/null || return 0
-        sleep 1
+    [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null && kill -TERM "$PID" 2>/dev/null
+    # A Gradle wrapper asked to stop can leave its JVM listening, and a server left listening holds the level and the
+    # logs of this run. So the server is stopped by the pid holding the port it bound - the run reached "Done", so that
+    # port is this run's own and not somebody else's.
+    grep -q 'Done (' "$LOG" 2>/dev/null || return 0
+    local held p
+    held=$(netstat -ano 2>/dev/null | grep -E '[:.]25565[[:space:]].*LISTENING' | awk '{print $NF}' | sort -u)
+    for p in $held; do
+        if command -v taskkill >/dev/null 2>&1; then
+            taskkill //F //PID "$p" >/dev/null 2>&1
+        else
+            kill -9 "$p" 2>/dev/null
+        fi
     done
-    kill -9 "$PID" 2>/dev/null
+    [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null && kill -9 "$PID" 2>/dev/null
+    return 0
 }
 
 trap 'stop; restore' EXIT INT TERM

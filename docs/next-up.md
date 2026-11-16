@@ -213,13 +213,14 @@ engine's. The pass now asks for a chunk and takes it in the same tick, a chunk a
 for the region as a whole. **That shape is measured now, 16 November, and it holds.** `raiseShireOnStart` in the mod's
 server settings takes the gate off at start, and `tools/raise_shire.sh` boots a level of its own with the switch set,
 waits for the line, prints the numbers and puts `server.properties` and the config back afterwards. On a fresh level
-with **nobody online** the village stood in **1210 ticks (60.5 s)**: a warm build, 1326 chunks of ground, 143 pieces,
-1290 bands and 701 dress steps, and no tick went near the sixty-second watchdog. That is the run that was missing, and
+with **nobody online** the village stood in **1200 ticks (60.0 s)**, and 1210 (60.5 s) on the run before it: a warm
+build, 1326 chunks of ground, 143 pieces, 1290 bands and 701 dress steps, and no tick went near the sixty-second
+watchdog. That is the run that was missing, and
 it is one command away from being repeated. What keeps the cost off a player's first start is still the gate - the
 village is raised only while somebody is within `REACH` 192 of it, so the chunks are in a view, ticking and being
 finished as the player arrives - plus `/hobbiton raise` for an admin who wants it up in an empty world, and the config
 for a server that would rather prepare it in the dark. **Not seen in a client session**: whether the deck, the mouths
-and the ring look right is still a walk to Hobbiton, and 60.5 s is wall clock on a warm build, not a bound on a cold
+and the ring look right is still a walk to Hobbiton, and 60 s is wall clock on a warm build, not a bound on a cold
 one. The pass keeps its own tick count now, because the measurement is the line that says it stands.
 
 **Where the roads go next, and it is not built.** The Shire to Bree, Bree to Rivendell, and Glóin's camp to Gundabad -

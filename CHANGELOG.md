@@ -8,8 +8,8 @@ All notable changes to this project will be documented in this file.
           switch and a script. `raiseShireOnStart` in the mod's server settings (`TolkienMobsConfig`) takes the gate off at
           start, and `tools/raise_shire.sh` boots a fresh level with that switch set, waits for the village to stand,
           prints the two lines that matter, stops the server and restores `server.properties` and the config. The pass
-          counts its own ticks to make the line worth reading: **1210 ticks (60.5 s)** to stand the village on a fresh
-          level with nobody in the world - 1326 chunks of ground, 143 pieces, 1290 bands, 701 dress steps against a 5 ms
+          counts its own ticks to make the line worth reading: **1200 ticks (60.0 s)** - 1210 (60.5 s) on the run before
+          it - to stand the village on a fresh level with nobody in the world - 1326 chunks of ground, 143 pieces, 1290 bands, 701 dress steps against a 5 ms
           budget, and no tick anywhere near the watchdog. That is the first measurement of the ground asked for and taken
           in the same tick, and it says the shape holds. The note beside the cut (`_stands.txt`) now says what stood the
           village and not only where: the cut's fingerprint - its piece count and a CRC over the table and every piece, so
