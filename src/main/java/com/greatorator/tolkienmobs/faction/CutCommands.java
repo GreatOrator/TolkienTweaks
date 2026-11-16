@@ -122,6 +122,11 @@ public final class CutCommands {
                     corner.getX() + highX, corner.getY() + highY, corner.getZ() + highZ);
         }
 
+        /** Whether a position stands on this ground, which is where a village's own weather happens. */
+        boolean holds(double x, double y, double z) {
+            return x >= lowX && x <= highX + 1 && y >= lowY && y <= highY + 1 && z >= lowZ && z <= highZ + 1;
+        }
+
         /** The box as a sentence, in the order a person reads a map: across, then depth, then height. */
         String spoken() {
             return "x " + lowX + " to " + highX + ", z " + lowZ + " to " + highZ

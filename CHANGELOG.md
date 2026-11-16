@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The village stops killing the hobbits the Shire spawns in it, and stands eight of its own once it is dressed.**
+          The chunks under the village are the Shire's own, so the game populated them as it generated them - on ground the
+          pass then cleared and laid again - and the first measured raise logged **eighteen** `Hobbit hit the ground too
+          hard` deaths, bodies falling with the hill they stood on. A spawn rule is the wrong gate: a chunk-generation spawn
+          is finalised before it has a position, so the body is refused as it joins the level (`EntityJoinLevelEvent`)
+          while the pass holds the footprint, which is the first moment both the body and its ground are known. The same
+          raise now logs **zero** deaths, and runs a little quicker for not carrying them (920 ticks, 46.0 s, against 1242
+          and 62.1 s). With the ground settled, `Hobbiton.inhabit` stands **eight** of the Shire's folk on the deck the cut
+          was dressed to - columns whose top is within a block of the cut's own floor, with room to stand and something to
+          stand on, so roofs, tree crowns and the hillside outside the walls are passed over - persistent, so coming back
+          finds the same village, and topped up rather than doubled when a village is raised again over itself. Arriving
+          at the Shire is arriving somewhere inhabited.
 - **The village raises itself with nobody online, counts its own ticks, and a world holding a stale one raises it again.**
           The ground stage that asks for its chunks a chunk at a time had never been measured, and could not be: the pass
           waits for a player within 192 blocks, and a `runServer` console does not reach the world. So there is now a

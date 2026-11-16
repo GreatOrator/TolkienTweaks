@@ -1,6 +1,8 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
+import com.greatorator.tolkienmobs.entity.npc.HobbitEntity;
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import com.mojang.brigadier.context.CommandContext;
@@ -11,11 +13,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
@@ -100,6 +108,15 @@ public final class Hobbiton {
     private static final int DRESS_VERSION = 1;
     /** How far a probe column's top may move and still be the village: growth, mostly, not a village taken away. */
     private static final int PROBE_SLACK = 6;
+    /**
+     * How many of the Shire's own folk a village keeps, and how many columns it looks along to find them a place.
+     * <p>
+     * A handful, not a town: the village is a hundred and fifty pieces of a hill and eight bodies on its deck read as
+     * inhabited from the gate. They are stood by the pass rather than left to the spawner, because the chunks under the
+     * village are the Shire's and the game fills them as it generates them - which is exactly the ground being taken
+     * away.
+     */
+    private static final int VILLAGERS = 8, VILLAGER_TRIES = 600;
     /** What the note's probe answers: the ground is there, it is gone, or the level holds no chunk to ask. */
     private static final int PRESENT = 1, GONE = 0, UNASKED = -1;
     /** How near a player has to be for the level to hold the village's chunks, in blocks: the reach, plus half of it. */
@@ -274,6 +291,28 @@ public final class Hobbiton {
         return work.parts.size();
     }
 
+    /**
+     * Refuses a body inside the village while the pass is clearing and dressing it.
+     * <p>
+     * The chunks under the village are the Shire's, so the game populates them as they are generated - on ground the pass
+     * then takes away and lays again. The first measured raise paid for that in a log full of `Hobbit hit the ground too
+     * hard`: bodies fell with the hill they were standing on. This is the last gate rather than a spawn rule, because a
+     * chunk-generation spawn is finalised before it has a position: the body is refused as it joins the level, when it
+     * finally has one, and {@link #inhabit} stands the village's own folk once the ground has settled.
+     */
+    @SubscribeEvent
+    public static void onEntityJoin(EntityJoinLevelEvent event) {
+        CutCommands.Box raising = raising();
+        if (raising == null || !(event.getEntity() instanceof Mob body)) return;
+        if (raising.holds(body.getX(), body.getY(), body.getZ())) event.setCanceled(true);
+    }
+
+    /** The ground being cleared and dressed right now, or null when nothing is being raised. */
+    @Nullable
+    private static CutCommands.Box raising() {
+        return standing == null ? null : standing.box;
+    }
+
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         standing = null;
@@ -320,6 +359,7 @@ public final class Hobbiton {
                 work.release(level);
                 standing = null;
                 note(level, work.planted);
+                inhabit(level, work);
                 LOGGER.info("The Shire: the village stands at {} in {} ticks ({} s), dressed to its own outline",
                         work.planted.toShortString(), work.ticks,
                         String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D));
@@ -495,6 +535,41 @@ public final class Hobbiton {
     /** Where this world's note about the village lives: beside its cut, in the save's own folder. */
     private static Path marker(ServerLevel level) {
         return CutCommands.folder(level).resolve(CUT).resolve(MARKER);
+    }
+
+    /**
+     * Stands the village's own folk on the deck it was dressed to.
+     * <p>
+     * Only the flat of the village will do: a column whose top is within a block of the cut's own floor, with room to
+     * stand and something to stand on. Roofs, tree crowns and the hillside outside the walls are all a block or ten over
+     * that, so they are passed over rather than filled with hobbits on a slope. A world that already holds some of them
+     * is topped up to {@link #VILLAGERS} and no further, so a village re-raised over itself does not collect a crowd.
+     */
+    private static void inhabit(ServerLevel level, Standing work) {
+        CutCommands.Box box = work.box;
+        int there = level.getEntitiesOfClass(HobbitEntity.class, new AABB(box.lowX(), box.lowY(), box.lowZ(),
+                box.highX() + 1, box.highY() + 1, box.highZ() + 1)).size();
+        int deck = work.planted.getY() + work.deck + 1;
+        RandomSource random = RandomSource.create(work.planted.asLong());
+        int stood = 0;
+        for (int tries = 0; there + stood < VILLAGERS && tries < VILLAGER_TRIES; tries++) {
+            int x = random.nextInt(box.lowX(), box.highX() + 1);
+            int z = random.nextInt(box.lowZ(), box.highZ() + 1);
+            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+            if (Math.abs(top - deck) > 1) continue;
+            BlockPos spot = new BlockPos(x, top, z);
+            if (!level.getBlockState(spot).getCollisionShape(level, spot).isEmpty()) continue;
+            if (!level.getBlockState(spot.above()).getCollisionShape(level, spot.above()).isEmpty()) continue;
+            if (level.getBlockState(spot.below()).getCollisionShape(level, spot.below()).isEmpty()) continue;
+            Entity body = TolkienEntities.ENTITY_TTM_HOBBIT.get().create(level, EntitySpawnReason.EVENT);
+            if (!(body instanceof Mob hobbit)) continue;
+            hobbit.snapTo(x + 0.5D, top, z + 0.5D, random.nextFloat() * 360.0F, 0.0F);
+            hobbit.setPersistenceRequired();
+            if (!level.addFreshEntity(hobbit)) continue;
+            stood++;
+        }
+        LOGGER.info("The Shire: {} of the Shire's folk are standing in the village at {}, {} were there already",
+                stood, work.planted.toShortString(), there);
     }
 
     /** Writes the note that says what the village stands on, so the next start knows whether it still holds it. */

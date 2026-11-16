@@ -180,6 +180,19 @@ it on the start-up thread, the thing this whole pass exists to avoid - so a star
 the first tick somebody is near enough to make it free. The three commands still work and are still the way to re-cut
 one.
 
+**The village's own folk, and the hill they stand on, 16 November.** The chunks under the village are the Shire's, so the
+game populated them as they were generated - on ground the pass then cleared and laid again. The first raises paid for
+that: **eighteen** `Hobbit hit the ground too hard` deaths in one of them, bodies falling with the hill they stood on. A
+spawn *rule* is the wrong gate there, because a chunk-generation spawn is finalised before it has a position: the body is
+refused as it joins the level instead, while the pass holds the footprint, which is the first moment both the body and its
+ground are known. With that gate the same raise logs **no deaths at all**, and runs a little quicker for not carrying
+them - 920 ticks (46.0 s), against 1242 (62.1 s) on the run before. Once the ground has settled, `Hobbiton.inhabit`
+stands a deliberate handful: **eight** of the Shire's own folk, on columns whose top is within a block of the cut's own
+deck with room to stand and something to stand on, so roofs, tree crowns and the hillside outside the walls are passed
+over. They are persistent, so a player who comes back finds the same village, and a village raised again over itself is
+topped up rather than doubled. The line that says so is part of the measurement: `8 of the Shire's folk are standing in
+the village at -700, 87, -512, 0 were there already`.
+
 The water out of the village is no longer a rule named after the Shire. `ArdaMap.Channel` is a drawn channel whose level
 is a *build's*: the level it leaves at, the grade it falls at, the reach of its corridor and the course the mask drew,
 one entry per place, with the village's level read as its pin plus the nine its water stands over it. A second build
