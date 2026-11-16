@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Draw the quest marks as the artwork's icons instead of as punctuation.** The owner's sheet - two shapes by three
+          inks - is cut into six icons on its own pixel grid (a 4x11 `!` and an 8x11 `?`, black outline and three shades of
+          fill) and each one is a bitmap glyph of a mod font, `assets/tolkienmobs/font/quest_marks.json`. The plate names a
+          glyph and puts the mark font on it, so the mark is still a letter on the nameplate - no render pass, no texture
+          pass, nothing to cull - while white says work in hand, gold the mainline and cyan an errand, and the shape keeps
+          saying which state it is. White `?` has no state to wear and ships with its code reserved. How the icons sit on a
+          real plate (11px tall, seated a pixel below the baseline) is not yet looked at.
 - **A badge over a giver's head, for the turn-in state, behind a switch.** The cheap half of the item-over-head idea: a
           scroll (`item_scroll`) hung on the giver's own head bone, drawn by the `BlockAndItemGeoLayer` the hand item already
           uses, and only while the plate is asking for a page back. It is a second entry in that layer's list rather than a

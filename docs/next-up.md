@@ -334,6 +334,16 @@ Eleven pages, 26 to 36, written and wired; **played through page 32** and workin
 - **The keep** stands itself too, but its placement is on hold (item 5).
 - **Pages 33-36** are Carn Dûm ground and are paused (items 1 and 3).
 
+**The marks are the artwork, not letters - 16 November.** The sheet the owner drew (`quest-marks-v0-....webp`, two shapes by
+three inks) was cut into six icons on its own pixel grid - a 4x11 `!` and an 8x11 `?`, black outline and three shades of
+fill - and each icon is a glyph of a font of its own: `assets/tolkienmobs/font/quest_marks.json` pointing at
+`assets/tolkienmobs/textures/font/quest_marks/<shape>_<ink>.png`. The plate names one glyph and puts the mark font on it
+(`FontDescription.Resource`), so what it draws is still a letter and the nameplate is untouched in kind - no render pass,
+no texture pass, no culling to write. White is work in hand, gold the mainline, cyan an errand; the shape is still the
+state. The white `?` has no state that can wear it, since work in hand is by definition the `!`, so it ships with its code
+(``) reserved. Two things are unverified because no client has drawn them: the size (11px, about 1.4x the name) and
+the seat (ascent 10, one pixel below the baseline).
+
 **The badge over a giver's head - built 16 November, off by default.** The cheap half of the item-over-head idea: a scroll
 (`item_scroll`) hung on the giver's own head bone, drawn by the same `BlockAndItemGeoLayer` the hand item already uses, and
 shown for the turn-in state only. It goes in that layer rather than a second one because every `BlockAndItemGeoLayer`

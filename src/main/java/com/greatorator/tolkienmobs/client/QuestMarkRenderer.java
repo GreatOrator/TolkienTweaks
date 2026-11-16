@@ -10,7 +10,9 @@ import com.greatorator.tolkienmobs.faction.QuestGivers;
 import com.greatorator.tolkienmobs.faction.QuestLedger;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.util.TriState;
 import net.neoforged.api.distmarker.Dist;
@@ -28,22 +30,33 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * <p>
  * It is drawn as part of the nameplate rather than as a billboard of its own: a nameplate already sits
  * over the head, already turns to face the player and is already hidden behind walls and at distance,
- * so a mark written onto it inherits all of that without a texture or a second render pass. The mark
- * is the first thing on the plate, which reads as a glyph above the name.
+ * so a mark hung on it inherits all of that without a render pass of its own. The marks themselves are
+ * the mod's own artwork, one bitmap glyph an icon in a font of their own, so what the plate draws is
+ * still a letter - the font is simply what paints it. The mark is the first thing on the plate, which
+ * reads as a mark above the name.
  * <p>
  * Two things are said at once, and they are deliberately not the same kind of thing:
  * <ul>
- *   <li><b>The shape is the state.</b> <b>!</b> for work still to take, the same mark dimmed grey for
- *   work taken and unfinished - the same promise, dimmed - and <b>?</b> for work done and waiting to
- *   be handed in.</li>
- *   <li><b>The ink is the line.</b> Blue for an ordinary errand, gold for the mainline, so the
- *   campaign's own business is told apart from a farmer's fence without reading either.</li>
+ *   <li><b>The shape is the state.</b> <b>!</b> for work still to take, the same shape in white for work
+ *   taken and unfinished - the same promise, without the colour - and <b>?</b> for work done and waiting
+ *   to be handed in.</li>
+ *   <li><b>The ink is the line.</b> Cyan for an ordinary errand, gold for the mainline, so the campaign's
+ *   own business is told apart from a farmer's fence without reading either.</li>
  * </ul>
  * A giver this player has no business with keeps a bare name, which is what makes the marks mean
  * something: an NPC that is always shouting has taught the player nothing by the time it matters.
  */
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public final class QuestMarkRenderer {
+
+    /** The font the marks were cut into, one glyph an icon: the artwork in the plate without a render pass. */
+    private static final FontDescription MARK_FONT = new FontDescription.Resource(
+            Identifier.fromNamespaceAndPath(MODID, "quest_marks"));
+    private static final String AVAILABLE_ERRAND = "\ue000";
+    private static final String AVAILABLE_MAIN = "\ue001";
+    private static final String IN_PROGRESS = "\ue002";
+    private static final String TURN_IN_ERRAND = "\ue003";
+    private static final String TURN_IN_MAIN = "\ue004";
 
     private QuestMarkRenderer() {
     }
@@ -73,13 +86,12 @@ public final class QuestMarkRenderer {
                 event.setContent(plate);
                 return;
             }
-            event.setContent(glyph(mark).append(plate));
+            event.setContent(withMark(mark, plate));
             event.setCanRender(TriState.TRUE);
             return;
         }
         if (mark == null) return;
-        Component name = event.getContent();
-        event.setContent(name == null ? glyph(mark) : glyph(mark).append(name));
+        event.setContent(withMark(mark, event.getContent()));
         // A giver's plate is normally shown because its name is visible; the mark is worth showing even
         // where the name would be hidden, since the whole point is to be noticed.
         event.setCanRender(TriState.TRUE);
@@ -207,15 +219,31 @@ public final class QuestMarkRenderer {
     }
 
     /**
-     * The mark itself. Work in hand is grey whatever line it came from: at that point the player is
-     * already carrying it and knows whose it is, and all the plate has to say is "back here".
+     * The mark itself, as the icon the artwork draws for it. Work in hand is white whatever line it came
+     * from: at that point the player is already carrying it and knows whose it is, and all the plate has to
+     * say is "back here", which is the one thing the colour of the line would not add to.
      */
     private static MutableComponent glyph(QuestLedger.Mark mark) {
-        ChatFormatting ink = switch (mark.state()) {
-            case AVAILABLE, TURN_IN -> mark.mainline() ? ChatFormatting.GOLD : ChatFormatting.BLUE;
-            case IN_PROGRESS -> ChatFormatting.GRAY;
+        String icon = switch (mark.state()) {
+            case AVAILABLE -> mark.mainline() ? AVAILABLE_MAIN : AVAILABLE_ERRAND;
+            case IN_PROGRESS -> IN_PROGRESS;
+            case TURN_IN -> mark.mainline() ? TURN_IN_MAIN : TURN_IN_ERRAND;
         };
-        String shape = mark.state() == QuestLedger.Mark.State.TURN_IN ? "? " : "! ";
-        return Component.literal(shape).withStyle(ink);
+        return Component.literal(icon).withStyle(style -> style.withFont(MARK_FONT));
+    }
+
+    /**
+     * The mark, a space, and the plate it belongs to.
+     * <p>
+     * The space and the plate hang off an empty parent rather than off the icon, because a component takes
+     * the style of the component it is appended to and not of the sibling before it - appended to the icon
+     * they would inherit the mark font and draw every letter of the name as a missing glyph.
+     */
+    private static MutableComponent withMark(QuestLedger.Mark mark, @Nullable Component plate) {
+        MutableComponent line = Component.empty().append(glyph(mark));
+        if (plate != null) {
+            line.append(" ").append(plate);
+        }
+        return line;
     }
 }
