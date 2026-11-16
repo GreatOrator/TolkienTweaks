@@ -3689,3 +3689,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   no material is swapped for air and no layer is thinned - which is the difference between cutting a map and deciding
   what part of it was worth keeping. Checked on a 48-cube holding one marker: 87,089 non-air blocks in the volume, one
   of them ammolite, 87,088 in the tile, and nothing else missing.
+
+- **The Shire map is cut and waiting on a location.** The player's `Hobbiton_Divici` world holds a hand-built Shire in
+  its overworld, bracketed by four ammolite markers at (-456, 6, 276), (94, 6, 276), (-456, 6, 743) and (94, 6, 743) -
+  551 by 468 across, base y 6, content to y 95 - and every block of it is vanilla, so nothing needs remapping. It is cut
+  whole into `run/hobbiton_art`: 143 pieces of 48-cube and a `hobbiton.parts` table, 14 MB, keeping everything except
+  the four markers, checked against an independent count of the world (5,079,392 distinct positions on both sides) and
+  rendered top-down to see the village, the pond and the field strips come across whole. Nothing ships and nothing is
+  placed: it waits on a pin in Arda's Shire, whose cells are x -1024 to 1023 and z -512 to 1023.

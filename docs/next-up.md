@@ -30,6 +30,23 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | 6 | **Sign posts** | on hold | below, with the recipe |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
+| 9 | **The Shire map** - Hobbiton, cut and waiting on a location | cut, unsited | `run/hobbiton_art`; see below |
+
+## The Shire map - cut 15 November 2026, waiting on a location
+
+The player's own map `Hobbiton_Divici` is a hand-built Shire in its overworld, marked by four ammolite blocks at
+(‑456, 6, 276), (94, 6, 276), (‑456, 6, 743) and (94, 6, 743): **551 × 468 across, base y 6, content y 8…95**. Its
+palette is vanilla throughout - 148 names, no modded blocks at all - so nothing has to be remapped.
+
+It is cut whole into **`run/hobbiton_art`**: 143 pieces of 48-cube plus `hobbiton.parts`, **14 MB**, every block kept
+except the four markers (`cut_world.py --without tolkienmobs:block_ammolite`), verified block for block against a
+separate count of the world - 5,079,392 distinct positions on both sides, and the cut rendered top-down to confirm the
+village, the pond and the field strips came across whole. Nothing is in the jar yet; nothing is placed.
+
+**What it needs next:** a location in Arda's Shire, which is cells 8…11 by 19…21 - **x −1024…1023, z −512…1023**, drawn
+at height 68 with ±4 of relief, its centre around **(0, 70, 255)**. The parts table's offsets run from the build's own
+north-west bottom corner, so the pin that goes into `Sites` is that corner: everything extends +551 east and +468 south
+of it. Once the pin is chosen the build wants a `Sites` entry and a placement pass like the gate's.
 
 ## Roads - final, nothing outstanding
 
