@@ -563,11 +563,13 @@ public class TolkienMobsConfig {
                 .comment("Pitch of the wind over a diving FellBeast. The loop is recorded at the depth the dive is meant to play at, so 1.0 is the wind as intended; below it the wind is deeper and slower, above it sharper and quicker (Default 1.0)")
                 .defineInRange("fellbeastDiveWindPitch", 1.0, 0.5, 2.0);
         QUEST_BADGE = BUILDER
-                .comment("Draws a scroll over the head of a giver who is waiting for a page back, on top of the mark on his",
-                        "nameplate, so the two can be compared. It hangs on the giver's own head bone, so it turns and ducks",
-                        "with him rather than facing the player, and the ground and the trees hide it the way they hide him.",
-                        "With this off the plate's mark is the only mark, which is what the mod ships (Default false)")
-                .define("questBadge", false);
+                .comment("Draws the marks that stand in the world rather than on a nameplate: the scroll over the head of",
+                        "a giver who is waiting for a page back, and the mark over a notice board saying what it has for",
+                        "whoever is looking at it. The scroll hangs on the giver's own head bone, so it turns and ducks with",
+                        "him rather than facing the player, and the ground and the trees hide it the way they hide him.",
+                        "With this off the plate is the only place a mark is drawn, which is what a player who would",
+                        "rather read the world unmarked wants, and nothing else has to change (Default true)")
+                .define("questBadge", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

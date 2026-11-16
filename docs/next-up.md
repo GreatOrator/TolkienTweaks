@@ -348,8 +348,10 @@ block entity (`notice_board` type, no data, no ticker, no packets) purely to hav
 which hangs the mark as a **nameplate** through `submitNameTag` - so the billboard, the distance scaling and the hiding
 behind ground are vanilla's, not ours - 2.35 blocks up, clear of the frame's top rail. What it says comes from
 `BoardMarks`, which reads the reader's own inventory: no contract means green `!`, a finished one means green `?`, and
-work still in hand means no mark, since the board only repeats that it is carried. Existing boards in a world get the
-entity when their chunk next loads.
+work still in hand means no mark, since the board only repeats that it is carried. It answers to `questBadge` too, the
+same client switch as the scroll over a giver's head (on by default), so a player who would rather the world carried no
+marks turns one setting off and the boards go bare while the plates read as they always did. Existing boards in a world
+get the entity when their chunk next loads.
 
 **The marks are the artwork, not letters - 16 November.** The sheet the owner drew (`quest-marks-v0-....webp`, two shapes by
 three inks) was cut into six icons on its own pixel grid - a 4x11 `!` and an 8x11 `?`, black outline and three shades of
@@ -366,7 +368,8 @@ the seat (ascent 10, one pixel below the baseline).
 shown for the turn-in state only. It goes in that layer rather than a second one because every `BlockAndItemGeoLayer`
 shares one data ticket (`CONTENTS`), so two of them on one render state would each read the other's list - the badge is a
 second entry in the same list, and `submitItemStackRender` picks its pose by bone name: `head` lifts it 1.15 and draws it
-at 0.65 scale, the hand keeps its own offset. `TolkienMobsConfig.questBadge` (client, default false) is the switch, so the
+at 0.65 scale, the hand keeps its own offset. `TolkienMobsConfig.questBadge` (client, default true) is the switch for every
+mark the world draws - the notice board's as well as the scroll - and the plate's own mark is never touched by it, so the
 text `?` and the scroll can be put side by side; the state it reads is `QuestMarkRenderer.asksForReturn`, which asks the
 same call the plate asks, so the two marks cannot disagree. It is bone-locked: it turns and ducks with the head and the
 ground hides it the way it hides him, which is the trade for not building a billboard pass. **Not looked at**: no client

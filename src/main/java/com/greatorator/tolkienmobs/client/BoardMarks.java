@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.client;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.faction.Contract;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import net.minecraft.client.Minecraft;
@@ -26,6 +27,11 @@ public final class BoardMarks {
 
     /** The mark a board wears for this player, or null when there is nothing to say. */
     public static @Nullable Component mark() {
+        // The switch the scroll over a giver's head answers to as well: both are marks the world draws for the player
+        // rather than words on a plate, so one setting clears them together. The plate's own mark is unaffected - it
+        // says what the work is, and a player who has cleared the world of marks still wants to read what is in front
+        // of him.
+        if (!TolkienMobsConfig.questBadge) return null;
         Player player = Minecraft.getInstance().player;
         if (player == null) return null;
         for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
