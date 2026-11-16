@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The portal between the worlds is a place at both ends, and the Shire has its milestone.** A portal lit anywhere in
+          the overworld now opens onto the village's own crossing in Hobbiton, at `ArdaMap.hobbitonGate()`
+          (-470, 97, -123) - the gravel the owner walked to - and the way back opens on the overworld's spawn point
+          (`ServerLevel.getRespawnData().pos()`), so a traveller never has to remember where they came in to get home.
+          Both ends keep the portal's own behaviour: a doorway standing within 16 blocks of the crossing is used, and if
+          there is none one is built and lit on the ground there rather than dropping anyone out of the air. The village's
+          travel stone stands at the paving the owner marked, (-503, 101, -314), laid with the hold's stone on every start
+          (`MilestoneHandler.onServerStarted`); the mark there is gravel rather than ammolite, so the stone is tried in the
+          spot and then on top of it and the paving is not dug up for it.
 - **The village's folk are somebody: thirteen hobbits, each with a name and a face of their own.** The old pack's clone
           database holds twenty-two hobbits and fifteen skins under `customskins/hobbits`, thirteen of them modern 64x64
           art that sits on this model; the two legacy 64x32 ones are left out rather than drawn wrong. The village now

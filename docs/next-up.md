@@ -262,34 +262,42 @@ branch's valley and its mouth at the wall, the fork, and the merged channel's ru
 A world made before 16 November holds the old course and cannot show any of it. The bar's fix is the one piece that can
 be seen in the existing world, by running the drape again.
 
-## The portal between the worlds - asked 16 November, not started
+## The portal between the worlds - built 16 November
 
 The ask, in the owner's words: **a portal made in the overworld puts the traveller in Hobbiton, and the way back puts
-them at the overworld's spawn point.** Not the same coordinates on both sides, which is what the portal does now.
+them at the overworld's spawn point.** Not the same coordinates on both sides, which is what the portal used to do.
 
-It is one method, because `ArdaPortalBlock.getPortalDestination` already decides both ends. Today it takes the
-traveller's own x and z as the crossing in the other world, then finds a doorway within 16 blocks of it or builds and
-lights one (`findPortal`, `buildExit`). The change is to stop passing the traveller's own position as the crossing:
+It was one method, as expected. `ArdaPortalBlock.getPortalDestination` used to take the traveller's own x and z as the
+crossing in the other world; it now takes a place:
 
-- **overworld to Arda:** the crossing is Hobbiton's own - near the pin (`ArdaMap.hobbitonPlan()`) and on ground the
-  raise has settled, with the existing find-or-build standing a doorway there when no portal is already in sight.
-- **Arda to the overworld:** the crossing is the overworld's spawn, `ServerLevel.getSharedSpawnPos()` on the overworld
-  level and clamped to the border as now, again find-or-build.
+- **overworld to Arda:** the crossing is `ArdaMap.hobbitonGate()` - (-470, 97, -123), the gravel of the village's own
+  crossing that the owner walked to and gave as the Shire's arrival.
+- **Arda to the overworld:** the crossing is the overworld's respawn data (`ServerLevel.getRespawnData().pos()`), which
+  is the world's spawn point, so the way home is always the same doorway.
+- Both ends then do what they always did: a portal standing within 16 blocks of the crossing is used, and if there is
+  none one is built and lit on the ground there, so a traveller never arrives somewhere with no way back.
 
-What has to be decided when it is built, and why it is not a one-liner despite being one method:
+Still open, and cheap to change when it is next looked at: the arrival doorway is built of ammolite (`buildExit`), so a
+doorway that is auto-built inside the Shire looks like the hold's rather than the village's; and nothing checks whether
+the village has been raised before letting somebody through into it.
 
-- **Which point in Hobbiton.** The pin is the cut's corner (-700, 87, -512) of a 551x468 footprint, which is not
-  somewhere a player should step out. A fixed spot on the village's deck, in sight of the gate, is the real answer - a
-  constant the village's own dress can keep, not the pin itself.
-- **Whether the doorway is found or built.** Building at a fixed point is what "drop players in Hobbiton" means: every
-  traveller comes out of the same doorway. The return trip likewise lands on one doorway near spawn rather than
-  wherever the traveller happened to leave.
-- **What the crossing does before the village has been raised.** The overworld side can be lit at any time; the arrival
-  is then the corner of a village that is not there yet. Either the portal waits for the village (a message and no
-  travel) or it lets them through and the raise follows them in - the second is more in the spirit of the thing, and it
-  needs the arrival to be a place that exists before the raise.
-- **What the doorway is built of.** `buildExit` lays ammolite today; an arrival inside the Shire could as well be the
-  village's own material, or a doorway cut into the build itself so nobody builds one.
+## The Shire's milestone - built 16 November
+
+The travel stone of the village stands at the paving the owner marked, (-503, 101, -314), in the village's north-east
+where the paths meet: `ArdaMap.hobbitonMilestone()`, stood with the hold's stone on every start
+(`MilestoneHandler.onServerStarted`). That mark is gravel rather than one of the mod's ammolite markers, so the stone is
+tried in the spot and then on top of it, and the paving is not dug up for it. A world older than the stone gets it on its
+next start, and one that has it keeps it.
+
+## The river that did not drape - open, 16 November
+
+The owner pointed at (-265, 98, -72): stepped grass terraces running down into water on the village's north-east, straight
+edges and a sand lip - country that was cleared and never settled. It is inside the footprint, not in the ring, and that
+is the reason: the drape settles the columns *outside* the cut's box, while inside it the clear takes each column down to
+the cut's own floor and leaves it, so any column the cut does not fill - the river corridor running through the north-east
+of the village - is left as a staircase beside the water. Settling those columns too is a change to the drape's own rule,
+it wants `DRESS_VERSION` bumped so the fix reaches villages that already stand, and it would be re-run over whatever the
+river's mouths look like now. Not started: the fix is easy to describe and easy to get wrong beside the water.
 
 ## Roads - final, nothing outstanding
 

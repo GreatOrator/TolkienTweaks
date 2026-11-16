@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienBlock;
 import com.greatorator.tolkienmobs.init.*;
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -360,8 +361,15 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
             return null;
         }
 
-        BlockPos crossing = destination.getWorldBorder()
-                .clampToBounds(entity.getX(), entity.getY(), entity.getZ());
+        // A doorway is a place rather than a coordinate: one lit anywhere in the overworld opens onto the Shire's own
+        // crossing in Hobbiton, and the way back opens on the overworld's spawn, so a traveller never has to remember
+        // where they came in to get home. Both ends are found-or-built by the same two calls the same-coordinate
+        // crossing used, which is what keeps a portal standing at either end instead of a drop out of the air.
+        BlockPos crossing = serverLevel.dimension() == TolkienDimensions.ARDA
+                ? destination.getRespawnData().pos()
+                : ArdaMap.hobbitonGate();
+        crossing = destination.getWorldBorder()
+                .clampToBounds(crossing.getX(), crossing.getY(), crossing.getZ());
         // The traveller is about to stand here, so the ground within sight of the crossing has to
         // exist before there is anything to look at.
         loadAround(destination, crossing);

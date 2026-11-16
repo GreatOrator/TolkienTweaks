@@ -494,6 +494,22 @@ public final class ArdaMap {
         return new BlockPos(HOBBITON_X, HOBBITON_Y, HOBBITON_Z);
     }
 
+    /**
+     * The Shire's milestone: the paving the owner marked at (-503, 101, -314), in the village's north-east where the
+     * paths meet. A travel stone stands here rather than at the pin, because the pin is the corner of the cut.
+     */
+    public static BlockPos hobbitonMilestone() {
+        return new BlockPos(-503, 101, -314);
+    }
+
+    /**
+     * Where a traveller out of the overworld steps into Arda: the gravel of the village's own crossing at
+     * (-470, 97, -123), which the owner walked to and gave as the Shire's arrival.
+     */
+    public static BlockPos hobbitonGate() {
+        return new BlockPos(-470, 97, -123);
+    }
+
     /** The middle of the village's footprint at its own ground: where a name for it is written. */
     public static BlockPos hobbitonCentre() {
         return new BlockPos(HOBBITON_X + HOBBITON_WIDE / 2, HOBBITON_Y + HOBBITON_DECK_LIFT,

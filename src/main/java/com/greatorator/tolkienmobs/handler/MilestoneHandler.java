@@ -24,10 +24,12 @@ import com.greatorator.tolkienmobs.faction.GundabadCave;
 import com.greatorator.tolkienmobs.faction.GundabadKeep;
 import com.greatorator.tolkienmobs.faction.OrcPieces;
 import com.greatorator.tolkienmobs.faction.Stones;
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.faction.Places;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -35,6 +37,7 @@ import java.util.*;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class MilestoneHandler extends SavedData {
+    private static final Logger LOGGER = com.mojang.logging.LogUtils.getLogger();
     private static final String SAVE_DATA_NAME = "milestone_data";
     private static final MilestoneHandler CLIENT_INSTANCE = new MilestoneHandler();
 
@@ -93,6 +96,24 @@ public class MilestoneHandler extends SavedData {
             BlockPos stone = ArdaMap.gundabadStone();
             arda.getChunk(stone.getX() >> 4, stone.getZ() >> 4);
             Stones.stone(arda, stone, "Gundabad", null);
+            // The Shire's stone, at the paving the owner marked in the village. Laid on every start for the same reason
+            // the hold's is: a world older than the stone still gets it, and a stone already standing is left alone. The
+            // mark here is gravel rather than one of our ammolite blocks, so the stone is tried in the spot and then on
+            // top of it - which is the same stone either way, and the paving is not dug up for it.
+            BlockPos shireStone = ArdaMap.hobbitonMilestone();
+            arda.getChunk(shireStone.getX() >> 4, shireStone.getZ() >> 4);
+            Stones.stone(arda, shireStone, "Hobbiton", null);
+            if (!arda.getBlockState(shireStone).is(TolkienBlocks.MILESTONE_BLOCK.get())) {
+                Stones.stone(arda, shireStone.above(), "Hobbiton", null);
+            }
+            BlockPos stood = arda.getBlockState(shireStone).is(TolkienBlocks.MILESTONE_BLOCK.get())
+                    ? shireStone : shireStone.above();
+            if (arda.getBlockState(stood).is(TolkienBlocks.MILESTONE_BLOCK.get())) {
+                LOGGER.info("The Shire: the Hobbiton milestone stands at {}", stood.toShortString());
+            } else {
+                LOGGER.warn("The Shire: no milestone could be stood at {}; the ground there is {}",
+                        stood.toShortString(), arda.getBlockState(stood));
+            }
             OrcPieces.raise(arda);
             // The towns this world is given rather than surveys: a board points at a town, so the ones that stand have
             // a name from the first start, whether or not a player has walked into any of them.
