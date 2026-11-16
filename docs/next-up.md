@@ -334,6 +334,18 @@ Eleven pages, 26 to 36, written and wired; **played through page 32** and workin
 - **The keep** stands itself too, but its placement is on hold (item 5).
 - **Pages 33-36** are Carn Dûm ground and are paused (items 1 and 3).
 
+**The badge over a giver's head - built 16 November, off by default.** The cheap half of the item-over-head idea: a scroll
+(`item_scroll`) hung on the giver's own head bone, drawn by the same `BlockAndItemGeoLayer` the hand item already uses, and
+shown for the turn-in state only. It goes in that layer rather than a second one because every `BlockAndItemGeoLayer`
+shares one data ticket (`CONTENTS`), so two of them on one render state would each read the other's list - the badge is a
+second entry in the same list, and `submitItemStackRender` picks its pose by bone name: `head` lifts it 1.15 and draws it
+at 0.65 scale, the hand keeps its own offset. `TolkienMobsConfig.questBadge` (client, default false) is the switch, so the
+text `?` and the scroll can be put side by side; the state it reads is `QuestMarkRenderer.asksForReturn`, which asks the
+same call the plate asks, so the two marks cannot disagree. It is bone-locked: it turns and ducks with the head and the
+ground hides it the way it hides him, which is the trade for not building a billboard pass. **Not looked at**: no client
+ran, so where the scroll actually sits over a man's head and a hobbit's - and whether 0.65 at 1.15 reads at ten paces - is
+unverified.
+
 ## Settled - do not re-open
 
 - **The Gundabad gate is final.** `GundabadGate.autospawn` stands it at `ArdaMap.gatePlan()` and leaves a standing gate

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A badge over a giver's head, for the turn-in state, behind a switch.** The cheap half of the item-over-head idea: a
+          scroll (`item_scroll`) hung on the giver's own head bone, drawn by the `BlockAndItemGeoLayer` the hand item already
+          uses, and only while the plate is asking for a page back. It is a second entry in that layer's list rather than a
+          layer of its own, because every `BlockAndItemGeoLayer` shares one `CONTENTS` data ticket - two of them on one
+          render state would each read the other's list - and `submitItemStackRender` tells the two apart by bone name:
+          `head` lifts the badge 1.15 and draws it at 0.65 scale, while the hand keeps its own offset. `questBadge` in the
+          client settings (default false) turns it on so it can be compared with the text mark, and the state comes from
+          `QuestMarkRenderer.asksForReturn`, the same call the plate uses, so a body cannot wear a scroll and no question
+          mark at once. Bone-locked on purpose: it turns and ducks with the head and is hidden by the ground the way the
+          giver is. Where it sits over a man's and a hobbit's head is not yet looked at - no client has run it.
 - **The portal between the worlds is a place at both ends, and the Shire has its milestone.** A portal lit anywhere in
           the overworld now opens onto the village's own crossing in Hobbiton, at `ArdaMap.hobbitonGate()`
           (-470, 97, -123) - the gravel the owner walked to - and the way back opens on the overworld's spawn point

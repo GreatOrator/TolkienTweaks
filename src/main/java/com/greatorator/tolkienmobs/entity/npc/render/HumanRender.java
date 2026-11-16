@@ -8,6 +8,8 @@ import com.geckolib.renderer.base.RenderPassInfo;
 import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
 import com.geckolib.util.RenderUtil;
 import com.google.common.collect.Maps;
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
+import com.greatorator.tolkienmobs.client.QuestMarkRenderer;
 import com.greatorator.tolkienmobs.entity.TolkienVillagerEntity;
 import com.greatorator.tolkienmobs.entity.npc.HumanEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.HumanModel;
@@ -28,6 +30,7 @@ import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.text.Normalizer;
@@ -319,17 +322,37 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
      * what turns it in the hand, so a staff hangs the way its model was drawn to hang, and a blade sits
      * forward of the arm the way the guard's does.
      */
+    /** The bone the head is drawn from, asked by name so a badge can hang over it. */
+    private static final String HEAD = "head";
+    /** How far over the head a badge sits in the model's own units, and how large it is drawn there. */
+    private static final double BADGE_LIFT = 1.15D;
+    private static final float BADGE_SCALE = 0.65F;
+
     static <E extends TolkienVillagerEntity> void holdItem(GeoEntityRenderer<E, TolkienGeoRenderState> renderer,
                                                           EntityRendererProvider.Context context) {
         renderer.withRenderLayer(new BlockAndItemGeoLayer<E, Void, TolkienGeoRenderState>(context, renderer) {
             @Override
             protected List<RenderData> getRelevantBones(E animatable, @Nullable Void relatedObject,
                                                         TolkienGeoRenderState renderState, float partialTick) {
+                List<RenderData> entries = new ArrayList<>(2);
                 ItemStack held = animatable.getMainHandItem();
-                if (held.isEmpty()) return List.of();
-                ItemDisplayContext hand = ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-                return List.of(RenderData.item("rightArm", hand, RenderUtil.createRenderStateForItem(held,
-                        this.itemModelResolver, hand, animatable)));
+                if (!held.isEmpty()) {
+                    ItemDisplayContext hand = ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                    entries.add(RenderData.item("rightArm", hand, RenderUtil.createRenderStateForItem(held,
+                            this.itemModelResolver, hand, animatable)));
+                }
+                // The badge: a page waiting to be handed in is the one state a plate cannot say loudly enough, so the
+                // giver wears the page itself. It hangs on the head bone rather than being a billboard of its own, which
+                // is the cheap half of the idea - it turns and ducks with him, and the ground hides it the way it hides
+                // him - and it is the half worth holding up against the text before a billboard pass is built for it.
+                // It goes in this layer rather than a second one: every BlockAndItemGeoLayer shares one data ticket, so
+                // two of them on one render state would each read the other's list and draw it in the wrong place.
+                if (TolkienMobsConfig.questBadge && QuestMarkRenderer.asksForReturn(animatable)) {
+                    entries.add(RenderData.item(HEAD, ItemDisplayContext.FIXED, RenderUtil.createRenderStateForItem(
+                            new ItemStack(TolkienItems.ITEM_SCROLL.get()), this.itemModelResolver,
+                            ItemDisplayContext.FIXED, animatable)));
+                }
+                return entries;
             }
 
             @Override
@@ -345,7 +368,12 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
                                                  TolkienGeoRenderState renderState,
                                                  SubmitNodeCollector renderTasks, int packedLight) {
                 poseStack.pushPose();
-                poseStack.translate(0.45D, -0.4D, 0.0D);
+                if (HEAD.equals(bone.name())) {
+                    poseStack.translate(0.0D, BADGE_LIFT, 0.0D);
+                    poseStack.scale(BADGE_SCALE, BADGE_SCALE, BADGE_SCALE);
+                } else {
+                    poseStack.translate(0.45D, -0.4D, 0.0D);
+                }
                 super.submitItemStackRender(poseStack, bone, stackState, displayContext, renderState, renderTasks,
                         packedLight);
                 poseStack.popPose();

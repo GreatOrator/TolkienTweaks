@@ -52,13 +52,10 @@ public final class QuestMarkRenderer {
     public static void onNameTag(RenderNameTagEvent.CanRender event) {
         Entity entity = event.getEntity();
         Alliance herald = heraldAlliance(entity);
-        QuestLedger.Mark mark = QuestLedger.clientMark(entity.getUUID());
-        if (mark == null) {
-            // The quest sync is where a mark comes from, and a mark can be missing from it - a page taken
-            // before the sync carried the giver's id, or a copy written into the book by a command. What
-            // the player is holding is the same answer and is always here, so the book is read as well.
-            mark = markFromBook(entity, herald);
-        }
+        // The quest sync is where a mark comes from, and a mark can be missing from it - a page taken
+        // before the sync carried the giver's id, or a copy written into the book by a command. What
+        // the player is holding is the same answer and is always here, so the book is read as well.
+        QuestLedger.Mark mark = markAt(entity, herald);
         // A hall herald hands his page over to whoever asks for it, so what his plate says is what he
         // has, not what the player has earned: a mark held back until a rank is reached told a player
         // standing in front of a body holding work that there was nothing there, and the page handed over
@@ -86,6 +83,23 @@ public final class QuestMarkRenderer {
         // A giver's plate is normally shown because its name is visible; the mark is worth showing even
         // where the name would be hidden, since the whole point is to be noticed.
         event.setCanRender(TriState.TRUE);
+    }
+
+    /**
+     * Whether this body is waiting for a page back - the one state the badge over a giver's head is for.
+     * <p>
+     * Asked through the same call the plate asks, so the badge and the mark cannot disagree about it.
+     */
+    public static boolean asksForReturn(Entity entity) {
+        QuestLedger.Mark mark = markAt(entity, heraldAlliance(entity));
+        return mark != null && mark.state() == QuestLedger.Mark.State.TURN_IN;
+    }
+
+    /** The mark a body wears for this player: the sync's answer, or the player's own book when the sync has none. */
+    @Nullable
+    private static QuestLedger.Mark markAt(Entity entity, @Nullable Alliance herald) {
+        QuestLedger.Mark mark = QuestLedger.clientMark(entity.getUUID());
+        return mark != null ? mark : markFromBook(entity, herald);
     }
 
     /**

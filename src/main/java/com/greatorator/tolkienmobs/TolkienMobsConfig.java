@@ -56,6 +56,7 @@ public class TolkienMobsConfig {
     /* Client: the settings a listener keeps for themselves. */
     private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_VOLUME;
     private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_PITCH;
+    private static final ModConfigSpec.BooleanValue QUEST_BADGE;
 
     /* Server: the backpack's magnet, the camo spawner's defaults and the two crafting times. */
     private static final ModConfigSpec.IntValue MAGNET_IRON_RANGE;
@@ -561,6 +562,12 @@ public class TolkienMobsConfig {
         FELLBEAST_DIVE_WIND_PITCH = BUILDER
                 .comment("Pitch of the wind over a diving FellBeast. The loop is recorded at the depth the dive is meant to play at, so 1.0 is the wind as intended; below it the wind is deeper and slower, above it sharper and quicker (Default 1.0)")
                 .defineInRange("fellbeastDiveWindPitch", 1.0, 0.5, 2.0);
+        QUEST_BADGE = BUILDER
+                .comment("Draws a scroll over the head of a giver who is waiting for a page back, on top of the text mark,",
+                        "so the two can be compared. It hangs on the giver's own head bone, so it turns and ducks with him",
+                        "rather than facing the player, and the ground and the trees hide it the way they hide him. With",
+                        "this off the plate's question mark is the only mark, which is what the mod ships (Default false)")
+                .define("questBadge", false);
         BUILDER.pop();
 
         SPEC = BUILDER.build();
@@ -573,6 +580,7 @@ public class TolkienMobsConfig {
     public static boolean disableAllBlocks;
     public static boolean disableAllItems;
     public static boolean raiseShireOnStart;
+    public static boolean questBadge;
 
     public static int distanceCost;
     public static int dimensionCost;
@@ -927,6 +935,7 @@ public class TolkienMobsConfig {
         autoUse = AUTO_USE.get();
         disableHobbitGrowth = HOBBIT_GROWTH.get();
         raiseShireOnStart = RAISE_SHIRE_ON_START.get();
+        questBadge = QUEST_BADGE.get();
         pickupRange = PICKUP_RANGE.get();
         growthRange = GROWTH_RANGE.get();
         growthTimer = GROW_TIMER.get();
