@@ -523,10 +523,10 @@ public final class ArdaMap {
      * entry in {@link #CHANNELS} with its own pin, its own water lift and its own grade, and nothing in this rule has
      * to be copied to say so.
      */
-    private record Channel(String place, int water, int grade, int reach, int[] alongX, int[] alongZ,
+    private record Channel(int water, int grade, int reach, int[] alongX, int[] alongZ,
                            double[] legs, double[] starts) {
         /** A channel with its legs measured: how long each is, and where each begins along the course. */
-        static Channel of(String place, int water, int grade, int reach, int[] alongX, int[] alongZ) {
+        static Channel of(int water, int grade, int reach, int[] alongX, int[] alongZ) {
             double[] legs = new double[alongX.length - 1];
             double[] starts = new double[alongX.length - 1];
             double total = 0.0D;
@@ -535,7 +535,7 @@ public final class ArdaMap {
                 legs[leg] = Math.hypot(alongX[leg + 1] - alongX[leg], alongZ[leg + 1] - alongZ[leg]);
                 total += legs[leg];
             }
-            return new Channel(place, water, grade, reach, alongX, alongZ, legs, starts);
+            return new Channel(water, grade, reach, alongX, alongZ, legs, starts);
         }
 
         /**
@@ -570,8 +570,8 @@ public final class ArdaMap {
 
     /** The channels this world carries out of a build: one entry per placed build that has one. */
     private static final Channel[] CHANNELS = {
-            Channel.of("hobbiton", HOBBITON_Y + HOBBITON_WATER_LIFT, HOBBITON_GRADE, HOBBITON_REACH,
-                    HOBBITON_XS, HOBBITON_ZS)
+            Channel.of(HOBBITON_Y + HOBBITON_WATER_LIFT, HOBBITON_GRADE, HOBBITON_REACH, HOBBITON_XS,
+                    HOBBITON_ZS)
     };
 
     /** The lowest level a placed build's channel stands at over a column, or {@link Integer#MAX_VALUE} off them. */

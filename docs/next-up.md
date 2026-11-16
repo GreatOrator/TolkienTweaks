@@ -204,7 +204,8 @@ newly generated chunks' sections and light in one go - the same 43 s that used t
 off a player's first start is the gate - the village is raised only while somebody is within `REACH` 192 of it, so the
 chunks are in a view, ticking, and being finished as the player arrives - plus `/hobbiton raise` for an admin who wants
 it up in an empty world and does not mind the wait. **Not seen in a client session**: the player-present numbers are a
-bound, not a measurement.
+bound, not a measurement. The pass keeps none of those clocks now: the numbers were taken with temporary
+counters, and what is left is one line when the village starts and one when it stands.
 
 **Where the roads go next, and it is not built.** The Shire to Bree, Bree to Rivendell, and Glóin's camp to Gundabad -
 three routes for what `Roads.ROUTES` has two of, and the village is now a town a road can end at. Nothing of it is laid;

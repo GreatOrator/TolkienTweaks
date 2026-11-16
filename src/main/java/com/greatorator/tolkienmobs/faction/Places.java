@@ -249,7 +249,7 @@ public final class Places extends SavedData {
     /** What {@link #instance} answers with when there is no server to hold a file. */
     private static final Places NO_SERVER = new Places(false);
 
-    public static final Codec<Places> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    private static final Codec<Places> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Place.CODEC.listOf().optionalFieldOf("places", List.of()).forGetter(Places::placeList),
             Seen.CODEC.listOf().optionalFieldOf("seen", List.of()).forGetter(Places::seenList)
     ).apply(instance, Places::from));
@@ -475,12 +475,6 @@ public final class Places extends SavedData {
         if (here == null) return;
         if (!markSeen(player, here.id())) return;
         announce(player, here);
-    }
-
-    /** Whether a player has already been shown a place. */
-    public static boolean seen(ServerPlayer player, String id) {
-        instance(player.level());
-        return SEEN.getOrDefault(player.getUUID(), Set.of()).contains(id);
     }
 
     /**

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The village's pass is the size of what it does and no more.** Measuring the rise left its instruments behind -
+          a nanosecond counter per stage, a progress line every ten seconds and a two-line report at the end: fields and
+          helpers that stood the village no better than the one line saying where it stands. They are gone, with the
+          duplicate javadoc on `watched` that still claimed an empty world raises the village, the per-piece ground check
+          the readiness sweep already makes for every chunk, `Places.seen` (nothing asked), `Places.CODEC`'s public door
+          and `ArdaMap.Channel`'s `place` label, which no reader used. `/hobbiton raise`, `/tmriver at|along`, the towns
+          and the boards are untouched.
 - **What raising the Shire costs is now a number, and a player's first start does not pay it in one tick.** The pass
           was measured on a dedicated server against a fresh level: 1326 chunks of ground, 143 pieces laid in 9.8 s, 1290
           bands of 200 columns - 257,868 columns and 1.99 million blocks - cleared in 9.5 s, 701 dress steps in 3.3 s, the
