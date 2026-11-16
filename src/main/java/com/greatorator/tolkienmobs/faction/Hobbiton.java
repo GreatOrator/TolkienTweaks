@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -111,14 +112,30 @@ public final class Hobbiton {
     /** How far a probe column's top may move and still be the village: growth, mostly, not a village taken away. */
     private static final int PROBE_SLACK = 6;
     /**
+     * The village's own folk, by name, which is also the name of the face each of them wears.
+     * <p>
+     * The names are the old pack's: its clone database holds twenty-two hobbits, and thirteen of the fifteen skins under
+     * {@code customskins/hobbits} are modern 64x64 art that sits on this model - the two legacy 64x32 ones are left out
+     * rather than drawn wrong. A name is where a face is found, by the rule the tall folk are already drawn by:
+     * {@code HobbitRender} asks for {@code middle-earth/<slug>.png}, and those thirteen files sit in the mod beside
+     * Frodo's and Bilbo's. {@code Hal Cotton} is the one name of ours - the pack's seventh male body has a skin and no
+     * name on it - and a name with no drawn face falls back to the clothes of its folk, which is the ordinary state of
+     * a pack whose art arrives by degrees.
+     */
+    private static final String[] FOLK = {
+            "Amanda Brockhouse", "Melissa Headstrong", "Belba Butcher", "Gomatrudis Proudmead",
+            "Regnetrudis Fallohide", "Ingunde Silentfoot", "Gararic Rumblebelly", "Marcus Hairyfoot",
+            "Isembard Underlake", "Godomar Barrowes", "Nick Greenhill", "Leufroy Swiftfoot", "Hal Cotton"
+    };
+    /**
      * How many of the Shire's own folk a village keeps, and how many columns it looks along to find them a place.
      * <p>
-     * A handful, not a town: the village is a hundred and fifty pieces of a hill and eight bodies on its deck read as
-     * inhabited from the gate. They are stood by the pass rather than left to the spawner, because the chunks under the
-     * village are the Shire's and the game fills them as it generates them - which is exactly the ground being taken
-     * away.
+     * One for each face the pack has: a village of the Shire reads as inhabited from the gate at this many, and every
+     * one of them is somebody by name. They are stood by the pass rather than left to the spawner, because the chunks
+     * under the village are the Shire's and the game fills them as it generates them - which is exactly the ground
+     * being taken away.
      */
-    private static final int VILLAGERS = 8, VILLAGER_TRIES = 600;
+    private static final int VILLAGERS = FOLK.length, VILLAGER_TRIES = 600;
     /** What the note's probe answers: the ground is there, it is gone, or the level holds no chunk to ask. */
     private static final int PRESENT = 1, GONE = 0, UNASKED = -1;
     /** How near a player has to be for the level to hold the village's chunks, in blocks: the reach, plus half of it. */
@@ -566,11 +583,20 @@ public final class Hobbiton {
      */
     private static void inhabit(ServerLevel level, Standing work) {
         CutCommands.Box box = work.box;
-        int there = level.getEntitiesOfClass(HobbitEntity.class, new AABB(box.lowX(), box.lowY(), box.lowZ(),
-                box.highX() + 1, box.highY() + 1, box.highZ() + 1)).size();
+        List<HobbitEntity> living = level.getEntitiesOfClass(HobbitEntity.class, new AABB(box.lowX(), box.lowY(),
+                box.lowZ(), box.highX() + 1, box.highY() + 1, box.highZ() + 1));
+        int there = living.size();
+        // A village's names are its own: somebody already called Belba is not stood again as somebody else, and a
+        // village raised a second time keeps the people it has.
+        List<String> taken = new ArrayList<>();
+        for (HobbitEntity villager : living) {
+            Component named = villager.getCustomName();
+            if (named != null) taken.add(named.getString());
+        }
         int deck = work.planted.getY() + work.deck + 1;
         RandomSource random = RandomSource.create(work.planted.asLong());
         int stood = 0;
+        List<String> called = new ArrayList<>();
         for (int tries = 0; there + stood < VILLAGERS && tries < VILLAGER_TRIES; tries++) {
             int x = random.nextInt(box.lowX(), box.highX() + 1);
             int z = random.nextInt(box.lowZ(), box.highZ() + 1);
@@ -580,15 +606,28 @@ public final class Hobbiton {
             if (!level.getBlockState(spot).getCollisionShape(level, spot).isEmpty()) continue;
             if (!level.getBlockState(spot.above()).getCollisionShape(level, spot.above()).isEmpty()) continue;
             if (level.getBlockState(spot.below()).getCollisionShape(level, spot.below()).isEmpty()) continue;
+            String name = null;
+            for (String candidate : FOLK) {
+                if (!taken.contains(candidate)) {
+                    name = candidate;
+                    break;
+                }
+            }
+            if (name == null) break;
             Entity body = TolkienEntities.ENTITY_TTM_HOBBIT.get().create(level, EntitySpawnReason.EVENT);
             if (!(body instanceof Mob hobbit)) continue;
+            taken.add(name);
+            hobbit.setCustomName(Component.literal(name));
+            hobbit.setCustomNameVisible(true);
             hobbit.snapTo(x + 0.5D, top, z + 0.5D, random.nextFloat() * 360.0F, 0.0F);
             hobbit.setPersistenceRequired();
             if (!level.addFreshEntity(hobbit)) continue;
             stood++;
+            called.add(name);
         }
-        LOGGER.info("The Shire: {} of the Shire's folk are standing in the village at {}, {} were there already",
-                stood, work.planted.toShortString(), there);
+        LOGGER.info("The Shire: {} of the Shire's folk are standing in the village at {}, {} were there already{}",
+                stood, work.planted.toShortString(), there,
+                called.isEmpty() ? "" : " - " + String.join(", ", called));
     }
 
     /** Writes the note that says what the village stands on, so the next start knows whether it still holds it. */

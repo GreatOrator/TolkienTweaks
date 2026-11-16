@@ -197,6 +197,18 @@ over. They are persistent, so a player who comes back finds the same village, an
 topped up rather than doubled. The line that says so is part of the measurement: `8 of the Shire's folk are standing in
 the village at -700, 87, -512, 0 were there already`.
 
+**The village's folk are somebody, 16 November.** The old pack's clone database holds twenty-two hobbits and fifteen
+skins under `customskins/hobbits`; thirteen of those are modern 64x64 art that sits on this model (the two legacy 64x32
+ones are left out rather than drawn wrong), so the village now keeps thirteen, one per face. Each is stood with a name
+taken from the pack - Belba Butcher, Gararic Rumblebelly, Gomatrudis Proudmead, Ingunde Silentfoot, Isembard Underlake,
+Leufroy Swiftfoot, Marcus Hairyfoot, Nick Greenhill, Godomar Barrowes, Amanda Brockhouse, Melissa Headstrong,
+Regnetrudis Fallohide, and Hal Cotton, the one name that is ours because the pack's seventh male body has a skin and no
+name on it. The name is what finds the face: `HobbitRender` already asks for `middle-earth/<slug>.png` for any named
+hobbit, the same rule the tall folk are drawn by, so the thirteen files were copied in beside Frodo's and Bilbo's and no
+renderer changed. A name already in the village is not stood twice, so a village raised again over itself keeps its
+people. The line now says who: `13 of the Shire's folk are standing in the village at -700, 87, -512, 0 were there
+already - Amanda Brockhouse, ...`.
+
 The water out of the village is no longer a rule named after the Shire. `ArdaMap.Channel` is a drawn channel whose level
 is a *build's*: the level it leaves at, the grade it falls at, the reach of its corridor and the course the mask drew,
 one entry per place, with the village's level read as its pin plus the nine its water stands over it. A second build
@@ -249,6 +261,35 @@ that had no ground until this week is a route planned against a map that did not
 branch's valley and its mouth at the wall, the fork, and the merged channel's run to the bay are all unbuilt territory.
 A world made before 16 November holds the old course and cannot show any of it. The bar's fix is the one piece that can
 be seen in the existing world, by running the drape again.
+
+## The portal between the worlds - asked 16 November, not started
+
+The ask, in the owner's words: **a portal made in the overworld puts the traveller in Hobbiton, and the way back puts
+them at the overworld's spawn point.** Not the same coordinates on both sides, which is what the portal does now.
+
+It is one method, because `ArdaPortalBlock.getPortalDestination` already decides both ends. Today it takes the
+traveller's own x and z as the crossing in the other world, then finds a doorway within 16 blocks of it or builds and
+lights one (`findPortal`, `buildExit`). The change is to stop passing the traveller's own position as the crossing:
+
+- **overworld to Arda:** the crossing is Hobbiton's own - near the pin (`ArdaMap.hobbitonPlan()`) and on ground the
+  raise has settled, with the existing find-or-build standing a doorway there when no portal is already in sight.
+- **Arda to the overworld:** the crossing is the overworld's spawn, `ServerLevel.getSharedSpawnPos()` on the overworld
+  level and clamped to the border as now, again find-or-build.
+
+What has to be decided when it is built, and why it is not a one-liner despite being one method:
+
+- **Which point in Hobbiton.** The pin is the cut's corner (-700, 87, -512) of a 551x468 footprint, which is not
+  somewhere a player should step out. A fixed spot on the village's deck, in sight of the gate, is the real answer - a
+  constant the village's own dress can keep, not the pin itself.
+- **Whether the doorway is found or built.** Building at a fixed point is what "drop players in Hobbiton" means: every
+  traveller comes out of the same doorway. The return trip likewise lands on one doorway near spawn rather than
+  wherever the traveller happened to leave.
+- **What the crossing does before the village has been raised.** The overworld side can be lit at any time; the arrival
+  is then the corner of a village that is not there yet. Either the portal waits for the village (a message and no
+  travel) or it lets them through and the raise follows them in - the second is more in the spirit of the thing, and it
+  needs the arrival to be a place that exists before the raise.
+- **What the doorway is built of.** `buildExit` lays ammolite today; an arrival inside the Shire could as well be the
+  village's own material, or a doorway cut into the build itself so nobody builds one.
 
 ## Roads - final, nothing outstanding
 

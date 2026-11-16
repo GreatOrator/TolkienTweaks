@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The village's folk are somebody: thirteen hobbits, each with a name and a face of their own.** The old pack's clone
+          database holds twenty-two hobbits and fifteen skins under `customskins/hobbits`, thirteen of them modern 64x64
+          art that sits on this model; the two legacy 64x32 ones are left out rather than drawn wrong. The village now
+          keeps thirteen - one per face - stood by `Hobbiton.inhabit` with a name from the pack (Belba Butcher, Gararic
+          Rumblebelly, Gomatrudis Proudmead, Ingunde Silentfoot, Isembard Underlake, Leufroy Swiftfoot, Marcus Hairyfoot,
+          Nick Greenhill, Godomar Barrowes, Amanda Brockhouse, Melissa Headstrong, Regnetrudis Fallohide, and Hal Cotton,
+          the one name that is ours because the pack's seventh male body has a skin and none), and the name is what finds
+          the face: `HobbitRender` already looks for `middle-earth/<slug>.png` for a named hobbit, so the thirteen files
+          were copied in beside Frodo's and Bilbo's and no renderer changed. A name already in the village is not stood
+          twice, so a village raised again over itself keeps its people, and the log line now says who stands where.
 - **The village stops killing the hobbits the Shire spawns in it, and stands eight of its own once it is dressed.**
           The chunks under the village are the Shire's own, so the game populated them as it generated them - on ground the
           pass then cleared and laid again - and the first measured raise logged **eighteen** `Hobbit hit the ground too
