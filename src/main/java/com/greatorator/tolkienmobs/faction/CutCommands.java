@@ -587,36 +587,31 @@ public final class CutCommands {
     }
 
     /**
-     * What this cut is, in one word: its pieces and their contents, hashed.
+     * What this cut is, in one word: how many pieces its table lists, and a hash of the table.
      * <p>
-     * The note beside a standing village records this so a world can tell a cut that has changed since from one that
-     * has not - a re-cut, a piece added, a block moved, or a table that differs only in its `deck` line all answer
-     * differently, and a world holding an older village then raises it again over what is there. Reading the fourteen
-     * megabytes of a village costs a moment once per start, which is the price of the answer being the cut's and not a
-     * version number somebody has to remember to type.
+     * The note beside a standing village records this, so a world can tell a cut that has changed since from one that
+     * has not. The table is the whole catalogue of a build - every piece, where it stands, how big it is, and the `deck`
+     * line the drape reads - so a re-cut, a piece added or taken away, a piece moved sideways or another floor all answer
+     * differently, and a world holding the older village then raises it again over what is there. The answer costs a
+     * read of a few hundred bytes at a start, not the fourteen megabytes of the pieces themselves: a block changed inside
+     * a piece whose place in the table did not change is what the note's `DRESS_VERSION` cannot see either, and a cut is
+     * expected to be re-shipped when its blocks move.
      *
-     * @return the piece count and the hash of every piece, or what was wrong with reading them
+     * @return the piece count and a CRC of the table, or what was wrong with reading it
      */
     static String fingerprint(ServerLevel level, String cut) {
         java.util.zip.CRC32 crc = new java.util.zip.CRC32();
+        int pieces = 0;
         try (InputStream table = open(level, cut, cut + TABLE)) {
             if (table == null) return "none";
-            byte[] buffer = new byte[8192];
-            List<String> pieces = new ArrayList<>();
             for (String line : new BufferedReader(new InputStreamReader(table, StandardCharsets.UTF_8))
                     .lines().toList()) {
-                String[] fields = line.trim().split("\\s+");
-                if (fields.length >= 4 && !line.isBlank()) pieces.add(fields[0]);
-                crc.update(line.trim().getBytes(StandardCharsets.UTF_8));
+                String trimmed = line.trim();
+                if (trimmed.isEmpty()) continue;
+                if (trimmed.split("\\s+").length >= 4) pieces++;
+                crc.update(trimmed.getBytes(StandardCharsets.UTF_8));
             }
-            for (String piece : pieces) {
-                try (InputStream in = open(level, cut, piece)) {
-                    if (in == null) return "missing";
-                    int read;
-                    while ((read = in.read(buffer)) > 0) crc.update(buffer, 0, read);
-                }
-            }
-            return pieces.size() + "-" + Long.toHexString(crc.getValue());
+            return pieces + "-" + Long.toHexString(crc.getValue());
         } catch (IOException unreadable) {
             return "unreadable";
         }

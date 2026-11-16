@@ -14,6 +14,19 @@ All notable changes to this project will be documented in this file.
           stand on, so roofs, tree crowns and the hillside outside the walls are passed over - persistent, so coming back
           finds the same village, and topped up rather than doubled when a village is raised again over itself. Arriving
           at the Shire is arriving somewhere inhabited.
+- **The note beside a standing village says what stood it, and checks the ground is still there.** `_stands.txt` was a
+          dimension and a corner, which only says "done": a re-cut, a fix to the drape or a world trimmed under it all read
+          as a village that is fine. It now carries the cut's fingerprint - the piece count and a CRC of the cut's table,
+          `143-fe676c68`, which lists every piece, its corner, its size and the `deck` line, so a re-cut, a moved piece or
+          another floor all read differently, and a block changed inside a piece is what a re-ship covers - a
+          `DRESS_VERSION` for the drape's own rules, which a hand bumps when the ring's settling changes, and seven probes
+          of the ground: the top of a column and the block it stands on, at the corners of the footprint, its middle and
+          two more. A start that finds a different fingerprint or version raises the village again, and so does one that
+          finds most of the probes moved - the height moved more than six blocks, or the block is not the one written -
+          so a trimmed or replaced world re-raises instead of staying half-missing, while one grown tree or one trampled
+          grass block does not. The probes read only chunks the level already holds, never asking for one, because a start
+          that generated a chunk to measure it would be the very stall the pass exists to avoid.
+
 - **The village raises itself with nobody online, counts its own ticks, and a world holding a stale one raises it again.**
           The ground stage that asks for its chunks a chunk at a time had never been measured, and could not be: the pass
           waits for a player within 192 blocks, and a `runServer` console does not reach the world. So there is now a
@@ -24,11 +37,10 @@ All notable changes to this project will be documented in this file.
           it - to stand the village on a fresh level with nobody in the world - 1326 chunks of ground, 143 pieces, 1290 bands, 701 dress steps against a 5 ms
           budget, and no tick anywhere near the watchdog. That is the first measurement of the ground asked for and taken
           in the same tick, and it says the shape holds. The note beside the cut (`_stands.txt`) now says what stood the
-          village and not only where: the cut's fingerprint - its piece count and a CRC over the table and every piece, so
-          a re-cut, an added piece or a moved block all read differently - plus a `DRESS_VERSION` for the drape's own
-          rules, so a ring fixed in code reaches a world that already holds the village rather than only worlds made after
-          the fix. It also records the ground's top at five columns across the footprint, and a start that finds most of
-          them moved raises the village over what is there, which is the case of chunks trimmed or a world replaced under a
+          village and not only where: the cut's fingerprint - its piece count and a CRC of its table, so a re-cut, an added or
+          moved piece or another floor all read differently - plus a `DRESS_VERSION` for the drape's own rules, so a ring fixed in code reaches a world that already holds the village rather than only worlds made after
+          the fix. It also records the ground at seven columns across the footprint, its top and the block it stands on, and a start
+          that finds most of them moved raises the village over what is there, which is the case of chunks trimmed or a world replaced under a
           note that would otherwise keep half a village. The probe never asks the level for a chunk - it reads only the
           chunks the level holds, and leaves the question to the first tick a player is near enough to make it free - so
           the start stays free of chunk generation, which is the one rule this pass has.

@@ -170,14 +170,18 @@ to ship one. `Hobbiton.autospawn` raises it on the first start of a world, from 
 few pieces a tick, because seven hundred blocks of ring in one call is a stall at the exact moment a player is waiting.
 The dressing is the city's own `Dressing` job, stepped by the village - a second drape rule for a second build is how a
 country ends up with two ideas about where a wall stops. A note beside the cut (`_stands.txt`) is what says the village
-is up, and it says *what* stood it as well as where: the cut's own fingerprint (its piece count and a CRC over the table
-and every piece, `143-b42b3635` as shipped), a `DRESS_VERSION` a hand bumps when the drape's rules move, and the ground's
-top at five columns across the footprint. A start that finds the print or the version changed raises the village again,
+is up, and it says *what* stood it as well as where: the cut's own fingerprint (its piece count and a CRC of its table,
+`143-fe676c68` as shipped - the table lists every piece, its corner and its size and the `deck` line, so a re-cut, a moved
+piece or another floor all read differently, and the whole answer costs a few hundred bytes at a start rather than the
+fourteen megabytes of the pieces), a `DRESS_VERSION` a hand bumps when the drape's rules move, and seven probes of the
+ground: the top of a column and the block it stands on. A start that finds the print or the version changed raises the village again,
 so a re-cut and a ring fixed in code now reach a world that already holds a village instead of only worlds made after
-them; a start that finds most of the probe columns moved raises it too, which is what catches chunks trimmed or a world
-replaced under the note. The probe reads only chunks the level already holds - asking the level for one would generate
-it on the start-up thread, the thing this whole pass exists to avoid - so a start that holds none leaves the question to
-the first tick somebody is near enough to make it free. The three commands still work and are still the way to re-cut
+them; a start that finds most of the probes moved raises it too, which is what catches chunks trimmed or a world replaced under
+the note; a column counts as moved when its top has moved more than six blocks or the block it stands on is not the block
+the note wrote, and most of the seven have to have moved, so one grown tree or one trampled grass block does not cost a
+village. The probes read only chunks the level already holds - asking the level for one would generate it on the
+start-up thread, the thing this whole pass exists to avoid - so a start that holds none leaves the question to the first
+tick somebody is near enough to make it free. The three commands still work and are still the way to re-cut
 one.
 
 **The village's own folk, and the hill they stand on, 16 November.** The chunks under the village are the Shire's, so the
