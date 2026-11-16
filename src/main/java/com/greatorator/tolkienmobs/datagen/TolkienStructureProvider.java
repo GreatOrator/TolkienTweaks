@@ -67,15 +67,11 @@ public final class TolkienStructureProvider {
     // Add one definition per structure. Optional branches contain only side NBTs. Distances are chunks; heightOffset is blocks.
     // The structure, pool, set and biome tag names are derived from the structure key.
     public static final List<Definition> STRUCTURES = List.of(
-            // One hall for each alliance, standing in that alliance's own country. The three templates
-            // are cut from the one build: the acacia trim becomes the alliance's own stair, and the
-            // warden behind the counter is that alliance's folk.
-            new Definition(TolkienStructures.FACTION_HALL_WEST, "tolkienmobs:faction_hall_west",
-                    WEST_COUNTRIES, 48, 16, 193764850, 0, Optional.empty(), false, Optional.of(Layout.single())),
-            new Definition(TolkienStructures.FACTION_HALL_EAST, "tolkienmobs:faction_hall_east",
-                    EAST_COUNTRIES, 48, 16, 193764851, 0, Optional.empty(), false, Optional.of(Layout.single())),
-            new Definition(TolkienStructures.FACTION_HALL_HARAD, "tolkienmobs:faction_hall_harad",
-                    HARAD_COUNTRIES, 48, 16, 193764852, 0, Optional.empty(), false, Optional.of(Layout.single())),
+            // The three faction halls are no longer generated. There is one per alliance and a dozen towns to
+            // come, so a hall scattered by a spread stood in a field before the town that owns it existed, and a
+            // player met a building with no town around it. A hall is pinned in its own town instead - the pin
+            // is the town's, the template is its alliance's - and /tmpin hall add <town> is how it is given.
+            // The templates are still in the pack: data/tolkienmobs/structure/faction_hall_<alliance>.nbt.
             new Definition(TolkienStructures.HOBBIT_HOUSE, "tolkienmobs:ttmhouse_hobbit",
                     List.of(TolkienBiomes.SHIRE), 32, 8, 193764821, 0),
             // A tent in the wilds a traveller crosses rather than in a country anyone has settled:

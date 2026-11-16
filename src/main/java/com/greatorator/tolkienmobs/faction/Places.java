@@ -91,6 +91,26 @@ public final class Places extends SavedData {
      * Shire's village, and Bree, which the catalogue has carried since the first act and no world has raised yet.
      */
     private static final Set<String> TOWNS = Set.of("hobbiton", "bree", "rivendell");
+
+    /**
+     * The towns a board may point at, in the order the catalogue names them.
+     * <p>
+     * Read from the catalogue rather than from the set, so the list an operator is offered is the order the names were
+     * written in and a town added to the catalogue is offered in its place instead of at the end of a hash.
+     */
+    public static List<String> towns() {
+        List<String> towns = new ArrayList<>(TOWNS.size());
+        for (Name name : CATALOGUE) {
+            if (TOWNS.contains(name.id())) towns.add(name.id());
+        }
+        return towns;
+    }
+
+    /** Whether this id is a town a board may point a traveller at, rather than country or a camp. */
+    public static boolean isTown(String id) {
+        return TOWNS.contains(id);
+    }
+
     /**
      * How much ground a place needs before it is named: a circle has to be stood in, not built on, so
      * it asks the map for far less than a building does and is found far more often.

@@ -24,6 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
+import org.jetbrains.annotations.Nullable;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -134,6 +135,15 @@ public final class PinCommands {
                         .then(Commands.argument("build", StringArgumentType.string())
                                 .suggests(PinCommands::suggestBuilds)
                                 .executes(PinCommands::pinBuild)))
+                .then(Commands.literal("hall")
+                        .then(Commands.literal("add")
+                                .then(Commands.argument("town", StringArgumentType.word())
+                                        .suggests(PinCommands::suggestTowns)
+                                        .executes(PinCommands::pinHall)))
+                        .then(Commands.literal("remove")
+                                .then(Commands.argument("town", StringArgumentType.word())
+                                        .suggests(PinCommands::suggestTowns)
+                                        .executes(PinCommands::unpinHall))))
                 .then(Commands.literal("checklist").executes(PinCommands::checklist))
                 .then(Commands.literal("remove")
                         .then(Commands.argument("name", StringArgumentType.string())
@@ -181,14 +191,8 @@ public final class PinCommands {
      * spot can be kept for every world without opening the file first.
      */
     private static int put(CommandSourceStack source, ServerPlayer player, String key) {
-        if (!TolkienDimensions.ARDA.equals(player.level().dimension())) {
-            source.sendFailure(Component.literal("Ground is pinned in Arda - stand where the build goes first."));
-            return 0;
-        }
-        if (!(player.level() instanceof ServerLevel level)) {
-            source.sendFailure(Component.literal("This level cannot hold a pin."));
-            return 0;
-        }
+        ServerLevel level = pinnable(source, player);
+        if (level == null) return 0;
         BlockPos at = player.blockPosition();
         BlockPos before = Pins.at(level, key);
         Pins.set(level, key, at);
@@ -198,6 +202,76 @@ public final class PinCommands {
         source.sendSuccess(() -> Component.literal("For every world, add to Pins.SOURCE: "
                 + line(key, at)), false);
         return 1;
+    }
+
+    /**
+     * Pins a town's mustering hall where the caller stands.
+     * <p>
+     * The hall is its alliance's own build, so the only thing the caller chooses is the town - and choosing the town
+     * chooses the hall. A town the catalogue gives no country keeps no hall: there would be nobody's hall to stand
+     * there.
+     */
+    private static int pinHall(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        ServerPlayer player = source.getPlayerOrException();
+        String town = StringArgumentType.getString(context, "town").toLowerCase(Locale.ROOT);
+        if (!Places.isTown(town)) {
+            source.sendFailure(Component.literal("\"" + town + "\" is not a town a board points at - the towns are "
+                    + String.join(", ", Places.towns()) + "."));
+            return 0;
+        }
+        String template = TownHalls.template(town);
+        if (template == null) {
+            source.sendFailure(Component.literal("The catalogue gives " + town + " no country, so it has no hall"
+                    + " to be built: a hall is one of the three alliances' own."));
+            return 0;
+        }
+        ServerLevel level = pinnable(source, player);
+        if (level == null) return 0;
+        BlockPos at = player.blockPosition();
+        BlockPos before = Pins.at(level, TownHalls.key(town));
+        Pins.set(level, TownHalls.key(town), at);
+
+        source.sendSuccess(() -> Component.literal((before == null ? "Pinned " : "Moved ") + town + "'s hall to "
+                + at.toShortString() + (before == null ? "" : " (was " + before.toShortString() + ")")
+                + ", built as " + template + "."), false);
+        source.sendSuccess(() -> Component.literal("For every world, add to Pins.SOURCE: "
+                + line(TownHalls.key(town), at)), false);
+        return 1;
+    }
+
+    /** Takes a town's hall out of this world. */
+    private static int unpinHall(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        ServerPlayer player = source.getPlayerOrException();
+        String town = StringArgumentType.getString(context, "town").toLowerCase(Locale.ROOT);
+        if (!Places.isTown(town)) {
+            source.sendFailure(Component.literal("\"" + town + "\" is not a town a board points at - the towns are "
+                    + String.join(", ", Places.towns()) + "."));
+            return 0;
+        }
+        if (!(player.level() instanceof ServerLevel level)) return 0;
+        if (!Pins.remove(level, TownHalls.key(town))) {
+            source.sendFailure(Component.literal("This world has no pin for " + town + "'s hall. A source pin is in"
+                    + " the build, not in the world."));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal("Forgot this world's pin for " + town + "'s hall."), false);
+        return 1;
+    }
+
+    /** The level a pin may be written in, or null with the reason already sent to the caller. */
+    @Nullable
+    private static ServerLevel pinnable(CommandSourceStack source, ServerPlayer player) {
+        if (!TolkienDimensions.ARDA.equals(player.level().dimension())) {
+            source.sendFailure(Component.literal("Ground is pinned in Arda - stand where the build goes first."));
+            return null;
+        }
+        if (!(player.level() instanceof ServerLevel level)) {
+            source.sendFailure(Component.literal("This level cannot hold a pin."));
+            return null;
+        }
+        return level;
     }
 
     /** Takes a pin out of this world, by either kind of name. */
@@ -315,6 +389,15 @@ public final class PinCommands {
                                                                SuggestionsBuilder builder) {
         for (String name : BUILDINGS.keySet()) {
             builder.suggest(name);
+        }
+        return builder.buildFuture();
+    }
+
+    /** The towns a board points at, which are the only things a hall can be pinned for. */
+    private static CompletableFuture<Suggestions> suggestTowns(CommandContext<CommandSourceStack> context,
+                                                               SuggestionsBuilder builder) {
+        for (String town : Places.towns()) {
+            builder.suggest(town);
         }
         return builder.buildFuture();
     }

@@ -373,6 +373,18 @@ ground hides it the way it hides him, which is the trade for not building a bill
 ran, so where the scroll actually sits over a man's head and a hobbit's - and whether 0.65 at 1.15 reads at ten paces - is
 unverified.
 
+**The mustering halls are pinned in their towns, not generated - 16 November.** There is one hall per alliance and a
+dozen towns to come, so a hall scattered by a spread stood in a field before the town that owns it existed. The three
+definitions are gone from `TolkienStructureProvider.STRUCTURES` and with them the generated structure, structure set,
+template pool and `has_structure` tag files (`runData` regenerates the rest cleanly); the templates stay in
+`data/tolkienmobs/structure/faction_hall_<alliance>.nbt`. In their place is a pin per town: `/tmpin hall add <town>` puts
+the hall where the caller stands and prints the `Pins.SOURCE` line, `/tmpin hall remove <town>` forgets it, and the town
+argument is suggested from the catalogue's towns - Hobbiton, Bree, Rivendell - rather than typed freehand. The key is
+`hall:<town>` (`TownHalls.key`) and the template is chosen from the town's alliance, which is the one thing the caller
+does not have to say. **No consumer yet**: nothing raises a hall at its pin, since a hall is part of a town and the towns
+are placed by hand; the pin is what that raising will read. First pin to take: Hobbiton's hall, at the ground in the
+village it belongs to.
+
 ## Settled - do not re-open
 
 - **The Gundabad gate is final.** `GundabadGate.autospawn` stands it at `ArdaMap.gatePlan()` and leaves a standing gate

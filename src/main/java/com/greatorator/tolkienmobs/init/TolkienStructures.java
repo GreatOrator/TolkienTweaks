@@ -23,10 +23,8 @@ public class TolkienStructures {
     public static final ResourceKey<Structure> HOBBIT_HOUSE = key("hobbit_house");
     // A traveller's camp: one tent, no connector, so it stands wherever the wilds allow it.
     public static final ResourceKey<Structure> WILD_TENT = key("wild_tent");
-    // One faction hall for each alliance, in that alliance's own country.
-    public static final ResourceKey<Structure> FACTION_HALL_WEST = key("faction_hall_west");
-    public static final ResourceKey<Structure> FACTION_HALL_EAST = key("faction_hall_east");
-    public static final ResourceKey<Structure> FACTION_HALL_HARAD = key("faction_hall_harad");
+    // The faction halls have no structure key: they are not generated, they are pinned in their town. The templates
+    // are still in the pack - data/tolkienmobs/structure/faction_hall_<alliance>.nbt - and TownHalls names them.
     public static final ResourceKey<Structure> SHIRE_RUIN = key("shire_ruin");
     public static final ResourceKey<Structure> CAVE = key("cave");
     public static final ResourceKey<Structure> MAZE = key("maze");
