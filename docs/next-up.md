@@ -6,7 +6,8 @@ then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-
 
 **Last touched:** 17 November 2026 - the mustering halls are pinned per town and raise themselves, the marks the world
 draws are behind one client switch that ships on, and the Shire's south cliff is dressed by a new bank rule that has not
-run yet. **Signed off in game that day:** Hobbiton's hall (and its pin, now in `Pins.SOURCE`) and every quest mark, icon
+run yet; and the Carrock is cut, named and anchored, waiting on one coordinate and on whether it generates or is
+raised. **Signed off in game that day:** Hobbiton's hall (and its pin, now in `Pins.SOURCE`) and every quest mark, icon
 for icon - neither needs another hand. Read *17 November* below for what was done and what is still open, and *The Shire
 map* for the village itself.
 
@@ -38,6 +39,7 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **south edge re-cut, awaiting a restart**; joins unseen | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
 | 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands and was called perfect; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
+| 11 | **The Carrock** - the shaped rock in the Anduin | cut, named and anchored; **waiting on the owner's coordinate and the generate-or-raise decision** | `Carrock`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
 
 ## 17 November 2026 - the halls, the marks' switch, and the south edge
 
@@ -67,6 +69,16 @@ front of him. An existing config file that says `false` keeps its answer. **Seen
 marks and the icons are perfect - nine of them, the inks and the shapes both - so nothing about the art, the font, the
 sizes or the seat moves from here; the badge's place over a head and the board mark's lift drew no complaint either and
 are kept as they are.
+
+**The Carrock - cut, named and anchored, waiting on its spot.** The rock the owner shaped in the Anduin, boxed by four
+ammolite markers in the `Arda` save's overworld (all at y 36 in the river: x 16694..16735, z 5627..5711), is cut to
+`data/tolkienmobs/structure/carrock/`: three 48-cube pieces and a `carrock.parts` table, **42 x 57 x 85** with
+38,939 blocks in eleven kinds, air, the river's water and the markers all dropped. `Carrock` holds the one name
+(`carrock`), the size and the anchor - **its low north-west corner**, which is the block a placement names and where
+`/tmcut place carrock <corner>` stands the build - so the spot still to be handed over is one coordinate. `/tmcut table
+carrock` and `/tmcut place carrock <corner>` work in any world off the jar already; nothing was copied into a save.
+**Open:** whether it generates as worldgen or is raised at a pin (both would ask for it by the same name, and neither is
+written), and the owner's coordinate, which is that corner's block. Not seen in a world.
 
 **The Shire's south cliff.** The drape never cut outside a deck, and a village at the foot of its own country read that
 rule as an eleven-block cliff along its south edge (`Progress Check 1`, x -430..-438, z -45: village ground 97-98,

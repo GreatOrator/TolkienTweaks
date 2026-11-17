@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Ship the Carrock as a named cut with its anchor corner fixed.** The rock the owner shaped in the Anduin is cut and in
+          the jar at `data/tolkienmobs/structure/carrock/` - three 48-cube pieces and a `carrock.parts` table, 42 x 57 x 85
+          from its own low corner, 38,939 blocks in eleven kinds - so `/tmcut table carrock` and `/tmcut place carrock
+          <corner>` work in any world with nothing copied into a save. The river's water, the air and the four ammolite
+          markers the box was measured with are all left out of the pieces. `Carrock` declares the one name (`carrock`),
+          the size and the anchor: the cut's own low north-west corner, which is the block a placement names, so the spot
+          still to be chosen is one coordinate rather than a box, and the parts table is zero-based so a pin and a
+          `/tmcut` corner mean the same block. How it comes to stand is deliberately left undecided - worldgen and a raise
+          at a pin would both ask for it by that name, and this cut does not change either way; nothing generates or
+          raises it yet.
 - **Keep Hobbiton's hall pin in the table every world reads.** The hall was pinned by hand in the owner's own world,
           where `checklist` and every other world could not see it, so a new world would have had no Shire hall until
           somebody stood in the village again; the pin it was taken at - -529, 101, -74, read back out of that world's
