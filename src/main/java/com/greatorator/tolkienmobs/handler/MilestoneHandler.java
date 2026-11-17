@@ -19,6 +19,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import com.greatorator.tolkienmobs.faction.Carrock;
 import com.greatorator.tolkienmobs.faction.GundabadGate;
 import com.greatorator.tolkienmobs.faction.GundabadCave;
 import com.greatorator.tolkienmobs.faction.GundabadKeep;
@@ -89,6 +90,7 @@ public class MilestoneHandler extends SavedData {
         // stood at its own pin - 8307, 187, -4165, its low north-west corner - on the first start of a world. Nothing
         // there depends on anything else in this pass, so it goes last; a world that already notes the rock is left
         // exactly as it is.
+        Carrock.autospawn(event.getServer());
         // The orc pieces standing at marks somebody walked out - the two ranks of towers and the huts on the plaza - go up
         // in the same pass, after the gate, because the towers stand on its own footprint. A piece that is whole is left
         // exactly as it is, so a world that has them is untouched.
