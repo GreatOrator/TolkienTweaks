@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Bed the Carrock into the river with stone, and only where the water runs straight to the bed.** `Carrock.seat` reads
+          down every column that carries one of the build's own blocks on its base course: courses of water are counted, the
+          first block that is not water ends the read, and that whole water column is filled with stone only when the block
+          it ends on is ground and at least one course of water was passed. A column already standing on stone needs no
+          bed, and one hanging over a cave or over open air is not the river's to fill, so both are left exactly as they
+          are - nothing is bedded to a guess. The stone is plain rather than the build's own rock, because what it stands
+          for is the river's bed and not a piece of the Carrock, and it is written without neighbour updates so the river
+          is not asked for one. The read stops sixty-four courses under the base, so a column over something that is not a
+          river is never filled to the world's floor. It runs with the autospawn and on every start after it, since it
+          writes only where water stands under the rock: a world that has held the Carrock since before there was a bed
+          gets one the next time it comes up.
 - **The Carrock stands itself on the first start of a world.** `Carrock.autospawn` runs in `MilestoneHandler` after the
           gate, the keep and the cave: it takes the pin under `Carrock.NAME` - 8307, 187, -4165, the cut's low north-west
           corner - lays the three pieces of the cut shipped in the jar, and writes a note beside the cut in the save's own

@@ -39,7 +39,7 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **south edge re-cut, awaiting a restart**; joins unseen | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
 | 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands and was called perfect; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
-| 11 | **The Carrock** - the shaped rock in the Anduin | cut, base plate trimmed, pinned at 8307, 187, -4165 and **stood by the world on the first start**; not seen standing yet | `Carrock`, `Pins.SOURCE`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
+| 11 | **The Carrock** - the shaped rock in the Anduin | cut, base plate trimmed, pinned at 8307, 187, -4165, **stood by the world on the first start** and bedded into the river with stone; not seen standing yet | `Carrock`, `Pins.SOURCE`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
 
 ## 17 November 2026 - the halls, the marks' switch, and the south edge
 
@@ -82,7 +82,11 @@ The pieces now hold **36,079 blocks in ten kinds**. `Carrock` holds the one name
 `/tmcut place carrock 8307 187 -4165` is given. **It stands itself now:** `Carrock.autospawn` runs in `MilestoneHandler`
 with the gate, the keep and the cave, reads that pin, lays the three pieces from it and writes a note beside the cut in
 the save's folder - dimension, corner and the table's fingerprint - so every later start leaves it alone. A world whose
-note is missing or whose pin has moved is laid again rather than cut about, since the pieces carry no air. **Open:** the
+note is missing or whose pin has moved is laid again rather than cut about, since the pieces carry no air. **And it is
+bedded into the river:** `Carrock.seat` reads down every column that carries one of the build's own blocks on its base
+course, counts the water under it, and fills that water with plain stone only when the read ends on ground - a column
+already standing on stone, or hanging over a cave or open air, is left alone. It runs with the autospawn and on every
+start after it, so a world that has held the rock since before there was a bed gets one next time it comes up. **Open:** the
 rock has not been seen standing from this pass - the first start after this ships is the check, and the pin's
 `_stands.txt` beside `cuts/carrock/` is where that start leaves its word.
 
