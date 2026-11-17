@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import net.minecraft.core.BlockPos;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -156,6 +157,19 @@ public final class Roads {
     public static final String FOREST_RIVER_BRIDGE = "tolkienmobs:roads/forest_river_bridge";
 
     /**
+     * The road out of Gundabad: the hold's way down out of its own gate, and the north's road to everything else.
+     * <p>
+     * The hold stands at 5516, 187, -7112 in Arda at the head of its own valley, and what the road leaves into is
+     * country nobody has walked: the nearest road of any age is the chapter's own at the far end of the old forest
+     * road, three and a half thousand blocks south. So this is a road of two ends and the marks between them, like the
+     * road over the high pass, and both ends are the scout's to pin - {@link #GUNDABAD_GATE} and
+     * {@link #GUNDABAD_JOIN}, null until that walk is made. The name is written here rather than in the list so that
+     * the walk has something to be written against, and so that a save which already carries the name finds the road
+     * again rather than a second one beside it.
+     */
+    public static final String GUNDABAD_ROAD = "tolkienmobs:roads/gundabad_road";
+
+    /**
      * The two cave roads of the troll caves' cluster, and the road that carries them on to the country road.
      * <p>
      * Three caves stand close enough together in the north-west that their roads were walked as one place: the scout
@@ -179,8 +193,45 @@ public final class Roads {
      */
     public static final String WOOD_RUIN_LINK = "tolkienmobs:roads/wood_ruin_link";
 
+    /**
+     * The Gundabad road's two ends, as a scout will pin them: the block at the foot of the hold's own way out, and the
+     * mark where the road meets the road it joins.
+     * <p>
+     * Both are null until that walk is made, and while either is null the route is not in {@link #ROUTES} - it cannot
+     * be, since a route is two ends and two ends invented are a road laid across country nobody surveyed. Putting the
+     * two marks in these two lines is the whole of what the road is waiting for; everything else about it is already
+     * written - its name, its bends slot and how wide it is laid.
+     * <p>
+     * They are declared above {@link #ROUTES} on purpose: the list is built once when this class loads, and a mark
+     * written below it would still be null at that moment, which is a road that never appears and never says why.
+     */
+    private static final BlockPos GUNDABAD_GATE = null;
+    private static final BlockPos GUNDABAD_JOIN = null;
+
+    /**
+     * The hold's road, or null while its two marks are unwalked.
+     * <p>
+     * Its footprint is empty for now, as every road with no build behind it is: the walk begins on the mark it is
+     * given. Once the hold is standing, its cut's own box goes in place of the four noughts, so that the road meets the
+     * gate and grades no more of the hold's ground - the way Gloin's camp's track stops at the camp's wall.
+     */
+    private static Route gundabad() {
+        if (GUNDABAD_GATE == null || GUNDABAD_JOIN == null) return null;
+        return new Route.Riverless(GUNDABAD_ROAD, 0, 0, 0, 0,
+                GUNDABAD_GATE.getX(), GUNDABAD_GATE.getZ(), GUNDABAD_JOIN.getX(), GUNDABAD_JOIN.getZ());
+    }
+
+    /** The roads as they have been walked, with the hold's road on the end once its two marks are pinned. */
+    private static List<Route> withGundabad(List<Route> walked) {
+        Route hold = gundabad();
+        if (hold == null) return walked;
+        List<Route> all = new ArrayList<>(walked);
+        all.add(hold);
+        return List.copyOf(all);
+    }
+
     /** Every build that has a road walked for it. A build missing here gets none. */
-    public static final List<Route> ROUTES = List.of(
+    public static final List<Route> ROUTES = withGundabad(List.of(
             // Rivendell: the path's last block at 5200, 134, -3034, down to the crossing the scout pinned on z -3060
             // between the banks at 5055 and 5003. The river runs 5004 to 5051 on that line and stands at 78 under its
             // west half and 76 under its east, so the deck is 80 - two over the highest water on the span - with the
@@ -275,7 +326,9 @@ public final class Roads {
             // 11736: deck 169, a block over the bank and two over the water at 167.
             new Route.Crossing(FOREST_RIVER_BRIDGE, 0, 0, 0, 0, 11791, -3841, 11775, -3841, 11736, -3841,
                     4, 167, 168, 169, 8, 16, "bridge_end", "bridge_middle")
-    );
+            // The Gundabad road is not written here. It joins the list by itself once GUNDABAD_GATE and GUNDABAD_JOIN
+            // are pinned: see withGundabad above, and the bends slot below for the marks between them.
+    ));
 
     /**
      * The blocks a road is bent through, by route, in the order the road walks them.
@@ -439,7 +492,12 @@ public final class Roads {
                                                new BlockPos(11405, 175, -3619), new BlockPos(11415, 175, -3627), new BlockPos(11433, 174, -3646), new BlockPos(11460, 173, -3671),
                                                new BlockPos(11490, 173, -3687), new BlockPos(11515, 173, -3699), new BlockPos(11556, 173, -3715), new BlockPos(11589, 173, -3741),
                                                new BlockPos(11627, 172, -3791), new BlockPos(11664, 171, -3822), new BlockPos(11705, 169, -3842), new BlockPos(11736, 169, -3841),
-                                               new BlockPos(11775, 168, -3841), new BlockPos(11828, 168, -3841), new BlockPos(11838, 168, -3855)))
+                                               new BlockPos(11775, 168, -3841), new BlockPos(11828, 168, -3841), new BlockPos(11838, 168, -3855))),
+            // The Gundabad road's marks, in the order it walks them: none yet, because the climb out of the vale has
+            // not been walked. Every mark on that walk goes here as a BlockPos, one leg per mark, between the two ends
+            // above - the gate at the top and the join at the bottom - and the walk is split at each one, so the line is
+            // forced through the pin rather than merely nudged toward it.
+            Map.entry(GUNDABAD_ROAD, List.of())
     );
 
     /** The blocks a road is bent through, in the order it walks them, or none when it is walked straight. */
@@ -536,7 +594,13 @@ public final class Roads {
             Map.entry(GLOIN_ROAD_EAST, Kind.WILD_WIDE),
             Map.entry(Sites.GLOIN_CAMP, Kind.WILD_WIDE),
             // The old forest road is laid five wide of the country's own ground, like every other walked line.
-            Map.entry(OLD_FOREST_ROAD, Kind.WILD_WIDE));
+            Map.entry(OLD_FOREST_ROAD, Kind.WILD_WIDE),
+            // The Gundabad road is the scout's own line out of the hold, so it is laid the way every walked line here is
+            // laid: five wide, of the country's own gravel and dirt, so the line can be judged by walking it before it is
+            // given a width of its own. What it is meant to be is a hold's road, which is Kind.MAIN - seven wide of the
+            // same country surface, a road rather than a track - and naming it here is what makes that one edit once the
+            // walk holds up, with nothing else about it to change.
+            Map.entry(GUNDABAD_ROAD, Kind.WILD_WIDE));
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {
@@ -554,7 +618,7 @@ public final class Roads {
     private static final Set<String> ROADS = Set.of(THORENHAD_ROAD, ELLADAN_BRANCH, MOUNTAIN_WAY, FORD_WAY,
             CAVE_WAY_NORTH, CAVE_WAY_EAST, TROLL_CAVE_WAY, WOOD_RUIN_LINK, HIGH_PASS_WAY, HIGH_PASS_CLIMB,
             HIGH_PASS_BRIDGE, GLOIN_ROAD, GLOIN_BRIDGE, GLOIN_ROAD_EAST,
-            OLD_FOREST_ROAD, OLD_FORD_BRIDGE, FOREST_RIVER_BRIDGE);
+            OLD_FOREST_ROAD, OLD_FORD_BRIDGE, FOREST_RIVER_BRIDGE, GUNDABAD_ROAD);
 
     /** Whether a route is a road rather than a build's own way out, and so begins wherever it is first met. */
     public static boolean road(Route route) {

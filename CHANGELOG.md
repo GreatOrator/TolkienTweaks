@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Write the Gundabad road's code side, with its two ends left for the scout's marks.** The hold's road now has a name -
+          `tolkienmobs:roads/gundabad_road` - a route, a slot in the bend map and a kind, so that the walk down out of the
+          valley has something to be written against and the road can be judged on foot the moment it exists. The two ends
+          are `GUNDABAD_GATE` and `GUNDABAD_JOIN`, both null, and the route only joins `Roads.ROUTES` once both are
+          pinned, because a route is two ends and two ends invented are a road laid across country nobody surveyed: with
+          either null, `withGundabad` hands back the list it was given and nothing anywhere sees a new road. They are
+          declared above `ROUTES` and not below it for the reason this file has bitten itself twice already - the list is
+          built once at class load, so a mark written under it would still be null at that moment and the road would never
+          appear and never say why. Its bends slot is in the map with an empty list, one leg per mark as the walk is walked,
+          and its footprint is the four noughts every road with no build behind it carries until the hold's own cut is
+          measured and the box goes in to stop the grading at the gate. The kind is `WILD_WIDE`: five wide, of the
+          country's own gravel and dirt, which is how every walked line here is laid so the line can be judged before it is
+          given a width of its own. What it is meant to be is a hold's road, `Kind.MAIN` - seven wide of the same country
+          surface, a road rather than a track - and naming it in `KINDS` is what makes that a one-line change once the walk
+          holds up.
 - **Ask a finished road's own note where its road is, station by station, instead of trusting one block.** The Old Forest
           Road's note said it was down for all 4,022 of its stations, and the first 559 of them - from Glóin's camp east
           past the Old Ford to the edge of the next region file - held no road at all: no gravel, path, coarse dirt or
