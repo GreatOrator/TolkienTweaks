@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Keep Hobbiton's hall pin in the table every world reads.** The hall was pinned by hand in the owner's own world,
+          where `checklist` and every other world could not see it, so a new world would have had no Shire hall until
+          somebody stood in the village again; the pin it was taken at - -529, 101, -74, read back out of that world's
+          `pins.dat` once the hall had been raised from it and looked at - is in `Pins.SOURCE` now, under
+          `TownHalls.key("hobbiton")` rather than a typed string, so the table and `/tmpin hall` cannot drift apart
+          about what a town's hall is called. The hall is left exactly where it stands: it was called perfect as it was
+          laid, so its seat, its height and its front as the template was cut are all kept.
 - **Cut the bank at a build's edge instead of leaving it as a cliff.** The drape never cut the ground outside a deck,
           because cutting it round a face the build leaves open opens a trench where the country was; over the Shire's
           village that rule reads the other way round. The village sits at the foot of its own country, so the ground

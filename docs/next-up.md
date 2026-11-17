@@ -6,7 +6,9 @@ then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-
 
 **Last touched:** 17 November 2026 - the mustering halls are pinned per town and raise themselves, the marks the world
 draws are behind one client switch that ships on, and the Shire's south cliff is dressed by a new bank rule that has not
-run yet. Read *17 November* below for what was done and what is still open, and *The Shire map* for the village itself.
+run yet. **Signed off in game that day:** Hobbiton's hall (and its pin, now in `Pins.SOURCE`) and every quest mark, icon
+for icon - neither needs another hand. Read *17 November* below for what was done and what is still open, and *The Shire
+map* for the village itself.
 
 The whole Gundabad line is walked and settled; chapter two is proven to page 32 and
 **paused** there; the road east of Glóin's camp is final with both bridges; the keep's placement is **on hold** until a
@@ -35,7 +37,7 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **south edge re-cut, awaiting a restart**; joins unseen | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
-| 10 | **Town halls** - one pinned per town, raised once the town is finished | in; Hobbiton's standing in game, front unturned; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
+| 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands and was called perfect; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
 
 ## 17 November 2026 - the halls, the marks' switch, and the south edge
 
@@ -53,13 +55,18 @@ town, because a town's pass lays, clears and dresses the ground a hall stood ear
 `TownHalls.waits` asks `Hobbiton.complete` (the village's note) and `CityCommands.complete` (the valley's marker at its
 last band). Three hands raise it - the end of the village's own pass, before its folk are stood; the next start in a
 world whose town already stands; and the pin command itself, which says in its reply whether the hall is standing or
-waiting. **Seen in game:** the owner's `Progress Check 1` world has Hobbiton's hall at the pin and he called it good.
-It is laid unturned.
+waiting. **Seen in game:** Hobbiton's hall stood at the pin in the owner's `Progress Check 1` world and he called it
+perfect - the seat, the height and the front as the template was cut are all right, so it stays unturned. The pin it was
+taken at is now the permanent one: **-529, 101, -74**, read back out of that world's `pins.dat` and written into
+`Pins.SOURCE` under `TownHalls.key("hobbiton")`, so every world gets the Shire's hall without it being pinned again.
 
 **The marks the world draws answer to one switch, which now ships on.** `questBadge` gates both the scroll over a
 turn-in giver's head and `BoardMarks`' green mark over the notice boards, and defaults `true` where it defaulted
 `false`; a plate's own mark is never touched by it, so a player who clears the world of marks still reads what is in
-front of him. An existing config file that says `false` keeps its answer.
+front of him. An existing config file that says `false` keeps its answer. **Seen in game:** the owner looked at the
+marks and the icons are perfect - nine of them, the inks and the shapes both - so nothing about the art, the font, the
+sizes or the seat moves from here; the badge's place over a head and the board mark's lift drew no complaint either and
+are kept as they are.
 
 **The Shire's south cliff.** The drape never cut outside a deck, and a village at the foot of its own country read that
 rule as an eleven-block cliff along its south edge (`Progress Check 1`, x -430..-438, z -45: village ground 97-98,
@@ -70,17 +77,9 @@ map* below.
 
 ### Still open from today
 
-- **The hall's front.** Laid unturned - no rotation, so the door faces whatever way the template was cut. If Hobbiton's
-  is wrong, the fix is a rotation on `TownHalls` (a constant, or a fourth thing on the pin). Nothing to change until
-  somebody has walked round it.
-- **Hobbiton's hall in every world.** The pin lives in `Progress Check 1` only: the `Pins.SOURCE` line `/tmpin hall add`
-  printed has not been copied into the table, so a brand-new world has no hall until it is pinned again.
 - **Bree's hall.** `bree` is a town in the catalogue with no build of its own, so `waits` has nothing to wait for and a
   hall pinned there stands straight away - and would be laid over whenever Bree is built. Give Bree a build and a
   completion answer before pinning one there.
-- **The marks, still unreported.** Nine icons, the scroll badge, the red locked mark and the green board marks have all
-  been cut and wired but never shown to the owner; the board mark's lift (2.35) is a guess from the model numbers. The
-  switch now defaults on, so the next login puts all of them on screen at once.
 - **The south edge, unrun.** `BANK_BLOCKS` (3) and `DRESS_VERSION` (2) have not run in any world. On the next start of
   `Progress Check 1` check the cliff at x -430..-438, z -45, and check Rivendell's own faces for a groove that was not
   there before - the rule is meant to leave those alone, and that is the thing it could get wrong.

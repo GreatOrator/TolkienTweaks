@@ -68,6 +68,11 @@ public final class Pins extends SavedData {
             // Hobbiton.autospawn at another corner of its own - the pin is where the name stands, not where the cut
             // starts.
             Map.entry("hobbiton", ArdaMap.hobbitonCentre()),
+            // Hobbiton's mustering hall, on the ground it was raised on and has stood on since: pinned at -529, 101,
+            // -74 by /tmpin hall add in the owner's Progress Check 1 world, and read back out of that world's own pins
+            // once the hall was up and called perfect. The key comes from TownHalls rather than being written here, so
+            // the table and the command cannot disagree about how a town's hall is named.
+            Map.entry(TownHalls.key("hobbiton"), new BlockPos(-529, 101, -74)),
             // The goblin cave page 27 is fought in, settled along the road at the door the scout walked: the
             // mountain rises south of it, so the cut runs into the hill there. The shelter camp beyond the way in
             // is pinned beside it, so the fires have a camp outside them in every world rather than only in the
