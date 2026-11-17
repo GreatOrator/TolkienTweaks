@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Carrock's pin is in the source table now, and the pass says when it cannot stand the rock.** Two rounds of "it did
+          not stand" came to the same shape: the comment was written and the statement under it never was. `Pins.SOURCE`
+          carried the Carrock's explanation - its corner at 8307, 187, -4165 - without the `Map.entry` itself, so
+          `Carrock.autospawn` found no pin and returned in silence, which is exactly what the log showed: the start hook
+          ran (the Shire's milestone line proves the listener was in), and nothing about the Carrock followed. The entry is
+          there now, and the pass no longer fails quietly: a server with no Arda level, and a world with no pin under the
+          name, each log a warning naming what is missing.
 - **Bed the Carrock into the river with stone, and only where the water runs straight to the bed.** `Carrock.seat` reads
           down every column that carries one of the build's own blocks on its base course: courses of water are counted, the
           first block that is not water ends the read, and that whole water column is filled with stone only when the block

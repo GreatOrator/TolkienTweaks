@@ -77,6 +77,7 @@ public final class Pins extends SavedData {
             // block /tmcut place carrock is given so the box lands where the owner already had it. The rock is cut rather
             // than templated, so Carrock.autospawn reads this pin on the first start of a world and lays the cut from it:
             // the pin is the corner the pieces are planted on, and /tmpin is still how it is moved.
+            Map.entry(Carrock.NAME, new BlockPos(8307, 187, -4165)),
             // The goblin cave page 27 is fought in, settled along the road at the door the scout walked: the
             // mountain rises south of it, so the cut runs into the hill there. The shelter camp beyond the way in
             // is pinned beside it, so the fires have a camp outside them in every world rather than only in the

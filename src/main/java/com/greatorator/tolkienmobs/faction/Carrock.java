@@ -98,9 +98,19 @@ public final class Carrock {
      */
     public static int autospawn(MinecraftServer server) {
         ServerLevel level = server.getLevel(TolkienDimensions.ARDA);
-        if (level == null) return 0;
+        if (level == null) {
+            LOGGER.warn("The Carrock: this server has no {} level, so the rock is not stood",
+                    TolkienDimensions.ARDA.identifier());
+            return 0;
+        }
         BlockPos pin = Pins.at(level, NAME);
-        if (pin == null) return 0;
+        if (pin == null) {
+            // A build that quietly does nothing is a build nobody can find: a missing pin is a mistake in this file's
+            // own table or a name that does not match it, and it says which.
+            LOGGER.warn("The Carrock: there is no pin under \"{}\" in this world or in the source table, so the rock is"
+                    + " not stood", NAME);
+            return 0;
+        }
         String fingerprint = CutCommands.fingerprint(level, NAME);
         Note note = note(level);
         int laid = 0;
