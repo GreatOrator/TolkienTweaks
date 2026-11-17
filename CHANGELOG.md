@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Cut the Carrock's picked-up base plate off and pin the rock at 8307, 187, -4165.** Standing in the owner's world the
+          first cut read as rock plus terrain nobody had built: the riverbed and the banks it was boxed through, a plate no
+          more than six blocks deep that spread over the whole box and came out of the water at the south end as three
+          tongues of bare dirt. Every column whose highest block stood at or under that plate's top (y 5) is now cut away -
+          2,860 blocks in 1,189 columns, nothing above them touched and the rock's own foot left whole - so the pieces hold
+          36,079 blocks in ten kinds and the spruce leaning off the west side keeps its fourteen hanging leaf columns. The
+          box, the name and the anchor are unchanged, so the trimmed build still stands on its low north-west corner;
+          `Pins.SOURCE` now carries that corner for this world under `Carrock.NAME`, which is the entry the cut will be
+          raised or generated from, and `/tmcut place carrock 8307 187 -4165` lays the very box the owner pinned until one
+          of those is written.
 - **Ship the Carrock as a named cut with its anchor corner fixed.** The rock the owner shaped in the Anduin is cut and in
           the jar at `data/tolkienmobs/structure/carrock/` - three 48-cube pieces and a `carrock.parts` table, 42 x 57 x 85
           from its own low corner, 38,939 blocks in eleven kinds - so `/tmcut table carrock` and `/tmcut place carrock

@@ -26,7 +26,14 @@ import net.minecraft.core.BlockPos;
  * 16735 across, 5627 and 5711 south. The markers sat on the water's surface, so the cut starts under them at the rock's
  * own base course, and it carries stone, dirt, gravel, sand, clay, grass, a dirt path and the spruce standing on it,
  * with the water of the river and the markers themselves left out: air, water and ammolite are all absent from the
- * pieces, 38,939 blocks in eleven kinds.
+ * pieces.
+ * <p>
+ * <b>And what was taken back off it.</b> That first cut carried the ground the rock stands on with it - the riverbed and
+ * the clipped banks, a plate no more than six blocks deep that spread over the whole box and came out of the water at
+ * the south end as three tongues of bare dirt. Standing at the pin it read as terrain nobody had built, so every column
+ * whose highest block stood at or under the plate's top (y 5) was cut away: 2,860 blocks in 1,189 columns, nothing
+ * above them touched and the rock's own foot left whole. The pieces hold 36,079 blocks in ten kinds, and the only
+ * columns that do not start at the base are fourteen leaf columns of the spruce leaning off the west side.
  */
 public final class Carrock {
     /** The name the build is asked for by: its folder in the jar, and what a pin or a page would call it. */
@@ -37,7 +44,10 @@ public final class Carrock {
     public static final int HEIGHT = 57;
     public static final int DEEP = 85;
 
-    /** The low corner: where a placement's coordinate goes, and where the cut's own corner stood when it was taken. */
+    /**
+     * The low corner: where a placement's coordinate goes, and where the cut's own corner stood when it was taken. The
+     * owner's pin is the same corner in another world - see {@link Pins}, where {@link #NAME} stands at 8307, 187, -4165.
+     */
     public static final BlockPos CORNER = new BlockPos(16694, 34, 5627);
 
     private Carrock() {
