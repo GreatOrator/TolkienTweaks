@@ -69,6 +69,17 @@ settled to the tops of the walls. That is fixed by the cut saying what its own f
 says nothing. The straight band down the south edge's water was seen in game and is not the village's wall: the drape
 works there.
 
+**The south edge's cliff - 17 November, fixed but unseen.** Read out of the owner's `Progress Check 1` world rather than
+seen: at x -430..-438 the last row of the footprint (z -45) has the village's own ground at 97-98 and the drawn country
+at 108-109 on the other side, so the boundary is an eleven-block raw face - the wall photographed from (-504, 101, -46).
+It is the deck rule read the other way round: the drape never cuts outside a deck because cutting round a face the build
+leaves open trenches the country, and a village that sits *below* its own country gets a cliff from the same rule.
+`Dressing.BANK_BLOCKS` (3) now separates the two - a column standing three blocks or more over the build's own floor is
+dressed like every other column, cut to the join at the wall and eased back over the reach, while a groove of a block or
+two round a city's open faces is left alone, and nothing at or below the floor is cut. `Hobbiton.DRESS_VERSION` is 2, so
+the next start re-raises and re-dresses the village; **nothing has seen the new rule run**, and the village's own walls
+(stone-brick faces at y 114 over paving at 100, x -518..-525) are build, not ground, and are untouched by it.
+
 **What has been checked, and what has not.** Every step compiled (`./gradlew compileJava -x createMinecraftArtifacts`)
 and the mask work was measured against the game's own 30% water threshold. None of the last round has been run in a
 world; the tree reading, the two joins and the drape's behaviour on a wooded build are all unseen.

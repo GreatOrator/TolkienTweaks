@@ -72,6 +72,16 @@ public final class Dressing {
     private static final int PIECES_PER_TICK = 4;
     /** How many chunks of ring one tick dresses. */
     private static final int CHUNKS_PER_TICK = 2;
+    /**
+     * How far the country has to stand over a build's own floor before the drape cuts it away, in blocks.
+     * <p>
+     * The drape never cut outside a deck at all, because cutting the ground round a face the build leaves open is a
+     * trench where the country was. Over a village that rule reads the other way round: the Shire's village is at the
+     * foot of its own country, so the ground along its south edge stood eleven blocks over its paving with a raw cliff
+     * between them - not a trench but a wall the town never asked for. Three is the line between the two: a groove of a
+     * block or two round a city's open faces is left alone, and a bank the height of a storey is dressed.
+     */
+    private static final int BANK_BLOCKS = 3;
     /** What has been dressed in this world, beside the cut's folder: dimension, corner, drape, road. */
     private static final String MARKER = "_dressed.txt";
 
@@ -489,13 +499,21 @@ public final class Dressing {
             double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) CityCommands.DRAPE_REACH);
             double ease = share * share * (3.0D - 2.0D * share);
             int cap = (int) Math.round(wall + (top - wall) * ease);
-            // A deck is not a roofline, so the ground outside it is never cut - the trench that opened round
-            // every face the build leaves open is why. A spring is a different column: its pool is the
-            // build's own top there, so the cut stops at the pool's surface and no further. The mountain
-            // standing over the water comes off - one chunk of crown left hanging over a spring while every
-            // other face was dressed - and the water stays where it is.
+            // A deck is not a roofline, so the ground outside it is not cut - the trench that opened round every
+            // face the build leaves open is why. A spring is a different column: its pool is the build's own top
+            // there, so the cut stops at the pool's surface and no further. The mountain standing over the water
+            // comes off - one chunk of crown left hanging over a spring while every other face was dressed - and
+            // the water stays where it is.
+            //
+            // A bank is the third case, and the one the village found. Where the country stands well over the
+            // build's own floor, leaving it alone is not a trench but a cliff: eleven blocks of raw ground along the
+            // Shire's south edge with the village's own paving at its foot. So a column standing BANK_BLOCKS or more
+            // over the floor is cut to the same join every other column is cut to - the build's own ground at the
+            // wall, easing back into the country over the reach - and the shallow grooves round a city's open faces
+            // are left exactly as they were.
             int down = spring ? Math.max(cap, watered[at]) : cap;
-            if (top > down && (!banked || spring)) {
+            boolean bank = banked && !spring && top - (origin.getY() + deck) >= BANK_BLOCKS;
+            if (top > down && (!banked || spring || bank)) {
                 for (int y = surface; y > down; y--) {
                     level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
                 }

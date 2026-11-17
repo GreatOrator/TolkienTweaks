@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Cut the bank at a build's edge instead of leaving it as a cliff.** The drape never cut the ground outside a deck,
+          because cutting it round a face the build leaves open opens a trench where the country was; over the Shire's
+          village that rule reads the other way round. The village sits at the foot of its own country, so the ground
+          along its south edge stood eleven blocks over its paving with a raw face between them - measured in the
+          owner's `Progress Check 1` world at x -430..-438, z -45, where the country stands at 108 and the village's own
+          ground at 98 - which is the wall in his screenshot, taken from (-504, 101, -46). `Dressing.BANK_BLOCKS` (3) is
+          the line between the two cases: a column that stands three blocks or more over the build's own floor is dressed
+          exactly as every other column is, cut to the join at the wall and eased back into the country over the reach,
+          while the shallow grooves round a city's open faces are left as they were, and a column that is already at or
+          below the floor is still never cut. Nothing else about the drape moved: water at an outflow, a spring held up
+          in the build and the fill that underpins a slope are all as they were. `Hobbiton.DRESS_VERSION` is 2, so a
+          world holding the village re-raises and re-dresses it on the next start rather than being left with the cliff.
+          Not looked at: the new rule has not been run in a world.
 - **Stand each town's hall at its pin once the town is finished, rather than waiting for a hand.** The pin said where a
           hall belonged and nothing read it, so a town's hall was still a template and a pair of coordinates; it stands
           itself now (`TownHalls.raise`). Where is the pin, which is the block the builder stood in - the hall's own ground
