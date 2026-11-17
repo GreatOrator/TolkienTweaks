@@ -1305,6 +1305,24 @@ public final class CityCommands {
         return heights;
     }
 
+    /**
+     * Whether the valley has been laid to the top of its own cut.
+     * <p>
+     * The marker counts bands, so the last band down is the city finished - the same test the band hand makes before it
+     * finds nothing left to lay. This is what a hall pinned inside the valley waits for, because a city raised band by
+     * band would lay over a hall stood early in exactly the way the Shire's village would.
+     */
+    public static boolean complete(ServerLevel level) {
+        try {
+            Path folder = folder(level);
+            Mark mark = read(folder);
+            if (mark == null) return false;
+            return mark.band() >= bands(parts(folder)).size();
+        } catch (IOException unreadable) {
+            return false;
+        }
+    }
+
     /** The marker as it stands, or null in a world that has not been planted. */
     private static Mark read(Path folder) throws IOException {
         Path marker = folder.resolve(MARKER);

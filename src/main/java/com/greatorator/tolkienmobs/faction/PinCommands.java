@@ -232,9 +232,19 @@ public final class PinCommands {
         BlockPos before = Pins.at(level, TownHalls.key(town));
         Pins.set(level, TownHalls.key(town), at);
 
+        // A town that is already finished gets its hall here and now; one that is not waits for its own pass, which
+        // would lay over anything put in the footprint before it.
+        int laid = TownHalls.raise(level, town);
+
         source.sendSuccess(() -> Component.literal((before == null ? "Pinned " : "Moved ") + town + "'s hall to "
                 + at.toShortString() + (before == null ? "" : " (was " + before.toShortString() + ")")
                 + ", built as " + template + "."), false);
+        source.sendSuccess(() -> Component.literal(laid > 0
+                ? "The hall is standing there: " + laid + " blocks of " + template + "."
+                : TownHalls.waits(level, town)
+                        ? "The hall waits: " + town + " is not finished, and its own pass would lay over the pin."
+                        + " It goes up when the town does."
+                        : "The hall is already standing at the pin, and is left as it is."), false);
         source.sendSuccess(() -> Component.literal("For every world, add to Pins.SOURCE: "
                 + line(TownHalls.key(town), at)), false);
         return 1;

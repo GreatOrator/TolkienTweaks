@@ -213,6 +213,17 @@ public final class Hobbiton {
      * (a fix to the ring is not a fix until it has been run on the world). The fourth - is the ground the drape left
      * still there - needs chunks, and {@link #ground} asks it where they are held.
      */
+    /**
+     * Whether this world's village has been raised to the end of its own pass.
+     * <p>
+     * Read from the note alone, so it answers at a start, where none of the village's chunks are held and asking about
+     * its ground would generate them. The note is written as the pass finishes, which is the moment a pin taken in the
+     * footprint stops being at risk - the town's hall is stood on this answer.
+     */
+    public static boolean complete(ServerLevel level) {
+        return stands(level, ArdaMap.hobbitonPlan());
+    }
+
     private static boolean stands(ServerLevel level, BlockPos corner) {
         Path marker = marker(level);
         if (!Files.isRegularFile(marker)) return false;
@@ -353,6 +364,11 @@ public final class Hobbiton {
     public static void onServerStarted(ServerStartedEvent event) {
         standing = null;
         Standing work = autospawn(event.getServer());
+        // A world that already holds the village gets its hall on the next start. This is asked of every world and not
+        // only the ones raising a village, because raise refuses while the note says the village is unfinished - and a
+        // village that is finished has already been through the pass that would have laid over the pin.
+        ServerLevel arda = event.getServer().getLevel(TolkienDimensions.ARDA);
+        if (arda != null) TownHalls.raise(arda, "hobbiton");
         if (work == null || !TolkienMobsConfig.raiseShireOnStart) return;
         work.found = true;
         LOGGER.info("The Shire: raising the village at the start, with nobody near it, as the config asks");
@@ -395,6 +411,10 @@ public final class Hobbiton {
                 work.release(level);
                 standing = null;
                 note(level, work.planted);
+                // The town's hall goes up with the village and after it: this pass has just laid the cut, cleared the
+                // footprint and dressed the ring, and a hall stood in that ground first would have been cleared with the
+                // country. Before the folk, so nobody is stood inside its walls.
+                TownHalls.raise(level, "hobbiton");
                 inhabit(level, work);
                 LOGGER.info("The Shire: the village stands at {} in {} ticks ({} s), dressed to its own outline",
                         work.planted.toShortString(), work.ticks,

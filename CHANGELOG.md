@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Stand each town's hall at its pin once the town is finished, rather than waiting for a hand.** The pin said where a
+          hall belonged and nothing read it, so a town's hall was still a template and a pair of coordinates; it stands
+          itself now (`TownHalls.raise`). Where is the pin, which is the block the builder stood in - the hall's own ground
+          course is laid in the block they stood on, so its floor comes up into the paving rather than sitting a course
+          above it - and which build is the town's alliance, as before. When is the part that needed a rule: a town's pass
+          lays its cut, clears the footprint out of the country and dresses the ring round it, so a hall stood there early
+          would be taken away by the ground it was meant to stand on. `TownHalls.waits` asks the town itself - the Shire's
+          village by its note (`Hobbiton.complete`), the valley by the bands its marker has laid (`CityCommands.complete`)
+          - and the hall goes up at the end of the village's own pass, before its folk are stood so nobody is placed inside
+          a wall; on the next start for a world whose town already stands; and on the spot when `/tmpin hall add` pins one
+          into a town that is finished. The chunks the hall's box touches are asked for first, since a hall pinned in
+          country nobody has visited has no ground to stand on, and a hall already standing at the corner is left exactly
+          as it is. Laid unturned, because a template has one front and which way it should face is the town's business.
+          Not looked at: no hall has stood in a town in game yet, so its seat and its front are unverified.
 - **Put the marks the world draws behind one client switch, on by default.** The mark over a notice board was drawn for
           every player whether they wanted a label hanging over the wood or not, and the only way to be without it was to
           change the mod; it now reads `questBadge`, the switch the scroll over a giver waiting for a page back already

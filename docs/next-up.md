@@ -384,9 +384,18 @@ template pool and `has_structure` tag files (`runData` regenerates the rest clea
 the hall where the caller stands and prints the `Pins.SOURCE` line, `/tmpin hall remove <town>` forgets it, and the town
 argument is suggested from the catalogue's towns - Hobbiton, Bree, Rivendell - rather than typed freehand. The key is
 `hall:<town>` (`TownHalls.key`) and the template is chosen from the town's alliance, which is the one thing the caller
-does not have to say. **No consumer yet**: nothing raises a hall at its pin, since a hall is part of a town and the towns
-are placed by hand; the pin is what that raising will read. First pin to take: Hobbiton's hall, at the ground in the
-village it belongs to.
+does not have to say.
+
+**The hall stands itself - 17 November.** `TownHalls.raise` reads the pin and lays the town's own template, unturned,
+with its ground course in the block the builder stood on (the pin is then the hall's floor, not a slab one course above
+it), asking for every chunk the box touches first and leaving a hall that already stands alone. It waits for its town,
+because a town's pass lays, clears and dresses the ground a hall stood early would be taken away with: `TownHalls.waits`
+asks `Hobbiton.complete` (the village's note, written as its pass ends) and `CityCommands.complete` (the valley's marker
+at its last band). Three hands raise it - the village at the end of its own pass, before its folk are stood so nobody is
+placed inside a wall; the next start, for a world whose town already stands; and `/tmpin hall add` itself, when the town
+is finished, which says so in the reply and otherwise says the hall is waiting for the town. **Not looked at:** no hall
+has stood in a town in game, so the seat, the 16x16 box against the village's own paving, and the front of the build are
+all unverified.
 
 ## Settled - do not re-open
 
