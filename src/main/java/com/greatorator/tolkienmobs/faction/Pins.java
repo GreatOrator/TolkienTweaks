@@ -75,8 +75,8 @@ public final class Pins extends SavedData {
             Map.entry(TownHalls.key("hobbiton"), new BlockPos(-529, 101, -74)),
             // The Carrock, pinned where the owner stood it: the cut's own low north-west corner at 8307, 187, -4165, the
             // block /tmcut place carrock is given so the box lands where the owner already had it. The rock is cut rather
-            // than templated and nothing raises it yet - this pin is where the name stands, and the owner stands the cut
-            // on it by hand until a raiser or a generator asks for the name.
+            // than templated, so Carrock.autospawn reads this pin on the first start of a world and lays the cut from it:
+            // the pin is the corner the pieces are planted on, and /tmpin is still how it is moved.
             // The goblin cave page 27 is fought in, settled along the road at the door the scout walked: the
             // mountain rises south of it, so the cut runs into the hill there. The shelter camp beyond the way in
             // is pinned beside it, so the fires have a camp outside them in every world rather than only in the

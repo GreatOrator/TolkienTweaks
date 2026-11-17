@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Carrock stands itself on the first start of a world.** `Carrock.autospawn` runs in `MilestoneHandler` after the
+          gate, the keep and the cave: it takes the pin under `Carrock.NAME` - 8307, 187, -4165, the cut's low north-west
+          corner - lays the three pieces of the cut shipped in the jar, and writes a note beside the cut in the save's own
+          folder, the dimension, the corner and the table's own fingerprint, so every start after it reads that note and
+          does nothing. A world whose note is missing, or whose pin has been moved, is laid again rather than cut about:
+          the pieces carry no air, so a second laying writes the rock's own blocks and leaves whatever else is standing
+          exactly as it is. The planting takes the table's lowest offsets off the pin, the rule `/tmcut place` already
+          uses, so the world's pass and a hand's command cannot disagree about which block the corner is; `/tmpin set
+          carrock ...` still overrules the shipped pin, and a cut that has changed since the world was laid answers with a
+          different fingerprint and is laid afresh.
 - **Cut the Carrock's picked-up base plate off and pin the rock at 8307, 187, -4165.** Standing in the owner's world the
           first cut read as rock plus terrain nobody had built: the riverbed and the banks it was boxed through, a plate no
           more than six blocks deep that spread over the whole box and came out of the water at the south end as three
