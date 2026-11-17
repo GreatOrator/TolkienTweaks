@@ -373,8 +373,16 @@ public final class RoadCommands {
      */
     static boolean down(ServerLevel level, Route route) {
         CompoundTag carried = Progress.of(level, route.id());
-        return carried != null && standing(level, carried);
+        if (carried == null) return false;
+        if (standing(level, route, carried)) return true;
+        // A note that disagrees with its own ground is walked again, once: the pass is planned, the road laid, and the
+        // note it leaves is asked the same way. Once per run, because a station the pass leaves open by design would
+        // otherwise plan a road on every chunk load of it.
+        return !REWALKED.add(route.id());
     }
+
+    /** The roads whose note was found disagreeing with the ground this run, so a road is walked again but not for ever. */
+    private static final java.util.Set<String> REWALKED = new java.util.HashSet<>();
 
     /**
      * Whether the ground still holds the road a note says was laid there.
@@ -386,13 +394,77 @@ public final class RoadCommands {
      * underfoot. A note too old to carry the block is not trusted either, since nothing can say what it was written
      * about.
      */
-    private static boolean standing(ServerLevel level, CompoundTag note) {
+    private static boolean standing(ServerLevel level, Route route, CompoundTag note) {
         if (!note.getBooleanOr("down", false)) return false;
         int[] at = note.getIntArray("at").orElse(new int[0]);
         String block = note.getStringOr("block", "");
         if (at.length < 3 || block.isEmpty()) return false;
         BlockPos probe = new BlockPos(at[0], at[1], at[2]);
-        return block.equals(BuiltInRegistries.BLOCK.getKey(level.getBlockState(probe).getBlock()).toString());
+        if (!block.equals(BuiltInRegistries.BLOCK.getKey(level.getBlockState(probe).getBlock()).toString())) return false;
+        // The probe is one block, and the block under a road's first station is a block the country puts there too, so
+        // the note of a finished dry road is asked for the road itself: see walked. A crossing's note is written over
+        // its span rather than over a walked line, so it is still the probe's to answer.
+        return !(route instanceof Route.Riverless) || walked(level, route, note);
+    }
+
+    /** How many of a finished road's stations may be missing before its note is not believed, and the least allowed. */
+    private static final int MISSING = 2;
+
+    /**
+     * How much of the road a note carries still stands: stations from the start of its line, from its end, and from
+     * across its middle, each read at the grade the note says it was laid to.
+     * <p>
+     * A road used to be believed on one block - the ground it met its build on - and a road that begins on a camp's own
+     * grass is a note the country satisfies by itself. Measured in Progress Check 1: the note said the Old Forest Road
+     * was down for all four thousand and twenty-two of its stations, and the first five hundred and fifty-nine of them,
+     * from Gloin's camp east past the Old Ford to the edge of the next region file, carried no road at all - the pass's
+     * cursor had been written down ahead of the ground it laid, and no pass was ever planned over that stretch again
+     * because its first block was still the grass it had always been. The note carries the way the road took and its
+     * grade, so the road itself is asked for now.
+     * <p>
+     * A station the road is not laid at by design is not counted either way: the columns inside the build's own
+     * footprint, which are the build's, and the stations over surveyed water, which are the crossing's. The rest are
+     * asked for the block {@link #surface} would have laid there, in the three middle columns of the station - so a
+     * road with a block broken out of it is still a road, and a stretch of several hundred blocks with none in it is
+     * not.
+     *
+     * @return whether the road still stands where the note says it does
+     */
+    private static boolean walked(ServerLevel level, Route route, CompoundTag note) {
+        List<int[]> line = unflatten(note.getIntArray("approach").orElse(new int[0]));
+        long[] heights = note.getLongArray("height").orElse(new long[0]);
+        if (line.size() < 2 || heights.length != line.size()) return false;
+        java.util.Set<Integer> stations = new java.util.LinkedHashSet<>();
+        for (int end = 0; end < 8; end++) {
+            stations.add(Math.min(end, line.size() - 1));
+            stations.add(Math.max(0, line.size() - 1 - end));
+        }
+        for (int through = 1; through < 8; through++) stations.add((int) ((long) through * (line.size() - 1) / 8L));
+        int read = 0;
+        int missing = 0;
+        for (int i : stations) {
+            if (i < 0 || i >= line.size()) continue;
+            int x = line.get(i)[0];
+            int z = line.get(i)[1];
+            int y = Mth.floor(Double.longBitsToDouble(heights[i]));
+            // A chunk nobody has made is not read at all: the check is meant to cost a handful of blocks, not to
+            // generate the country either side of a road on every ask. What is loaded is enough to say the road is
+            // missing where a player is standing at it.
+            if (!level.hasChunkAt(new BlockPos(x, y, z))) continue;
+            if (x >= route.cityX0() && x <= route.cityX1() && z >= route.cityZ0() && z <= route.cityZ1()) continue;
+            if (Roads.water(x, z, CROSSING_ACROSS) != null) continue;
+            read++;
+            var laid = surface(route, x, z).getBlock();
+            boolean there = false;
+            for (int dx = -1; dx <= 1 && !there; dx++) {
+                for (int dz = -1; dz <= 1 && !there; dz++) {
+                    there = level.getBlockState(new BlockPos(x + dx, y, z + dz)).getBlock() == laid;
+                }
+            }
+            if (!there) missing++;
+        }
+        if (read < 4) return true;
+        return missing <= Math.max(MISSING, read / 5);
     }
 
     /** How many columns of the sweep and the pillars one step may take. */
@@ -743,7 +815,7 @@ public final class RoadCommands {
          * pass that cannot be carried is still a pass; the ground it would have laid is the ground it lays.
          */
         private void restore(CompoundTag tag, ServerLevel level) {
-            if (standing(level, tag)) {
+            if (standing(level, route, tag)) {
                 // The note a finished pass leaves. This road is down, so this pass is done before it begins.
                 done = ALREADY_DOWN;
                 return;

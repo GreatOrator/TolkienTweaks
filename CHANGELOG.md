@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Ask a finished road's own note where its road is, station by station, instead of trusting one block.** The Old Forest
+          Road's note said it was down for all 4,022 of its stations, and the first 559 of them - from Glóin's camp east
+          past the Old Ford to the edge of the next region file - held no road at all: no gravel, path, coarse dirt or
+          cobblestone anywhere in a forty-one block window either side of the line, while everything from x 8,702 to the
+          far end at 11,842 was complete and paved. The saved note, the region files and the logs agree on how it got
+          that way: the pass writes its own cursor down every eight steps and at the turn of every stage, the world
+          saves its chunks on their own schedule, and a stretch laid before a save that did not carry it is a stretch
+          the cursor has already walked past - 17 Nov's headless pass carried a cursor of 942 stations out of the
+          morning's session and finished the remaining 3,080 in 110 steps, and the 559 the earlier session had claimed
+          were not on disk. Nothing ever looked: `standing` compared a single block, the grass under the road's first
+          station at the camp gate, and natural ground satisfies that, so `down` kept answering yes, `pass` kept
+          returning null, and the gap could never be walked again. The note now carries the alignment and the grade, so
+          a dry road is asked for its own road: twenty-three stations - the first eight, the last eight, and seven
+          across the middle - are each read at the grade the note gives them, in the three middle columns, for the block
+          `surface` would have laid there. Stations inside a build's own footprint and stations over surveyed water are
+          the build's and the crossing's and are not counted either way, and up to a fifth of the rest may be missing
+          before the note is doubted, so a road with a block knocked out of it is still a road. A note that disagrees is
+          walked once more, and only once per run, so a station a pass leaves open by design cannot plan a road on every
+          chunk load of it.
 - **The Carrock's pin is in the source table now, and the pass says when it cannot stand the rock.** Two rounds of "it did
           not stand" came to the same shape: the comment was written and the statement under it never was. `Pins.SOURCE`
           carried the Carrock's explanation - its corner at 8307, 187, -4165 - without the `Map.entry` itself, so
