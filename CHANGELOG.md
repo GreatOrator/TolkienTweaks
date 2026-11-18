@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The keep's rooms stood eleven courses over the gate's chamber, so the hold had no door.** A fresh world drew the
+          keep at its plan to the block - x 5516…5637, z -7112…-6930, its south wall on -6930 with the gate's chamber carried
+          to it and a doorway cut through where the wall stands - and the two floors still did not meet: the keep's rooms
+          read **200** where the chamber's floor reads **189**, so the chamber opened into the void under the rooms and the
+          keep's floor was the chamber's ceiling. The number at fault is `KEEP_FLOOR`, not the corner: the template's rooms
+          are lifted thirteen courses over its base (the spiral's stair is cut under its own hall, so the five surface
+          rooms are laid thirteen up to stand on one level with it) and its doorways are cut from course fourteen. The pin
+          must put that floor on the passage's, so it is **176**, not 187 - which is what the first plan read before the
+          move. The rooms' floor now lands on 189 and the walk on 190, level with the chamber to the block; the roof comes
+          down from 212 to 201, which only deepens the rock over it; and the captain and the wraith follow
+          `ArdaMap.keepThrone()` to (5546, 193, -7036). A world already holding the keep at 187 keeps it - a second one
+          would stand eleven courses lower inside the same box - so this is a fresh-world change.
 - **A leg pinned in a test world and never laid is out of the table.** `planned_4516_-2512_4562_-2398` was written into
           `Roads.NETWORK` with the high-pass legs and has no note in any save: no world has laid a section of it, so what
           it planned in a fresh world was ground nobody walked. The store is the test of a line, and the table now holds

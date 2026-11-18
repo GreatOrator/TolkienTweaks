@@ -767,10 +767,12 @@ public final class ArdaMap {
      * The template carries the hold's floor as the rock under it - fourteen courses of deepslate whose top course is
      * the floor a player stands on, with the rooms over it, the doorways cut from course fourteen. So the mark's
      * course is that top course, local y 13, and the base is 176: the doorway's floor lands on 189 and the rooms fill
-     * the chamber's own section, 190 to 200, to the block. The doorway used is the far one of the south wall - local
-     * x 104 to 108, its middle 106 - so with the box at x 5471 its middle lands on the mark's 5577; and the south
-     * wall's own course, local z 182, lands on the mark's z -6918. The body runs the rest of its hundred and eighty-
-     * three courses west and north into the mountain, and its doorway is the way out of the gate's chamber.
+     * the chamber's own section, 190 to 200, to the block. The two ends land on the passage rather than on the mark's
+     * own block: the box is centred there, 5516 being the corner that puts the middle of its hundred and twenty-two
+     * courses on the passage's axis 5577 (twenty blocks of rock west of the passage, nineteen east), and the south
+     * wall's own course, local z 182, on -6930 - nineteen past the passage's old end, which is where the ground over the
+     * box is 230 and more. It read x 5471 with the far doorway's middle on the mark; that put the body's own weight off
+     * the passage, and the box was measured for the centred one.
      * <p>
      * The hall out of the gate is carried north to {@link #keepWall()} and its doorway is cut the wall's depth beyond
      * that, so the gate is laid first and the keep laid over it: the keep's own wall and its doorway then stand whole,
@@ -783,14 +785,20 @@ public final class ArdaMap {
     public static final int KEEP_DEEP = 183;
 
     /**
-     * The keep's own bottom course: the template's y 0.
+     * The keep's own bottom course: the template's y 0, thirteen courses under the floor a player walks on.
      * <p>
-     * The chamber's floor top is 189 and the template's floor is its three bottom courses, so the corner is 187 - the one
-     * number that puts the hold's floor on the hall's, its interiors both starting at 190. It read 176, the first plan,
-     * which stood the hold eleven blocks under the passage it opens off and did not match the box the keep was walked
-     * for: x 5516…5637 and z -7112…-6930, with the mountain's shallowest cover over its south wall.
+     * The template's rooms are lifted thirteen courses over its base - the spiral tile's stair is cut under its own
+     * hall, so the five surface rooms are laid thirteen up to stand on one level with it - and its doorways are cut from
+     * course fourteen. So the corner is 176: the doorway's floor lands on the chamber's own 189 and the rooms are walked
+     * on 190, level with the passage out of the gate, to the block.
+     * <p>
+     * It read 187 from 15 November 2026, having taken the template's bottom courses for the floor the rooms stand on.
+     * That stood the rooms' floor on 200, eleven courses over the passage's, so the gate's chamber - carried to the
+     * keep's wall and cut through it at its own level - opened into the void under the rooms instead of into them: the
+     * world read its floor at 200 with the chamber's at 189, the keep's floor being the chamber's ceiling, and a hold
+     * nobody can walk into. 176 was the first plan's number, for this reason.
      */
-    public static final int KEEP_FLOOR = 187;
+    public static final int KEEP_FLOOR = 176;
 
     /**
      * The keep's throne, from the plan's own corner: thirty along, seventeen up, seventy-six back. The owner marked the

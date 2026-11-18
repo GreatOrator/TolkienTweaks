@@ -21,16 +21,18 @@ on the skyline.
 
 ## Where the keep sits
 
-The template is **`key_structures/gundabad.nbt`: 122 wide, 26 tall, 183 deep**. Its floor is three solid
-courses (y 0 … 2, with a few openings in the lowest), so its floor's **top is y 2**, and its interior starts
-at y 3. The passage's floor's top is 189 and its interior starts at 190 - which is the whole alignment in one
-line: **the keep's floor top must be 189, so the pin's y is 187.**
+The template is **`key_structures/gundabad.nbt`: 122 wide, 26 tall, 183 deep**. Its rooms are **lifted thirteen
+courses over its base**: `gundabad_keep.py` cuts the spiral's stair under its own hall, so the five surface rooms
+are written thirteen up (`LIFT` 13) to stand on one level with it, and the thirteen courses under them are
+`deepslate` fill. A room's floor block is therefore **local y 13**. The passage's floor's top is 189 and its
+interior starts at 190 - which is the whole alignment in one line: **the keep's floor top must be 189, so the
+pin's y is 176.**
 
 | | |
 |---|---|
-| pin | **(5516, 187, −7112)** - the template's own north-west bottom corner, no rotation |
-| floor | 187 … 189, level with the passage's floor, interiors both starting at **190** |
-| box | **x 5516 … 5637**, **z −7112 … −6930**, roof course **212** |
+| pin | **(5516, 176, −7112)** - the template's own north-west bottom corner, no rotation |
+| floor | rooms' floor block **189**, walked on **190**, level with the passage's floor and interior |
+| box | **x 5516 … 5637**, **z −7112 … −6930**, roof course **201** |
 | across | centred on the passage's axis (x 5577) to within half a block, with ~20 blocks of rock to the west and ~19 to the east inside the crown's 160 |
 | south wall | **z −6930**, where the rock stands **230 … 249** over it - the shallowest cover anywhere on the box, and still 18 blocks above the roof |
 | north wall | **z −7112**, three blocks past the crown's own end, where the drawn ground is 279 |
@@ -55,11 +57,13 @@ nine on the west, fourteen where an inner mass stands just inside it). It is cle
 laid, so **raising the keep and then laying the gate again is what opens the door**; until a keep stands
 there it is a pocket in the rock.
 
-The keep's plan lives in `ArdaMap` beside the gate's - `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` 187, `KEEP_WIDE`
+The keep's plan lives in `ArdaMap` beside the gate's - `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` 176, `KEEP_WIDE`
 122, `KEEP_TALL` 26, `KEEP_DEEP` 183, `keepPlan()` and `keepWall()` - because the passage's end is the keep's wall in
 every world and must not be measured off rock that the hall itself changes. It read 5471/-7100/176 until 15 November
-2026, the first plan, which put the hold's floor eleven blocks under the passage's 189; the box this file was measured
-for is the one in the code now.
+2026, the first plan; x and z moved to the box this file was measured for, and y stayed 176. It was then read as 187
+on 15 November, taking the template's bottom courses for the floor the rooms stand on - and a world built with that
+number shows exactly what it costs: the keep's rooms on **200** with the chamber's floor on **189**, the chamber
+opening into the void under them and the keep's floor standing as the chamber's ceiling, so a hold with no way in.
 
 **On hold, 15 November 2026.** The plan above is what the code carries, but the placement it gives looked wrong in
 game, and the world it was looked at in was built around the older plan - an old gate, its hall ending at the older
@@ -138,7 +142,7 @@ an army stands on it", and that is where six of the nine pieces go.
 
 ## What is settled, and what is not
 
-Settled by the ground and the templates: the keep's floor top is 189, its pin is **(5516, 187, −7112)**, its
+Settled by the ground and the templates: the rooms' floor top is 189, its pin is **(5516, 176, −7112)**, its
 box is 122 × 26 × 183 running from z −7112 to −6930, its south wall meets the passage after 19 more blocks,
 and it is buried under 18 to 55 blocks of rock with a doorway to cut in a wall that has none.
 

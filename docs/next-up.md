@@ -15,8 +15,9 @@ for icon - neither needs another hand. Read *17 November* below for what was don
 map* for the village itself.
 
 The whole Gundabad line is walked and settled; chapter two is proven to page 32 and
-**paused** there; the road east of Glóin's camp is final with both bridges; the keep's placement is **on hold** until a
-brand-new world is drawn. Work stopped here to go to a side project.
+**paused** there; the road east of Glóin's camp is final with both bridges; the keep's placement is **settled at
+`KEEP_FLOOR` 176** by a world that showed the rooms eleven courses over the chamber's floor. Work stopped here to go to a
+side project.
 
 ## Where we stopped
 
@@ -25,8 +26,10 @@ brand-new world is drawn. Work stopped here to go to a side project.
   cave, and the captain and the wraith below the stair. It reads as written; nothing in it is waiting on a fix.
 - **Paused at page 33.** The four left - 33 Steps of Evil I, 34 Steps of Evil II, 35 Evil Tidings, 36 Fire & Ice - are
   all Carn Dûm ground, and **Carn Dûm is what quests go to next**.
-- **The keep's placement is on hold**, not tuned: the world it was looked at in was built around the older plan, so it is
-  read from a brand-new world rather than adjusted in that one.
+- **The keep's placement is settled, and the world is what settled it.** A fresh world drew the keep exactly at its plan
+  and still had no way in: the keep's rooms stood on **200** with the gate's chamber on **189**, so the chamber opened
+  under them and the keep's floor was the chamber's ceiling. The number that was wrong is `KEEP_FLOOR`: the template's
+  rooms are lifted thirteen courses over its base, so the pin is **176**, not 187. See `docs/gundabad-keep.md`.
 
 ## The list
 
@@ -36,7 +39,7 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | 2 | **The roads** - the whole network, rebuilt from two ends per road | **eleven roads in `Roads.NETWORK`**, read back from the store of the world that walked them: the old forest road, the four high-pass legs, Rivendell to the meeting plaza and the plaza on to Glóin's camp, Rivendell to Elladan's camp, the short leg at Rivendell's south gate, and Gundabad's road (5578, -6769 to 8583, -3617). **Next:** walk the network in a fresh world and check each road lays | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
-| 5 | **The keep's placement** | on hold | `docs/gundabad-keep.md` |
+| 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Next:** a fresh world and one walk from the gate to the keep's rooms | `docs/gundabad-keep.md` |
 | 6 | **Sign posts** | on hold | below, with the recipe |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
@@ -160,9 +163,8 @@ line read a block at a time so a river is bridged. Every one compiled with
   is entered, and the roads should lay themselves as the ground comes in - two bridges on the old forest road and none
   on the high pass legs. That the seven cover the same destinations as the twenty-one walked routes is not a guess: the
   owner read the two lists against each other and signed it off, so nothing from the old network is still owed. The
-  hold's road is the first entry of the same table and still has `GUNDABAD_GATE` and
-  `GUNDABAD_JOIN` null: pin its two ends in the fresh world with `/tmroad pin`, then paste them in as
-  `new BlockPos(x, 0, z)` and delete the two nulls, which is all that road waits for.
+  hold's road is the first entry of the same table, and its two ends are in: `GUNDABAD_GATE` at 5578, -6769 and
+  `GUNDABAD_JOIN` at 8583, -3617, read back from the store of the world that laid it, under the id those pins gave it.
 - **Road Test 2 laid nothing, and the reason is where the roads are.** The fresh world was entered at Rivendell
   (raised at 5200..5753 x, -3370..-2859 z) and left there: the old forest road runs 8229, -3654 to 11813, -3901 and the
   high pass legs sit at 4515..4819 x, so the nearest road line to the city's west edge is 380 blocks away, and the

@@ -215,12 +215,12 @@ the noise above are the answer to both.
 The gate itself is finished: it stands by itself in every world, and a gate already standing is left alone. What is
 open here is the keep behind it.
 
-1. **The keep's plan is settled (15 November 2026).** It is `docs/gundabad-keep.md`'s: `KEEP_X` 5516, `KEEP_Z` -7112,
-   `KEEP_FLOOR` 187 - box x 5516…5637, z -7112…-6930, floor top 189. `ArdaMap` read 5471/-7100/176, the first plan,
-   whose floor top of 178 sat eleven blocks under the passage the hold opens off; the built passage's floor top is 189
-   at x 5577 from z -6908 out to -6916, which is what the settled plan's y is for. The captain's marked seat at
+1. **The keep's plan is settled (18 November 2026).** It is `docs/gundabad-keep.md`'s: `KEEP_X` 5516, `KEEP_Z` -7112,
+   `KEEP_FLOOR` 176 - box x 5516…5637, z -7112…-6930, rooms' floor top 189, matching the passage's. The number read
+   187 from 15 November, which put the rooms on 200 and left the chamber opening under them; a world built with it
+   showed the keep's floor at 200 against the chamber's 189, and no way in. The captain's marked seat at
    (5501, 192, -7024) fits the older box, so it and the wraith moved with the hold - they are placed from
-   `ArdaMap.keepThrone()`, and now stand at (5546, 204, -7036).
+   `ArdaMap.keepThrone()`, and now stand at (5546, 193, -7036).
 2. **The keep had never been laid, and its guard was why - fixed with the plan.** `GundabadKeep.autospawn` answered
    "already standing" from `is(Blocks.DEEPSLATE)` at the doorway's floor, and Arda's rock under the mountain is
    deepslate too. It reads the template's own blocks through `Sites.standsAt` now, opening the box first so an
