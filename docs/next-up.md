@@ -123,9 +123,12 @@ line read a block at a time so a river is bridged. Every one compiled with
   standing:** one `out of made ground` line per band and no warning line, the bands closing sixty to ninety seconds apart
   instead of all at once, `the whole city is down`, and the dresser's `19643 columns cut down, 35386 filled up, 320 left
   for the water` - and the owner found the city standing whole, which is the check that matters, since both earlier runs
-  said "finished" too. **Also seen and not fixed:** the floor goes down over the valley's own city folk - seventeen `Elf
-  suffocated in a wall` lines as Road Test 6's floor was laid and eighteen in Road Test 7's - so whatever stands them
-  there should wait for the band, or they should be stood after it.
+  said "finished" too. **The valley's folk are the world's own, and that half is closed:** the seventeen `Elf suffocated
+  in a wall` lines Road Test 6's floor was laid over and the eighteen in Road Test 7's are natural spawns the valley's
+  own spawning walks into the footprint as it goes down - the raise itself stands no Elf anywhere. Every body the pack
+  does stand is seated on ground looked for first: `Campaign`'s Glorfindel and Gimli by `floorNear`, `Sites`' keepers by
+  `room`, `QuestGivers`' campaign givers by `groundNear` with twelve tries - so nothing here has to wait for a band, and
+  no fix is owed.
 
 ### Still open from tonight
 
