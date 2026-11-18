@@ -77,6 +77,42 @@ public final class Roads {
     private static final BlockPos GUNDABAD_GATE = null;
     private static final BlockPos GUNDABAD_JOIN = null;
 
+    /** One road the code names: its id, the width it is laid at, and the two blocks it runs between. */
+    private record Named(String id, Kind kind, boolean town, BlockPos from, BlockPos to) {
+    }
+
+    /** A block of the drawing named by its two coordinates: the height is the plan's business, not the road's. */
+    private static BlockPos at(int x, int z) {
+        return new BlockPos(x, 0, z);
+    }
+
+    /**
+     * The network the world is laid with: every road a surveyor has pinned, as the two ends it was pinned between.
+     * <p>
+     * This is the whole of a road - the way it takes, the bends the pass searches between, where it crosses water and
+     * how wide its span is all read off the drawing from these two blocks. It was worked out in a test world by
+     * {@code /tmroad pin}, one road at a time, and the ends are copied here so a world made from scratch has the same
+     * network without anybody plotting it again; the ids are the ones the pins were given, so a section laid in that
+     * world and a section made here are the same road and the same name in the log.
+     * <p>
+     * The first entry is the hold's road, which is waiting on its two marks (see {@link #GUNDABAD_GATE}). Everything
+     * after it is a road the test world lays today: the old forest road east of Mirkwood to Glóin's camp, and the five
+     * legs of the high pass between Rivendell's roads and Glóin's camp. All of them are the country's own track, three
+     * wide, because nothing that crosses that country is paved.
+     * <p>
+     * Declared above {@link #ROUTES} on purpose, as the hold's two marks are: the list is built once when this class
+     * loads, and a road written below it would not be in the list at all.
+     */
+    private static final List<Named> NETWORK = List.of(
+            new Named(GUNDABAD_ROAD, Kind.WILD_WIDE, false, GUNDABAD_GATE, GUNDABAD_JOIN),
+            new Named("tolkienmobs:roads/planned_11813_-3901_8229_-3654", Kind.WILD, false, at(11813, -3901), at(8229, -3654)),
+            new Named("tolkienmobs:roads/planned_4515_-2446_4705_-3169", Kind.WILD, false, at(4515, -2446), at(4705, -3169)),
+            new Named("tolkienmobs:roads/planned_4516_-2512_4562_-2398", Kind.WILD, false, at(4516, -2512), at(4562, -2398)),
+            new Named("tolkienmobs:roads/planned_4528_-2541_4624_-2480", Kind.WILD, false, at(4528, -2541), at(4624, -2480)),
+            new Named("tolkienmobs:roads/planned_4776_-3063_4684_-3050", Kind.WILD, false, at(4776, -3063), at(4684, -3050)),
+            new Named("tolkienmobs:roads/planned_4787_-3059_4778_-3059", Kind.WILD, false, at(4787, -3059), at(4778, -3059)),
+            new Named("tolkienmobs:roads/planned_4819_-2887_4647_-3315", Kind.WILD, false, at(4819, -2887), at(4647, -3315)));
+
     /**
      * Every road the world knows about, which is nothing until one is named.
      * <p>
@@ -87,10 +123,20 @@ public final class Roads {
      * added the moment it is planned, and it is forgotten when the world is. Its note in the save is what brings it
      * back, and a road whose note is still good owes nothing.
      */
-    public static final List<Route> ROUTES = new CopyOnWriteArrayList<>(withGundabad(List.of()));
+    public static final List<Route> ROUTES = new CopyOnWriteArrayList<>(network(List.of()));
 
     /** The sections this session planned at a build, so another world's can be taken back out of the list. */
     private static final Set<String> PLANNED = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Whether a road is one this session planned at a build, as against one the code names in {@link #NETWORK}.
+     * <p>
+     * The two are different kinds of road to the world. A named road is part of the world from the moment its class
+     * loads, so the ground it crosses begins it; a planned one waits for the command that asked for it.
+     */
+    static boolean planned(Route route) {
+        return PLANNED.contains(route.id());
+    }
 
     /** Adds a road this class did not hold, so a road planned at a build is known to the world as it is laid. */
     static void remember(Route route) {
@@ -172,10 +218,17 @@ public final class Roads {
         RoadPlan.forget(taken);
     }
 
-    /** The roads as they stand, with the hold's road planned on the end once its two marks are pinned. */
-    private static List<Route> withGundabad(List<Route> walked) {
+    /**
+     * The roads as they stand: everything in {@link #NETWORK}, each planned from its own two ends.
+     * <p>
+     * A road whose ends are not pinned - the hold's, until its walk is made - plans nothing and is not in the list,
+     * which is the same answer as having no entry for it at all.
+     */
+    private static List<Route> network(List<Route> walked) {
         List<Route> all = new ArrayList<>(walked);
-        all.addAll(RoadPlan.of(GUNDABAD_ROAD, Kind.WILD_WIDE, false, GUNDABAD_GATE, GUNDABAD_JOIN).sections());
+        for (Named road : NETWORK) {
+            all.addAll(RoadPlan.of(road.id(), road.kind(), road.town(), road.from(), road.to()).sections());
+        }
         return all;
     }
 

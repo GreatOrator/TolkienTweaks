@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The network the test world laid is the world's own.** Every road the test world has was pinned there with
+          `/tmroad pin` and kept in that world's plan store, so a world made from scratch had none of them. `Roads.NETWORK`
+          now names seven of them as the two ends each was pinned between, at the country's own three-wide track: the old
+          forest road east of Mirkwood to Glóin's camp, 11813, -3901 to 8229, -3654, with its two spans at 11649, -4080
+          and 8551, -3626; the high pass legs 4515, -2446 to 4705, -3169, 4516, -2512 to 4562, -2398, 4528, -2541 to
+          4624, -2480, 4776, -3063 to 4684, -3050 and 4819, -2887 to 4647, -3315; and the short link at 4787, -3059 to
+          4778, -3059. Each is planned from the drawing when the class loads, exactly as `/tmroad plan` plans it, and
+          keeps the id its pins were given (`planned_<x>_<z>_<x>_<z>`), so a section made in a fresh world carries the
+          same name and the same geometry as the one standing in the test world - eleven sections, seven of them a single
+          dry leg and the old forest road five. The hold's road is the first entry of the same table and still waits for
+          its two marks. `Roads.planned` now tells the two kinds of road apart where it matters: a named road is part of
+          the world and the ground it crosses begins it, while a section planned at a build this session still waits for
+          the command that asked for it.
 - **A channel is crossed once, not waded into and out of.** The old forest road to the far side of the river east of
           Mirkwood planned two bridges side by side and a section that doubled back between them: `bridge_1` at 11759,
           -3882 to 11710, -3882, then a dry stretch running *east* from 11694, -3882 to 11755, -3908, then `bridge_2` at

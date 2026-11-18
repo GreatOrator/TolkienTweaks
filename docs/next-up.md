@@ -33,7 +33,7 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | # | Item | Status | Where the detail is |
 |---|------|--------|---------------------|
 | 1 | **Carn Dûm's ground** - the camps on its borders and the wight's hall | **next** | nothing has looked at it yet; `carndum` is only a place canon'd to `ANGMAR` |
-| 2 | **The roads** - the whole network, rebuilt from two ends per road | **next**: one build at a time; the first road laid went under a river, the fix is compiled and unrun | every walked route is erased; `RoadPlan`, `/tmroad plan`/`build`/`pin`, `road_plans`; see 18 November below |
+| 2 | **The roads** - the whole network, rebuilt from two ends per road | **laid and in the code**: seven roads in `Roads.NETWORK`, planned from their ends; **next** the hold's road, waiting on its two marks | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
 | 5 | **The keep's placement** | on hold | `docs/gundabad-keep.md` |
@@ -146,6 +146,19 @@ line read a block at a time so a river is bridged. Every one compiled with
   clear the ground at 11680..11760, -3920..-3870 before judging what the new one looks like. A port of the walk over a
   channel with an island in it takes one run under the new rule and two under the old; the drawing itself has not been
   re-planned.
+- **The laid network is in the code, and the test world is no longer the only place it exists.** `Roads.NETWORK` names
+  the seven roads the test world laid, each as the two ends it was pinned between and at the three-wide track, planned
+  from the drawing when the class loads: 11813, -3901 to 8229, -3654 (the old forest road east of Mirkwood to Glóin's
+  camp, five sections with spans at 11649, -4080 and 8551, -3626), then the high pass legs 4515, -2446 to 4705, -3169;
+  4516, -2512 to 4562, -2398; 4528, -2541 to 4624, -2480; 4776, -3063 to 4684, -3050; 4819, -2887 to 4647, -3315; and
+  4787, -3059 to 4778, -3059. Eleven sections in the seven roads, with the ids their pins were given, so the geometry
+  in a fresh world is the geometry in the test world. `Roads.planned` is what tells a session plan from a named road
+  now; a named road is begun by any chunk of its ground that loads, as the walked network was. **What to check on the
+  fresh world:** the start log should carry a `Road plan <id>: …` line for each of the eleven sections before the world
+  is entered, and the roads should lay themselves as the ground comes in - two bridges on the old forest road and none
+  on the high pass legs. The hold's road is the first entry of the same table and still has `GUNDABAD_GATE` and
+  `GUNDABAD_JOIN` null: pin its two ends in the fresh world with `/tmroad pin`, then paste them in as
+  `new BlockPos(x, 0, z)` and delete the two nulls, which is all that road waits for.
 - **A leg along a river now refuses.** Reading the water a block at a time means a leg that runs beside the water rather
   than across it refuses by the width it would bridge. True as an answer, poor as a road: the next thing to try is
   stepping the line inland along a bank rather than giving the leg up.

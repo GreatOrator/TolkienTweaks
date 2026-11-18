@@ -65,11 +65,12 @@ public final class RoadCorridor {
         int lowZ = chunk.getPos().getMinBlockZ();
         for (Route route : Roads.ROUTES) {
             if (route instanceof Route.Crossing && !Roads.road(route)) continue;
-            // A planned road is begun by the command that planned it and carried on by the note that command leaves. A
-            // plan with no note is a road waiting to be asked for, and laying it because a chunk of its ground came
-            // into view is how a road planned twice was laid twice: the old forest road planned in the mountains stood
-            // beside its own first attempt, section for section, with three bridges over one stretch of water.
-            if (RoadPlan.owns(route.id()) && !RoadCommands.begun(level, route)) continue;
+            // A road planned at a build this session is begun by the command that planned it and carried on by the note
+            // that command leaves. A plan with no note is a road waiting to be asked for, and laying it because a chunk
+            // of its ground came into view is how a road planned twice was laid twice: the old forest road planned in
+            // the mountains stood beside its own first attempt, section for section. A road the code names is not a plan
+            // - it is part of the world like any other, and the ground it crosses begins it.
+            if (Roads.planned(route) && !RoadCommands.begun(level, route)) continue;
             if (!touches(route, lowX, lowZ)) continue;
             RoadCommands.pass(level, route, lowX + 8, lowZ + 8);
         }
