@@ -103,6 +103,15 @@ line read a block at a time so a river is bridged. Every one compiled with
   check:** a fresh world, walk to the pin, and a band has to go down with `/tmcity band` never run - with at most one
   `out of made ground` line for the band that needed it.
 
+- **The world no longer builds a city; only the raise does - unrun.** Two changes on top of the stalled-band fix: a
+  structure start is now probed for the cut's own blocks (a dozen interior samples of the piece the city is planted on, a
+  majority enough) before the raise, `/tmcity summon`, the band hand or the dresser treats a city as standing; and no
+  structure set is emitted for an assembly, so worldgen never places one. A world made before this keeps its start - it is
+  ignored rather than removed, and the raise plants the city from the pin over the top. **The check:** a fresh world,
+  teleport to 5200, -3033 and stand still, and the log has to show `raised from the pin`, then bands ending in `the whole
+  city is down`, with no commands and no `/tmcity band`. **Road Test 5 cannot answer it:** its start was planted under the
+  old rules and its ground has already been dressed round an empty valley, so a fresh world is the only clean test.
+
 ### Still open from tonight
 
 - **The bridge has not been seen.** The first road laid in a world went under a river more than four blocks deep with no

@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A structure start was taken for a standing city, so the world was handed Rivendell and built only a ring of it.**
+          Road Test 5, walked with no commands: the raise said nothing at all, six roads laid, and the only Rivendell line in
+          the log was the dresser's - `19728 columns cut down, 35361 filled up` over an empty valley. The save says why.
+          Chunk 325, -211 held a `tolkienmobs:rivendell` start with all **584** pieces planned, and the blocks under it were
+          a mountain. Vanilla carries references to a structure only in chunks within **eight chunks** of its start, so a
+          city five hundred and fifty blocks across can only ever be placed in a ring round its anchor: chunks 325…333
+          carried `References = [tolkienmobs:rivendell]`, 334 onward carried none, a top-band piece six chunks out matched
+          its template **300/300** and one twenty-one chunks out matched **0/300**. The raise read that start as "the world
+          built this one" and returned without a word - the branch that leaves a standing city alone - and `/tmcity summon`
+          refused to plant over it, `/tmcity band` found nothing left to lay, and the dresser cut the mountain down round a
+          city that was not there. **A start is now checked against the world's own blocks before it counts as a city:**
+          the piece the cut is planted on - the lowest band's low corner, the block the pin names - has a dozen of its
+          interior blocks looked for where the cut puts them, and stone where the valley has air is a city while air where
+          the cut has stone is a plan with nothing under it. A majority answers, so a corner that has been walked on still
+          counts, and only chunks the world already holds are read, because a probe that has to generate the ground it is
+          asking about is only a slower guess. **And a cut is no longer generated at all:** `bootstrapSets` writes no
+          structure set for an assembly, so `CityCommands` is the only hand that builds a city - it plants the corner at the
+          pin and lays a band at a time - while the structure itself stays registered, so a world that already holds one of
+          its starts still reads the chunk it is in. That is what a world made before tonight needs: the start stays and is
+          ignored, and the raise plants the city over the top of it.
+
 - **A city raised under a walking player stopped halfway, because a band waits for ground nobody walks on.**
           Rivendell's raise stands each piece on chunks the world already has and never makes ground for one, and that was
           right as far as it went: nine chunk columns of generation inside a tick, for a piece four hundred blocks away, is

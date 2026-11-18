@@ -268,10 +268,13 @@ public final class TolkienStructureProvider {
             context.register(pinned.setKey(), new StructureSet(structures.getOrThrow(pinned.key()),
                     new PinnedStructurePlacement(pinned.at())));
         }
-        for (Assembly assembly : ASSEMBLIES) {
-            context.register(assembly.setKey(), new StructureSet(structures.getOrThrow(assembly.key()),
-                    new PinnedStructurePlacement(assembly.base())));
-        }
+        // A cut is raised, not generated: no structure set is written for an assembly, so the world never places one
+        // and `CityCommands` is the only hand that builds a city - it plants the corner at the pin and lays a band at
+        // a time. A set was written for Rivendell and it cannot work: a chunk only carries references to starts within
+        // eight chunks of itself, so a world that generated the city placed a ring of pieces round the anchor and left
+        // the rest of five hundred blocks empty - while the start alone was enough for every hand to believe the city
+        // stood. The structure itself stays registered, because a world made before this change still holds a start of
+        // it and has to be able to read the chunk it is in.
         TolkienVillageProvider.bootstrapSet(context);
         context.register(ResourceKey.create(Registries.STRUCTURE_SET,
                         Identifier.fromNamespaceAndPath("tolkienmobs", "dagorlad_ruins")),

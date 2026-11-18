@@ -8,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -372,9 +373,11 @@ public final class CityCommands {
      * corner falls in. Reading the world's blocks instead would call a mountain that has had a city cut into it a
      * city, and reading the marker would answer nothing at all, since a generated world has none.
      */
-    private static BlockPos generated(ServerLevel level, List<Part> parts) {
+    private static BlockPos generated(ServerLevel level, Path folder, List<Part> parts) {
         BlockPos corner = generatedCorner(level, parts);
-        return corner != null && cutStandsAt(level, corner, true) ? corner : null;
+        if (corner == null || !cutStandsAt(level, corner, true)) return null;
+        // A start is the plan; the city is the blocks. See {@link #standing}.
+        return standing(level, folder, parts, corner) ? corner : null;
     }
 
     /** The corner the world would generate the city's cut at here, or null where it generates none. */
@@ -671,6 +674,9 @@ public final class CityCommands {
      * world nobody has walked into the valley of yet would otherwise answer "not yet" to a question about what it
      * will do the moment someone does - which is exactly the answer that would let a second planting go ahead. One
      * chunk is a small thing to make for a question this decides.
+     * <p>
+     * A start is the plan of a build, though, and not the build: see {@link #standing} for the second half of the
+     * question, which is the one that matters.
      */
     private static boolean cutStandsAt(ServerLevel level, BlockPos corner, boolean make) {
         var chunk = make ? level.getChunk(corner.getX() >> 4, corner.getZ() >> 4)
@@ -680,6 +686,116 @@ public final class CityCommands {
             if (structure instanceof PieceLayoutStructure) return true;
         }
         return false;
+    }
+
+    /** How many of the cut's own blocks are looked for before a world's structure start is believed to be a city. */
+    private static final int STANDING_SAMPLES = 12;
+    /**
+     * How far inside a piece a sample has to sit to be the build rather than the ground it stands on, in blocks.
+     * <p>
+     * The city's floor is the block its corner stands on, so the blocks just above that corner are air in a valley
+     * nothing has been laid in: a sample taken six blocks into the piece and higher is a question about the build,
+     * and a sample on the piece's own top face is a question about the grass.
+     */
+    private static final int INSIDE = 6;
+    /** The blocks read out of each piece, once: the probe is asked whenever a city is decided. */
+    private static final Map<String, List<Probe>> PROBES = new HashMap<>();
+
+    /** One of a piece's own blocks: where it sits from the piece's corner, and the block the cut says is there. */
+    private record Probe(int x, int y, int z, String block) {
+    }
+
+    /**
+     * Whether a world's structure start is a city, or only the plan of one.
+     * <p>
+     * A start is written into the chunk its anchor falls in and lists every piece of the cut, and that is all vanilla
+     * can do with a build this size: a chunk carries references only to starts within eight chunks of itself, so a
+     * city five hundred blocks across is placed in a ring round its anchor and nowhere else. A world that planted a
+     * start for Rivendell therefore held the plan and not the city - the corner under it was grass - and every hand
+     * that read the start as the city was told there was nothing to do: the raise stood aside for it, `/tmcity summon`
+     * refused to plant over it, the band hand found nothing left to lay, and the dresser cut the mountain down round a
+     * city that was not there. One save showed it exactly: the start's own chunk held all 584 pieces, a piece six
+     * chunks out matched its template to the block, a piece twenty-one chunks out matched nothing at all, and the
+     * ground under the anchor was short grass.
+     * <p>
+     * So the world's claim is checked against the world's own blocks. The piece the city is planted on - the lowest
+     * band's own low corner, which is the block the pin names - has a dozen of its blocks looked for where the cut puts
+     * them: stone where the valley has air is a city, air where the cut has stone is a start with nothing under it. A
+     * majority answers, so a corner that has been walked on, had its grass broken or its flowers picked still counts as
+     * standing, and only chunks the world already has are read - a probe that has to generate the ground it is asking
+     * about is no better than the guess it replaces.
+     */
+    private static boolean standing(ServerLevel level, Path folder, List<Part> parts, BlockPos corner) {
+        if (parts.isEmpty()) return false;
+        // The pieces are read lowest band first, then by z, then by x: the first is the cut's own low corner.
+        Part ground = parts.get(0);
+        List<Probe> probes = probes(folder, ground);
+        if (probes.isEmpty()) return false;
+        BlockPos at = corner.offset(ground.dx(), ground.dy(), ground.dz());
+        int seen = 0;
+        int found = 0;
+        for (Probe probe : probes) {
+            BlockPos block = at.offset(probe.x(), probe.y(), probe.z());
+            if (level.getChunkSource().getChunk(block.getX() >> 4, block.getZ() >> 4, ChunkStatus.FULL, false) == null) {
+                continue;
+            }
+            seen++;
+            if (BuiltInRegistries.BLOCK.getKey(level.getBlockState(block).getBlock()).toString()
+                    .equals(probe.block())) {
+                found++;
+            }
+        }
+        return seen > 0 && found * 2 >= seen;
+    }
+
+    /** A dozen of a piece's own blocks, read out of its file and kept, because a city is decided more than once. */
+    private static List<Probe> probes(Path folder, Part part) {
+        List<Probe> known = PROBES.get(part.name());
+        if (known != null) return known;
+        List<Probe> probes = readProbes(folder, part);
+        PROBES.put(part.name(), probes);
+        return probes;
+    }
+
+    /**
+     * The samples themselves: non-air blocks from the inside of the piece, taken across the whole file with a stride,
+     * and blocks from its surface only when it has nothing inside it to ask about.
+     */
+    private static List<Probe> readProbes(Path folder, Part part) {
+        try {
+            CompoundTag tag = raw(folder, part.name());
+            ListTag palette = tag.getList("palette").orElseGet(ListTag::new);
+            ListTag blocks = tag.getList("blocks").orElseGet(ListTag::new);
+            if (palette.isEmpty() || blocks.isEmpty()) return List.of();
+            String[] names = new String[palette.size()];
+            for (int index = 0; index < palette.size(); index++) {
+                names[index] = palette.getCompoundOrEmpty(index).getStringOr("Name", "");
+            }
+            List<Probe> inside = new ArrayList<>();
+            List<Probe> anywhere = new ArrayList<>();
+            int stride = Math.max(1, blocks.size() / (STANDING_SAMPLES * 16));
+            for (int index = 0; index < blocks.size(); index += stride) {
+                CompoundTag block = blocks.getCompoundOrEmpty(index);
+                int state = block.getIntOr("state", -1);
+                if (state < 0 || state >= names.length) continue;
+                if (names[state].endsWith("air")) continue;
+                ListTag pos = block.getList("pos").orElseGet(ListTag::new);
+                if (pos.size() < 3) continue;
+                Probe probe = new Probe(pos.getIntOr(0, 0), pos.getIntOr(1, 0), pos.getIntOr(2, 0), names[state]);
+                if (anywhere.size() < STANDING_SAMPLES) anywhere.add(probe);
+                if (inside.size() < STANDING_SAMPLES && probe.y() >= INSIDE && probe.x() >= INSIDE
+                        && probe.z() >= INSIDE && probe.x() < part.wide() - INSIDE
+                        && probe.z() < part.deep() - INSIDE) {
+                    inside.add(probe);
+                }
+            }
+            List<Probe> chosen = inside.size() * 2 >= STANDING_SAMPLES ? inside : anywhere;
+            return List.copyOf(chosen);
+        } catch (IOException | RuntimeException unreadable) {
+            LOGGER.warn("Rivendell: the cut could not be read to see whether the city stands: {}",
+                    unreadable.getMessage());
+            return List.of();
+        }
     }
 
     /**
@@ -695,7 +811,7 @@ public final class CityCommands {
         Mark planted = read(folder);
         if (planted != null) return planted;
         List<Part> parts = parts(folder);
-        BlockPos built = generated(level, parts);
+        BlockPos built = generated(level, folder, parts);
         if (built == null) return null;
         return new Mark(built, bands(parts).size(), false, level.dimension().identifier().toString());
     }
@@ -749,9 +865,14 @@ public final class CityCommands {
             BlockPos corner = mine ? mark.origin() : null;
             if (corner == null) {
                 // The chunk is not made here, only looked for: a tick that ran whenever a player was anywhere near
-                // the valley must never generate a few hundred chunks of it to find out whether it holds a city.
+                // the valley must never generate a few hundred chunks of it to find out whether it holds a city. What
+                // is looked for is the city and not the plan of one: a start alone is a world that planted the cut
+                // somewhere and laid nothing, and dressing the ground round that is dressing round an empty valley.
                 BlockPos built = wouldGenerate(level);
-                if (built != null && cutStandsAt(level, built, false)) corner = built;
+                if (built != null && cutStandsAt(level, built, false)
+                        && standing(level, folder(level), parts(folder(level)), built)) {
+                    corner = built;
+                }
             }
             PLANTED = corner;
         } catch (IOException unreadable) {
@@ -826,7 +947,7 @@ public final class CityCommands {
             // the world already built this one. In the valley the corner comes from the pin rather than from the
             // caller's feet, so a hand planting over a generated city would land on the same blocks - and lay
             // every one of them again, a hundred megabytes of templates, to no purpose.
-            BlockPos built = generated(level, parts);
+            BlockPos built = generated(level, folder, parts);
             if (built != null) {
                 String where = Box.of(parts, built).spoken();
                 source.sendFailure(Component.literal("This world generated the city itself, at " + where
