@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Plan a road from its two ends instead of walking a hundred marks between them.** A route's way is now worked out
+          from the drawing: `RoadPlan` reads `ArdaMap.sample` - the same function the chunk generator builds the ground
+          from, and one that answers for country no chunk has made - at sixteen blocks a lane across a corridor a hundred
+          and ninety-two blocks either side of the straight line, and every step pays for the rise it takes over a grade
+          of 0.35, for the turn it makes and for each lane of drawn river it would cross. Nothing in that reads a block or
+          generates a chunk, so the old forest road's three and a half thousand blocks cost about seven thousand noise
+          reads - milliseconds - where the pass's own search for that length is a bounding box of ten million candidates
+          against a budget of six hundred thousand. Past the budget the walk gives up and lays the straight line, which is
+          why a long road could not be walked at all without marks every forty blocks: the plan leaves a bend every three
+          hundred and twenty, which is what keeps each leg short enough for the pass's own search to refine it against the
+          ground the world actually has, and it is the only thing the ammolite pins were doing. Water comes out of the same
+          read: a run of river on the chosen line becomes a `Route.Crossing` whose axis is the way the road is travelling
+          there, whose banks are the first dry columns either side, whose water top is the highest the run is given and
+          whose deck stands two over it - the rule both walked spans were built to - and the road comes out as the sections
+          it is made of, dry, span, dry, each of which the pass already knows how to lay. A span is refused past ninety-six
+          columns, and the log names the stretch and its width rather than raising a viaduct nobody surveyed. `Roads.wander`
+          gives a planned road a thirty-two block search window against a walked one's ninety-six, so a leg reads the hem
+          either side of it - about ninety chunks - instead of the four hundred the old window did. `/tmroad plan <x> <z>`
+          says what a road would be and lays nothing; `/tmroad build <x> <z>` starts a pass for each section, stepped by the
+          world as its chunks load, with `wild`, `wide` or `main` after the coordinates for the width.
+- **The walked network is erased, and the hold's road is the first that will be planned.** Every route written out by
+          hand is gone from `Roads`: the valley's road and its crossing, Elladan's branch, the Thorenhad road, Barachen's
+          camp, the wood ruin and its link, the mountain way, the ford way, the three cave roads, the high pass road, its
+          bridge and the climb, Glóin's road, its stream crossing and the road east, the old forest road with both of its
+          fords - and the bend table, the kinds, the cuttings and the banded list that went with them, four hundred lines of
+          surveyed ground whose numbers a plan answers for now. The builds are still standing, so the network is rebuilt by
+          revisiting them: one block to leave from, one to arrive at, and the country between the two read from the map.
+          `Roads.ROUTES` is therefore empty in a fresh world, and a road is in it because it was planned - named in the
+          code, as Gundabad's is, or planned at a build and remembered for the run. Gundabad's route keeps its two null
+          marks: with either unset the plan returns nothing and the road never appears, which is the silence the route had
+          before, and those two blocks are still the whole of the survey it needs.
 - **Write the Gundabad road's code side, with its two ends left for the scout's marks.** The hold's road now has a name -
           `tolkienmobs:roads/gundabad_road` - a route, a slot in the bend map and a kind, so that the walk down out of the
           valley has something to be written against and the road can be judged on foot the moment it exists. The two ends

@@ -4,7 +4,8 @@ The working state of the campaign, written so a session picking this up cold doe
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
-**Last touched:** 17 November 2026 - the mustering halls are pinned per town and raise themselves, the marks the world
+**Last touched:** 18 November 2026 - every walked road is erased and a road is now planned from its two ends by
+`RoadPlan`, compiled and **not yet run in game**; the state before that was 17 November - the mustering halls are pinned per town and raise themselves, the marks the world
 draws are behind one client switch that ships on, and the Shire's south cliff is dressed by a new bank rule that has not
 run yet; and the Carrock is cut, trimmed of its base plate, pinned at 8307, 187, -4165 and stood there by the world on
 the first start. **Signed off in game that day:** Hobbiton's hall (and its pin, now in `Pins.SOURCE`) and every quest mark, icon
@@ -30,7 +31,7 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | # | Item | Status | Where the detail is |
 |---|------|--------|---------------------|
 | 1 | **Carn Dûm's ground** - the camps on its borders and the wight's hall | **next** | nothing has looked at it yet; `carndum` is only a place canon'd to `ANGMAR` |
-| 2 | **The roads from Glóin's camp to Gundabad** | not started | work the line out from the map; `/tmroad` is the tool |
+| 2 | **The roads** - the whole network, rebuilt from two ends per road | **next**: one build at a time | every walked route is erased; `RoadPlan`, `/tmroad plan`/`build`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
 | 5 | **The keep's placement** | on hold | `docs/gundabad-keep.md` |
@@ -40,6 +41,24 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **south edge re-cut, awaiting a restart**; joins unseen | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
 | 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands and was called perfect; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
 | 11 | **The Carrock** - the shaped rock in the Anduin | cut, base plate trimmed, pinned at 8307, 187, -4165, **stood by the world on the first start** and bedded into the river with stone; not seen standing yet | `Carrock`, `Pins.SOURCE`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
+
+## 18 November 2026 - the roads are planned, not walked
+
+- **The walked network is erased.** `Roads.ROUTES` is empty, and with it the bend table, the kinds, the cuttings, the banded
+  list and the build names: the valley's road and its crossing, the Thorenhad road, Elladan's branch, Barachen's camp, the
+  wood ruin and its link, the mountain way, the ford way, the three cave roads, the high pass road with its bridge and its
+  climb, Glóin's road with its stream crossing and the road east, and the old forest road with both of its fords. The
+  builds are all still standing, so the network comes back one place at a time.
+- **A road is now two ends and a plan.** `RoadPlan` walks the drawing - `ArdaMap.sample`, sixteen blocks a lane, ±192 wide -
+  and prices grade over 0.35, turn, and river depth. No chunk is read or generated to plan one, and it leaves a bend every
+  320 blocks so the pass's own search only has to sit each leg on the ground. Water on the chosen line becomes a
+  `Route.Crossing` with its banks from the drawn ground and its deck two over the drawn water.
+- **To build one:** stand at the end it leaves from, `/tmroad plan <x> <z>` to see the sections (nothing is laid), and
+  `/tmroad build <x> <z>` to lay them - the world steps each pass while the ground under its head is loaded. `wild`, `wide`
+  or `main` after the coordinates sets the width; `wide` is the default.
+- **Not seen in game.** The planner has only been compiled. The first test is one build, one target, one road - and the
+  numbers to watch in the log are `Road plan <id>: <section>, <x>, <z> to <x>, <z>, <n> bends` and, from the pass,
+  `searched` rather than `straight`.
 
 ## 17 November 2026 - the halls, the marks' switch, and the south edge
 

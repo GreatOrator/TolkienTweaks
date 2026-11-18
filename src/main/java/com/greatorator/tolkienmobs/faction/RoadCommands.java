@@ -1,8 +1,11 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -225,7 +228,19 @@ public final class RoadCommands {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         dispatcher.register(Commands.literal("tmroad")
                 .requires(MAY_BUILD)
-                .then(Commands.literal("build").executes(RoadCommands::build))
+                .then(Commands.literal("build")
+                        .executes(RoadCommands::build)
+                        .then(Commands.argument("minx", IntegerArgumentType.integer())
+                                .then(Commands.argument("minz", IntegerArgumentType.integer())
+                                        .executes(RoadCommands::buildHere)
+                                        .then(Commands.argument("kind", StringArgumentType.word())
+                                                .executes(RoadCommands::buildHere)))))
+                .then(Commands.literal("plan")
+                        .then(Commands.argument("minx", IntegerArgumentType.integer())
+                                .then(Commands.argument("minz", IntegerArgumentType.integer())
+                                        .executes(RoadCommands::planHere)
+                                        .then(Commands.argument("kind", StringArgumentType.word())
+                                                .executes(RoadCommands::planHere)))))
                 .then(Commands.literal("forget").executes(RoadCommands::forget)));
     }
 
@@ -293,6 +308,78 @@ public final class RoadCommands {
         source.sendSuccess(() -> Component.literal("Forgot the road at " + route.id()
                 + " - the next pass walks it again."), true);
         return 1;
+    }
+
+    /**
+     * A road planned between the caller's own block and a block they name.
+     * <p>
+     * This is the whole of the survey a road needs now: stand where it should leave, name where it should arrive, and
+     * {@link RoadPlan} reads the drawing for the country between them - the way round the hills, the legs the pass will
+     * search, and every span the water needs. {@code plan} says what it found and lays nothing, which is how a route is
+     * judged before any ground is moved. {@code build} starts a pass for each section, which the world steps while the
+     * ground under its head is loaded, so the road fills in behind the walk rather than freezing the server for a
+     * road's worth of blocks.
+     */
+    private static int planned(CommandContext<CommandSourceStack> context, boolean lay) {
+        CommandSourceStack source = context.getSource();
+        BlockPos from = BlockPos.containing(source.getPosition());
+        int x = IntegerArgumentType.getInteger(context, "minx");
+        int z = IntegerArgumentType.getInteger(context, "minz");
+        Roads.Kind kind = kind(context);
+        String id = "tolkienmobs:roads/planned_" + from.getX() + "_" + from.getZ() + "_" + x + "_" + z;
+        List<Route> sections = RoadPlan.of(id, kind, from, new BlockPos(x, from.getY(), z));
+        if (sections.isEmpty()) {
+            source.sendFailure(Component.literal("A road needs two ends, and both of those blocks are unset."));
+            return 0;
+        }
+        for (Route section : sections) saySection(section);
+        if (lay) {
+            // Every section joins the world before any of them is begun, because a road's grade asks where the spans are
+            // before it arrives on one, and a span that arrived afterwards would be a step at its own bank.
+            for (Route section : sections) Roads.remember(section);
+            for (Route section : sections) pass(source.getLevel(), section, from.getX(), from.getZ());
+        }
+        String how = lay ? "laid as the world steps it" : "planned, nothing laid";
+        source.sendSuccess(() -> Component.literal("Road " + id + " from " + from.getX() + ", " + from.getZ()
+                + " to " + x + ", " + z + ": " + sections.size() + " section" + (sections.size() == 1 ? "" : "s")
+                + " at " + kind.blocks() + " wide, " + how + "."), true);
+        return 1;
+    }
+
+    /** What one section of a planned road is, in the log: its ends and its bends, or its span and its deck. */
+    private static void saySection(Route section) {
+        if (section instanceof Route.Crossing span) {
+            LOGGER.info("Road plan {}: span {}, {} to {}, {}, deck {}", section.id(), span.bankX(), span.bankZ(),
+                    span.farX(), span.farZ(), span.deckY());
+            return;
+        }
+        Route.Riverless dry = (Route.Riverless) section;
+        LOGGER.info("Road plan {}: {}, {} to {}, {}, {} bends", section.id(), dry.pathX(), dry.pathZ(), dry.farX(),
+                dry.farZ(), Roads.bends(section).size());
+    }
+
+    /** The width a planned road is asked for: five by default, which is how every walked line here was laid. */
+    private static Roads.Kind kind(CommandContext<CommandSourceStack> context) {
+        String named;
+        try {
+            named = StringArgumentType.getString(context, "kind");
+        } catch (IllegalArgumentException absent) {
+            return Roads.Kind.WILD_WIDE;
+        }
+        return switch (named.toLowerCase(java.util.Locale.ROOT)) {
+            case "wild" -> Roads.Kind.WILD;
+            case "main" -> Roads.Kind.MAIN;
+            case "urban" -> Roads.Kind.URBAN;
+            default -> Roads.Kind.WILD_WIDE;
+        };
+    }
+
+    private static int planHere(CommandContext<CommandSourceStack> context) {
+        return planned(context, false);
+    }
+
+    private static int buildHere(CommandContext<CommandSourceStack> context) {
+        return planned(context, true);
     }
 
     /** The road itself, without a sender to answer: the pass the hand runs and the world runs for it. */
@@ -453,6 +540,11 @@ public final class RoadCommands {
             if (!level.hasChunkAt(new BlockPos(x, y, z))) continue;
             if (x >= route.cityX0() && x <= route.cityX1() && z >= route.cityZ0() && z <= route.cityZ1()) continue;
             if (Roads.water(x, z, CROSSING_ACROSS) != null) continue;
+            // A station over the drawn river is the crossing's whether or not this run knows the span: a planned road's
+            // bridge is a section the plan made, and the plan is not in the save, so without this a good road would be
+            // doubted at every station it laid in the water - once per start, which is exactly the re-walk this file's
+            // note is meant to avoid.
+            if (ArdaMap.sample(x, z).river()) continue;
             read++;
             var laid = surface(route, x, z).getBlock();
             boolean there = false;
@@ -1172,8 +1264,6 @@ public final class RoadCommands {
      * It falls back to the straight line if the search finds nothing, so the command always lays something.
      */
     private static final class Descent {
-        /** How far a walk may wander off the straight line between its ends before it is out of bounds. */
-        private static final int MARGIN = 96;
         /** The most candidates one search may hold: past it the window narrows, then the line goes straight. */
         private static final long WINDOW = 600_000L;
         /** The least of them a walk may settle before it gives up, so a narrow window is never cut short by its size. */
@@ -1253,7 +1343,7 @@ public final class RoadCommands {
             this.outZ = out[1];
             int fromX = startX + outX * RUN_OUT;
             int fromZ = startZ + outZ * RUN_OUT;
-            int[] bounds = window(fromX, fromZ, goalX, goalZ);
+            int[] bounds = window(fromX, fromZ, goalX, goalZ, Roads.wander(route));
             if (bounds == null) {
                 this.x0 = 0;
                 this.x1 = 0;
@@ -1323,7 +1413,7 @@ public final class RoadCommands {
         }
 
         /**
-         * The box the search may walk in: the two ends, and {@link #MARGIN} blocks either side of them.
+         * The box the search may walk in: the two ends, and {@link Roads#wander} blocks either side of them.
          * <p>
          * The window used to be the valley's own constants. It is the route's now, because a road between two builds
          * is wherever those builds are - so it is measured from the ends, and halved while it would hold more
@@ -1332,12 +1422,12 @@ public final class RoadCommands {
          *
          * @return x0, x1, z0, z1, or null when no window fits
          */
-        private static int[] window(int startX, int startZ, int goalX, int goalZ) {
-            for (int margin = MARGIN; margin >= 8; margin /= 2) {
-                int x0 = Math.min(startX, goalX) - margin;
-                int x1 = Math.max(startX, goalX) + margin;
-                int z0 = Math.min(startZ, goalZ) - margin;
-                int z1 = Math.max(startZ, goalZ) + margin;
+        private static int[] window(int startX, int startZ, int goalX, int goalZ, int margin) {
+            for (int width = margin; width >= 8; width /= 2) {
+                int x0 = Math.min(startX, goalX) - width;
+                int x1 = Math.max(startX, goalX) + width;
+                int z0 = Math.min(startZ, goalZ) - width;
+                int z1 = Math.max(startZ, goalZ) + width;
                 if ((long) (x1 - x0 + 1) * (z1 - z0 + 1) <= WINDOW) return new int[]{x0, x1, z0, z1};
             }
             return null;
