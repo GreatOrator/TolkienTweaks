@@ -5,7 +5,9 @@ then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
 **Last touched:** 18 November 2026 - every walked road is erased and a road is now planned from its two ends by
-`RoadPlan`, compiled and **not yet run in game**; the state before that was 17 November - the mustering halls are pinned per town and raise themselves, the marks the world
+`RoadPlan`, kept in the save and laid from that plan; **one road has been laid in a world and it was laid under a river**,
+the plan now reads its line a block at a time to find the water, and that fix has **not been run yet**; the state before
+that was 17 November - the mustering halls are pinned per town and raise themselves, the marks the world
 draws are behind one client switch that ships on, and the Shire's south cliff is dressed by a new bank rule that has not
 run yet; and the Carrock is cut, trimmed of its base plate, pinned at 8307, 187, -4165 and stood there by the world on
 the first start. **Signed off in game that day:** Hobbiton's hall (and its pin, now in `Pins.SOURCE`) and every quest mark, icon
@@ -31,7 +33,7 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | # | Item | Status | Where the detail is |
 |---|------|--------|---------------------|
 | 1 | **Carn Dûm's ground** - the camps on its borders and the wight's hall | **next** | nothing has looked at it yet; `carndum` is only a place canon'd to `ANGMAR` |
-| 2 | **The roads** - the whole network, rebuilt from two ends per road | **next**: one build at a time | every walked route is erased; `RoadPlan`, `/tmroad plan`/`build`; see 18 November below |
+| 2 | **The roads** - the whole network, rebuilt from two ends per road | **next**: one build at a time; the first road laid went under a river, the fix is compiled and unrun | every walked route is erased; `RoadPlan`, `/tmroad plan`/`build`/`pin`, `road_plans`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
 | 5 | **The keep's placement** | on hold | `docs/gundabad-keep.md` |
@@ -44,6 +46,13 @@ brand-new world is drawn. Work stopped here to go to a side project.
 
 ## 18 November 2026 - the roads are planned, not walked
 
+Six commits on `main`, none pushed: `f1c7497e` the planner and the erased network, `408426c7` a crossing it will not
+bridge refusing and its banks taken from the run's ends, `28421690` the width read from the ground, `eb308473` the plan
+kept in the save and a failed leg laying nothing, `cbab2367` both ends named and refusals said in the chat, `63e3eeb0` the
+line read a block at a time so a river is bridged. Every one compiled with
+`./gradlew compileJava -x createMinecraftArtifacts -q`. **One road has been laid in a world, and it was laid wrong** - see
+*Still open from tonight*.
+
 - **The walked network is erased.** `Roads.ROUTES` is empty, and with it the bend table, the kinds, the cuttings, the banded
   list and the build names: the valley's road and its crossing, the Thorenhad road, Elladan's branch, Barachen's camp, the
   wood ruin and its link, the mountain way, the ford way, the three cave roads, the high pass road with its bridge and its
@@ -53,34 +62,58 @@ brand-new world is drawn. Work stopped here to go to a side project.
   and prices grade over 0.35, turn, and river depth. No chunk is read or generated to plan one, and it leaves a bend every
   320 blocks so the pass's own search only has to sit each leg on the ground. Water on the chosen line becomes a
   `Route.Crossing` with its banks from the drawn ground and its deck two over the drawn water.
-- **To build one:** stand at the end it leaves from, `/tmroad plan <x> <z>` to see the sections (nothing is laid), and
-  `/tmroad build <x> <z>` to lay them - the world steps each pass while the ground under its head is loaded. **The width is
+- **Three commands, one road.** `/tmroad plan <x> <z> [kind]` reads the country and says the sections, laying nothing;
+  `/tmroad build <x> <z> [kind]` lays them from the block underfoot; `/tmroad pin <x> <z> <x> <z> [kind]` lays them from
+  two named ends, so a leg is pinned by the ground it crosses and the same command answers the same road from anywhere -
+  and two ends on one block are refused by name. The world steps each pass while the ground under its head is loaded, so a
+  pass whose head is not loaded waits where it stands and the ground begins it again. **The width is
   automatic:** start on a town's ground (Hobbiton or Rivendell, or the approach out of either) and the road takes the bands -
   7 paved inside 32 blocks, 5 through 96, 3 beyond - and anywhere else it is a wild track 3 wide. The word after the
   coordinates overrides that: `wild` 3, `wide` 5, `main` 7 of country surface, `urban` 7 paved everywhere, `town` the bands
-  wherever it starts. First test, standing at Glóin's camp's road end at 8231, -3641 and aiming at the Old Ford's far side:
-  `/tmroad plan 8539 -3668` then `/tmroad build 8539 -3668` - about three hundred blocks of wild track with one span, and the
-  log has to name a bank near the old 8520/8481 pair.
+  wherever it starts. The worked example, from Glóin's camp's road end at 8231, -3641: `/tmroad plan 8539 -3668` then
+  `/tmroad pin 8231 -3641 8539 -3668` - about three hundred blocks of wild track with one span, and the log has to name a
+  bank near the old 8520/8481 pair. That is the leg whose first laying went under the Ford, so it is the one to try again
+  after `RoadPlan.dense`.
 - **A crossing it will not bridge lays nothing.** Water wider than 96 columns, no bank within 96 blocks, or a run that turns
   back on itself refuses the whole road and says why - in the command's answer, and in the log for a road the world asked
   for. The span's banks are taken from the two ends of the river run (back from where the road meets water, on from where it
   leaves it), not from the run's middle.
-- **Not seen in game.** The planner has only been compiled. The first test is one build, one target, one road - and the
-  numbers to watch in the log are `Road plan <id>: <section>, <x>, <z> to <x>, <z>, <n> bends` and, from the pass, whether
-  the road was laid or `nothing laid` with the leg that refused it.
-- **Watched for in game:** the first road laid went under a river instead of over it. The plan now reads the line a block
-  at a time (`RoadPlan.dense`), so a channel that fell between two sixteen-block samples is found and bridged; a leg along
-  a water's edge now refuses by the width it would bridge. What to look for in the chat: `N sections` with a `span …, deck …`
-  line in the log instead of one section from end to end. Anything already laid under water stays - forgetting a road
-  clears its notes, it does not take its blocks back out.
-- **Both ends of a leg can be named.** `/tmroad pin <x> <z> <x> <z> [kind]` lays the same road `build` does without
-  reading the block underfoot, so a leg pinned at one end is the leg built from anywhere; two ends on the same block are
-  refused by name. A refusal now also arrives in the chat of anyone within 128 blocks of the road, and a pass whose step
-  throws is a warning in the log instead of a silence.
-- **A planned road survives a restart.** The plan is kept in `road_plans` beside the road notes and read back at server
-  start, so a road laid in an earlier session is still there to find with `/tmroad forget` and to lay again. A leg whose
-  search finds nothing now lays nothing at all: no grading, no note saying the road is down, and the reason in the log and
-  in the command's answer.
+- **A leg the search cannot walk lays nothing.** No straight fallback survives: the whole road is given up, nothing is
+  graded, no note is written saying it is down (so it can be planned again over better ground), and the leg, its two ends
+  and the reason go to the log and - within 128 blocks of the road - to the chat. `Descent.why` tells the two faults apart:
+  a leg longer than one window of the search wants another mark in it, ground with no way through it is country the road
+  cannot cross at all. A pass whose step throws was swallowed by the tick that carries it; that is a warning in the log
+  now.
+- **A planned road survives a restart.** The plan is kept in `road_plans` beside the road notes - its sections, their
+  kinds, their spans and their bends - and read back at server start into the tables the pass asks, after the previous
+  world's planned roads have been taken back out. A road laid in an earlier session is still there to find with
+  `/tmroad forget` and to lay again, and the start writes `Roads: N planned sections read back from the save` when it does.
+
+### Still open from tonight
+
+- **The bridge has not been seen.** The first road laid in a world went under a river more than four blocks deep with no
+  span over it: the plan was cut into sections from water read at the sixteen-block steps, and the channel fell between two
+  dry samples. `RoadPlan.dense` now reads every block of the line, water being a column the drawing gives a bed below its
+  own surface. **The check:** `/tmroad forget` on the bad road, re-pin the leg with fresh ends, and look for more than one
+  section in the chat and a `Road plan <id>: span …, deck …` line in the log. If it still comes out as one section, the
+  water test itself is wrong for that channel - `sample.river()` false where the world has water - and `ArdaMap.column` is
+  the next thing to read.
+- **The ground already laid under water stays.** Forgetting a road clears its notes, not its blocks; the causeway has to be
+  filled in by hand or the new road laid beside it.
+- **No restart has been tested at all.** `road_plans.dat` has never been written and read back in a world. The check is one
+  start: the log line, then `/tmroad forget` while standing on a road laid before the stop, then the command again.
+- **A re-pinned road keeps sections it no longer has.** A section planned at the same two ends replaces the one the world
+  held (`Roads.remember`), but a plan whose old shape had a bridge the new one lacks leaves the old bridge section in
+  `ROUTES` for the session and in `road_plans` for ever - and it will be laid. **There is no whole-road forget:**
+  `/tmroad forget` clears the nearest section only, so the missing command is one that forgets a plan and every section of
+  it.
+- **A leg along a river now refuses.** Reading the water a block at a time means a leg that runs beside the water rather
+  than across it refuses by the width it would bridge. True as an answer, poor as a road: the next thing to try is
+  stepping the line inland along a bank rather than giving the leg up.
+- **`plan` is a look, not a plan.** Nothing is written to `road_plans` by it, so a road surveyed before a restart has to be
+  surveyed again.
+- **Untimed.** The planner reads one sample per lane per step and now every block of the chosen line; nothing has measured
+  a long leg on a live server, and a four-thousand-block pin is the one to try.
 
 ## 17 November 2026 - the halls, the marks' switch, and the south edge
 
