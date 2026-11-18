@@ -132,8 +132,20 @@ line read a block at a time so a river is bridged. Every one compiled with
   (every section whose id begins with it, from the passes, the list and `road_plans`) and a planned section with no note
   is never begun by the world - it waits for a command, while a road begun and unfinished still resumes. **The check on
   the existing mess:** stand near the old road and forget twice, once per road - each reply names the road and says how
-  many sections went - then delete the regions and pin once; nothing else should lay. Then restart and confirm no planned
+  many sections went - then delete the regions and pin once;   nothing else should lay. Then restart and confirm no planned
   road begins by itself before a command is given.
+- **A channel was crossed twice, and the walk will not dip in and out again - unrun.** The same road's single clean plan
+  (one plan, one pass per section, 05:07) still held two spans over one channel: `bridge_1` 11759, -3882 to 11710, -3882
+  and `bridge_2` 11739, -3908 to 11685, -3908, joined by `_2` running *east* from 11694, -3882 to 11755, -3908 - a
+  hairpin, and what looked like two roads and two bridges were the plan's own doubled crossing (the save has decks at
+  z -3885..-3879 and z -3911..-3905, no third plan). The lane walk priced water per sixteen-block step, so a dip into the
+  channel's edge and back out was cheap. It now keeps the count of dry lanes since the water in its own state and prices
+  water met inside `DRY_AFTER_CROSSING` (4 lanes) at `CROSS_AGAIN` on top of the toll. **The check:** `/tmroad forget`,
+  then the same build again - the plan should name *one* span over that channel instead of two, and no section should
+  run east between two spans. The old decks stay standing: the sweep only clears timber inside a span's own box, so
+  clear the ground at 11680..11760, -3920..-3870 before judging what the new one looks like. A port of the walk over a
+  channel with an island in it takes one run under the new rule and two under the old; the drawing itself has not been
+  re-planned.
 - **A leg along a river now refuses.** Reading the water a block at a time means a leg that runs beside the water rather
   than across it refuses by the width it would bridge. True as an answer, poor as a road: the next thing to try is
   stepping the line inland along a bank rather than giving the leg up.

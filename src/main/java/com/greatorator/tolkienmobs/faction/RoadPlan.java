@@ -72,6 +72,24 @@ final class RoadPlan {
      * decides where a road crosses: this toll is the whole of that decision.
      */
     private static final double RIVER_TOLL = 220.0D;
+    /**
+     * How many lanes of dry ground a road keeps to after it has left water before it will cross again.
+     * <p>
+     * A channel is crossed once. Left and met again two lanes later, water is not a second river but the same one the
+     * road has just come out of - the walk dipped into its edge, climbed out on the same bank and waded in again - and
+     * what that plans is two bridges side by side and a stretch of road that doubles back between them. Four lanes is
+     * sixty-four blocks, which is clear of a bend in a channel and short of a second river worth crossing.
+     */
+    private static final int DRY_AFTER_CROSSING = 4;
+    /**
+     * What a lane of water met inside {@link #DRY_AFTER_CROSSING} costs, on top of the toll.
+     * <p>
+     * Priced rather than forbidden: a road with no way round still has to be laid, and a walk that cannot finish is a
+     * road given up entirely. The number is large enough that nothing the walk could do about it - a couple of lanes
+     * shifted, a bank followed, the deepest part of the channel met once - can compete with it, so the crossing happens
+     * once wherever the country allows it at all.
+     */
+    private static final double CROSS_AGAIN = 12000.0D;
     /** How far apart the bends a planned road is laid through are, in blocks. */
     private static final int MARK = 320;
     /** How far either side of a river's middle the plan will look for dry ground, in blocks. */
@@ -236,42 +254,67 @@ final class RoadPlan {
             }
         }
 
-        // The walk itself: every lane of every step, priced from the cheapest lane of the step before it.
-        double[][] cost = new double[steps][lanes];
-        int[][] came = new int[steps][lanes];
+        // The walk itself: every lane of every step, priced from the cheapest lane of the step before it, and every
+        // one of them in one of a few states - wet, or dry with the count of dry steps since the water, held at the
+        // reach a crossing is given. The state is what keeps the road from dipping into a channel and climbing out
+        // again: water met before it has been dry {@link #DRY_AFTER_CROSSING} lanes is the channel it has just crossed,
+        // and is priced as a second bridge over it. Nothing is forbidden outright - the walk has to finish for the road
+        // to be planned at all - but nothing the walk could do about it competes with that price.
+        int longest = DRY_AFTER_CROSSING + 1;
+        double[][] cost = new double[longest][lanes];
+        int[][][] came = new int[steps][longest][lanes];
         for (double[] row : cost) Arrays.fill(row, Double.MAX_VALUE);
-        for (int[] row : came) Arrays.fill(row, -1);
-        cost[0][middle] = 0.0D;
+        for (int[][] states : came) for (int[] row : states) Arrays.fill(row, -1);
+        cost[drawn[middle][4] == 1 ? 0 : DRY_AFTER_CROSSING][middle] = 0.0D;
         for (int step = 1; step < steps; step++) {
+            double[][] next = new double[longest][lanes];
+            for (double[] row : next) Arrays.fill(row, Double.MAX_VALUE);
             for (int lane = 0; lane < lanes; lane++) {
                 int[] here = drawn[step * lanes + lane];
-                double cheapest = Double.MAX_VALUE;
-                int best = -1;
+                boolean wet = here[4] == 1;
+                double toll = wet ? RIVER_TOLL * (1.0D + Math.max(0, here[3] - here[2])) : 0.0D;
                 for (int back = -SHIFT; back <= SHIFT; back++) {
                     int was = lane + back;
                     if (was < 0 || was >= lanes) continue;
-                    double before = cost[step - 1][was];
-                    if (before == Double.MAX_VALUE) continue;
                     int[] there = drawn[(step - 1) * lanes + was];
                     double rise = Math.abs(here[2] - there[2]);
                     double over = Math.max(0.0D, rise - TARGET_GRADE * LANE);
-                    double price = LANE + GRADE_PENALTY * over * over + TURN_COST * Math.abs(back);
-                    if (here[4] == 1) price += RIVER_TOLL * (1.0D + Math.max(0, here[3] - here[2]));
-                    if (before + price < cheapest) {
-                        cheapest = before + price;
-                        best = was;
+                    double price = LANE + GRADE_PENALTY * over * over + TURN_COST * Math.abs(back) + toll;
+                    for (int state = 0; state < longest; state++) {
+                        double before = cost[state][was];
+                        if (before == Double.MAX_VALUE) continue;
+                        int nextState;
+                        double again = 0.0D;
+                        if (!wet) {
+                            nextState = state == 0 ? 1 : Math.min(DRY_AFTER_CROSSING, state + 1);
+                        } else {
+                            nextState = 0;
+                            // Dry, but not for the reach a crossing is given: this is the water it has just left.
+                            if (state > 0 && state < DRY_AFTER_CROSSING) again = CROSS_AGAIN;
+                        }
+                        double total = before + price + again;
+                        if (total >= next[nextState][lane]) continue;
+                        next[nextState][lane] = total;
+                        came[step][nextState][lane] = was * longest + state;
                     }
                 }
-                cost[step][lane] = cheapest;
-                came[step][lane] = best;
             }
+            cost = next;
         }
-        if (cost[steps - 1][middle] == Double.MAX_VALUE) return null;
+        int endState = -1;
+        for (int state = 0; state < longest; state++) {
+            if (cost[state][middle] == Double.MAX_VALUE) continue;
+            if (endState < 0 || cost[state][middle] < cost[endState][middle]) endState = state;
+        }
+        if (endState < 0) return null;
         int[] lane = new int[steps];
         lane[steps - 1] = middle;
+        int state = endState;
         for (int step = steps - 1; step > 0; step--) {
-            lane[step - 1] = came[step][lane[step]];
-            if (lane[step - 1] < 0) return null;
+            int cameFrom = came[step][state][lane[step]];
+            if (cameFrom < 0) return null;
+            lane[step - 1] = cameFrom / longest;
+            state = cameFrom % longest;
         }
         List<int[]> line = new ArrayList<>(steps);
         for (int step = 0; step < steps; step++) line.add(drawn[step * lanes + lane[step]]);

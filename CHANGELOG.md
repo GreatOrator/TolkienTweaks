@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A channel is crossed once, not waded into and out of.** The old forest road to the far side of the river east of
+          Mirkwood planned two bridges side by side and a section that doubled back between them: `bridge_1` at 11759,
+          -3882 to 11710, -3882, then a dry stretch running *east* from 11694, -3882 to 11755, -3908, then `bridge_2` at
+          11739, -3908 to 11685, -3908 - the same channel, twenty-six blocks apart, crossed twice. The lane walk priced
+          water per sixteen-block step, so touching the channel's edge cost one toll and wading back in two lanes later
+          cost another, and a dip in and out was cheaper than staying on one bank. The walk now carries the count of dry
+          lanes since the water as part of its state: a lane whose ground is dry moves that count on, a wet lane resets it,
+          and water met again before the road has been dry for `DRY_AFTER_CROSSING` (four lanes, sixty-four blocks) is
+          priced at `CROSS_AGAIN` (twelve thousand a step) on top of the toll. It is priced rather than forbidden, because
+          a road with no way round still has to be laid and a walk that cannot finish is a road given up altogether - but
+          nothing a shifted lane or a followed bank can cost competes with it, so the crossing happens once. Checked
+          against a port of the same walk over a drawn channel with an island that splits a straight crossing: the old
+          rule takes two wet runs there, the new one a single run from bank to bank.
 - **A road is forgotten as a road, and a plan waits for its command.** The old forest road planned twice in the
           mountains stood twice: seven sections and three bridges on the first attempt, seven and two on the second, both
           of them laying at once. Two things made that happen. `/tmroad forget` cleared the note of the one section under
