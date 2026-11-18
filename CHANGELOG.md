@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A world that lays no road now says which of the two it is.** Nothing in the log said whether a session held the
+          roads at all: a world whose list was empty, one whose list was full and never touched by a loaded chunk, and
+          one whose road was begun and refused all read the same - silence. The start now says how many sections are in
+          hand beside how many came back from the save, and every pass says the ground it was begun from, once each.
+          Found by a fresh world that laid nothing while the player waited at Rivendell: the logs had no road line in
+          them beyond the save's own count, and the seven network roads are all 380 blocks or more from that city's
+          west edge, so the corridor was never given a chunk of one to begin from.
 - **The network the test world laid is the world's own.** Every road the test world has was pinned there with
           `/tmroad pin` and kept in that world's plan store, so a world made from scratch had none of them. `Roads.NETWORK`
           now names seven of them as the two ends each was pinned between, at the country's own three-wide track: the old

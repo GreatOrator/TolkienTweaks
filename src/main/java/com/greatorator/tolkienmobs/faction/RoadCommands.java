@@ -278,9 +278,10 @@ public final class RoadCommands {
         ServerLevel overworld = event.getServer().getLevel(Level.OVERWORLD);
         if (overworld == null) return;
         int restored = RoadPlans.load(overworld);
-        if (restored > 0) {
-            LOGGER.info("Roads: {} planned section{} read back from the save", restored, restored == 1 ? "" : "s");
-        }
+        // Said whether or not anything was read back: a world that lays no road at all has to be told apart from one
+        // whose roads are not there, and the list in hand is the first of the two answers.
+        LOGGER.info("Roads: {} section{} in hand, {} read back from the save", Roads.ROUTES.size(),
+                Roads.ROUTES.size() == 1 ? "" : "s", restored);
     }
 
     /**
@@ -579,6 +580,9 @@ public final class RoadCommands {
         if (down(level, route)) return null;
         RoadJob made = new RoadJob(route, x, z);
         PASSES.put(route.id(), made);
+        // Said once for each pass, from whichever ground asked for it: a road that was never begun and a road that was
+        // begun and refused look the same in a log otherwise, and both look like nothing laid.
+        LOGGER.info("Road {}: begun from the ground at {}, {}", route.id(), x, z);
         return made;
     }
 

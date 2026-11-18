@@ -163,6 +163,19 @@ line read a block at a time so a river is bridged. Every one compiled with
   hold's road is the first entry of the same table and still has `GUNDABAD_GATE` and
   `GUNDABAD_JOIN` null: pin its two ends in the fresh world with `/tmroad pin`, then paste them in as
   `new BlockPos(x, 0, z)` and delete the two nulls, which is all that road waits for.
+- **Road Test 2 laid nothing, and the reason is where the roads are.** The fresh world was entered at Rivendell
+  (raised at 5200..5753 x, -3370..-2859 z) and left there: the old forest road runs 8229, -3654 to 11813, -3901 and the
+  high pass legs sit at 4515..4819 x, so the nearest road line to the city's west edge is 380 blocks away, and the
+  corridor begins a road only from a chunk of its own recorded line. Nothing refused and nothing errored - the logs had
+  no road line in them beyond `Roads: 11 planned sections read back from the save`, and that line was the old world's.
+  The save's ground agrees: besides Rivendell's own bands, only a narrow strip at x ~4790 for z -2880..-3312 has real
+  chunks, the rest of the arda map along the roads has never been generated, and the old forest road has no region file
+  at all past its west end. Two lines of instrumentation were added so the next start cannot be ambiguous: the start
+  says `Roads: <n> sections in hand, <m> read back from the save`, and each pass says `Road <id>: begun from the ground
+  at <x>, <z>`. **What to check:** launch with those lines, go to 4819, -2887 (Barachen's camp, the one place the ground
+  is generated that G's line touches) and read the log - a `begun from the ground` line means the corridor found it and
+  the road is laying or refused with a reason; no line means the chunk never touched a route. A refusal says why in the
+  chat too, within 128 blocks of the road's own end.
 - **A leg along a river now refuses.** Reading the water a block at a time means a leg that runs beside the water rather
   than across it refuses by the width it would bridge. True as an answer, poor as a road: the next thing to try is
   stepping the line inland along a bank rather than giving the leg up.
