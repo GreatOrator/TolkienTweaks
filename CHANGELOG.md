@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A crossing is read across the water, not down it.** The span's axis was taken from the two ends of the run of water
+          the planned line met - `dx = exit - entry` - and a run is a handful of blocks: a road crossing a north-south
+          channel almost square still comes out with a block or two of travel up the channel in it once the line is
+          rounded to blocks, so the axis came out along the river and both banks were then searched down its length. In
+          the mountains that cost two refusals in one session. The channel at 6471, -3645 is forty columns across and over
+          a hundred along its own course into the wide sheet north of it, so the plan said `no dry ground within 96 blocks`
+          where a bridge forty wide was standing ready; the leg before it was refused as `112 columns wide` at 6422, -3616
+          for the same reason, walking north-west up the same channel. `RoadPlan.cut` now reads the water both ways and
+          `pick` stands the span on the narrower reading, which is the shortest way across the channel and the one the
+          pieces are stood on; the road's own way through decides only when the two readings come to the same width, as a
+          channel crossed at forty-five degrees. A reading that found both banks is the one a refusal is spoken from, since
+          it can say how wide the water is. Compiles; neither refusal has been re-run in a world yet.
 - **A river is found a block at a time, so a road crosses it on a bridge rather than under it.** The first road laid
           in the world went beneath a river more than four blocks deep with no span over it. The plan is priced at steps of
           sixteen blocks - `LANE` - and the water it cuts spans from was read at those steps too, one sample per step of

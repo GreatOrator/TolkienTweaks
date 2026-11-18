@@ -376,29 +376,70 @@ final class RoadPlan {
     /**
      * One span, from the run of river the line met.
      * <p>
-     * The axis is the way the road is travelling when it reaches the water, because that is the way its pieces have to be
-     * stood: a span is on one axis and both approaches are forced onto its line, so a road that arrives diagonally is
-     * walked square for the length of the bridge. The span stands on the line the road *first* meets water on, and its
-     * banks are taken from the two ends of the run - back from the lane the road arrives at, and on from the lane it
-     * leaves by. The middle of a run is no use: a run a few lanes long and a little diagonal has its middle over water
-     * either side of where the road actually crosses, so a span stood there lies at an angle and both approaches have to
-     * be forced onto a line the road never travelled. The water's level is the highest the run is given, so a span clears
-     * the deepest part of the channel rather than its average.
+     * The water is read both ways and the narrower reading is the bridge, because the way a span has to be stood belongs
+     * to the channel rather than to the road. A span is on one axis and both approaches are forced onto its line, so a
+     * road that arrives diagonally is walked square for the length of the bridge - and the short way across is the
+     * bridge. Reading it the road's own way alone goes wrong wherever the run is a few blocks long: the two ends of it
+     * differ by whatever the line's rounding gave, a road crossing a north-south channel almost square still comes out
+     * with a block or two of travel up the channel in it, and a span stood on that difference is measured *down* the
+     * river. That is what refused the mountains' channel at 6471, -3645: forty columns across, a hundred and more down,
+     * and the plan said no dry ground within ninety-six.
+     * <p>
+     * Either reading stands on the line the road *first* meets water on, and takes its banks from the two ends of the
+     * run - back from the lane the road arrives at, and on from the lane it leaves by. The middle of a run is no use: a
+     * run a few lanes long and a little diagonal has its middle over water either side of where the road actually
+     * crosses, so a span stood there lies at an angle and both approaches have to be forced onto a line the road never
+     * travelled. The water's level is the highest the run is given, so a span clears the deepest part of the channel
+     * rather than its average.
      */
     private static Span crossing(String id, List<int[]> line, int began, int ended) {
         int[] entry = line.get(began);
         int[] exit = line.get(ended);
-        int dx = exit[0] - entry[0];
-        int dz = exit[1] - entry[1];
-        if (dx == 0 && dz == 0) {
-            // A run one lane long says nothing about which way the road is going; the lanes either side of it do.
-            int before = Math.max(0, began - 1);
-            int after = Math.min(line.size() - 1, ended + 1);
-            dx = line.get(after)[0] - line.get(before)[0];
-            dz = line.get(after)[1] - line.get(before)[1];
+        boolean travelX = Math.abs(exit[0] - entry[0]) >= Math.abs(exit[1] - entry[1]);
+        Cut chosen = pick(cut(entry, exit, true), cut(entry, exit, false), travelX);
+        if (!chosen.stood()) return new Span(null, chosen.refusal());
+        int deck = Math.max(Math.max(ground(chosen.alongX(), chosen.across(), chosen.bank()),
+                        ground(chosen.alongX(), chosen.across(), chosen.far())),
+                water(chosen.alongX(), chosen.across(), chosen.bank(), chosen.far()) + DECK_OVER_WATER);
+        int approachAlong = chosen.bank() - chosen.step() * EXIT_REACH;
+        boolean alongX = chosen.alongX();
+        int across = chosen.across();
+        int bank = chosen.bank();
+        int far = chosen.far();
+        return new Span(new Route.Crossing(id, 0, 0, 0, 0,
+                alongX ? approachAlong : across, alongX ? across : approachAlong,
+                alongX ? bank : across, alongX ? across : bank,
+                alongX ? far : across, alongX ? across : far,
+                HALF, deck - 2, deck - 1, deck, RUN_IN, EXIT_REACH, END_PIECE, MIDDLE_PIECE), null);
+    }
+
+    /** One reading of a span along one axis: where its banks are, and why it could not be stood. */
+    private record Cut(boolean alongX, int across, int bank, int far, int step, String refusal) {
+        /** Whether a bridge can be stood this way. */
+        boolean stood() {
+            return this.refusal == null;
         }
-        boolean alongX = Math.abs(dx) >= Math.abs(dz);
-        int step = alongX ? (int) Math.signum(dx) : (int) Math.signum(dz);
+
+        /** Whether both banks of this reading were found, which is what lets it say how wide the water is. */
+        boolean banked() {
+            return this.bank != NO_BANK && this.far != NO_BANK;
+        }
+
+        /** How many columns of water a bridge this way would span. */
+        int width() {
+            return Math.abs(this.far - this.bank) + 1;
+        }
+    }
+
+    /**
+     * The water read along one axis: the first dry column either side of the run, and what that comes to.
+     * <p>
+     * Both readings of a crossing are taken, so neither may assume which way the road is going. The axis is the one it
+     * was asked for, and the way along it is the way the run itself runs on that axis, because the bank behind the
+     * entry is the one on the far side of the road's approach.
+     */
+    private static Cut cut(int[] entry, int[] exit, boolean alongX) {
+        int step = alongX ? (int) Math.signum(exit[0] - entry[0]) : (int) Math.signum(exit[1] - entry[1]);
         if (step == 0) step = 1;
         int across = alongX ? entry[1] : entry[0];
         int arrival = alongX ? entry[0] : entry[1];
@@ -406,24 +447,42 @@ final class RoadPlan {
         int bank = dry(alongX, across, arrival, -step);
         int far = dry(alongX, across, departure, step);
         String where = entry[0] + ", " + entry[1];
-        if (bank == NO_BANK) return new Span(null, "no dry ground within " + BANK_SEARCH + " blocks of " + where);
-        if (far == NO_BANK) return new Span(null, "no far bank within " + BANK_SEARCH + " blocks of " + where);
+        if (bank == NO_BANK) {
+            return new Cut(alongX, across, bank, far, step, "no dry ground within " + BANK_SEARCH + " blocks of " + where
+                    + " the way the road goes");
+        }
+        if (far == NO_BANK) {
+            return new Cut(alongX, across, bank, far, step,
+                    "no far bank within " + BANK_SEARCH + " blocks of " + where);
+        }
         if ((far - bank) * step <= 0) {
-            return new Span(null, "the water at " + where + " runs the wrong way across the road");
+            return new Cut(alongX, across, bank, far, step,
+                    "the water at " + where + " runs the wrong way across the road");
         }
         int width = Math.abs(far - bank) + 1;
         if (width > MAX_SPAN) {
-            return new Span(null, "the water at " + where + " is " + width + " columns wide, past the " + MAX_SPAN
-                    + " this will bridge");
+            return new Cut(alongX, across, bank, far, step, "the water at " + where + " is " + width
+                    + " columns wide, past the " + MAX_SPAN + " this will bridge");
         }
-        int deck = Math.max(Math.max(ground(alongX, across, bank), ground(alongX, across, far)),
-                water(alongX, across, bank, far) + DECK_OVER_WATER);
-        int approachAlong = bank - step * EXIT_REACH;
-        return new Span(new Route.Crossing(id, 0, 0, 0, 0,
-                alongX ? approachAlong : across, alongX ? across : approachAlong,
-                alongX ? bank : across, alongX ? across : bank,
-                alongX ? far : across, alongX ? across : far,
-                HALF, deck - 2, deck - 1, deck, RUN_IN, EXIT_REACH, END_PIECE, MIDDLE_PIECE), null);
+        return new Cut(alongX, across, bank, far, step, null);
+    }
+
+    /**
+     * Which reading of the water the bridge is stood on: the narrow one.
+     * <p>
+     * A span is the shortest way across the channel, and the other reading is the one that walks down it - the same
+     * river that is forty columns across is a hundred and more along its own length. When both readings come to the
+     * same width, a channel crossed at forty-five degrees, the road's own way through decides, which is what the plan
+     * did before there were two readings. A reading that found both banks is refused with before one that found none:
+     * it can say how wide the water is, and that is the number the crossing gets decided by hand from.
+     */
+    private static Cut pick(Cut acrossX, Cut acrossZ, boolean travelX) {
+        Cut road = travelX ? acrossX : acrossZ;
+        Cut other = travelX ? acrossZ : acrossX;
+        if (road.stood() && other.stood()) return other.width() < road.width() ? other : road;
+        if (road.stood()) return road;
+        if (other.stood()) return other;
+        return !road.banked() && other.banked() ? other : road;
     }
 
     /** The block a span's approach starts on, or the one its exit stops on, given how its pieces are stood. */

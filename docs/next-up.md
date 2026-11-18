@@ -98,6 +98,16 @@ line read a block at a time so a river is bridged. Every one compiled with
   section in the chat and a `Road plan <id>: span …, deck …` line in the log. If it still comes out as one section, the
   water test itself is wrong for that channel - `sample.river()` false where the world has water - and `ArdaMap.column` is
   the next thing to read.
+- **A crossing was read down the river instead of across it, and that fix is unrun too.** The test world's last two pins
+  (18 November, 04:15 and 04:18) were both refused on the mountains' channel - `the water at 6422, -3616 is 112 columns
+  wide` and `no dry ground within 96 blocks of 6471, -3645` - and the drawn channel there is only forty to fifty-six
+  columns across, so neither refusal was about the water. The span's axis was taken from the run's own two ends, which
+  are a few blocks apart, and a road crossing a north-south channel almost square rounds to a north-south run: the banks
+  were then searched *up* the channel, into the wide sheet that opens north of it (536 columns at z -3560), instead of
+  across it. `RoadPlan.cut` reads both axes now and `pick` takes the narrower standing reading. **The check:** the same
+  two pins again - `6398 -3654` to `6481 -3655` is the short one on the screenshots - and the chat should say `2 sections`
+  with a span of about forty columns rather than nothing at all. If it still refuses, the next thing to read is `dry()`
+  itself: the reading at 6471, -3645 that walks west across the channel should find the west bank at about 6420.
 - **The ground already laid under water stays.** Forgetting a road clears its notes, not its blocks; the causeway has to be
   filled in by hand or the new road laid beside it.
 - **No restart has been tested at all.** `road_plans.dat` has never been written and read back in a world. The check is one
