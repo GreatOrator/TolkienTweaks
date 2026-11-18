@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A refused crossing lays no road at all, and a span takes its banks from the ends of the run it met.** Where the plan
+          would not bridge - no dry ground within ninety-six blocks, water wider than ninety-six columns, or water running
+          the wrong way across the road - it used to hand the route back as one straight line, which is a paved ford nobody
+          chose with the country either side graded down to the riverbed on the way to it. It now answers with nothing and
+          the reason: `/tmroad plan` and `/tmroad build` say it to the hand that asked, and the log says it for a road the
+          world asks for. The banks are no longer found by walking out from the middle of the run either. A run a few lanes
+          long and a little diagonal has its middle over water either side of where the road actually crosses, so a span
+          stood there lies at an angle to the road it carries and both approaches have to be forced onto a line the road
+          never travelled; the near bank is now the last dry column behind the lane the road first meets water on, and the
+          far one the first dry column past the lane it leaves by - the water the road found, and nothing else. A run that
+          turns back on itself is refused rather than given two abutments in the same water. And the three bands a build's
+          road is laid by are now thirty-two and ninety-six blocks from its walls: seven wide of the town's own paving,
+          five of cobble and path through the approach, three of the country's own track beyond - measured from the build's
+          footprint where the road carries one, and from the block it leaves by where it does not, which is the case a
+          planned road is. `/tmroad build <x> <z> town` asks for the bands; `wild`, `wide` and `main` stay one width the
+          whole way.
 - **Plan a road from its two ends instead of walking a hundred marks between them.** A route's way is now worked out
           from the drawing: `RoadPlan` reads `ArdaMap.sample` - the same function the chunk generator builds the ground
           from, and one that answers for country no chunk has made - at sixteen blocks a lane across a corridor a hundred

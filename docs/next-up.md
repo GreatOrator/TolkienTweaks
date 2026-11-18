@@ -54,8 +54,16 @@ brand-new world is drawn. Work stopped here to go to a side project.
   320 blocks so the pass's own search only has to sit each leg on the ground. Water on the chosen line becomes a
   `Route.Crossing` with its banks from the drawn ground and its deck two over the drawn water.
 - **To build one:** stand at the end it leaves from, `/tmroad plan <x> <z>` to see the sections (nothing is laid), and
-  `/tmroad build <x> <z>` to lay them - the world steps each pass while the ground under its head is loaded. `wild`, `wide`
-  or `main` after the coordinates sets the width; `wide` is the default.
+  `/tmroad build <x> <z>` to lay them - the world steps each pass while the ground under its head is loaded. The width comes
+  after the coordinates: `town` for the bands (7 paved at the build, 5 through the approach, 3 out in the country, at 32 and
+  96 blocks), `wild` for 3, `main` for 7, or nothing at all for `wide`, which is 5 and the default. First test, standing at
+  Glóin's camp's road end at 8231, -3641 and aiming at the Old Ford's far side: `/tmroad plan 8539 -3668` then
+  `/tmroad build 8539 -3668` - about three hundred blocks with one span, and the log has to name a bank near the old
+  8520/8481 pair. A settlement asks for `town` instead.
+- **A crossing it will not bridge lays nothing.** Water wider than 96 columns, no bank within 96 blocks, or a run that turns
+  back on itself refuses the whole road and says why - in the command's answer, and in the log for a road the world asked
+  for. The span's banks are taken from the two ends of the river run (back from where the road meets water, on from where it
+  leaves it), not from the run's middle.
 - **Not seen in game.** The planner has only been compiled. The first test is one build, one target, one road - and the
   numbers to watch in the log are `Road plan <id>: <section>, <x>, <z> to <x>, <z>, <n> bends` and, from the pass,
   `searched` rather than `straight`.

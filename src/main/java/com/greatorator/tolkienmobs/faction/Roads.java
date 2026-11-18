@@ -102,7 +102,7 @@ public final class Roads {
     /** The roads as they stand, with the hold's road planned on the end once its two marks are pinned. */
     private static List<Route> withGundabad(List<Route> walked) {
         List<Route> all = new ArrayList<>(walked);
-        all.addAll(RoadPlan.of(GUNDABAD_ROAD, Kind.WILD_WIDE, GUNDABAD_GATE, GUNDABAD_JOIN));
+        all.addAll(RoadPlan.of(GUNDABAD_ROAD, Kind.WILD_WIDE, false, GUNDABAD_GATE, GUNDABAD_JOIN).sections());
         return all;
     }
 
@@ -185,6 +185,9 @@ public final class Roads {
 
     /** The kind a road is laid the whole way, or null where the build and the bands decide it. */
     public static Kind kind(Route route) {
+        // A banded road has no kind to name: its width is the bands', column by column, from the town's street in to the
+        // wild track out in the country.
+        if (banded(route)) return null;
         Kind named = KINDS.get(route.id());
         return named != null ? named : RoadPlan.kind(route.id());
     }
@@ -314,7 +317,7 @@ public final class Roads {
 
     /** Whether the bands decide a road, column by column, rather than one kind being laid the whole of it. */
     public static boolean banded(Route route) {
-        return BANDED.contains(route.id());
+        return BANDED.contains(route.id()) || RoadPlan.banded(route.id());
     }
 
     /**

@@ -102,9 +102,17 @@ public final class RoadCommands {
     private static final int END_PIECE = 0;
     private static final int MIDDLE_PIECE = 1;
 
-    /** How close the ground has to be to the walls to count as the settlement's own ground, in blocks. */
-    private static final int URBAN_BAND = 16;
-    private static final int TRANSITION_BAND = 64;
+    /**
+     * How far out from a build its road stops being the town's own street, and then stops being a road at all.
+     * <p>
+     * Three bands, and a width and a surface for each: the town's own paving seven wide within {@link #URBAN_BAND}, the
+     * approach five wide of cobble and path out to {@link #TRANSITION_BAND}, and the country's own track three wide
+     * beyond it. They were sixteen and sixty-four; thirty-two and ninety-six are the shape a gate wants - a street that
+     * is still a street a bowshot out of the wall, an approach that reaches the first rise - and both are measured from
+     * the build's footprint where the road carries one, or from the block it leaves by where it does not.
+     */
+    private static final int URBAN_BAND = 32;
+    private static final int TRANSITION_BAND = 96;
 
     /** How many passes of the smoothing filter the profile takes, each reaching one more station either way. */
     private static final int PROFILE_PASSES = 8;
@@ -325,9 +333,17 @@ public final class RoadCommands {
         BlockPos from = BlockPos.containing(source.getPosition());
         int x = IntegerArgumentType.getInteger(context, "minx");
         int z = IntegerArgumentType.getInteger(context, "minz");
-        Roads.Kind kind = kind(context);
+        Roads.Kind named = kind(context);
+        boolean town = named == null;
+        Roads.Kind kind = town ? Roads.Kind.WILD_WIDE : named;
         String id = "tolkienmobs:roads/planned_" + from.getX() + "_" + from.getZ() + "_" + x + "_" + z;
-        List<Route> sections = RoadPlan.of(id, kind, from, new BlockPos(x, from.getY(), z));
+        RoadPlan.Plan plan = RoadPlan.of(id, kind, town, from, new BlockPos(x, from.getY(), z));
+        if (plan.refused()) {
+            String why = plan.refusal();
+            source.sendFailure(Component.literal("No road would be laid: " + why + "."));
+            return 0;
+        }
+        List<Route> sections = plan.sections();
         if (sections.isEmpty()) {
             source.sendFailure(Component.literal("A road needs two ends, and both of those blocks are unset."));
             return 0;
@@ -340,9 +356,10 @@ public final class RoadCommands {
             for (Route section : sections) pass(source.getLevel(), section, from.getX(), from.getZ());
         }
         String how = lay ? "laid as the world steps it" : "planned, nothing laid";
+        String wide = town ? "town bands (7 in, 5 through, 3 out)" : kind.blocks() + " wide";
         source.sendSuccess(() -> Component.literal("Road " + id + " from " + from.getX() + ", " + from.getZ()
                 + " to " + x + ", " + z + ": " + sections.size() + " section" + (sections.size() == 1 ? "" : "s")
-                + " at " + kind.blocks() + " wide, " + how + "."), true);
+                + " at " + wide + ", " + how + "."), true);
         return 1;
     }
 
@@ -370,6 +387,9 @@ public final class RoadCommands {
             case "wild" -> Roads.Kind.WILD;
             case "main" -> Roads.Kind.MAIN;
             case "urban" -> Roads.Kind.URBAN;
+            // `town` names no kind on purpose: the bands decide the width column by column, seven at the wall, five
+            // through the approach and three out in the country, so the road narrows as it leaves the build.
+            case "town" -> null;
             default -> Roads.Kind.WILD_WIDE;
         };
     }
@@ -1716,7 +1736,9 @@ public final class RoadCommands {
             // an average to flatten, and the band is then only what keeps a bump from being built into the road.
             // Water keeps the relief, because the river is the bridge's and a station over it has no ground to answer
             // to.
-            boolean grounded = Roads.kind(route) != null;
+            // A banded road is a built road too: it is a town's street at its own end, and held to a road's cut and fill
+            // wherever the bands put it.
+            boolean grounded = Roads.kind(route) != null || Roads.banded(route);
             for (int i = 0; i < n; i++) {
                 boolean dry = ground[i] != WATER && ground[i] != VOID;
                 height[i] = dry ? ground[i] : relief[i];
@@ -2488,6 +2510,12 @@ public final class RoadCommands {
 
     /** How far outside the city's footprint a column stands, in blocks. */
     private static int fromWalls(Route route, int x, int z) {
+        if (route.cityX0() == 0 && route.cityX1() == 0 && route.cityZ0() == 0 && route.cityZ1() == 0) {
+            // A road with no build behind it has no walls to measure from, so the band is measured from the block it
+            // leaves by - the doorway the build's own edge would have been. Without this the four noughts read as a
+            // footprint at the world's origin and every column of the road came out past the last band.
+            return (int) Math.round(Math.hypot(x - route.pathX(), z - route.pathZ()));
+        }
         int dx = Math.max(0, Math.max(route.cityX0() - x, x - route.cityX1()));
         int dz = Math.max(0, Math.max(route.cityZ0() - z, z - route.cityZ1()));
         return (int) Math.round(Math.hypot(dx, dz));

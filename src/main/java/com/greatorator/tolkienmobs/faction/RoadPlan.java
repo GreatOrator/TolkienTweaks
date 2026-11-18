@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -103,6 +104,8 @@ final class RoadPlan {
     private static final Map<String, Roads.Kind> KINDS = new ConcurrentHashMap<>();
     /** The bends each planned section is walked through, by section id: the marks a survey would have left. */
     private static final Map<String, List<BlockPos>> MARKS = new ConcurrentHashMap<>();
+    /** The sections whose width the bands decide, column by column, rather than one kind for the whole road. */
+    private static final Set<String> BANDED = ConcurrentHashMap.newKeySet();
 
     private RoadPlan() {
     }
@@ -115,28 +118,50 @@ final class RoadPlan {
      * pass already knows how to lay, with its own name, its own note in the save and its own bends. They meet end to
      * end on the same blocks, so the network sees one road and the pass sees as many short ones.
      * <p>
-     * Both marks null is a road nobody has pinned yet: no sections, and nothing read from the map.
+     * Both marks null is a road nobody has pinned yet: no sections, and nothing read from the map. A plan that refuses
+     * is one the drawing will not carry - water past the span this can bridge, or a bank it cannot find - and it answers
+     * with the reason rather than laying the road straight through the water it would not bridge.
      */
-    static List<Route> of(String id, Roads.Kind kind, BlockPos from, BlockPos to) {
-        if (from == null || to == null) return List.of();
-        List<Route> sections = null;
+    static Plan of(String id, Roads.Kind kind, boolean town, BlockPos from, BlockPos to) {
+        if (from == null || to == null) return new Plan(List.of(), null);
+        Plan plan = null;
         try {
-            sections = chain(id, kind, from, to);
+            plan = chain(id, from, to);
         } catch (RuntimeException failed) {
-            // The drawing is never allowed to be the reason a road cannot be laid: a plan that could not read it is a
-            // road laid straight, which is where every road without marks starts.
+            // Reading the drawing is never the reason a road cannot be laid: a plan that could not read it is a road laid
+            // straight, which is where every road without marks starts. A refusal is different, and is not caught here.
             LOGGER.warn("Road plan {}: the drawing could not be read for {}, {} to {}, {}: {}", id,
                     from.getX(), from.getZ(), to.getX(), to.getZ(), failed.toString());
         }
-        if (sections == null || sections.isEmpty()) {
-            sections = List.of(new Route.Riverless(id, 0, 0, 0, 0,
-                    from.getX(), from.getZ(), to.getX(), to.getZ()));
+        if (plan != null && plan.refused()) {
+            // No road is better than a road through the water: the straight line this used to fall back to is a paved
+            // ford nobody chose, with the country either side of it graded down to the riverbed on the way to it.
+            LOGGER.info("Road plan {}: nothing laid - {}", id, plan.refusal());
+            return plan;
         }
+        List<Route> sections = plan == null || plan.sections().isEmpty()
+                ? List.of(new Route.Riverless(id, 0, 0, 0, 0, from.getX(), from.getZ(), to.getX(), to.getZ()))
+                : plan.sections();
         // The kind and the marks are the plan's answer whether or not the road is laid, so a route can be judged before
         // any ground is moved. The road itself joins ROUTES only when it is laid - a corridor that remembered a planned
         // road would have the world start laying it the next time a chunk of it loaded, which is not what `plan` means.
-        for (Route section : sections) KINDS.putIfAbsent(section.id(), kind);
-        return sections;
+        for (Route section : sections) {
+            KINDS.putIfAbsent(section.id(), kind);
+            if (town) BANDED.add(section.id());
+        }
+        return new Plan(sections, null);
+    }
+
+    /** What a plan came to: the sections to lay in order, or the reason it will lay none at all. */
+    record Plan(List<Route> sections, String refusal) {
+        /** Whether the plan refused the road outright, as against having nothing to say yet. */
+        boolean refused() {
+            return refusal != null;
+        }
+    }
+
+    /** One span of a planned line, or the reason the water the line met cannot be crossed. */
+    private record Span(Route.Crossing crossing, String refusal) {
     }
 
     /** The kind a planned section is laid at, or null for a road this did not plan. */
@@ -154,8 +179,13 @@ final class RoadPlan {
         return section != null && KINDS.containsKey(section);
     }
 
-    /** The sections of one road, or null when the drawing says the way cannot be taken. */
-    private static List<Route> chain(String id, Roads.Kind kind, BlockPos from, BlockPos to) {
+    /** Whether a planned section takes its width from the bands rather than one kind the whole way. */
+    static boolean banded(String section) {
+        return section != null && BANDED.contains(section);
+    }
+
+    /** The sections of one road, or null when the drawing says nothing and the road is to be laid straight. */
+    private static Plan chain(String id, BlockPos from, BlockPos to) {
         double dx = to.getX() - from.getX();
         double dz = to.getZ() - from.getZ();
         double span = Math.hypot(dx, dz);
@@ -232,7 +262,7 @@ final class RoadPlan {
      * the near bank and picks up on the far one exactly as the walked ones do. The two dry sections meet the span on the
      * blocks its own approach and exit stop on, which is the arrangement the high pass road and its bridge already use.
      */
-    private static List<Route> sections(String id, BlockPos from, BlockPos to, List<int[]> line) {
+    private static Plan sections(String id, BlockPos from, BlockPos to, List<int[]> line) {
         List<Route> sections = new ArrayList<>();
         LinkedHashMap<String, List<BlockPos>> marks = new LinkedHashMap<>();
         int cursor = 0;
@@ -249,18 +279,19 @@ final class RoadPlan {
             int began = index;
             while (index < line.size() && line.get(index)[4] == 1) index++;
             int ended = index - 1;
-            Route.Crossing span = crossing(id + "_bridge_" + (bridges + 1), line, began, ended);
-            if (span == null) return null;
+            Span span = crossing(id + "_bridge_" + (bridges + 1), line, began, ended);
+            if (span.crossing() == null) return new Plan(List.of(), span.refusal());
+            Route.Crossing water = span.crossing();
             bridges++;
-            int[] near = approach(span, true);
-            int[] far = approach(span, false);
+            int[] near = approach(water, true);
+            int[] far = approach(water, false);
             if (Math.hypot(near[0] - fromX, near[1] - fromZ) >= LANE) {
                 String name = dry == 1 ? id : id + "_" + dry;
                 sections.add(new Route.Riverless(name, 0, 0, 0, 0, fromX, fromZ, near[0], near[1]));
                 marks.put(name, marks(line, cursor, began));
                 dry++;
             }
-            sections.add(span);
+            sections.add(water);
             fromX = far[0];
             fromZ = far[1];
             cursor = ended;
@@ -271,51 +302,60 @@ final class RoadPlan {
             marks.put(name, marks(line, cursor, line.size() - 1));
         }
         MARKS.putAll(marks);
-        return sections;
+        return new Plan(sections, null);
     }
 
     /**
      * One span, from the run of river the line met.
      * <p>
-     * The axis is the way the road is travelling when it reaches the water, because that is the way its pieces have to
-     * be stood, and the line is the middle of the run across that axis - so the road runs square over the span rather
-     * than diagonally through it, which is the only approach the pieces can receive. The banks are the first dry
-     * columns either side of that middle: ground the drawing does not flood and has not drawn as river. The water's
-     * level is the highest the run is given, so a span clears the deepest part of the channel rather than its average.
+     * The axis is the way the road is travelling when it reaches the water, because that is the way its pieces have to be
+     * stood: a span is on one axis and both approaches are forced onto its line, so a road that arrives diagonally is
+     * walked square for the length of the bridge. The span stands on the line the road *first* meets water on, and its
+     * banks are taken from the two ends of the run - back from the lane the road arrives at, and on from the lane it
+     * leaves by. The middle of a run is no use: a run a few lanes long and a little diagonal has its middle over water
+     * either side of where the road actually crosses, so a span stood there lies at an angle and both approaches have to
+     * be forced onto a line the road never travelled. The water's level is the highest the run is given, so a span clears
+     * the deepest part of the channel rather than its average.
      */
-    private static Route.Crossing crossing(String id, List<int[]> line, int began, int ended) {
+    private static Span crossing(String id, List<int[]> line, int began, int ended) {
         int[] entry = line.get(began);
         int[] exit = line.get(ended);
-        boolean alongX = Math.abs(exit[0] - entry[0]) >= Math.abs(exit[1] - entry[1]);
-        int step = alongX ? (int) Math.signum(exit[0] - entry[0]) : (int) Math.signum(exit[1] - entry[1]);
+        int dx = exit[0] - entry[0];
+        int dz = exit[1] - entry[1];
+        if (dx == 0 && dz == 0) {
+            // A run one lane long says nothing about which way the road is going; the lanes either side of it do.
+            int before = Math.max(0, began - 1);
+            int after = Math.min(line.size() - 1, ended + 1);
+            dx = line.get(after)[0] - line.get(before)[0];
+            dz = line.get(after)[1] - line.get(before)[1];
+        }
+        boolean alongX = Math.abs(dx) >= Math.abs(dz);
+        int step = alongX ? (int) Math.signum(dx) : (int) Math.signum(dz);
         if (step == 0) step = 1;
-        int centre = alongX
-                ? (int) Math.round((entry[0] + exit[0]) / 2.0D)
-                : (int) Math.round((entry[1] + exit[1]) / 2.0D);
-        int across = alongX
-                ? (int) Math.round((entry[1] + exit[1]) / 2.0D)
-                : (int) Math.round((entry[0] + exit[0]) / 2.0D);
-        int bank = dry(alongX, across, centre, -step);
-        int far = dry(alongX, across, centre, step);
-        if (bank == NO_BANK || far == NO_BANK) {
-            LOGGER.info("Road plan {}: no dry ground within {} blocks of {}, {} - the crossing is a survey's",
-                    id, BANK_SEARCH, alongX ? centre : across, alongX ? across : centre);
-            return null;
+        int across = alongX ? entry[1] : entry[0];
+        int arrival = alongX ? entry[0] : entry[1];
+        int departure = alongX ? exit[0] : exit[1];
+        int bank = dry(alongX, across, arrival, -step);
+        int far = dry(alongX, across, departure, step);
+        String where = entry[0] + ", " + entry[1];
+        if (bank == NO_BANK) return new Span(null, "no dry ground within " + BANK_SEARCH + " blocks of " + where);
+        if (far == NO_BANK) return new Span(null, "no far bank within " + BANK_SEARCH + " blocks of " + where);
+        if ((far - bank) * step <= 0) {
+            return new Span(null, "the water at " + where + " runs the wrong way across the road");
         }
         int width = Math.abs(far - bank) + 1;
         if (width > MAX_SPAN) {
-            LOGGER.info("Road plan {}: the water at {}, {} is {} columns wide, past the {} this will bridge",
-                    id, alongX ? centre : across, alongX ? across : centre, width, MAX_SPAN);
-            return null;
+            return new Span(null, "the water at " + where + " is " + width + " columns wide, past the " + MAX_SPAN
+                    + " this will bridge");
         }
         int deck = Math.max(Math.max(ground(alongX, across, bank), ground(alongX, across, far)),
                 water(alongX, across, bank, far) + DECK_OVER_WATER);
         int approachAlong = bank - step * EXIT_REACH;
-        return new Route.Crossing(id, 0, 0, 0, 0,
+        return new Span(new Route.Crossing(id, 0, 0, 0, 0,
                 alongX ? approachAlong : across, alongX ? across : approachAlong,
                 alongX ? bank : across, alongX ? across : bank,
                 alongX ? far : across, alongX ? across : far,
-                HALF, deck - 2, deck - 1, deck, RUN_IN, EXIT_REACH, END_PIECE, MIDDLE_PIECE);
+                HALF, deck - 2, deck - 1, deck, RUN_IN, EXIT_REACH, END_PIECE, MIDDLE_PIECE), null);
     }
 
     /** The block a span's approach starts on, or the one its exit stops on, given how its pieces are stood. */
