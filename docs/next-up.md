@@ -94,35 +94,37 @@ line read a block at a time so a river is bridged. Every one compiled with
   world's planned roads have been taken back out. A road laid in an earlier session is still there to find with
   `/tmroad forget` and to lay again, and the start writes `Roads: N planned sections read back from the save` when it does.
 
-- **The raise stopped halfway, and the fix is unrun.** A band's far end is ground no standing player loads, and the raise
+- **The raise stopped halfway, and the fix is signed off in game.** A band's far end is ground no standing player loads, and the raise
   would not move on until every piece of the band was down, so it laid what it could see and waited in silence for ever -
   which is what "Rivendell only goes about half way" was. The numbers, out of Road Test 3's own save: band 0 is 132 pieces,
   23 of them inside a ten-chunk view of the corner the player was teleported to, the median 341 blocks out, the furthest
   624, and 71 never inside a view of anywhere they stood. After five empty passes the raise now makes the ground for the
-  nearest waiting piece and lays it, one piece a pass, and logs one line per band saying what it is waiting on. **The
-  check:** a fresh world, walk to the pin, and a band has to go down with `/tmcity band` never run - with at most one
-  `out of made ground` line for the band that needed it.
+  nearest waiting piece and lays it, one piece a pass, and logs one line per band saying what it is waiting on. **Road
+  Test 7, a fresh world and no commands:** `raised from the pin` at 09:44:12, and every band went down with `/tmcity band`
+  never run - 09:46:13, 09:47:54, 09:49:27, 09:50:46, 09:51:45 and `the whole city is down` at 09:52:26 - each asking
+  for made ground exactly once, which is the ceiling kept.
 
-- **The world no longer builds a city; only the raise does - half answered.** Two changes on top of the stalled-band fix:
+- **The world no longer builds a city; only the raise does - both halves signed off.** Two changes on top of the stalled-band fix:
   a structure start is now probed for the cut's own blocks (a dozen interior samples of the piece the city is planted on, a
   majority enough) before the raise, `/tmcity summon`, the band hand or the dresser treats a city as standing; and no
   structure set is emitted for an assembly, so worldgen never places one. A world made before this keeps its start - it is
   ignored rather than removed, and the raise plants the city from the pin over the top. **Road Test 6, fresh, no commands:**
-  `tolkienmobs:rivendell` appears in no chunk of the `arda` region files, so the worldgen half is settled. The raise half
-  is not - it planted from the pin and then closed five bands that it had not laid (see the band-turn fix below).
+  `tolkienmobs:rivendell` appears in no chunk of the `arda` region files, so the worldgen half is settled. **The raise half
+  is settled by Road Test 7** - a fresh world with no commands in it, the city planted from the pin and stood band by band,
+  so the raise is the only thing building one (what went wrong before is the band-turn fix below).
 
-- **A band turn threw away the band it turned to, and the raise finished a city with one floor in it - unrun.** Road Test
-  6's log: band 1 of 6 down, then bands 2, 3, 4, 5 and `the whole city is down` all inside **720 ms**, and the save has stone
-  at the pin's column at 75 and 80 with air at 123 - the floor and nothing over it. The turn moved the marker and set
-  `raisingBand` to the band just written while clearing `raisingOrder`, so the next pass believed the new band's order was
-  already built, and an empty order is every piece down. The turn now leaves `raisingBand = -1`, so the pass that reads the
-  marker builds that band's order and lays it; a band that closes with nothing in hand warns by name instead of passing
-  quietly. **The check:** in a fresh world, or in Road Test 6 after deleting
-  `run/saves/Road Test 6/tolkienmobs/rivendell/_laid.txt` (its marker already says band 6, so the raise will not touch it
-  again), teleport to 5200, -3033 and stand still: the log has to show `raised from the pin`, six bands with at most one
-  `out of made ground` line each, `the whole city is down`, and then the dresser's `columns cut down` line. Look at the
-  city, not just the log - the last two runs both said "finished". **Also seen and not fixed:** the floor goes down over
-  the valley's own city folk - seventeen `Elf suffocated in a wall` lines as band 1 was laid - so whatever stands them
+- **A band turn threw away the band it turned to, and the raise finished a city with one floor in it - signed off in
+  game.** Road Test 6's log: band 1 of 6 down, then bands 2, 3, 4, 5 and `the whole city is down` all inside **720 ms**,
+  and the save has stone at the pin's column at 75 and 80 with air at 123 - the floor and nothing over it. The turn moved
+  the marker and set `raisingBand` to the band just written while clearing `raisingOrder`, so the next pass believed the
+  new band's order was already built, and an empty order is every piece down. The turn now leaves `raisingBand = -1`, so
+  the pass that reads the marker builds that band's order and lays it; a band that closes with nothing in hand warns by
+  name instead of passing quietly. **Road Test 7, fresh, no commands, the owner teleported to 5200, -3033 and left
+  standing:** one `out of made ground` line per band and no warning line, the bands closing sixty to ninety seconds apart
+  instead of all at once, `the whole city is down`, and the dresser's `19643 columns cut down, 35386 filled up, 320 left
+  for the water` - and the owner found the city standing whole, which is the check that matters, since both earlier runs
+  said "finished" too. **Also seen and not fixed:** the floor goes down over the valley's own city folk - seventeen `Elf
+  suffocated in a wall` lines as Road Test 6's floor was laid and eighteen in Road Test 7's - so whatever stands them
   there should wait for the band, or they should be stood after it.
 
 ### Still open from tonight
