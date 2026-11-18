@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The five roads a fresh world was missing are in the table, Gundabad's included.** The network was read off a test
+          world's store before the vale's roads were walked, so a world made afterwards planned eleven sections and had no
+          road out of Rivendell to the meeting plaza, none from the plaza on to Glóin's camp, and none from Rivendell down
+          to Elladan's camp - the ground was there and no line was, which is a road missing in silence. The store was read
+          back road by road: the five ids it holds that the table did not are now in `Roads.NETWORK` with the ends their
+          own ids were made of (5105, -3413 to 5605, -3622; 5606, -3622 to 8229, -3654; 5200, -3033 to 4647, -3315;
+          5111, -3399 to 5072, -3221), plus the hold's road, whose two ends are no longer null: 5578, -6769 at Gundabad's
+          gate and 8583, -3617 where it meets the old forest road. Gundabad's road is named by the id its pins were given
+          rather than `gundabad_road`, because a section's id is the road's two ends: a road named otherwise would lay the
+          ground twice in the world that walked it and be a different road in a fresh one. A road left out of the table
+          is not a road that waits - it is a road a new world does not have.
 - **A road begins wherever a player stands beside it, not only when a chunk loads.** A road was begun by the load of a
           chunk it passes through, and a chunk loads once: ground brought in before the player came - by a structure being
           raised, by a city's bands, or by a save made in another session - never loads again, so a road whose ground was

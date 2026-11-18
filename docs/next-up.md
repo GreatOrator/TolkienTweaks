@@ -33,7 +33,7 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | # | Item | Status | Where the detail is |
 |---|------|--------|---------------------|
 | 1 | **Carn Dûm's ground** - the camps on its borders and the wight's hall | **next** | nothing has looked at it yet; `carndum` is only a place canon'd to `ANGMAR` |
-| 2 | **The roads** - the whole network, rebuilt from two ends per road | **done and signed off**: seven roads in `Roads.NETWORK` cover every destination of the twenty-one walked routes; **next** the hold's road, waiting on its two marks | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
+| 2 | **The roads** - the whole network, rebuilt from two ends per road | **twelve roads in `Roads.NETWORK`**, read back from the store of the world that walked them: the old forest road, the five high-pass legs, Rivendell to the meeting plaza and the plaza on to Glóin's camp, Rivendell to Elladan's camp, the short leg at Rivendell's south gate, and Gundabad's road (5578, -6769 to 8583, -3617). **Next:** walk the network in a fresh world and check each road lays | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
 | 5 | **The keep's placement** | on hold | `docs/gundabad-keep.md` |

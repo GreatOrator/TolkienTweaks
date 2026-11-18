@@ -56,26 +56,30 @@ public final class Roads {
      * <p>
      * The hold stands at 5516, 187, -7112 in Arda at the head of its own valley, and what the road leaves into is
      * country nobody has walked: the nearest road of any age is the chapter's own at the far end of the old forest
-     * road, three and a half thousand blocks south. Both ends are the scout's to pin - {@link #GUNDABAD_GATE} and
-     * {@link #GUNDABAD_JOIN}, null until that walk is made - and everything between them is planned: the hold's road
-     * is the first route that carries no marks at all, and the two blocks are the whole of the survey it needs.
+     * road, three and a half thousand blocks south. Its two ends were pinned in a test world - the gate block at
+     * 5578, -6769 and the join on the old forest road at 8583, -3617 - and everything between them is planned: the
+     * hold's road carries no marks at all, and those two blocks are the whole of the survey it needs.
+     * <p>
+     * The name is the id the pins were given rather than a name of its own, and written out in full for that reason.
+     * A section's id is made of the road's two ends, so a road called {@code gundabad_road} here would plan sections
+     * the test world's save has never heard of: the ground would be laid a second time in the world that walked it,
+     * and a fresh world would hold a road that is not the road that was walked. Nothing about a road needs a name of
+     * its own - the id is the two ends, and those say where it goes.
      */
-    public static final String GUNDABAD_ROAD = "tolkienmobs:roads/gundabad_road";
+    public static final String GUNDABAD_ROAD = "tolkienmobs:roads/planned_5578_-6769_8583_-3617";
 
     /**
-     * The Gundabad road's two ends, as a scout will pin them: the block at the foot of the hold's own way out, and the
-     * mark where the road meets the road it joins.
+     * The Gundabad road's two ends, as they were pinned: the block at the foot of the hold's own way out, and the mark
+     * where the road meets the road it joins.
      * <p>
-     * Both are null until that walk is made, and while either is null the route is not in {@link #ROUTES} - it cannot
-     * be, since a route is two ends and two ends invented are a road laid across country nobody surveyed. Putting the
-     * two marks in these two lines is the whole of what the road is waiting for; everything else about it is worked
-     * out from them - its name, the way it goes, where it crosses water and how wide it is laid.
+     * Everything else about the road is worked out from them - the way it goes, where it crosses water, how wide its
+     * span is and how wide it is laid - so these two lines are the whole of what the road is.
      * <p>
      * They are declared above {@link #ROUTES} on purpose: the list is built once when this class loads, and a mark
      * written below it would still be null at that moment, which is a road that never appears and never says why.
      */
-    private static final BlockPos GUNDABAD_GATE = null;
-    private static final BlockPos GUNDABAD_JOIN = null;
+    private static final BlockPos GUNDABAD_GATE = at(5578, -6769);
+    private static final BlockPos GUNDABAD_JOIN = at(8583, -3617);
 
     /** One road the code names: its id, the width it is laid at, and the two blocks it runs between. */
     private record Named(String id, Kind kind, boolean town, BlockPos from, BlockPos to) {
@@ -95,23 +99,35 @@ public final class Roads {
      * network without anybody plotting it again; the ids are the ones the pins were given, so a section laid in that
      * world and a section made here are the same road and the same name in the log.
      * <p>
-     * The first entry is the hold's road, which is waiting on its two marks (see {@link #GUNDABAD_GATE}). Everything
-     * after it is a road the test world lays today: the old forest road east of Mirkwood to Glóin's camp, and the five
-     * legs of the high pass between Rivendell's roads and Glóin's camp. All of them are the country's own track, three
-     * wide, because nothing that crosses that country is paved.
+     * The first entry is the hold's road, out of Gundabad's own gate and down to the old forest road
+     * (see {@link #GUNDABAD_GATE}). Everything after it is a road the test world lays today, in the order they were
+     * walked: the old forest road east of Mirkwood to Glóin's camp; the five legs of the high pass between Rivendell's
+     * roads and Glóin's camp; the road out of Rivendell to the meeting plaza, and the plaza's road on to Glóin's camp;
+     * the road from Rivendell down to Elladan's camp; and the short leg between Rivendell's south gate and the same
+     * road's shoulder, which the first of those two was laid from. All of them are the country's own track, three wide,
+     * because nothing that crosses that country is paved.
+     * <p>
+     * A road is here when it is in the world's store - the roads the test world walked are read back one at a time and
+     * written down here with the ends their own ids were made of. A road left out is not a road that waits: a fresh
+     * world plans only what is in this list and quietly has no road there, which is how three roads of the vale came to
+     * be missing from a world made after them.
      * <p>
      * Declared above {@link #ROUTES} on purpose, as the hold's two marks are: the list is built once when this class
      * loads, and a road written below it would not be in the list at all.
      */
     private static final List<Named> NETWORK = List.of(
-            new Named(GUNDABAD_ROAD, Kind.WILD_WIDE, false, GUNDABAD_GATE, GUNDABAD_JOIN),
+            new Named(GUNDABAD_ROAD, Kind.WILD, false, GUNDABAD_GATE, GUNDABAD_JOIN),
             new Named("tolkienmobs:roads/planned_11813_-3901_8229_-3654", Kind.WILD, false, at(11813, -3901), at(8229, -3654)),
             new Named("tolkienmobs:roads/planned_4515_-2446_4705_-3169", Kind.WILD, false, at(4515, -2446), at(4705, -3169)),
             new Named("tolkienmobs:roads/planned_4516_-2512_4562_-2398", Kind.WILD, false, at(4516, -2512), at(4562, -2398)),
             new Named("tolkienmobs:roads/planned_4528_-2541_4624_-2480", Kind.WILD, false, at(4528, -2541), at(4624, -2480)),
             new Named("tolkienmobs:roads/planned_4776_-3063_4684_-3050", Kind.WILD, false, at(4776, -3063), at(4684, -3050)),
             new Named("tolkienmobs:roads/planned_4787_-3059_4778_-3059", Kind.WILD, false, at(4787, -3059), at(4778, -3059)),
-            new Named("tolkienmobs:roads/planned_4819_-2887_4647_-3315", Kind.WILD, false, at(4819, -2887), at(4647, -3315)));
+            new Named("tolkienmobs:roads/planned_4819_-2887_4647_-3315", Kind.WILD, false, at(4819, -2887), at(4647, -3315)),
+            new Named("tolkienmobs:roads/planned_5105_-3413_5605_-3622", Kind.WILD, false, at(5105, -3413), at(5605, -3622)),
+            new Named("tolkienmobs:roads/planned_5606_-3622_8229_-3654", Kind.WILD, false, at(5606, -3622), at(8229, -3654)),
+            new Named("tolkienmobs:roads/planned_5200_-3033_4647_-3315", Kind.WILD, false, at(5200, -3033), at(4647, -3315)),
+            new Named("tolkienmobs:roads/planned_5111_-3399_5072_-3221", Kind.WILD, false, at(5111, -3399), at(5072, -3221)));
 
     /**
      * Every road the world knows about, which is nothing until one is named.
