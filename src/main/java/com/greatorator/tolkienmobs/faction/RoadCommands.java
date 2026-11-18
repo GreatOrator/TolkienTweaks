@@ -1293,60 +1293,73 @@ public final class RoadCommands {
     }
 
     /**
-     * The bridge's pieces in the order they are stood, east end first and west end last, each as x, y, z, rotation
-     * and the kind of piece it is.
+     * The bridge's pieces in the order they are stood, the near abutment first and the far one last, each as x, y, z,
+     * rotation and the kind of piece it is.
      * <p>
-     * The two ends and the middles between them, east end turned about so its abutment faces the city.
+     * The two ends and the middles between them, the near end turned about so its abutment faces the bank it stands on.
      * <p>
-     * A turned template is anchored at its own far corner, not its near one: the placement settings rotate
-     * about the position handed in, so a nine-wide piece turned through half a circle occupies the nine columns
-     * ending at that position rather than the nine starting from it. The east end is therefore anchored on
-     * 5055 and -3071, its own north-east corner, and the middles follow from that corner east to west.
+     * A turned template is anchored at its own far corner, not its near one: the placement settings rotate about the
+     * position handed in, so a nine-wide piece turned through half a circle occupies the nine columns ending at that
+     * position rather than the nine starting from it. An end therefore stands over its anchor and the eight columns
+     * behind it whichever bank it is on, and that is what decides where the deck begins: a span whose near bank is the
+     * high coordinate has both of its ends reaching out over the water, and a span whose near bank is the low one has
+     * both of them standing on their own banks. The middles are the columns left between whatever the ends cover.
+     * <p>
+     * That gap is read from both ends. It used to be walked from the near bank one way only - towards the low
+     * coordinate - which is the way the ford happened to be crossed: a road that crossed the other way was planned a
+     * deck that started behind its own near abutment, so the loop ran out at its first step and the span was stood as
+     * two ends and fifty columns of open water between them (the mountains, 18 November). Both directions are laid now,
+     * and a middle that crosses the far abutment is closed over by it, since the far end is always stood last.
      */
     private static List<int[]> bridgePlan(ServerLevel level, Route.Crossing route) throws IOException {
         StructureTemplate end = template(level, route.endPiece());
         StructureTemplate middle = template(level, route.middlePiece());
         int endWide = end.getSize().getX();
+        int pieceLong = middle.getSize().getX();
+        int step = route.step();
         int near = route.bank();
         int far = route.far();
         int low = route.line() - route.half();
         int high = route.line() + route.half();
+        // The first column clear of the near abutment, and the last one still in front of the far abutment: the end
+        // pieces cover the eight columns behind their anchors, so which column is clear depends on which way the span
+        // runs, and the middles fill from one to the other.
+        int first = step < 0 ? near - endWide : near + 1;
+        int last = step < 0 ? far + endWide : far - 1;
         List<int[]> plan = new ArrayList<>();
         if (!route.alongX()) {
             // A span along z is the ford's plan stood on its side. A turned piece is laid about the origin rather
             // than about its own corner, so COUNTERCLOCKWISE_90 puts a local column at X + z and a local row at Z - x:
-            // a piece anchored on the band's low x covers that column and the eight above it, and a middle's eight
-            // columns run from Z - 7 up to Z. The near end and the middles are turned one way and the far end the
-            // other, so both abutments face out of the span and the last piece closes it.
+            // a piece anchored on the band's low x covers that column and the eight above it, and a middle turned that
+            // way runs from seven below its anchor up to it. CLOCKWISE_90 is the same piece the other way about, so a
+            // span running towards the high coordinate is stood from the band's high x and its middles reach forwards
+            // from their anchors rather than back.
             plan.add(new int[]{low, route.endBase(), near, Rotation.COUNTERCLOCKWISE_90.ordinal(), END_PIECE});
-            // A middle turned counterclockwise is anchored on its own high edge along the span, not its low one, so
-            // the cursor is the offset itself: the piece runs from seven below it up to it. It used to be anchored a
-            // piece's length short here, as the ford's plan anchors its own, which stood the middle eight columns too
-            // far along and left eight of open water in front of the far abutment.
-            int cursor = near - endWide;
-            while (cursor >= far + endWide) {
-                plan.add(new int[]{low, route.bridgeBase(), cursor,
-                        Rotation.COUNTERCLOCKWISE_90.ordinal(), MIDDLE_PIECE});
-                cursor -= middle.getSize().getX();
+            int cursor = first;
+            while (step < 0 ? cursor >= last : cursor <= last) {
+                plan.add(step < 0
+                        ? new int[]{low, route.bridgeBase(), cursor,
+                                Rotation.COUNTERCLOCKWISE_90.ordinal(), MIDDLE_PIECE}
+                        : new int[]{high, route.bridgeBase(), cursor,
+                                Rotation.CLOCKWISE_90.ordinal(), MIDDLE_PIECE});
+                cursor += step * pieceLong;
             }
             plan.add(new int[]{high, route.endBase(), far, Rotation.CLOCKWISE_90.ordinal(), END_PIECE});
             return plan;
         }
         plan.add(new int[]{near, route.endBase(), high, Rotation.CLOCKWISE_180.ordinal(), END_PIECE});
 
-        // Each middle is anchored on its own north-east corner too, so the piece's last column is the cursor
-        // itself and the next free column is one further west. Only middles that leave room for the west end
-        // are laid; the end then closes whatever is left.
-        int cursor = near - endWide;
-        // Middles until the far end has somewhere to stand: the loop used to ask for room for one middle *and* the
-        // far end behind it, so any span that was not nine, eight and nine repeated stopped a piece short and left
-        // open water in front of the far abutment. The ford's span is fifty-three columns - nine, eight times five and
-        // nine is fifty-eight - so the last middle now runs into the far end's own columns instead of stopping short,
-        // and the far end is stood last and closes over the overlap. Boards on boards, and no gap.
-        while (cursor >= far + endWide) {
-            plan.add(new int[]{cursor - middle.getSize().getX() + 1, route.bridgeBase(), low,
-                    Rotation.NONE.ordinal(), MIDDLE_PIECE});
-            cursor -= middle.getSize().getX();
+        // Each middle is anchored on its own north-east corner, so a middle running towards the low coordinate ends on
+        // the cursor itself and a middle running the other way begins on it. The far end closes whatever the last
+        // middle left overlapping, and the near end is never touched because the first middle starts clear of it.
+        int cursor = first;
+        while (step < 0 ? cursor >= last : cursor <= last) {
+            plan.add(step < 0
+                    ? new int[]{cursor - pieceLong + 1, route.bridgeBase(), low,
+                            Rotation.NONE.ordinal(), MIDDLE_PIECE}
+                    : new int[]{cursor + pieceLong - 1, route.bridgeBase(), high,
+                            Rotation.CLOCKWISE_180.ordinal(), MIDDLE_PIECE});
+            cursor += step * pieceLong;
         }
         plan.add(new int[]{far, route.endBase(), low, Rotation.NONE.ordinal(), END_PIECE});
         return plan;

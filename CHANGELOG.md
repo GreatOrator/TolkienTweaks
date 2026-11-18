@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A span is decked whichever way the road crosses it.** The first planned bridge stood its two abutments and left
+          fifty columns of open water between them: `bridgePlan` walked the deck from the near bank towards the *low*
+          coordinate only, which is the way the old ford happened to be crossed, and the mountains' span runs the other
+          way - bank at 6668, -3799, far bank at 6668, -3748 - so the run of middles began behind its own abutment and
+          stopped at the first step. The gap is read from both ends now: the first column clear of the near abutment and
+          the last one still in front of the far abutment, with the middles laid from one to the other in the span's own
+          direction, turned about (counterclockwise and clockwise along z, none and half a circle along x) so the deck
+          covers the band on either heading. The far end is still stood last and closes over the last middle's overlap,
+          so no gap is left at the far abutment, and the ford's own fifty columns come out piece for piece as they did.
+          Neither heading has been re-run in a world yet.
 - **A crossing is read across the water, not down it.** The span's axis was taken from the two ends of the run of water
           the planned line met - `dx = exit - entry` - and a run is a handful of blocks: a road crossing a north-south
           channel almost square still comes out with a block or two of travel up the channel in it once the line is

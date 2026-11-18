@@ -108,6 +108,18 @@ line read a block at a time so a river is bridged. Every one compiled with
   two pins again - `6398 -3654` to `6481 -3655` is the short one on the screenshots - and the chat should say `2 sections`
   with a span of about forty columns rather than nothing at all. If it still refuses, the next thing to read is `dry()`
   itself: the reading at 6471, -3645 that walks west across the channel should find the west bank at about 6420.
+- **The crossing fix works, and the deck it planned was missing - which is the next unrun fix.** `pin 6398 -3654 8229
+  -3654` planned and laid three sections, and the log's span is `6668, -3799 to 6668, -3748, deck 195`: fifty-one
+  columns, the ford's own size, so nothing about the width was wrong. The pass stood the two abutments and no middles.
+  Read out of the save at x 6668, the oak ends sit at z -3807..-3799 and -3748..-3740 and everything between them is
+  water at 188-192, with the road's paving stopping at each abutment: `bridgePlan` walked the deck from the near bank
+  towards the low coordinate only, so a span running the other way (bank at -3799, far bank at -3748, southwards) ran
+  out at its first step. The gap is read from both ends now and the middles laid in the span's own direction, turned
+  about for the other heading. **The check:** `/tmroad forget` on this road, then the same pin again - the sweep clears
+  the two old ends, so the span is stood from scratch - and the deck should be planks and pillars from bank to bank,
+  with `BRIDGE done in 10 steps` instead of 3 (two ends and seven middles for 51 columns). If the deck comes out
+  but the pieces sit off the band or a piece short, the rotation the other way is what to look at:
+  `Rotation.CLOCKWISE_90` for a southward span's middles and `CLOCKWISE_180` for an eastward one.
 - **The ground already laid under water stays.** Forgetting a road clears its notes, not its blocks; the causeway has to be
   filled in by hand or the new road laid beside it.
 - **No restart has been tested at all.** `road_plans.dat` has never been written and read back in a world. The check is one
