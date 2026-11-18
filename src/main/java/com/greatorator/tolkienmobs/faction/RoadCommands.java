@@ -244,6 +244,18 @@ public final class RoadCommands {
                                         .executes(RoadCommands::buildHere)
                                         .then(Commands.argument("kind", StringArgumentType.word())
                                                 .executes(RoadCommands::buildHere)))))
+                // Both ends as numbers, so a leg is pinned by the ground it is meant to cross rather than by where the
+                // hand happens to be standing: the first pair is where it leaves, the second where it arrives. It has
+                // a literal of its own because a width word after the first pair would read a mistyped third number as
+                // a word, and lay the wrong road without a word said about it.
+                .then(Commands.literal("pin")
+                        .then(Commands.argument("minx", IntegerArgumentType.integer())
+                                .then(Commands.argument("minz", IntegerArgumentType.integer())
+                                        .then(Commands.argument("tox", IntegerArgumentType.integer())
+                                                .then(Commands.argument("toz", IntegerArgumentType.integer())
+                                                        .executes(RoadCommands::pinHere)
+                                                        .then(Commands.argument("kind", StringArgumentType.word())
+                                                                .executes(RoadCommands::pinHere)))))))
                 .then(Commands.literal("plan")
                         .then(Commands.argument("minx", IntegerArgumentType.integer())
                                 .then(Commands.argument("minz", IntegerArgumentType.integer())
@@ -355,8 +367,9 @@ public final class RoadCommands {
     /**
      * A road planned between the caller's own block and a block they name.
      * <p>
-     * This is the whole of the survey a road needs now: stand where it should leave, name where it should arrive, and
-     * {@link RoadPlan} reads the drawing for the country between them - the way round the hills, the legs the pass will
+     * This is the whole of the survey a road needs now: name both ends - the block underfoot and one other, or two pairs
+     * of numbers so the leg is pinned whatever ground the hand is standing on - and {@link RoadPlan} reads the drawing
+     * for the country between them - the way round the hills, the legs the pass will
      * search, and every span the water needs. {@code plan} says what it found and lays nothing, which is how a route is
      * judged before any ground is moved. {@code build} starts a pass for each section, which the world steps while the
      * ground under its head is loaded, so the road fills in behind the walk rather than freezing the server for a
@@ -364,14 +377,30 @@ public final class RoadCommands {
      */
     private static int planned(CommandContext<CommandSourceStack> context, boolean lay) {
         CommandSourceStack source = context.getSource();
-        BlockPos from = BlockPos.containing(source.getPosition());
+        BlockPos feet = BlockPos.containing(source.getPosition());
         int x = IntegerArgumentType.getInteger(context, "minx");
         int z = IntegerArgumentType.getInteger(context, "minz");
+        // Both ends may be named as numbers, and then the first pair is where the leg starts: the block underfoot is not
+        // part of the road at all, so a leg can be pinned from anywhere and the same command can be given twice with
+        // the same answer. Without the second pair the block underfoot is the start, which is the short form.
+        Integer pinnedX = pinned(context, "tox");
+        Integer pinnedZ = pinned(context, "toz");
+        boolean bothEnds = pinnedX != null && pinnedZ != null;
+        BlockPos from = bothEnds ? new BlockPos(x, feet.getY(), z) : feet;
+        BlockPos to = bothEnds ? new BlockPos(pinnedX, feet.getY(), pinnedZ) : new BlockPos(x, feet.getY(), z);
+        if (from.getX() == to.getX() && from.getZ() == to.getZ()) {
+            source.sendFailure(Component.literal("A road needs two different ends: it would leave and arrive on "
+                    + from.getX() + ", " + from.getZ()
+                    + (bothEnds ? ", the same block twice." : ", the block you are standing on. Name where it should"
+                    + " arrive: /tmroad build <x> <z>, or name both ends with /tmroad pin <x> <z> <x> <z>.")));
+            return 0;
+        }
         Choice asked = choice(source, from, context);
         Roads.Kind kind = asked.kind();
         boolean town = asked.town();
-        String id = "tolkienmobs:roads/planned_" + from.getX() + "_" + from.getZ() + "_" + x + "_" + z;
-        RoadPlan.Plan plan = RoadPlan.of(id, kind, town, from, new BlockPos(x, from.getY(), z));
+        String id = "tolkienmobs:roads/planned_" + from.getX() + "_" + from.getZ() + "_" + to.getX() + "_"
+                + to.getZ();
+        RoadPlan.Plan plan = RoadPlan.of(id, kind, town, from, to);
         if (plan.refused()) {
             String why = plan.refusal();
             source.sendFailure(Component.literal("No road would be laid: " + why + "."));
@@ -395,7 +424,8 @@ public final class RoadCommands {
         String how = lay ? "laid as the world steps it" : "planned, nothing laid";
         String wide = town ? "town bands (7 in, 5 through, 3 out)" : kind.blocks() + " wide";
         source.sendSuccess(() -> Component.literal("Road " + id + " from " + from.getX() + ", " + from.getZ()
-                + " to " + x + ", " + z + ": " + sections.size() + " section" + (sections.size() == 1 ? "" : "s")
+                + " to " + to.getX() + ", " + to.getZ() + ": " + sections.size() + " section"
+                + (sections.size() == 1 ? "" : "s")
                 + " at " + wide + ", " + how + "."), true);
         return 1;
     }
@@ -410,6 +440,15 @@ public final class RoadCommands {
         Route.Riverless dry = (Route.Riverless) section;
         LOGGER.info("Road plan {}: {}, {} to {}, {}, {} bends", section.id(), dry.pathX(), dry.pathZ(), dry.farX(),
                 dry.farZ(), Roads.bends(section).size());
+    }
+
+    /** One end named as a number, or null when that end was left to the block underfoot. */
+    private static Integer pinned(CommandContext<CommandSourceStack> context, String name) {
+        try {
+            return IntegerArgumentType.getInteger(context, name);
+        } catch (IllegalArgumentException absent) {
+            return null;
+        }
     }
 
     /** What width a planned road is asked for, and whether the bands decide it rather than one kind. */
@@ -465,6 +504,11 @@ public final class RoadCommands {
     }
 
     private static int buildHere(CommandContext<CommandSourceStack> context) {
+        return planned(context, true);
+    }
+
+    /** The same road, with both of its ends named: the only form that does not read the caller's own block. */
+    private static int pinHere(CommandContext<CommandSourceStack> context) {
         return planned(context, true);
     }
 
@@ -739,6 +783,8 @@ public final class RoadCommands {
         private Road done;
         /** Why this pass gave the road up, or null while it is still being laid. */
         private String refused;
+        /** Whether the refusal has been said to the players near the road; it is said once. */
+        private boolean told;
         /** The stations walked so far, across every bend this road is recorded as passing through. */
         private List<int[]> walked;
         /** The bends recorded for this road, or an empty list: a road with none is walked in a single leg. */
@@ -854,6 +900,12 @@ public final class RoadCommands {
                 spend(ran, began);
                 return more;
             } finally {
+                // Said in the chat of whoever is standing there, not only in the log: a player who sees nothing laid and
+                // nothing said has no way to tell a road the country refused from a command that did not run.
+                if (refused != null && !told) {
+                    told = true;
+                    tell(level);
+                }
                 // A pass that gave the road up writes nothing: a "down" note for a road that was never graded would say
                 // the road was there for ever, which is the fault the note is checked against the ground to avoid.
                 if (refused == null && saveWanted()) {
@@ -947,7 +999,10 @@ public final class RoadCommands {
             }
         }
 
-        /** How many of a stage's counts were taken, added up. */
+        /** How near a player has to be to the road that refused it to be told in the chat rather than only in the log. */
+    private static final int SAY_WITHIN = 128;
+
+    /** How many of a stage's counts were taken, added up. */
         private static int count(int[] counts) {
             int sum = 0;
             for (int one : counts) sum += one;
@@ -1109,7 +1164,16 @@ public final class RoadCommands {
         /** Gives the road up: the pass is finished, nothing was graded, and the reason is kept for whoever asked. */
         private void refuse() {
             done = new Road(0, 0, 0, 0, false, new int[6], new int[3], refused);
-            LOGGER.info("Road {}: nothing laid - {}", route.id(), refused);
+            LOGGER.warn("Road {}: nothing laid - {}", route.id(), refused);
+        }
+
+        /** Says why the road gave up in the chat of the players near the ground it was to be laid on. */
+        private void tell(ServerLevel level) {
+            BlockPos near = new BlockPos(route.pathX(), level.getMinY(), route.pathZ());
+            for (ServerPlayer player : level.players()) {
+                if (player.blockPosition().distSqr(near) > SAY_WITHIN * SAY_WITHIN) continue;
+                player.sendSystemMessage(Component.literal("No road was laid: " + refused + "."));
+            }
         }
 
         /**

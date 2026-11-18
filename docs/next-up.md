@@ -68,6 +68,10 @@ brand-new world is drawn. Work stopped here to go to a side project.
 - **Not seen in game.** The planner has only been compiled. The first test is one build, one target, one road - and the
   numbers to watch in the log are `Road plan <id>: <section>, <x>, <z> to <x>, <z>, <n> bends` and, from the pass, whether
   the road was laid or `nothing laid` with the leg that refused it.
+- **Both ends of a leg can be named.** `/tmroad pin <x> <z> <x> <z> [kind]` lays the same road `build` does without
+  reading the block underfoot, so a leg pinned at one end is the leg built from anywhere; two ends on the same block are
+  refused by name. A refusal now also arrives in the chat of anyone within 128 blocks of the road, and a pass whose step
+  throws is a warning in the log instead of a silence.
 - **A planned road survives a restart.** The plan is kept in `road_plans` beside the road notes and read back at server
   start, so a road laid in an earlier session is still there to find with `/tmroad forget` and to lay again. A leg whose
   search finds nothing now lays nothing at all: no grading, no note saying the road is down, and the reason in the log and

@@ -10,6 +10,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -42,6 +45,8 @@ import java.util.List;
  */
 @EventBusSubscriber(modid = TolkienMobsMain.MODID)
 public final class RoadCorridor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoadCorridor.class);
+
     private RoadCorridor() {
     }
 
@@ -121,7 +126,10 @@ public final class RoadCorridor {
             try {
                 more = job.step(level);
             } catch (IOException unreadable) {
-                // A pass that cannot run is not retried on every tick; the road's own note is what it resumes from.
+                // A pass that cannot run is not retried on every tick; the road's own note is what it resumes from. Said
+                // once per tick at most, because a silent pass is a road that never appears and a player who cannot tell
+                // why.
+                LOGGER.warn("Road {}: a step could not run: {}", route.id(), unreadable.toString());
                 continue;
             }
             if (!more) RoadCommands.stop(job);

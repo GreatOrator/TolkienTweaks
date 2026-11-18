@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Both ends of a leg can be named, and a leg that lays nothing says so in the chat.** `/tmroad build <x> <z>` reads
+          the start from the block underfoot, which is a rule a hand can forget between walking to one end and typing: run
+          it at the far end with that end's own numbers and the road is one block long, so nothing appears where the road
+          should be and nothing was said about it. `/tmroad pin <x> <z> <x> <z> [kind]` names both ends, so a leg is pinned
+          by the ground it is meant to cross and the same command gives the same road from anywhere; it is a literal of
+          its own rather than a longer `build` because a width word after the first pair would read a mistyped third number
+          as a word and lay a seven-wide road without a word said about it. Two ends that are the same block are refused
+          out loud, naming the block and telling the hand which of the two forms it was, instead of planning a road of
+          nothing. And a leg the country refuses now answers in the chat of every player within 128 blocks of it, not only
+          in the log - a refusal is the one thing a player sees as nothing at all, so it says `No road was laid:` and the
+          leg, its ends and the reason. A pass whose step could not run at all was swallowed by the tick that carries it;
+          it is now a warning in the log rather than a road that never appears for no stated reason.
 - **A planned road outlives the session that planned it, and a leg the ground will not carry lays nothing.** Two halves of
           the same promise: a road made at a build has to be a road, and a road that cannot be walked has to say so rather
           than be laid anyway. The plan is now written into the world as it is laid, in a store of its own beside the road
