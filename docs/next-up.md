@@ -94,6 +94,15 @@ line read a block at a time so a river is bridged. Every one compiled with
   world's planned roads have been taken back out. A road laid in an earlier session is still there to find with
   `/tmroad forget` and to lay again, and the start writes `Roads: N planned sections read back from the save` when it does.
 
+- **The raise stopped halfway, and the fix is unrun.** A band's far end is ground no standing player loads, and the raise
+  would not move on until every piece of the band was down, so it laid what it could see and waited in silence for ever -
+  which is what "Rivendell only goes about half way" was. The numbers, out of Road Test 3's own save: band 0 is 132 pieces,
+  23 of them inside a ten-chunk view of the corner the player was teleported to, the median 341 blocks out, the furthest
+  624, and 71 never inside a view of anywhere they stood. After five empty passes the raise now makes the ground for the
+  nearest waiting piece and lays it, one piece a pass, and logs one line per band saying what it is waiting on. **The
+  check:** a fresh world, walk to the pin, and a band has to go down with `/tmcity band` never run - with at most one
+  `out of made ground` line for the band that needed it.
+
 ### Still open from tonight
 
 - **The bridge has not been seen.** The first road laid in a world went under a river more than four blocks deep with no

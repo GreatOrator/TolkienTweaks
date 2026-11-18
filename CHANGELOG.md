@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A city raised under a walking player stopped halfway, because a band waits for ground nobody walks on.**
+          Rivendell's raise stands each piece on chunks the world already has and never makes ground for one, and that was
+          right as far as it went: nine chunk columns of generation inside a tick, for a piece four hundred blocks away, is
+          the raise's own worst cost. A band is a whole horizontal slice of a city five hundred and fifty blocks across,
+          though, and no band advances until every piece of it is down - so the near pieces come down and the far ones wait
+          for a walk that has no reason to happen. The Road Test 3 save shows it to the block: the city was planted at
+          07:23:38 from the cut's corner, and band 0 is **132** pieces of which **23** lie inside a ten-chunk view of that
+          corner - the median piece **341** blocks out and the furthest **624** - so **71** pieces of the band were never
+          inside a view of anywhere the player stood. Band 0 then laid nothing for ten minutes and said nothing; all six
+          bands went down in 300 ms the moment the hand's `/tmcity band` forced their chunks, and the server fell 418 ticks
+          behind doing it. That is the same work, done all at once and by hand. Now a band that lays nothing for five passes
+          in a row - a second to five seconds, on the cadence - makes the ground for the nearest piece still waiting, one
+          piece a pass, and lays it. The cadence walks up when the world cannot take even that, so a stalled band costs what
+          the player's own walking would have cost, a piece at a time, and the band goes on. It says once per band what it is
+          waiting on - `Rivendell: band 1 of 6 is out of made ground - 96 pieces left, the nearest at 5672, -2870, 412
+          blocks from the nearest player; its ground is made for it from here` - and the band's own "is down" line still
+          says how it ended. A world the raise has already finished has nothing to redo.
+
 - **The keep's rooms stood eleven courses over the gate's chamber, so the hold had no door.** A fresh world drew the
           keep at its plan to the block - x 5516…5637, z -7112…-6930, its south wall on -6930 with the gate's chamber carried
           to it and a doorway cut through where the wall stands - and the two floors still did not meet: the keep's rooms

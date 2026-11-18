@@ -216,6 +216,16 @@ public final class CityCommands {
     private static final int SLOWEST_PIECE_TICKS = 20;
     /** The average tick the raise will not add to, in milliseconds. Past it the next piece waits for a calmer tick. */
     private static final double BUSY_TICK = 45.0D;
+    /**
+     * How many passes in a row may lay nothing before the raise makes the ground for the band itself.
+     * <p>
+     * A pass with nothing laid is ordinary: the raise is paced, so the tick between two of them is not a stall, and one
+     * that lands while the world is behind is the pacing doing its job. A run of them is different - it is the band with
+     * no made ground left under it - and the fix for that is to ask the world for the ground rather than to wait longer
+     * for it. Five passes is a second to five seconds depending on the cadence, which is long enough that the answer is
+     * not a piece the player is about to load by walking, and short enough that nobody watching thinks the city stopped.
+     */
+    private static final int STALL_PASSES = 5;
     /** The cadence in flight, walked between the two by {@link #paceFor}. */
     private static int pace = PIECE_TICKS;
     /** The raise in flight: the corner it is laying, the band it is on, and how many pieces of that band are down. */
@@ -225,6 +235,10 @@ public final class CityCommands {
     private static List<Part> raisingOrder = List.of();
     /** Which of that order are down, so a piece left waiting for its ground is not counted twice. */
     private static final Set<Integer> raisingDone = new HashSet<>();
+    /** Passes in a row that laid nothing, so a band out of made ground is told apart from the pacing. */
+    private static int raisingWaiting;
+    /** Whether this band has already said what it is waiting on, so a band that stalls speaks once and not every pass. */
+    private static boolean raisingSpoke;
     /** The cut's pieces, read once: the raise is asked every few ticks and the table is five hundred lines. */
     private static List<Part> CUT_PARTS;
     /** Where the raise says what went down, on the channel the hand prints to. */
@@ -451,6 +465,8 @@ public final class CityCommands {
             RAISING = mark.origin();
             raisingBand = mark.band();
             raisingDone.clear();
+            raisingWaiting = 0;
+            raisingSpoke = false;
             raisingOrder = nearest(parts, bands.get(mark.band()), mark.origin(), level);
         }
         for (int index = 0; index < raisingOrder.size(); index++) {
@@ -472,11 +488,18 @@ public final class CityCommands {
             // The lowest band is the city's floor, so it is the one that needs ground under it.
             if (mark.band() == 0) Sites.underpin(level, at, part.wide(), part.deep(), UNDERPIN);
             raisingDone.add(index);
+            raisingWaiting = 0;
             return;
         }
         if (raisingDone.size() < raisingOrder.size()) {
-            // Nothing left in reach is standing on made ground: the player has not walked that far yet. Nothing is
-            // forced for it - the band waits where it is, and its pieces come down as their chunks do.
+            // Nothing left in this band is standing on made ground. The player's own view is what makes ground, and a
+            // band is a whole slice of a city five hundred blocks across, so most of it is beyond the view of whoever
+            // is standing in one corner of it: the near pieces come down, and the far ones wait for a walk that has no
+            // reason to happen. Waited on, that is a city that stops halfway and says nothing, which is exactly what a
+            // player reports. A pass or two of silence is the pacing; a run of them is the band out of ground.
+            if (++raisingWaiting < STALL_PASSES) return;
+            raisingWaiting = 0;
+            makeGround(level, folder, mark, bands.size());
             return;
         }
         Mark next = new Mark(mark.origin(), mark.band() + 1, mark.apron(), mark.dimension());
@@ -491,6 +514,50 @@ public final class CityCommands {
                     Box.of(parts, mark.origin()).spoken());
             forgetRaise();
         }
+    }
+
+    /**
+     * Makes the ground for one piece of a band that has run out of it, and says once what the band is waiting on.
+     * <p>
+     * The raise stands its pieces on ground the world already has, and that is right: nine chunk columns of generation
+     * inside a tick, for a piece the player may be four hundred blocks from, is the raise's own worst cost, and the
+     * player's own view is the thing that pays it as they walk. A band is a whole horizontal slice of a city five
+     * hundred blocks across, though, and the raise will not move to the next band until every piece of this one is
+     * down, so a standing player leaves the far ends of a band un-made for ever: everything in reach goes down and the
+     * band stops at the edge of the view. So when a band has laid nothing for {@link #STALL_PASSES} passes, one piece's
+     * ground is made for it - the nearest one left, the one the player can see - and the band goes on. One piece a pass
+     * is the cost the player's own walking pays, and the cadence walks up when the world cannot take even that.
+     * <p>
+     * It says so once per band rather than every pass: a band that is waiting is worth one line, and the band's own
+     * "is down" line says how it ended.
+     */
+    private static void makeGround(ServerLevel level, Path folder, Mark mark, int total) throws IOException {
+        for (int index = 0; index < raisingOrder.size(); index++) {
+            if (raisingDone.contains(index)) continue;
+            Part part = raisingOrder.get(index);
+            BlockPos at = mark.origin().offset(part.dx(), part.dy(), part.dz());
+            if (!raisingSpoke) {
+                raisingSpoke = true;
+                LOGGER.info("Rivendell: band {} of {} is out of made ground - {} pieces left, the nearest at {}, {} blocks"
+                                + " from the nearest player; its ground is made for it from here",
+                        mark.band() + 1, total, raisingOrder.size() - raisingDone.size(), at.toShortString(),
+                        Math.round(fromNearestPlayer(level, at)));
+            }
+            lay(level, folder, part, mark.origin(), true);
+            // The lowest band is the city's floor, so it is the one that needs ground under it.
+            if (mark.band() == 0) Sites.underpin(level, at, part.wide(), part.deep(), UNDERPIN);
+            raisingDone.add(index);
+            return;
+        }
+    }
+
+    /** How far the nearest player stands from a piece across the ground, in blocks; zero when nobody is in the world. */
+    private static double fromNearestPlayer(ServerLevel level, BlockPos at) {
+        double closest = Double.MAX_VALUE;
+        for (ServerPlayer player : level.players()) {
+            closest = Math.min(closest, Math.hypot(player.getX() - at.getX(), player.getZ() - at.getZ()));
+        }
+        return closest == Double.MAX_VALUE ? 0.0D : closest;
     }
 
     /**
@@ -593,6 +660,8 @@ public final class CityCommands {
         raisingBand = -1;
         raisingOrder = List.of();
         raisingDone.clear();
+        raisingWaiting = 0;
+        raisingSpoke = false;
     }
 
     /**
