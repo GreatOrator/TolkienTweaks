@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The raise laid one band and called the whole city finished, so a fresh world got a floor and a sky.** Road Test 6,
+          walked with no commands at all: the raise started from the pin, band 1 of 6 (the floor) took its 132 pieces and one
+          `out of made ground` line, and then bands 2, 3, 4, 5 and the whole city each reported "is down" **forty to two hundred**
+          milliseconds apart - five bands and the finish in **720 ms**, having looked at not one piece of them. The save is what
+          that means to the eye: at the pin's own column, 5200, -3033, `minecraft:stone` at **75** and **80** - the floor - and
+          `minecraft:air` at **123** and **130**, where band 2 begins; the marker read `5200 75 -3370 6 0 tolkienmobs:arda`, the
+          whole city down. Seventeen `Elf suffocated in a wall` lines between 09:21:13 and 09:21:26 are the other half of it: the
+          floor went down over the valley's own city folk, and nothing ever came down on top of them. The cause was a band turn
+          that moved the marker and forgot to invalidate the order it was carrying: `raisingBand` was set to the band just
+          written while `raisingOrder` was cleared, so the next pass found the band already "in hand" and never built that band's
+          order - and an empty order is every piece down, so the band closed on that pass and left the next one in the same state.
+          Every band after the first closed in a single pass. **A band turn now leaves no band in hand** (`raisingBand = -1`, the
+          state a corner starts in), so the pass that reads the marker builds that band's order and lays it piece by piece; and a
+          band that nonetheless closes with nothing in hand warns by name - `band N of M closed with no pieces in hand` - instead
+          of letting the marker move on in silence, because a city that reports itself finished with nothing in it is the report
+          this whole raise exists to stop. **Two things the same run settled:** no `tolkienmobs:rivendell` structure start exists
+          anywhere in the fresh world's `arda` region files, so the worldgen removal is doing what it was for and the raise is the
+          only hand that plants a city; and the raise's own bands, ground-making and marker are sound up to the floor - the failure
+          was never the laying, it was the hand that turned the page.
+
 - **A structure start was taken for a standing city, so the world was handed Rivendell and built only a ring of it.**
           Road Test 5, walked with no commands: the raise said nothing at all, six roads laid, and the only Rivendell line in
           the log was the dresser's - `19728 columns cut down, 35361 filled up` over an empty valley. The save says why.

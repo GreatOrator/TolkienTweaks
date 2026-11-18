@@ -507,7 +507,16 @@ public final class CityCommands {
         }
         Mark next = new Mark(mark.origin(), mark.band() + 1, mark.apron(), mark.dimension());
         write(folder, next);
-        raisingBand = next.band();
+        // The next band's order is not built here: the pass that reads this marker builds it. Leaving raisingBand
+        // on the band just written made that pass believe the order was already in hand, and an empty order is every
+        // piece down - so every band after the first closed in a single pass and the raise reported a whole city with
+        // nothing standing above its floor. No band of a real cut is empty, since the bands are the cut's own heights.
+        if (raisingOrder.isEmpty()) {
+            LOGGER.warn("Rivendell: band {} of {} closed with no pieces in hand - the marker is moved on, but nothing"
+                    + " of that band was laid", mark.band() + 1, bands.size());
+        }
+        // -1 is "no order yet", the state a corner starts in, so the next pass builds the next band's order.
+        raisingBand = -1;
         raisingOrder = List.of();
         raisingDone.clear();
         if (next.band() < bands.size()) {
