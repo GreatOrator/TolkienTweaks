@@ -284,8 +284,15 @@ final class RoadPlan {
      * Each crossing is taken out of the dry road either side of it and becomes a route of its own, so the road stops at
      * the near bank and picks up on the far one exactly as the walked ones do. The two dry sections meet the span on the
      * blocks its own approach and exit stop on, which is the arrangement the high pass road and its bridge already use.
+     * <p>
+     * The water is found along the line a block at a time rather than at the steps the walk itself is priced at. A step
+     * is sixteen blocks - as long as a drawn channel is deep and shorter than one is wide - so a river crossed on a
+     * diagonal can lie between two samples with the ground on both of them dry, and a road planned that way is graded
+     * straight through a river the drawing never let the plan see: a causeway under water, with the water standing over
+     * it and no span above. Reading every block of the line is what turns that into the bridge the crossing was for.
      */
     private static Plan sections(String id, BlockPos from, BlockPos to, List<int[]> line) {
+        List<int[]> ground = dense(line);
         List<Route> sections = new ArrayList<>();
         LinkedHashMap<String, List<BlockPos>> marks = new LinkedHashMap<>();
         int cursor = 0;
@@ -294,15 +301,15 @@ final class RoadPlan {
         int dry = 1;
         int bridges = 0;
         int index = 0;
-        while (index < line.size()) {
-            if (line.get(index)[4] == 0) {
+        while (index < ground.size()) {
+            if (ground.get(index)[4] == 0) {
                 index++;
                 continue;
             }
             int began = index;
-            while (index < line.size() && line.get(index)[4] == 1) index++;
+            while (index < ground.size() && ground.get(index)[4] == 1) index++;
             int ended = index - 1;
-            Span span = crossing(id + "_bridge_" + (bridges + 1), line, began, ended);
+            Span span = crossing(id + "_bridge_" + (bridges + 1), ground, began, ended);
             if (span.crossing() == null) return new Plan(List.of(), span.refusal());
             Route.Crossing water = span.crossing();
             bridges++;
@@ -311,7 +318,7 @@ final class RoadPlan {
             if (Math.hypot(near[0] - fromX, near[1] - fromZ) >= LANE) {
                 String name = dry == 1 ? id : id + "_" + dry;
                 sections.add(new Route.Riverless(name, 0, 0, 0, 0, fromX, fromZ, near[0], near[1]));
-                marks.put(name, marks(line, cursor, began));
+                marks.put(name, marks(ground, cursor, began));
                 dry++;
             }
             sections.add(water);
@@ -322,10 +329,48 @@ final class RoadPlan {
         if (Math.hypot(to.getX() - fromX, to.getZ() - fromZ) >= 1.0D) {
             String name = dry == 1 ? id : id + "_" + dry;
             sections.add(new Route.Riverless(name, 0, 0, 0, 0, fromX, fromZ, to.getX(), to.getZ()));
-            marks.put(name, marks(line, cursor, line.size() - 1));
+            marks.put(name, marks(ground, cursor, ground.size() - 1));
         }
         MARKS.putAll(marks);
         return new Plan(sections, null);
+    }
+
+    /**
+     * The line's own blocks, one at a time, with the drawing read for each.
+     * <p>
+     * The walk between two steps is a staircase of single blocks, and it is the blocks a road is really paved along, so
+     * the ground is read there rather than at the sixteen-block steps: a channel is wider than one step and a plan that
+     * only looks at steps can walk round the edge of one and never see it. The reading stops at the step itself, so no
+     * block is added that was not on the line the walk priced.
+     */
+    private static List<int[]> dense(List<int[]> line) {
+        List<int[]> blocks = new ArrayList<>();
+        blocks.add(column(line.get(0)));
+        for (int at = 1; at < line.size(); at++) {
+            int[] was = line.get(at - 1);
+            int[] next = line.get(at);
+            int guard = 0;
+            while ((was[0] != next[0] || was[1] != next[1]) && guard++ < 4096) {
+                was = new int[]{was[0] + Integer.signum(next[0] - was[0]),
+                        was[1] + Integer.signum(next[1] - was[1])};
+                blocks.add(column(was));
+            }
+        }
+        return blocks;
+    }
+
+    /**
+     * One block of the line: where it is, the ground's height, the water's level, and whether water stands over it.
+     * <p>
+     * Water is a column the drawing gives a bed below its own surface - the rivers and the lakes, which both carry the
+     * drawing's water rather than a level of their own. Ground that merely stands under the sea's level without any
+     * water drawn over it is land: the map raises the shore to hold its water, and a plain the drawing put below the
+     * old sea line is a plain.
+     */
+    private static int[] column(int[] point) {
+        ArdaMap.Sample sample = ArdaMap.sample(point[0], point[1]);
+        boolean wet = sample.river() && sample.water() > sample.height();
+        return new int[]{point[0], point[1], sample.height(), sample.water(), wet ? 1 : 0};
     }
 
     /**

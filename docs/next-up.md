@@ -68,6 +68,11 @@ brand-new world is drawn. Work stopped here to go to a side project.
 - **Not seen in game.** The planner has only been compiled. The first test is one build, one target, one road - and the
   numbers to watch in the log are `Road plan <id>: <section>, <x>, <z> to <x>, <z>, <n> bends` and, from the pass, whether
   the road was laid or `nothing laid` with the leg that refused it.
+- **Watched for in game:** the first road laid went under a river instead of over it. The plan now reads the line a block
+  at a time (`RoadPlan.dense`), so a channel that fell between two sixteen-block samples is found and bridged; a leg along
+  a water's edge now refuses by the width it would bridge. What to look for in the chat: `N sections` with a `span …, deck …`
+  line in the log instead of one section from end to end. Anything already laid under water stays - forgetting a road
+  clears its notes, it does not take its blocks back out.
 - **Both ends of a leg can be named.** `/tmroad pin <x> <z> <x> <z> [kind]` lays the same road `build` does without
   reading the block underfoot, so a leg pinned at one end is the leg built from anywhere; two ends on the same block are
   refused by name. A refusal now also arrives in the chat of anyone within 128 blocks of the road, and a pass whose step

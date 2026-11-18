@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A river is found a block at a time, so a road crosses it on a bridge rather than under it.** The first road laid
+          in the world went beneath a river more than four blocks deep with no span over it. The plan is priced at steps of
+          sixteen blocks - `LANE` - and the water it cuts spans from was read at those steps too, one sample per step of
+          each lane: a channel a road crosses on a diagonal can therefore fall between two dry samples, and a plan that
+          never saw the water is a plan with one dry section from end to end. The pass then grades that section as if the
+          water were not there, and a causeway is laid with the river standing over it. The line is now read a block at a
+          time before it is cut into sections (`RoadPlan.dense`), so every block the road is actually paved on is asked
+          what it is, and the runs of water are found where they really are - one block of submerged bed at the least, not
+          sixteen. Water is a column the drawing gives a bed below its own surface (`sample.river() && water > height`),
+          which covers the rivers and the lakes both and never mistakes dry ground that merely stands under the sea's
+          level for water; the banks still have to be dry ground at or over the surface. The span, its deck two blocks
+          over the highest water, and the two dry sections that meet it on its own approach and exit are otherwise
+          unchanged. A leg that runs along the water's edge rather than across it now refuses by the width it would have
+          to bridge, which is the true answer, where before it could slip past the edge and grade a road into it. And a
+          section planned again at the same two ends replaces the one the world held (`Roads.remember`) rather than being
+          dropped in favour of it, so a leg re-pinned after the ground is read differently is the leg that is laid.
 - **Both ends of a leg can be named, and a leg that lays nothing says so in the chat.** `/tmroad build <x> <z>` reads
           the start from the block underfoot, which is a rule a hand can forget between walking to one end and typing: run
           it at the far end with that end's own numbers and the road is one block long, so nothing appears where the road

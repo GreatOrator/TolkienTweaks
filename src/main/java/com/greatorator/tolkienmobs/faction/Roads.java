@@ -99,7 +99,13 @@ public final class Roads {
         if (routes == null) return;
         PLANNED.add(route.id());
         for (Route known : routes) {
-            if (known.id().equals(route.id())) return;
+            if (!known.id().equals(route.id())) continue;
+            // A section named the same as one already here is that section planned again - an id is made of the road's
+            // two ends - and the newest reading of the ground is the one to lay. Keeping the first answer is what left
+            // a leg pinned a second time standing as the road it used to be: planned again with a bridge over the water
+            // it had crossed under, the section without the bridge was the one the world still held.
+            if (known != route) routes.set(routes.indexOf(known), route);
+            return;
         }
         routes.add(route);
     }
