@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A leg pinned in a test world and never laid is out of the table.** `planned_4516_-2512_4562_-2398` was written into
+          `Roads.NETWORK` with the high-pass legs and has no note in any save: no world has laid a section of it, so what
+          it planned in a fresh world was ground nobody walked. The store is the test of a line, and the table now holds
+          the store's roads and nothing else - eleven of them. Dropping it costs nothing a world had: a road with no note
+          was never begun, and one that should be walked is pinned again with `/tmroad pin`.
 - **The five roads a fresh world was missing are in the table, Gundabad's included.** The network was read off a test
           world's store before the vale's roads were walked, so a world made afterwards planned eleven sections and had no
           road out of Rivendell to the meeting plaza, none from the plaza on to Glóin's camp, and none from Rivendell down

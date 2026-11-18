@@ -101,7 +101,7 @@ public final class Roads {
      * <p>
      * The first entry is the hold's road, out of Gundabad's own gate and down to the old forest road
      * (see {@link #GUNDABAD_GATE}). Everything after it is a road the test world lays today, in the order they were
-     * walked: the old forest road east of Mirkwood to Glóin's camp; the five legs of the high pass between Rivendell's
+     * walked: the old forest road east of Mirkwood to Glóin's camp; the four legs of the high pass between Rivendell's
      * roads and Glóin's camp; the road out of Rivendell to the meeting plaza, and the plaza's road on to Glóin's camp;
      * the road from Rivendell down to Elladan's camp; and the short leg between Rivendell's south gate and the same
      * road's shoulder, which the first of those two was laid from. All of them are the country's own track, three wide,
@@ -110,7 +110,9 @@ public final class Roads {
      * A road is here when it is in the world's store - the roads the test world walked are read back one at a time and
      * written down here with the ends their own ids were made of. A road left out is not a road that waits: a fresh
      * world plans only what is in this list and quietly has no road there, which is how three roads of the vale came to
-     * be missing from a world made after them.
+     * be missing from a world made after them. Nor is a line here a road: a leg pinned in a test world and never laid
+     * is a line that plans sections in every fresh world for ground nobody has walked, so the table holds the store's
+     * roads and nothing else.
      * <p>
      * Declared above {@link #ROUTES} on purpose, as the hold's two marks are: the list is built once when this class
      * loads, and a road written below it would not be in the list at all.
@@ -119,7 +121,6 @@ public final class Roads {
             new Named(GUNDABAD_ROAD, Kind.WILD, false, GUNDABAD_GATE, GUNDABAD_JOIN),
             new Named("tolkienmobs:roads/planned_11813_-3901_8229_-3654", Kind.WILD, false, at(11813, -3901), at(8229, -3654)),
             new Named("tolkienmobs:roads/planned_4515_-2446_4705_-3169", Kind.WILD, false, at(4515, -2446), at(4705, -3169)),
-            new Named("tolkienmobs:roads/planned_4516_-2512_4562_-2398", Kind.WILD, false, at(4516, -2512), at(4562, -2398)),
             new Named("tolkienmobs:roads/planned_4528_-2541_4624_-2480", Kind.WILD, false, at(4528, -2541), at(4624, -2480)),
             new Named("tolkienmobs:roads/planned_4776_-3063_4684_-3050", Kind.WILD, false, at(4776, -3063), at(4684, -3050)),
             new Named("tolkienmobs:roads/planned_4787_-3059_4778_-3059", Kind.WILD, false, at(4787, -3059), at(4778, -3059)),
