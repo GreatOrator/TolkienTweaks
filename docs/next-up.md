@@ -33,7 +33,7 @@ brand-new world is drawn. Work stopped here to go to a side project.
 | # | Item | Status | Where the detail is |
 |---|------|--------|---------------------|
 | 1 | **Carn Dûm's ground** - the camps on its borders and the wight's hall | **next** | nothing has looked at it yet; `carndum` is only a place canon'd to `ANGMAR` |
-| 2 | **The roads** - the whole network, rebuilt from two ends per road | **laid and in the code**: seven roads in `Roads.NETWORK`, planned from their ends; **next** the hold's road, waiting on its two marks | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
+| 2 | **The roads** - the whole network, rebuilt from two ends per road | **done and signed off**: seven roads in `Roads.NETWORK` cover every destination of the twenty-one walked routes; **next** the hold's road, waiting on its two marks | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
 | 5 | **The keep's placement** | on hold | `docs/gundabad-keep.md` |
@@ -57,7 +57,9 @@ line read a block at a time so a river is bridged. Every one compiled with
   list and the build names: the valley's road and its crossing, the Thorenhad road, Elladan's branch, Barachen's camp, the
   wood ruin and its link, the mountain way, the ford way, the three cave roads, the high pass road with its bridge and its
   climb, Glóin's road with its stream crossing and the road east, and the old forest road with both of its fords. The
-  builds are all still standing, so the network comes back one place at a time.
+  builds are all still standing, so the network comes back one place at a time. **Signed off 18 November:** the owner
+  compared all twenty-one walked routes against the seven roads that replaced them and found no destination missing -
+  the network came back as fewer, longer sections over the same ground, which is the whole of what the planner was for.
 - **A road is now two ends and a plan.** `RoadPlan` walks the drawing - `ArdaMap.sample`, sixteen blocks a lane, ±192 wide -
   and prices grade over 0.35, turn, and river depth. No chunk is read or generated to plan one, and it leaves a bend every
   320 blocks so the pass's own search only has to sit each leg on the ground. Water on the chosen line becomes a
@@ -156,7 +158,9 @@ line read a block at a time so a river is bridged. Every one compiled with
   now; a named road is begun by any chunk of its ground that loads, as the walked network was. **What to check on the
   fresh world:** the start log should carry a `Road plan <id>: …` line for each of the eleven sections before the world
   is entered, and the roads should lay themselves as the ground comes in - two bridges on the old forest road and none
-  on the high pass legs. The hold's road is the first entry of the same table and still has `GUNDABAD_GATE` and
+  on the high pass legs. That the seven cover the same destinations as the twenty-one walked routes is not a guess: the
+  owner read the two lists against each other and signed it off, so nothing from the old network is still owed. The
+  hold's road is the first entry of the same table and still has `GUNDABAD_GATE` and
   `GUNDABAD_JOIN` null: pin its two ends in the fresh world with `/tmroad pin`, then paste them in as
   `new BlockPos(x, 0, z)` and delete the two nulls, which is all that road waits for.
 - **A leg along a river now refuses.** Reading the water a block at a time means a leg that runs beside the water rather
