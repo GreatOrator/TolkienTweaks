@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -64,16 +65,25 @@ public final class RoadCorridor {
         int lowX = chunk.getPos().getMinBlockX();
         int lowZ = chunk.getPos().getMinBlockZ();
         for (Route route : Roads.ROUTES) {
-            if (route instanceof Route.Crossing && !Roads.road(route)) continue;
-            // A road planned at a build this session is begun by the command that planned it and carried on by the note
-            // that command leaves. A plan with no note is a road waiting to be asked for, and laying it because a chunk
-            // of its ground came into view is how a road planned twice was laid twice: the old forest road planned in
-            // the mountains stood beside its own first attempt, section for section. A road the code names is not a plan
-            // - it is part of the world like any other, and the ground it crosses begins it.
-            if (Roads.planned(route) && !RoadCommands.begun(level, route)) continue;
+            if (!mayBegin(level, route)) continue;
             if (!touches(route, lowX, lowZ)) continue;
             RoadCommands.pass(level, route, lowX + 8, lowZ + 8);
         }
+    }
+
+    /**
+     * Whether the world may begin this section from the ground it crosses.
+     * <p>
+     * A bridge behind a build is the build's own business, so a crossing is only begun here when it belongs to a named
+     * road. A road planned at a build this session is begun by the command that planned it and carried on by the note
+     * that command leaves: a plan with no note is a road waiting to be asked for, and laying it because a chunk of its
+     * ground came into view is how a road planned twice was laid twice - the old forest road planned in the mountains
+     * stood beside its own first attempt, section for section. A road the code names is not a plan; it is part of the
+     * world like any other, and the ground it crosses begins it.
+     */
+    private static boolean mayBegin(ServerLevel level, Route route) {
+        if (route instanceof Route.Crossing && !Roads.road(route)) return false;
+        return !Roads.planned(route) || RoadCommands.begun(level, route);
     }
 
     /**
@@ -85,6 +95,12 @@ public final class RoadCorridor {
      * cost of being early is only a pass that waits for its own head to be loaded.
      */
     private static boolean touches(Route route, int lowX, int lowZ) {
+        // The chunk's own middle, held to the road: a chunk is begun by the road passing near it.
+        return near(route, lowX + 8, lowZ + 8, TOUCH);
+    }
+
+    /** Whether a point stands within a distance of the blocks a road is recorded as passing through. */
+    private static boolean near(Route route, int x, int z, int reach) {
         List<int[]> marks = new java.util.ArrayList<>();
         marks.add(new int[]{route.pathX(), route.pathZ()});
         for (BlockPos bend : Roads.bends(route)) marks.add(new int[]{bend.getX(), bend.getZ()});
@@ -96,13 +112,10 @@ public final class RoadCorridor {
             double dx = to[0] - from[0];
             double dz = to[1] - from[1];
             double length = dx * dx + dz * dz;
-            // The chunk's own middle, held to the segment: a chunk is begun by the road passing near it.
-            int midX = lowX + 8;
-            int midZ = lowZ + 8;
             double along = length == 0.0D ? 0.0D
-                    : Math.clamp(((midX - from[0]) * dx + (midZ - from[1]) * dz) / length, 0.0D, 1.0D);
-            double away = Math.hypot(midX - (from[0] + dx * along), midZ - (from[1] + dz * along));
-            if (away <= TOUCH) return true;
+                    : Math.clamp(((x - from[0]) * dx + (z - from[1]) * dz) / length, 0.0D, 1.0D);
+            double away = Math.hypot(x - (from[0] + dx * along), z - (from[1] + dz * along));
+            if (away <= reach) return true;
         }
         return false;
     }
@@ -123,6 +136,7 @@ public final class RoadCorridor {
      */
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
+        look(event);
         for (RoadCommands.RoadJob job : List.copyOf(RoadCommands.passes())) {
             Route route = job.route();
             if (!(event.getServer().getLevel(TolkienDimensions.ARDA) instanceof ServerLevel level)) continue;
@@ -141,4 +155,38 @@ public final class RoadCorridor {
             if (!more) RoadCommands.stop(job);
         }
     }
+
+    /**
+     * Begins the roads the players are standing beside.
+     * <p>
+     * The load of a chunk is only ever the first look at it. A chunk that was brought in before the player came - by a
+     * structure being raised, by a city being built, or by a save made in another session - has no second load to begin
+     * a road with, and a road whose ground is loaded already has nothing left to start it at all: the world sat at
+     * Rivendell with the high pass legs six hundred blocks away and nothing in the log to say why. So the players are
+     * looked at instead. Once a second, every road a player stands within {@link #NEAR} of is begun from where they are,
+     * which is the same rule the chunk load has - the ground a road crosses begins it - with the ground being wherever
+     * a player has got to. A road already down owes nothing and is not begun again; a road that refused its ground is
+     * not asked again this run.
+     */
+    private static void look(ServerTickEvent.Post event) {
+        if (++ticks % NEAR_EVERY != 0) return;
+        if (!(event.getServer().getLevel(TolkienDimensions.ARDA) instanceof ServerLevel level)) return;
+        for (ServerPlayer player : level.players()) {
+            BlockPos at = player.blockPosition();
+            for (Route route : Roads.ROUTES) {
+                if (!mayBegin(level, route)) continue;
+                if (!near(route, at.getX(), at.getZ(), NEAR)) continue;
+                RoadCommands.pass(level, route, at.getX(), at.getZ());
+            }
+        }
+    }
+
+    /** How near a player stands to a road's recorded line for the ground to begin it, in blocks. */
+    private static final int NEAR = 32;
+
+    /** How often the players are looked at, in ticks: once a second, which is nearer than a walker outruns a road's start. */
+    private static final int NEAR_EVERY = 20;
+
+    /** Ticks since the server started, so the players are looked at once a second rather than every tick. */
+    private static int ticks;
 }

@@ -172,10 +172,13 @@ line read a block at a time so a river is bridged. Every one compiled with
   chunks, the rest of the arda map along the roads has never been generated, and the old forest road has no region file
   at all past its west end. Two lines of instrumentation were added so the next start cannot be ambiguous: the start
   says `Roads: <n> sections in hand, <m> read back from the save`, and each pass says `Road <id>: begun from the ground
-  at <x>, <z>`. **What to check:** launch with those lines, go to 4819, -2887 (Barachen's camp, the one place the ground
-  is generated that G's line touches) and read the log - a `begun from the ground` line means the corridor found it and
-  the road is laying or refused with a reason; no line means the chunk never touched a route. A refusal says why in the
-  chat too, within 128 blocks of the road's own end.
+  at <x>, <z>`. **The rule is now the player as well as the chunk:** once a second `RoadCorridor.look` begins every road
+  a player stands within 32 blocks of the line of, from where they are, so a road no longer waits for a chunk that has
+  already loaded once; a road the ground refused is kept refused for the run (`RoadCommands.REFUSED`) rather than
+  re-searched every second, and forgetting it clears that. **What to check:** launch, go to 4819, -2887 (Barachen's camp,
+  the one place the ground is generated that G's line touches) or anywhere within 32 blocks of a leg's line and read the
+  log - a `begun from the ground` line means the corridor found it and the road is laying, or refused with a reason in
+  the chat within 128 blocks. Nothing at all in the log within 32 blocks of a road means neither path is seeing it.
 - **A leg along a river now refuses.** Reading the water a block at a time means a leg that runs beside the water rather
   than across it refuses by the width it would bridge. True as an answer, poor as a road: the next thing to try is
   stepping the line inland along a bank rather than giving the leg up.

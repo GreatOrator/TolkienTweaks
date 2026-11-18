@@ -562,6 +562,17 @@ public final class RoadCommands {
     private static final Map<String, RoadJob> PASSES = new HashMap<>();
 
     /**
+     * The roads the ground has refused this run.
+     * <p>
+     * A refusal is the world's answer about the country a road crosses, not about the hand that asked: the same ground
+     * refuses it again a moment later. While a road is only begun by the chunk it passes through that costs nothing -
+     * a chunk loads once. A player standing beside a refused road would have the whole search run again every second it
+     * takes to look, so the refusal is kept for the run and cleared only when the road is forgotten or the world is
+     * loaded again.
+     */
+    private static final java.util.Set<String> REFUSED = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    /**
      * The pass for one route, planned if the world has none for it yet.
      * <p>
      * Two callers can ask for the same road - the chunk it passes through and the build it leaves from - and they must
@@ -577,6 +588,7 @@ public final class RoadCommands {
         if (route instanceof Route.Crossing && !Roads.road(route)) return null;
         RoadJob existing = PASSES.get(route.id());
         if (existing != null) return existing;
+        if (REFUSED.contains(route.id())) return null;
         if (down(level, route)) return null;
         RoadJob made = new RoadJob(route, x, z);
         PASSES.put(route.id(), made);
@@ -599,6 +611,7 @@ public final class RoadCommands {
     /** Drops the pass for one road, if the world has one in hand. */
     static void stop(Route route) {
         PASSES.remove(route.id());
+        REFUSED.remove(route.id());
     }
 
     /** Drops every pass for a build's roads, however the road is named. */
@@ -1197,6 +1210,7 @@ public final class RoadCommands {
         /** Gives the road up: the pass is finished, nothing was graded, and the reason is kept for whoever asked. */
         private void refuse() {
             done = new Road(0, 0, 0, 0, false, new int[6], new int[3], refused);
+            REFUSED.add(route.id());
             LOGGER.warn("Road {}: nothing laid - {}", route.id(), refused);
         }
 

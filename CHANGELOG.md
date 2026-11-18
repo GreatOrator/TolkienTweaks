@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road begins wherever a player stands beside it, not only when a chunk loads.** A road was begun by the load of a
+          chunk it passes through, and a chunk loads once: ground brought in before the player came - by a structure being
+          raised, by a city's bands, or by a save made in another session - never loads again, so a road whose ground was
+          already there had nothing left to start it. That is what a fresh world showed: eleven sections planned, the
+          player at Rivendell, nothing laid and nothing in the log. The corridor now looks at the players as well, once a
+          second: every road a player stands within thirty-two blocks of the line of is begun from where they are, the
+          same rule the chunk load has - the ground a road crosses begins it - with the ground being wherever a player has
+          got to. The chunk still begins a road, so a world with nobody in it still dresses its own roads. A road whose
+          ground refused it is kept refused for the run, or a player standing beside it would have the whole search run
+          again every second; forgetting the road clears the refusal.
 - **A world that lays no road now says which of the two it is.** Nothing in the log said whether a session held the
           roads at all: a world whose list was empty, one whose list was full and never touched by a loaded chunk, and
           one whose road was begun and refused all read the same - silence. The start now says how many sections are in
