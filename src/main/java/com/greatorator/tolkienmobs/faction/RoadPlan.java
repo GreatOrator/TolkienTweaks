@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,6 +183,28 @@ final class RoadPlan {
     /** Whether a planned section takes its width from the bands rather than one kind the whole way. */
     static boolean banded(String section) {
         return section != null && BANDED.contains(section);
+    }
+
+    /**
+     * Puts a section read out of the save back in the tables the pass asks.
+     * <p>
+     * A plan is three answers rather than one: the width it is laid at, whether the bands decide that width, and the
+     * marks the pass searches between. A road read back without them is a name the world knows and a road it cannot
+     * lay - one kind short of the road it was - so what {@link RoadPlans} keeps is restored through here.
+     */
+    static void restore(Route section, Roads.Kind kind, boolean town, List<BlockPos> marks) {
+        KINDS.put(section.id(), kind);
+        if (town) BANDED.add(section.id());
+        if (!marks.isEmpty()) MARKS.put(section.id(), marks);
+    }
+
+    /** Drops what one world's plans left, so another world's roads do not open beside them. */
+    static void forget(Collection<String> sections) {
+        for (String section : sections) {
+            KINDS.remove(section);
+            MARKS.remove(section);
+            BANDED.remove(section);
+        }
     }
 
     /** The sections of one road, or null when the drawing says nothing and the road is to be laid straight. */

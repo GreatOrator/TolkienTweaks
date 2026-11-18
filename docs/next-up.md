@@ -66,8 +66,12 @@ brand-new world is drawn. Work stopped here to go to a side project.
   for. The span's banks are taken from the two ends of the river run (back from where the road meets water, on from where it
   leaves it), not from the run's middle.
 - **Not seen in game.** The planner has only been compiled. The first test is one build, one target, one road - and the
-  numbers to watch in the log are `Road plan <id>: <section>, <x>, <z> to <x>, <z>, <n> bends` and, from the pass,
-  `searched` rather than `straight`.
+  numbers to watch in the log are `Road plan <id>: <section>, <x>, <z> to <x>, <z>, <n> bends` and, from the pass, whether
+  the road was laid or `nothing laid` with the leg that refused it.
+- **A planned road survives a restart.** The plan is kept in `road_plans` beside the road notes and read back at server
+  start, so a road laid in an earlier session is still there to find with `/tmroad forget` and to lay again. A leg whose
+  search finds nothing now lays nothing at all: no grading, no note saying the road is down, and the reason in the log and
+  in the command's answer.
 
 ## 17 November 2026 - the halls, the marks' switch, and the south edge
 

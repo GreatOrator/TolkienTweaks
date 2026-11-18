@@ -29,6 +29,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -252,8 +253,37 @@ public final class RoadCommands {
                 .then(Commands.literal("forget").executes(RoadCommands::forget)));
     }
 
-    /** What a road pass came to, so the hand can say it and the world's own dressing can only log it. */
-    record Road(int cleared, int pieces, int pillars, int along, boolean searched, int[] graded, int[] far) {
+    /**
+     * Why the server puts the planned roads back in the tables the pass reads.
+     * <p>
+     * A road planned at a build is made in a session and would be gone with it: after a restart the list was empty, so
+     * a player standing on a road they had laid themselves could not find it, forget it or have it re-laid. The plan is
+     * written down as it is laid (see {@link RoadPlans}) and read back here, once, before any of the world's buildings
+     * ask for their roads.
+     */
+    @SubscribeEvent
+    public static void onServerStarted(ServerStartedEvent event) {
+        ServerLevel overworld = event.getServer().getLevel(Level.OVERWORLD);
+        if (overworld == null) return;
+        int restored = RoadPlans.load(overworld);
+        if (restored > 0) {
+            LOGGER.info("Roads: {} planned section{} read back from the save", restored, restored == 1 ? "" : "s");
+        }
+    }
+
+    /**
+     * What a road pass came to, so the hand can say it and the world's own dressing can only log it.
+     * <p>
+     * A pass that gave the road up came to nothing: every count is nought, {@code searched} is false, and
+     * {@code refusal} says which leg refused it and why. There is no other way to finish with nothing laid - a pass is
+     * either graded or refused - so a nought without a refusal is a road that was already down.
+     */
+    record Road(int cleared, int pieces, int pillars, int along, boolean searched, int[] graded, int[] far,
+                String refusal) {
+        /** Whether the pass gave the road up rather than laying it. */
+        boolean refused() {
+            return refusal != null;
+        }
     }
 
     /** Stands the bridge, draws its pillars down, and grades the road either side of it. */
@@ -266,7 +296,11 @@ public final class RoadCommands {
         }
         try {
             Road laid = road(source.getLevel(), route);
-            String how = laid.searched() ? "searched" : "straight, the descent could not be searched";
+            // A pass that cannot search its way lays nothing, so every road answered about here was searched.
+            if (laid.refused()) {
+                source.sendFailure(Component.literal("No road was laid: " + laid.refusal() + "."));
+                return 0;
+            }
             int[] graded = laid.graded();
             int[] far = laid.far();
             String surface = graded[0] + " columns laid, " + graded[1] + " cut, " + graded[2]
@@ -276,14 +310,14 @@ public final class RoadCommands {
                         + " old timbers cleared, bridge of " + laid.pieces()
                         + " pieces from " + crossing.bankX() + ", " + crossing.bankZ() + " to " + crossing.farX()
                         + ", " + crossing.farZ() + ", pillars drawn down " + laid.pillars() + " blocks. Approach "
-                        + laid.along() + " blocks, " + how
+                        + laid.along() + " blocks, searched"
                         + ", steepest graded step " + graded[4] + ": " + surface
                         + " Far side " + far[0] + " columns laid, " + far[1] + " cut, " + far[2]
                         + " filled. Both ends walk in along the span's own line."), true);
             } else {
                 Route.Riverless dry = (Route.Riverless) route;
                 source.sendSuccess(() -> Component.literal("Road from " + dry.id() + " to " + dry.farX()
-                        + ", " + dry.farZ() + ": " + laid.along() + " blocks, " + how
+                        + ", " + dry.farZ() + ": " + laid.along() + " blocks, searched"
                         + ", steepest graded step " + graded[4] + ": " + surface
                         + " Nothing on the way is water, so nothing is bridged."), true);
             }
@@ -353,6 +387,9 @@ public final class RoadCommands {
             // Every section joins the world before any of them is begun, because a road's grade asks where the spans are
             // before it arrives on one, and a span that arrived afterwards would be a step at its own bank.
             for (Route section : sections) Roads.remember(section);
+            // Written down before the first pass is begun: a road half laid when the world stops is found again at the
+            // next start, and a road laid is still a road somebody can forget and lay a second time.
+            RoadPlans.keep(source.getLevel(), sections, kind, town);
             for (Route section : sections) pass(source.getLevel(), section, from.getX(), from.getZ());
         }
         String how = lay ? "laid as the world steps it" : "planned, nothing laid";
@@ -498,7 +535,7 @@ public final class RoadCommands {
     }
 
     /** What a pass that finds its road already down answers with: nothing laid, because nothing was owed. */
-    private static final Road ALREADY_DOWN = new Road(0, 0, 0, 0, false, new int[6], new int[3]);
+    private static final Road ALREADY_DOWN = new Road(0, 0, 0, 0, false, new int[6], new int[3], null);
 
     /**
      * Whether this world already has this road down, from the note its own pass leaves when it finishes.
@@ -700,6 +737,8 @@ public final class RoadCommands {
         /** Whether this pass began somewhere other than its own first stage, which the totals then start from. */
         private boolean resumed;
         private Road done;
+        /** Why this pass gave the road up, or null while it is still being laid. */
+        private String refused;
         /** The stations walked so far, across every bend this road is recorded as passing through. */
         private List<int[]> walked;
         /** The bends recorded for this road, or an empty list: a road with none is walked in a single leg. */
@@ -815,7 +854,9 @@ public final class RoadCommands {
                 spend(ran, began);
                 return more;
             } finally {
-                if (saveWanted()) {
+                // A pass that gave the road up writes nothing: a "down" note for a road that was never graded would say
+                // the road was there for ever, which is the fault the note is checked against the ground to avoid.
+                if (refused == null && saveWanted()) {
                     Progress.remember(this, level);
                     written = stage;
                     sinceWrite = 0;
@@ -858,7 +899,14 @@ public final class RoadCommands {
                     if (pillarAt > spanHigh(span)) stage = Stage.SEARCH;
                 }
                 case SEARCH -> {
-                    if (!walk(level)) align(level);
+                    if (!walk(level)) {
+                        // A leg the ground will not carry gives the whole road up. It used to be answered with one
+                        // straight line through everything the search had just refused, which is a road nobody planned
+                        // cut through whatever stood in it; now nothing is graded, nothing is written down as down, and
+                        // the hand that asked is told which leg and why.
+                        if (refused != null) refuse();
+                        else align(level);
+                    }
                 }
                 case GRADE -> {
                     int budget = PAVING_PER_STEP;
@@ -871,7 +919,7 @@ public final class RoadCommands {
                     // between two blocks, so every step is already half a block and every half step is already laid; the
                     // stage stays only so a pass saved by a version that had one still finishes rather than stalling.
                     done = new Road(cleared, pieces, pillarsDrawn, approach.size(), searched,
-                            graded.summary(), far == null ? new int[6] : far.summary());
+                            graded.summary(), far == null ? new int[6] : far.summary(), null);
                     return false;
                 }
             }
@@ -893,7 +941,7 @@ public final class RoadCommands {
             if (stage == ran && done == null) return;
             LOGGER.info("Road {}: {} done in {} steps of {} each", route.id(), ran, taken[index],
                     millis(nanos[index] / taken[index]));
-            if (done != null) {
+            if (done != null && refused == null) {
                 LOGGER.info("Road {}: laid in {} steps, {} of work{}", route.id(), count(taken), millis(count(nanos)),
                         resumed ? ", since the pass was last picked up" : "");
             }
@@ -1038,10 +1086,13 @@ public final class RoadCommands {
             if (descent.step(level, SEARCH_PER_STEP)) return true;
             List<int[]> part = descent.path();
             if (part == null || part.isEmpty()) {
-                // A bend no road can reach is a road with no walked way at all: the line goes straight between the
-                // recorded ends, as it did before there were bends, and the log names the leg that refused it.
-                LOGGER.info("Road {}: no walked way from {}, {} to {}, {} (leg {})", route.id(), fromX, fromZ,
-                        toX, toZ, leg + 1);
+                // The country would not take the road, so the road is not laid: nothing is graded and no note is left
+                // behind, so the same road can be planned again over better ground. What the walk could not do is
+                // carried out to the hand and to the log rather than swallowed.
+                refused = "leg " + (leg + 1) + " of " + (bends.size() + 1) + " found no way from " + fromX + ", "
+                        + fromZ + " to " + toX + ", " + toZ + " - " + descent.why();
+                LOGGER.info("Road {}: no walked way from {}, {} to {}, {} (leg {}): {}", route.id(), fromX, fromZ,
+                        toX, toZ, leg + 1, descent.why());
                 searched = false;
                 walked = null;
                 return false;
@@ -1053,6 +1104,12 @@ public final class RoadCommands {
             leg++;
             descent = null;
             return leg <= bends.size();
+        }
+
+        /** Gives the road up: the pass is finished, nothing was graded, and the reason is kept for whoever asked. */
+        private void refuse() {
+            done = new Road(0, 0, 0, 0, false, new int[6], new int[3], refused);
+            LOGGER.info("Road {}: nothing laid - {}", route.id(), refused);
         }
 
         /**
@@ -1069,11 +1126,12 @@ public final class RoadCommands {
             }
             List<int[]> found = walked;
             searched = found != null;
-            int runIn = span.bank() - span.step() * span.runIn();
             if (!searched) {
-                LOGGER.info("Road {}: no walked way to {}, {}, so the straight line is laid instead",
-                        route.id(), span.x(runIn, 0), span.z(runIn, 0));
-                found = straight(route, span.x(runIn, 0), span.z(runIn, 0));
+                // There is no straight line to fall back to any more: a crossing with no walked way is not laid at all.
+                int runIn = span.bank() - span.step() * span.runIn();
+                refused = "no walked way to " + span.x(runIn, 0) + ", " + span.z(runIn, 0);
+                refuse();
+                return;
             }
             List<int[]> line = new ArrayList<>(found);
             // The last stations before the near abutment, dead straight on the span's own line: a piece is a
@@ -1107,11 +1165,11 @@ public final class RoadCommands {
             List<int[]> found = walked;
             searched = found != null;
             if (!searched) {
-                // Said out loud rather than laid quietly: a road with no walked way is a road laid straight through
-                // whatever stands between its ends, and whoever reads the log should know that is what they have.
-                LOGGER.info("Road {}: no walked way to {}, {}, so the straight line is laid instead",
-                        route.id(), dry.farX(), dry.farZ());
-                found = straight(route, dry.farX(), dry.farZ());
+                // A dry road with no walked way is not laid either: the straight line through whatever stood between the
+                // ends was the one thing this pass must not build.
+                refused = "no walked way to " + dry.farX() + ", " + dry.farZ();
+                refuse();
+                return;
             }
             approach = hairpins(level, route, simplify(found));
             exit = List.of();
@@ -1613,6 +1671,21 @@ public final class RoadCommands {
         }
 
         /** The walk that was found, or null when the search never reached the bend. */
+        /**
+         * Why the walk found no way, or null when it did.
+         * <p>
+         * The reason matters to whoever asked, because the faults are different: a window too small for the leg is a
+         * route that wants another mark in it, and ground with no way through it is country the road cannot cross at all.
+         */
+        String why() {
+            if (!fits) return "the leg is longer than one window of the search";
+            if (goal < 0 || from[goal] == -1) {
+                return open.isEmpty() ? "the ground leaves no way through it"
+                        : "the window's budget was spent before the far end was reached";
+            }
+            return null;
+        }
+
         private List<int[]> path() {
             if (!fits) return null;
             if (goal != start && from[goal] == -1) return null;
@@ -2419,19 +2492,6 @@ public final class RoadCommands {
         double lb = Math.hypot(bx, bz);
         if (la < 2.0D || lb < 2.0D) return false;
         return (ax * bx + az * bz) / (la * lb) < HAIRPIN;
-    }
-
-    /** The straight line between the road's two ends, for when the search finds no way. */
-    private static List<int[]> straight(Route route, int toX, int toZ) {
-        List<int[]> line = new ArrayList<>();
-        int steps = Math.max(2, Math.abs(route.pathX() - toX) + 1);
-        for (int i = 0; i < steps; i++) {
-            line.add(new int[]{
-                    route.pathX() + (int) Math.round((double) (toX - route.pathX()) * i / steps),
-                    route.pathZ() + (int) Math.round((double) (toZ - route.pathZ()) * i / steps)});
-        }
-        line.add(new int[]{toX, toZ});
-        return line;
     }
 
     /**

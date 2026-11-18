@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -87,16 +88,34 @@ public final class Roads {
      */
     public static final List<Route> ROUTES = new CopyOnWriteArrayList<>(withGundabad(List.of()));
 
+    /** The sections this session planned at a build, so another world's can be taken back out of the list. */
+    private static final Set<String> PLANNED = ConcurrentHashMap.newKeySet();
+
     /** Adds a road this class did not hold, so a road planned at a build is known to the world as it is laid. */
     static void remember(Route route) {
         List<Route> routes = ROUTES;
         // A road named in the code asks for its own sections while this class is still being set up, which is before
         // the list exists: they are already in it by the time it is made, so there is nothing to add.
         if (routes == null) return;
+        PLANNED.add(route.id());
         for (Route known : routes) {
             if (known.id().equals(route.id())) return;
         }
         routes.add(route);
+    }
+
+    /**
+     * Takes the planned roads back out of the list, before another world's plans are read in.
+     * <p>
+     * The list and the plan's tables are the class's, not a world's, and a client that swaps one save for another
+     * keeps them. Without this the roads of the last world stand in the next one - laid, findable and forgettable, on
+     * ground that has never had them. A road named in the code was never added here and is untouched.
+     */
+    static void clearPlanned() {
+        Set<String> taken = Set.copyOf(PLANNED);
+        ROUTES.removeIf(route -> taken.contains(route.id()));
+        RoadPlan.forget(taken);
+        PLANNED.clear();
     }
 
     /** The roads as they stand, with the hold's road planned on the end once its two marks are pinned. */

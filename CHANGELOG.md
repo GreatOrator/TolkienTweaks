@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A planned road outlives the session that planned it, and a leg the ground will not carry lays nothing.** Two halves of
+          the same promise: a road made at a build has to be a road, and a road that cannot be walked has to say so rather
+          than be laid anyway. The plan is now written into the world as it is laid, in a store of its own beside the road
+          notes (`road_plans`, a sibling of `Progress`, because a note is how far a pass has got and is thrown away when a
+          road is forgotten, where a plan is the road itself and is kept) and read back when the server starts, so after a
+          restart a player standing on a road they laid themselves can find it, forget it and have it re-laid. What is kept
+          is what the plan decided rather than what was laid: each section's name, its kind, whether the bands decide its
+          width, its two ends, its span's banks, deck and pieces, and the marks it is bent through - the whole of what
+          `RoadPlan` says, so the road read back is the road that was planned. The class's tables are the world's now too:
+          before anything is read in, the previous world's planned roads are taken back out of `Roads.ROUTES`, so swapping
+          one save for another does not open the last world's roads beside them. The second half is the search. A leg whose
+          walk found nothing used to be answered with one straight line through everything the search had just refused -
+          the fallback that made every long road need marks every forty blocks, and made a road with a bad bend a road cut
+          through whatever stood between its ends instead. It now gives the whole road up: nothing is graded, no note is left
+          saying the road is down (so it can be planned again over better ground), the pass says `nothing laid` in the log
+          with the leg, its two ends and the reason - a window too small for the leg is a route that wants another mark in
+          it, ground with no way through it is country the road cannot cross - and `/tmroad build` answers the hand with the
+          same sentence. `Descent.why` is where the two faults are told apart.
 - **A road takes its width from the ground it leaves.** Two towns stand and everything else is a camp, a ruin or a road
           between them, so `/tmroad build <x> <z>` with no word after the coordinates now reads the ground it starts on: a
           town's own ground - or the approach out of it, `Places.towns` and the place's own radius plus the transition band -
