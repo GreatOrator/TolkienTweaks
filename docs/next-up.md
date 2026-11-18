@@ -124,11 +124,16 @@ line read a block at a time so a river is bridged. Every one compiled with
   filled in by hand or the new road laid beside it.
 - **No restart has been tested at all.** `road_plans.dat` has never been written and read back in a world. The check is one
   start: the log line, then `/tmroad forget` while standing on a road laid before the stop, then the command again.
-- **A re-pinned road keeps sections it no longer has.** A section planned at the same two ends replaces the one the world
-  held (`Roads.remember`), but a plan whose old shape had a bridge the new one lacks leaves the old bridge section in
-  `ROUTES` for the session and in `road_plans` for ever - and it will be laid. **There is no whole-road forget:**
-  `/tmroad forget` clears the nearest section only, so the missing command is one that forgets a plan and every section of
-  it.
+- **A road planned twice stood twice - fixed, unrun.** The old forest road to the far side of the river east of Mirkwood
+  was planned at 11818, -3801 and again at 11824, -3851; both plans were live after the restart and both laid at once,
+  seven sections each (the log at 04:52 names both and at 04:53 shows both stepping "since the pass was last picked up").
+  Two causes: `/tmroad forget` cleared the note of the section at the hand only, leaving the other six to be resumed, and
+  a restored plan is in `ROUTES`, so `RoadCorridor` began it on a chunk load. Now `/tmroad forget` drops the whole road
+  (every section whose id begins with it, from the passes, the list and `road_plans`) and a planned section with no note
+  is never begun by the world - it waits for a command, while a road begun and unfinished still resumes. **The check on
+  the existing mess:** stand near the old road and forget twice, once per road - each reply names the road and says how
+  many sections went - then delete the regions and pin once; nothing else should lay. Then restart and confirm no planned
+  road begins by itself before a command is given.
 - **A leg along a river now refuses.** Reading the water a block at a time means a leg that runs beside the water rather
   than across it refuses by the width it would bridge. True as an answer, poor as a road: the next thing to try is
   stepping the line inland along a bank rather than giving the leg up.

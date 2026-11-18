@@ -81,6 +81,27 @@ final class RoadPlans extends SavedData {
     }
 
     /**
+     * Drops every section of one planned road, and says how many it dropped, so the next start does not put it back.
+     * <p>
+     * A plan is kept per section because a road over water is several routes, an arrangement that had no way out of it:
+     * forgetting the road at a hand cleared that one section's progress and left the plan of every other section in the
+     * store, so the next start restored them all and the world laid the road again beside itself. The sections of a road
+     * are named after it - the road's own name, then {@code _2} and {@code _bridge_<n>} - so a road is dropped by the
+     * name all of its sections begin with, and drops its plans with it.
+     */
+    static int forget(ServerLevel level, String road) {
+        String stem = road + "_";
+        List<String> taken = new ArrayList<>();
+        for (String id : SECTIONS.keySet()) {
+            if (id.equals(road) || id.startsWith(stem)) taken.add(id);
+        }
+        if (taken.isEmpty()) return 0;
+        for (String id : taken) SECTIONS.remove(id);
+        instance(level).setDirty();
+        return taken.size();
+    }
+
+    /**
      * Puts every planned road this world has back in the tables the pass reads, and says how many it took.
      * <p>
      * The world may be a different one from the last: a single-player save swapped for another keeps the class's

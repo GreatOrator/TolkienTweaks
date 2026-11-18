@@ -341,27 +341,56 @@ public final class RoadCommands {
     }
 
     /**
-     * Throws away what has been laid of the road at the hand's feet, so the next pass walks it again.
+     * Throws away a whole road - every section of it, and its plan - so nothing of it is laid again.
      * <p>
      * A pass carries its alignment: the stations the search found are written down with the grade, and a world
      * restarted mid-road picks them up rather than searching a second time. That is what makes a long road survive a
      * logout, and it is also why a bend recorded after a walk began would never be taken - the saved line predates it.
-     * Forgetting the note is the way back to the search. The blocks already laid are left standing; the new grade
-     * lays over them.
+     * Forgetting the note is the way back to the search. The blocks already laid are left standing.
+     * <p>
+     * It is the whole road that is forgotten rather than the piece the hand is standing on. A road over water is several
+     * sections, and clearing one of them left the rest in the list and in the plan store to be laid again at the next
+     * start - the old forest road planned a second time stood beside its own first attempt, seven sections each and
+     * three bridges over one stretch of water. So the road is found by the section at the hand, every section it begins
+     * with is dropped from the pass, the list and the plan, and the plan store forgets them all.
      */
     private static int forget(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getLevel();
         Route route = Roads.nearest(BlockPos.containing(source.getPosition()));
         if (route == null) {
-            source.sendFailure(Component.literal("No build has a road walked for it here."));
+            source.sendFailure(Component.literal("No road has been planned or walked here."));
             return 0;
         }
-        Progress.forget(source.getLevel(), route.id());
+        String road = Roads.roadOf(route.id());
+        int sections = 0;
+        for (Route section : Roads.sections(road)) {
+            Progress.forget(level, section.id());
+            stop(section);
+            sections++;
+        }
+        Progress.forget(level, road);
         stop(route);
-        Sites.forgetRoad(source.getLevel(), Roads.build(route));
-        source.sendSuccess(() -> Component.literal("Forgot the road at " + route.id()
-                + " - the next pass walks it again."), true);
+        Roads.forget(road);
+        int plans = RoadPlans.forget(level, road);
+        Sites.forgetRoad(level, Roads.build(route));
+        int count = Math.max(sections, 1);
+        source.sendSuccess(() -> Component.literal("Forgot the road " + road + ": " + count + " section"
+                + (count == 1 ? "" : "s") + " and " + plans + " planned, so nothing of it is left to lay. "
+                + "The ground it laid stays standing."), true);
         return 1;
+    }
+
+    /**
+     * Whether a pass was ever begun for a road.
+     * <p>
+     * This is what tells a plan from a road: a plan has no note in the save, and a road that has been laid or is being
+     * laid has one. A world carries on a road it finds a note for, which is how a road survives a logout - but a plan
+     * is a decision waiting for a command, not an order to the world, and starting one on the load of a chunk is how a
+     * road planned twice came to be laid twice.
+     */
+    static boolean begun(ServerLevel level, Route route) {
+        return Progress.of(level, route.id()) != null;
     }
 
     /**

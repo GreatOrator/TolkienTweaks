@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road is forgotten as a road, and a plan waits for its command.** The old forest road planned twice in the
+          mountains stood twice: seven sections and three bridges on the first attempt, seven and two on the second, both
+          of them laying at once. Two things made that happen. `/tmroad forget` cleared the note of the one section under
+          the hand, so a road that crosses water - the first of its sections named after the road, the rest `_2`, `_3` and
+          `_bridge_<n>` - kept the notes of every other section, and the next start resumed them all; and a plan is put
+          back in `Roads.ROUTES` by `RoadPlans.load`, which meant a chunk coming into view began laying a road nobody had
+          asked for a second time. Forgetting now takes the whole road: `Roads.roadOf` finds the road a section belongs to
+          from the sections themselves (a road's own name ends in a number too, so trimming the suffix cannot work),
+          `Roads.forget` and `RoadPlans.forget` drop every section that begins with it, its passes are stopped and its
+          notes cleared, and the reply names the road and counts what went. And `RoadCorridor.start` no longer begins a
+          planned section that has no note: a plan is a decision waiting for a command, while a road begun and not finished
+          still resumes where it stopped after a logout. Compiles; the double lay has not been re-run.
 - **A span is decked whichever way the road crosses it.** The first planned bridge stood its two abutments and left
           fifty columns of open water between them: `bridgePlan` walked the deck from the near bank towards the *low*
           coordinate only, which is the way the old ford happened to be crossed, and the mountains' span runs the other

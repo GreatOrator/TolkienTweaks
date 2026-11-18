@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.faction;
 import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,6 +123,53 @@ public final class Roads {
         ROUTES.removeIf(route -> taken.contains(route.id()));
         RoadPlan.forget(taken);
         PLANNED.clear();
+    }
+
+    /** Every section one planned road was made of, in the order the world holds them. */
+    static List<Route> sections(String road) {
+        String stem = road + "_";
+        List<Route> found = new ArrayList<>();
+        for (Route route : ROUTES) {
+            if (route.id().equals(road) || route.id().startsWith(stem)) found.add(route);
+        }
+        return found;
+    }
+
+    /**
+     * The planned road a section belongs to: the shortest section id it begins with.
+     * <p>
+     * A road that crosses water is several sections and only the first of them is named after the road itself; the rest
+     * carry {@code _2}, {@code _3} for later dry stretches and {@code _bridge_<n>} for the spans. Which road a section
+     * belongs to is therefore read off the sections rather than by trimming its suffix, because a road's own name ends
+     * in a number too - {@code planned_..._3654} is the road and {@code planned_..._3654_2} is its second stretch, and
+     * a rule that strips the last number cannot tell them apart.
+     */
+    static String roadOf(String section) {
+        String best = section;
+        for (Route route : ROUTES) {
+            String id = route.id();
+            if (id.length() >= best.length()) continue;
+            if (id.equals(section) || section.startsWith(id + "_")) best = id;
+        }
+        return best;
+    }
+
+    /**
+     * Drops every section of one planned road, so none of it is laid again, found or forgotten twice.
+     * <p>
+     * Forgetting the section at the hand used to leave the road's other sections in the list and in the plan store, and
+     * the next start put them all back to be laid as the ground loaded: the old forest road was planned twice in the
+     * mountains and stood twice, seven sections each, three bridges over the same water and three roads leaving one
+     * spot. A road is forgotten as a road - every section it begins with - and with its sections go their plans, so
+     * nothing of it is restored to be laid by a world nobody asked.
+     */
+    static void forget(String road) {
+        Set<String> taken = new HashSet<>();
+        for (Route route : sections(road)) taken.add(route.id());
+        if (taken.isEmpty()) return;
+        PLANNED.removeAll(taken);
+        ROUTES.removeIf(route -> taken.contains(route.id()));
+        RoadPlan.forget(taken);
     }
 
     /** The roads as they stand, with the hold's road planned on the end once its two marks are pinned. */
