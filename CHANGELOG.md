@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road takes its width from the ground it leaves.** Two towns stand and everything else is a camp, a ruin or a road
+          between them, so `/tmroad build <x> <z>` with no word after the coordinates now reads the ground it starts on: a
+          town's own ground - or the approach out of it, `Places.towns` and the place's own radius plus the transition band -
+          takes the three bands and narrows seven to five to three as it leaves; anywhere else is a wild track three wide,
+          which is what a camp's door wants. The word still overrides it - `wild`, `wide`, `main`, `urban`, `town` - and is
+          the one thing about a road's width that is ever chosen by hand: the hold's road is `main` in `Roads.withGundabad`.
+          Bree is a town the catalogue names and has not stood yet, so a road begun there is a wild track until it does.
 - **A refused crossing lays no road at all, and a span takes its banks from the ends of the run it met.** Where the plan
           would not bridge - no dry ground within ninety-six blocks, water wider than ninety-six columns, or water running
           the wrong way across the road - it used to hand the route back as one straight line, which is a paved ford nobody

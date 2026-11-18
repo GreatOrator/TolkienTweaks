@@ -333,9 +333,9 @@ public final class RoadCommands {
         BlockPos from = BlockPos.containing(source.getPosition());
         int x = IntegerArgumentType.getInteger(context, "minx");
         int z = IntegerArgumentType.getInteger(context, "minz");
-        Roads.Kind named = kind(context);
-        boolean town = named == null;
-        Roads.Kind kind = town ? Roads.Kind.WILD_WIDE : named;
+        Choice asked = choice(source, from, context);
+        Roads.Kind kind = asked.kind();
+        boolean town = asked.town();
         String id = "tolkienmobs:roads/planned_" + from.getX() + "_" + from.getZ() + "_" + x + "_" + z;
         RoadPlan.Plan plan = RoadPlan.of(id, kind, town, from, new BlockPos(x, from.getY(), z));
         if (plan.refused()) {
@@ -375,23 +375,52 @@ public final class RoadCommands {
                 dry.farZ(), Roads.bends(section).size());
     }
 
-    /** The width a planned road is asked for: five by default, which is how every walked line here was laid. */
-    private static Roads.Kind kind(CommandContext<CommandSourceStack> context) {
+    /** What width a planned road is asked for, and whether the bands decide it rather than one kind. */
+    private record Choice(Roads.Kind kind, boolean town) {
+    }
+
+    /**
+     * The width a road is laid at: the word after the coordinates, or the ground it leaves from when nothing is said.
+     * <p>
+     * Two towns stand - the Shire's village and the valley - and everything else in the world is a camp, a ruin or a
+     * road between them. So a road that starts on a town's own ground takes the town's bands and narrows as it leaves:
+     * seven wide of the town's paving inside {@link #URBAN_BAND}, five of cobble and path out to
+     * {@link #TRANSITION_BAND}, three of the country's own track beyond. Anywhere else is a wild track three wide,
+     * which is what a camp's door wants and what every walked line here was.
+     * <p>
+     * A word overrides both: {@code wild} (3), {@code wide} (5), {@code main} (7 of the country's own surface),
+     * {@code urban} (7 of the town's paving everywhere), {@code town} (the bands, wherever the road starts). The word
+     * is how a road between two places is decided on - a hold's road is {@code main} - and it is the only thing about a
+     * road's width that has to be chosen at all.
+     */
+    private static Choice choice(CommandSourceStack source, BlockPos from, CommandContext<CommandSourceStack> context) {
         String named;
         try {
             named = StringArgumentType.getString(context, "kind");
         } catch (IllegalArgumentException absent) {
-            return Roads.Kind.WILD_WIDE;
+            return townGround(source.getLevel(), from)
+                    ? new Choice(Roads.Kind.WILD_WIDE, true)
+                    : new Choice(Roads.Kind.WILD, false);
         }
         return switch (named.toLowerCase(java.util.Locale.ROOT)) {
-            case "wild" -> Roads.Kind.WILD;
-            case "main" -> Roads.Kind.MAIN;
-            case "urban" -> Roads.Kind.URBAN;
-            // `town` names no kind on purpose: the bands decide the width column by column, seven at the wall, five
-            // through the approach and three out in the country, so the road narrows as it leaves the build.
-            case "town" -> null;
-            default -> Roads.Kind.WILD_WIDE;
+            case "wild" -> new Choice(Roads.Kind.WILD, false);
+            case "main" -> new Choice(Roads.Kind.MAIN, false);
+            case "urban" -> new Choice(Roads.Kind.URBAN, false);
+            // `town` names no kind on purpose: the bands decide the width column by column.
+            case "town" -> new Choice(Roads.Kind.WILD_WIDE, true);
+            default -> new Choice(Roads.Kind.WILD_WIDE, false);
         };
+    }
+
+    /** Whether the block a road leaves from is a town's own ground, or the approach out of it. */
+    private static boolean townGround(ServerLevel level, BlockPos from) {
+        for (Places.Place town : Places.towns(level)) {
+            BlockPos centre = town.centre();
+            if (centre == null) continue;
+            double away = Math.hypot(from.getX() - centre.getX(), from.getZ() - centre.getZ());
+            if (away <= town.radius() + TRANSITION_BAND) return true;
+        }
+        return false;
     }
 
     private static int planHere(CommandContext<CommandSourceStack> context) {
