@@ -4,9 +4,11 @@ The working state of the campaign, written so a session picking this up cold doe
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
-**Last touched:** 19 November 2026 - a road no longer begins under a build that is still going up (the valley's road
-waited for the city and left a gap in Road Test 7), and the twelve builds the owner has visited are marked at the block a
-traveller should arrive at, which `/tmtp`, the page's needle and the sign boards all read; earlier the same day, a leg that
+**Last touched:** 19 November 2026 - a road that met one channel twice is walked again with its crossing held
+straight, planned against the drawing with `tools/roadprobe`, and a road no longer begins under a build that is
+still going up (the valley's road waited for the city and left a gap in Road Test 7); the twelve builds the owner has
+visited are marked at the block a traveller should arrive at, which `/tmtp`, the page's needle and the sign boards all
+read; earlier the same day, a leg that
 runs beside a river now steps the line inland instead of refusing the
 road, planned against the drawing with `tools/roadprobe`; before that, 18 November 2026 - every walked road is erased
 and a road is now planned from its two ends by
@@ -215,11 +217,21 @@ line read a block at a time so a river is bridged. Every one compiled with
   run east between two spans. The old decks stay standing: the sweep only clears timber inside a span's own box, so
   clear the ground at 11680..11760, -3920..-3870 before judging what the new one looks like. A port of the walk over a
   channel with an island in it takes one run under the new rule and two under the old; the drawing itself has not been
-  re-planned. **And a probe on the drawing, 19 November, still finds one:** `6300, -3580` to `6800, -3580` plans a
-  45-wide span at 6418, -3612, a section running back west to 6383, -3585, and a 56-wide span at 6399, -3585 - the same
-  water crossed twice - because the clip lies between two of the walk's own sixteen-block readings and the walk never
-  priced it. The bank-margin walk that closed the refusal above is not the answer to this one; it is the next thing in
-  the planner.
+  re-planned. **And the probe's own doubled crossing is fixed, off the drawing only, 19 November.** `6300, -3580` to
+  `6800, -3580` planned a 45-wide span at 6418, -3612, a section running back west to 6383, -3585 and a 56-wide span at
+  6399, -3585 over the same water. A trace of the walk showed why: its readings are sixteen blocks apart, and between two
+  of them it stepped two lanes onto the one dry block at 6441, -3580, on the channel's ragged edge, and back into the
+  lane beside it. Both readings were dry and nine dry blocks apart, so neither `DRY_AFTER_CROSSING` nor the bank margin
+  could see the water, while the staircase the plan is really read along went through it twice - and because a span's
+  banks are read along one row, the first span ran on past the block the line left the water at, so the next section
+  began beyond it and ran back. A plan now records that its line leaves water and meets water again inside
+  `DRY_AFTER_CROSSING` lanes, and `RoadPlan.of` walks that leg a second time with a lane change refused on every step
+  that leaves water: a straight crossing, on the lane the road reached the bank on. The first walk is untouched, so a
+  leg whose line was sound plans the same line it did. **Probed:** that leg is three sections with one 45-wide span at
+  6424, -3627 (deck 188) and no section running back, and all ten other legs - the seven roads in `Roads.NETWORK`, the
+  Gundabad road, the 6398, -3654 pin and the 6420, -3560 bank leg - are byte for byte what they were, so no road already
+  laid moves. **Not run in a world:** this is a planning change and nothing has laid it; the next fresh world is where
+  the one-span crossing shows.
 - **The laid network is in the code, and the test world is no longer the only place it exists.** `Roads.NETWORK` names
   the seven roads the test world laid, each as the two ends it was pinned between and at the three-wide track, planned
   from the drawing when the class loads: 11813, -3901 to 8229, -3654 (the old forest road east of Mirkwood to Glóin's

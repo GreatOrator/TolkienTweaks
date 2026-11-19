@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road that meets one channel twice is walked again straight, so the planner no longer plans two spans over the
+          same water.** The drawing probe at 6300, -3580 to 6800, -3580 planned five sections - a 45-wide span at
+          6418, -3612, a road running back west to 6383, -3585 and a 56-wide span at 6399, -3585 - and a trace of the
+          walk showed the line was the fault, not the span: the walk reads the drawing every sixteen blocks, and
+          between two of them it stepped two lanes onto the one dry block at 6441, -3580, on the channel's ragged
+          edge, and back into the lane beside it. Both readings were dry and nine dry blocks apart, so neither the
+          `DRY_AFTER_CROSSING` rule nor the bank margin could see the water, while the staircase the plan is really
+          read along passed through it twice. A plan now records that its line leaves water and meets water again
+          inside `DRY_AFTER_CROSSING` lanes (64 blocks), and `RoadPlan.of` walks such a leg a second time with a lane
+          change refused on every step that leaves water, so the crossing is straight and on the lane the road
+          reached the bank on - which is also the only shape a span's banks and approaches can be read for. The
+          first walk is left exactly as it was, so a leg whose own line was sound plans the line it planned before.
+          **Measured with `tools/roadprobe`:** that leg is now three sections with one 45-wide span at 6424, -3627,
+          deck 188, and nothing running back; all ten other legs probed - the seven roads in `Roads.NETWORK`, the
+          Gundabad road, the 6398, -3654 pin and the 6420, -3560 bank leg - come out byte for byte as they did, so
+          no road already laid in a world moves and the signed-off spans at 11649, -4080 and 8551, -3626 stay where
+          they are. **Nothing has been laid from this:** it is a planning change, read against the drawing alone,
+          and the next fresh world is where the one-span crossing shows.
+
 - **A road no longer begins under a build that is still going up, so the strip the valley's dressing took out has
           something to fill it.** The ground begins every road that is the world's own - a chunk that the road passes through
           starts it, and so does a player standing within 32 blocks - and the road out of Rivendell is one of those, so it

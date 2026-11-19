@@ -47,8 +47,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * A road beside a river is not a road across it. A dry lane within {@link #BANK_MARGIN} lanes of drawn water is priced
  * as the bank it is, so the walk steps the line inland rather than skimming the edge where its own sixteen-block
  * readings cannot see the channel - which is what planned two spans over one channel with a stretch of road doubling
- * back between them. And water at the two ends of the leg is left out of the road: a road begins and ends on the bank,
- * since a mark in the shallows has no dry ground behind it to stand an abutment on.
+ * back between them. That is caught rather than priced: a line that leaves water and meets it again inside
+ * {@link #DRY_AFTER_CROSSING} lanes has crossed one channel twice, and the leg is then walked a second time with a
+ * lane change refused on every step that leaves water, so the crossing is straight on the lane the road reached the
+ * bank on - which is also the only shape a span's banks and approaches can be read for. The first walk is left as it
+ * was, so a leg whose own line was sound plans the same line it did before. And water at the two ends of the leg is
+ * left out of the road: a road begins and ends on the bank, since a mark in the shallows has no dry ground behind it
+ * to stand an abutment on.
  */
 final class RoadPlan {
     /** How far apart the plan reads the drawing along the line between the two ends, in blocks. */
@@ -163,12 +168,20 @@ final class RoadPlan {
      * with the reason rather than laying the road straight through the water it would not bridge.
      */
     static Plan of(String id, Roads.Kind kind, boolean town, BlockPos from, BlockPos to) {
-        if (from == null || to == null) return new Plan(List.of(), null);
-        Plan plan = walk(id, from, to, false);
+        if (from == null || to == null) return new Plan(List.of(), null, false);
+        Plan plan = walk(id, from, to, false, false);
+        if (plan != null && plan.doubled()) {
+            // Water the line met twice is one channel crossed badly, not two rivers. The leg is walked again with
+            // a lane change refused on a step that leaves water, and the straight crossing is the plan - a leg whose
+            // own line was sound keeps that line exactly, which is what keeps every road the test world laid where
+            // it laid it.
+            Plan held = walk(id, from, to, false, true);
+            if (held != null && !held.refused()) plan = held;
+        }
         if (plan != null && plan.refused()) {
             // Water the walk would not bridge is not the end of the road: the leg is walked again with the bank priced,
             // which steps the line inland along it. A road does not need the water's edge; it needs a way round it.
-            Plan inland = walk(id, from, to, true);
+            Plan inland = walk(id, from, to, true, false);
             if (inland != null) plan = inland;
         }
         if (plan != null && plan.refused()) {
@@ -187,13 +200,13 @@ final class RoadPlan {
             KINDS.putIfAbsent(section.id(), kind);
             if (town) BANDED.add(section.id());
         }
-        return new Plan(sections, null);
+        return new Plan(sections, null, false);
     }
 
     /** One walk of a leg, or null when the drawing could not be read for it at all. */
-    private static Plan walk(String id, BlockPos from, BlockPos to, boolean inland) {
+    private static Plan walk(String id, BlockPos from, BlockPos to, boolean inland, boolean straight) {
         try {
-            return chain(id, from, to, inland);
+            return chain(id, from, to, inland, straight);
         } catch (RuntimeException failed) {
             // Reading the drawing is never the reason a road cannot be laid: a plan that could not read it is a road laid
             // straight, which is where every road without marks starts. A refusal is different, and is not caught here.
@@ -203,8 +216,11 @@ final class RoadPlan {
         }
     }
 
-    /** What a plan came to: the sections to lay in order, or the reason it will lay none at all. */
-    record Plan(List<Route> sections, String refusal) {
+    /**
+     * What a plan came to: the sections to lay in order, the reason it will lay none at all, and whether the line the
+     * walk chose leaves water and meets water again - one channel crossed twice, which the plan walks a second time.
+     */
+    record Plan(List<Route> sections, String refusal, boolean doubled) {
         /** Whether the plan refused the road outright, as against having nothing to say yet. */
         boolean refused() {
             return refusal != null;
@@ -262,10 +278,12 @@ final class RoadPlan {
      * <p>
      * {@code inland} is the second walk, taken only when the first refuses: it prices the lane inside
      * {@link #BANK_MARGIN} lanes of water as the bank it is, so the line steps inland along the bank instead of
-     * skimming an edge its own sixteen-block readings cannot see. The first walk is left exactly as it was, so a road
-     * that planned before plans the same line now.
+     * skimming an edge its own sixteen-block readings cannot see. {@code straight} is the other second walk, taken
+     * only when the first line met one channel twice: it refuses a lane change on a step that leaves water, so the
+     * crossing is held straight on the lane the road reached the bank on. Neither is part of the first walk, so a leg
+     * whose own line was sound plans the same line it did before.
      */
-    private static Plan chain(String id, BlockPos from, BlockPos to, boolean inland) {
+    private static Plan chain(String id, BlockPos from, BlockPos to, boolean inland, boolean straight) {
         double dx = to.getX() - from.getX();
         double dz = to.getZ() - from.getZ();
         double span = Math.hypot(dx, dz);
@@ -323,6 +341,12 @@ final class RoadPlan {
                     int was = lane + back;
                     if (was < 0 || was >= lanes) continue;
                     int[] there = drawn[(step - 1) * lanes + was];
+                    // The second walk refuses a lane change on a step that leaves water. The line between two
+                    // lanes is a staircase, so a road that stepped sideways out of a channel could leave it at a
+                    // single dry edge block and be back in it a lane later - the doubled crossing. A crossing is
+                    // straight, on the lane the road reached the bank on, which is also the shape a span's banks
+                    // and approaches are read for.
+                    if (straight && back != 0 && there[4] == 1) continue;
                     double rise = Math.abs(here[2] - there[2]);
                     double over = Math.max(0.0D, rise - TARGET_GRADE * LANE);
                     double price = LANE + GRADE_PENALTY * over * over + TURN_COST * Math.abs(back) + toll + bank;
@@ -389,6 +413,9 @@ final class RoadPlan {
         int fromZ = from.getZ();
         int dry = 1;
         int bridges = 0;
+        // The end of the last run of water on the line, and whether a later run met the same channel again.
+        int lastWater = -1;
+        boolean doubled = false;
         int index = 0;
         // A mark in the water is not a crossing. Where the road's own first blocks are drawn as river, the road begins
         // on the bank the water ends on - the first dry block of its own line - rather than standing a span from a
@@ -398,7 +425,7 @@ final class RoadPlan {
         if (!ground.isEmpty() && ground.get(0)[4] == 1) {
             while (index < ground.size() && ground.get(index)[4] == 1) index++;
             if (index >= ground.size()) {
-                return new Plan(List.of(), "the line is water from end to end, so there is no bank to start the road on");
+                return new Plan(List.of(), "the line is water from end to end, so there is no bank to start the road on", false);
             }
             fromX = ground.get(index)[0];
             fromZ = ground.get(index)[1];
@@ -415,6 +442,8 @@ final class RoadPlan {
             int began = index;
             while (index < ground.size() && ground.get(index)[4] == 1) index++;
             int ended = index - 1;
+            if (lastWater >= 0 && began - lastWater <= DRY_AFTER_CROSSING * LANE) doubled = true;
+            lastWater = ended;
             if (ended == ground.size() - 1) {
                 // The far end is in the water too: the road stops at the last dry block it reached, and the water
                 // past it is no more a crossing than the water it started in.
@@ -424,7 +453,7 @@ final class RoadPlan {
                 break;
             }
             Span span = crossing(id + "_bridge_" + (bridges + 1), ground, began, ended);
-            if (span.crossing() == null) return new Plan(List.of(), span.refusal());
+            if (span.crossing() == null) return new Plan(List.of(), span.refusal(), false);
             Route.Crossing water = span.crossing();
             bridges++;
             int[] near = approach(water, true);
@@ -446,7 +475,7 @@ final class RoadPlan {
             marks.put(name, marks(ground, cursor, endIndex));
         }
         MARKS.putAll(marks);
-        return new Plan(sections, null);
+        return new Plan(sections, null, doubled);
     }
 
     /**
