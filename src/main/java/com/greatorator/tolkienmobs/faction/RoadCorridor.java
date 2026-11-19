@@ -83,6 +83,10 @@ public final class RoadCorridor {
      */
     private static boolean mayBegin(ServerLevel level, Route route) {
         if (route instanceof Route.Crossing && !Roads.road(route)) return false;
+        // A road of a build's own waits for the build: a city is laid a band at a time and its ground is dressed after
+        // the last of them, so a road begun before that grades country the dressing then changes under it. The ground
+        // is asked again every second by {@link #look}, so the road begins by itself the moment the build is finished.
+        if (Roads.waits(level, route)) return false;
         return !Roads.planned(route) || RoadCommands.begun(level, route);
     }
 

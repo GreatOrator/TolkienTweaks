@@ -53,6 +53,8 @@ public final class Waypoint {
         if (quest.isSite()) {
             Sites.Site site = Sites.siteOf(player);
             if (site == null || !site.dimension().equals(level.dimension())) return null;
+            Mark marked = marked(site.structure(), "quest.tolkienmobs.site", level.dimension());
+            if (marked != null) return marked;
             return new Mark("quest.tolkienmobs.site", site.centre(), level.dimension());
         }
         // A page of the stone that asks for caves names no ground at all, and the crag it is asked in is
@@ -71,6 +73,8 @@ public final class Waypoint {
                 // add: the page is a kill at depth, not a walk, and a bearing to a point two blocks away
                 // reads as a broken compass rather than as an errand. It comes back with the next asking.
                 if (cave.centre().distToCenterSqr(player.position()) < CAVE_INSIDE * CAVE_INSIDE) return null;
+                Mark marked = marked(cave.structure(), "quest.tolkienmobs.cave", level.dimension());
+                if (marked != null) return marked;
                 return new Mark("quest.tolkienmobs.cave", cave.centre(), level.dimension());
             }
         }
@@ -81,6 +85,8 @@ public final class Waypoint {
         if (!named.isEmpty()) {
             Places.Place place = Places.place(level, named);
             if (place == null || !place.dimension().equals(level.dimension())) return null;
+            Mark marked = marked(named, "place.tolkienmobs." + named, level.dimension());
+            if (marked != null) return marked;
             return new Mark("place.tolkienmobs." + named, stoneOrCentre(level, named, place), level.dimension());
         }
 
@@ -93,6 +99,8 @@ public final class Waypoint {
         Sites.Site pitched = Sites.siteOf(player);
         if (pitched != null && pitched.dimension().equals(level.dimension())
                 && pitchesFor(quest.person(), pitched.structure())) {
+            Mark marked = marked(pitched.structure(), "quest.tolkienmobs.site", level.dimension());
+            if (marked != null) return marked;
             return new Mark("quest.tolkienmobs.site", pitched.centre(), level.dimension());
         }
         Quest.Spot spot = quest.spot();
@@ -100,6 +108,8 @@ public final class Waypoint {
             if (spot.place() == null) return new Mark("hud.tolkienmobs.road.mark", spot.centre(), level.dimension());
             Places.Place place = Places.place(level, spot.place());
             if (place == null || !place.dimension().equals(level.dimension())) return null;
+            Mark marked = marked(spot.place(), "place.tolkienmobs." + spot.place(), level.dimension());
+            if (marked != null) return marked;
             return new Mark("place.tolkienmobs." + spot.place(), stoneOrCentre(level, spot.place(), place),
                     level.dimension());
         }
@@ -122,8 +132,10 @@ public final class Waypoint {
         // page names is usually standing a step off it - Glorfindel's step is on the square's south road,
         // while the middle of that square is a fountain. Pointed at the middle, the needle led into water.
         BlockPos stand = Campaign.standOf(player, person);
+        Mark marked = marked(place, "place.tolkienmobs." + place, level.dimension());
         return new Mark("place.tolkienmobs." + place,
-                stand == null ? stoneOrCentre(level, place, where) : stand, level.dimension());
+                stand != null ? stand : marked != null ? marked.pos() : stoneOrCentre(level, place, where),
+                level.dimension());
     }
 
     /**
@@ -137,8 +149,21 @@ public final class Waypoint {
         if (next == null || next.place() == null) return null;
         Places.Place where = Places.place(level, next.place());
         if (where == null || !where.dimension().equals(level.dimension())) return null;
+        Mark marked = marked(next.place(), "place.tolkienmobs." + next.place(), level.dimension());
+        if (marked != null) return marked;
         return new Mark("place.tolkienmobs." + next.place(), stoneOrCentre(level, next.place(), where),
                 level.dimension());
+    }
+
+    /**
+     * The needle's own answer where the build has been walked: a mark is the block somebody stood on at the build's
+     * door, which is what a page sending a player to a camp or a crag means, and it outranks the middle of a footprint
+     * or a corner a template was planted from. A name nobody has marked is left to the place's own ground below.
+     */
+    @Nullable
+    private static Mark marked(String key, String label, ResourceKey<Level> dimension) {
+        BlockPos at = Marks.at(key);
+        return at == null ? null : new Mark(label, at, dimension);
     }
 
     /**

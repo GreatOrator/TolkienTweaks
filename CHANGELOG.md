@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road no longer begins under a build that is still going up, so the strip the valley's dressing took out has
+          something to fill it.** The ground begins every road that is the world's own - a chunk that the road passes through
+          starts it, and so does a player standing within 32 blocks - and the road out of Rivendell is one of those, so it
+          graded itself against the valley while the city was still being raised band by band. The dressing settles the ring
+          of ground outside the walls *after* the last band, so the strip it cut and filled was the strip the road had just
+          laid: Road Test 7's log has the road begun early and the small run from the first bridge to the road's own end
+          gone, and a second laying does not put it back because the road's own note says it is down and the note is
+          believed. **The road waits for its build.** `Roads.BUILDS` now names the build each of the valley's three roads
+          leaves - the two gates' legs and the road to Elladan's camp, whose ids are the pins they were planned from, with a
+          section's `_2` and `_bridge_<n>` suffixes read as the same road - and `Roads.waits` asks the town's own answer,
+          `TownHalls.waits`: the valley is finished when `CityCommands.complete` says its last band is down, the Shire's
+          village when `Hobbiton.complete` says its note was written. `RoadCorridor.mayBegin` refuses a road its build is
+          still waiting on, and the ground asks again every second, so the road begins by itself the moment the build is
+          finished and nothing has to be typed. Only a road that names its build is held: every other road is the country's
+          and has nothing to wait for. **Nothing here has been seen in a game.** The gap already in Road Test 7's world is
+          not repaired by this on its own - it needs `/tmroad forget` at the gap and one visit, which now re-lays from a
+          build that is whole; if the pass refuses that stretch it says which leg and why, and that sentence is the next
+          thing to read.
+
+- **The twelve builds the owner has visited are marked at the block they should be arrived at, and the jump, the page's
+          needle and the sign boards all read that one answer.** A pin is where a build is *planted* - a template's corner,
+          a cut's low corner - and a corner is right for the hand laying it and wrong for anybody being sent there: an arrow
+          at a corner points at a wall and a jump lands outside the door. `Marks` now holds the fifteen keys the commands ask
+          with - a catalogue name where the name is the catalogue's, a template id where it is a build's, a build's last
+          word matched the way a pin's is - and the blocks are the owner's own, walked in the test world: Rivendell's road
+          end 5200, 135, -3034, Hobbiton -150, 114, -382, Thorenhad and Elladan's camp 4647, 158, -3315, Barachen's fire
+          4819, 159, -2887, the wood ruin 4787, 160, -3059, the three crags 4515, 155, -2446 / 4624, 157, -2480 / 4562,
+          157, -2398 / 4684, 161, -3050, Glóin's camp 8229, 224, -3654, the goblin fires 5605, 196, -3622 and Gundabad
+          5578, 190, -6833. `/tmtp` answers a name with its mark before it asks the place or the pin, and `Waypoint` shows
+          the mark for a site's page, a named place and the step after it - while a body the campaign stands keeps its own
+          block, since a person is a person and not a doorway. **A mark never moves a build:** it is not a pin, so no
+          template is seated anywhere new, and a world that already stands its camps gets the corrected door in front of
+          the same camp. **Gundabad is listed as a town** - the owner's `<- town` line - so a board offers it, and a town
+          with no place yet is now stood on its mark rather than on its pin, which is what the banner's circle and a
+          board's distance are measured from. Nothing of this has been seen in a game: the jumps, the needles and the new
+          board entry are all compiled only.
+
 - **A road leg that ran beside a river gave the road up for water it never meant to cross, and now it steps inland along
           the bank.** The walk reads the drawing a lane at a time, and the line it leaves between two lanes is a staircase of
           single blocks, so a line that follows a bank clips the water's edge between two readings the walk never priced. The

@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.faction;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -470,11 +471,46 @@ public final class Roads {
      * under and what the build's own road flag is cleared by. A road named for itself says here which build it leaves
      * from, so forgetting the road at the build reaches the build's flag.
      */
-    private static final Map<String, String> BUILDS = Map.of();
+    private static final Map<String, String> BUILDS = Map.of(
+            // The three roads out of the valley, which leave the city's own ground. Named by the road's two ends
+            // because that is what a road's id is: the city's roads were the first to be planned from pins, and their
+            // ids are those pins rather than a name. A section of one of these - a bridge, a later dry stretch - carries
+            // the road's id with a suffix, which buildOf reads as the same road.
+            "tolkienmobs:roads/planned_5200_-3033_4647_-3315", "rivendell",
+            "tolkienmobs:roads/planned_5111_-3399_5072_-3221", "rivendell",
+            "tolkienmobs:roads/planned_5105_-3413_5605_-3622", "rivendell");
 
     /** The build a road leaves from: its own name where it is that build's road, the build it serves otherwise. */
     public static String build(Route route) {
-        return BUILDS.getOrDefault(route.id(), route.id());
+        String own = buildOf(route.id());
+        return own != null ? own : route.id();
+    }
+
+    /** The build a route's id belongs to, by the road it is a section of, or null when it serves no build. */
+    private static String buildOf(String id) {
+        String exact = BUILDS.get(id);
+        if (exact != null) return exact;
+        for (Map.Entry<String, String> row : BUILDS.entrySet()) {
+            if (id.startsWith(row.getKey() + "_")) return row.getValue();
+        }
+        return null;
+    }
+
+    /**
+     * Whether the build a road leaves from is still being raised, so the road has nothing to grade against yet.
+     * <p>
+     * A city is laid a band at a time and its ground is dressed after the last of them, so a road that meets it early
+     * grades country that is about to change under it: measured in Road Test 7, the road out of the valley began from
+     * the ground it crosses while the city was still going up, and the strip from the first bridge to the road's own
+     * end was taken out with the ground the dressing settled afterwards - a gap no second laying filled, because the
+     * road believed it was down. So a road of a build's own waits for that build, the way a town's hall does
+     * ({@link TownHalls#waits}), and begins from the same ground the moment the build is finished.
+     * <p>
+     * Only a road that names its build is held: every other road is the country's and has nothing to wait for.
+     */
+    public static boolean waits(ServerLevel level, Route route) {
+        String town = buildOf(route.id());
+        return town != null && TownHalls.waits(level, town);
     }
 
     /**

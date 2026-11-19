@@ -89,8 +89,10 @@ public final class Places extends SavedData {
      * Lair" is a board nobody trusts, and a board has no room to explain that a name is a hill. So the boards are
      * given the towns, and the two things a town is are that the books call it one and that it stands: Rivendell, the
      * Shire's village, and Bree, which the catalogue has carried since the first act and no world has raised yet.
+     * Gundabad is the fourth as of the owner's own list of visited builds: the hold is a town to a board rather than a
+     * camp, and a board pointing a traveller at the pass's own road wants the mountain's name on it.
      */
-    private static final Set<String> TOWNS = Set.of("hobbiton", "bree", "rivendell");
+    private static final Set<String> TOWNS = Set.of("hobbiton", "bree", "rivendell", "gundabad");
 
     /**
      * The towns a board may point at, in the order the catalogue names them.
@@ -440,7 +442,10 @@ public final class Places extends SavedData {
     public static void standTowns(ServerLevel level) {
         for (String id : TOWNS) {
             if (known(id) == null || place(level, id) != null) continue;
-            BlockPos pin = Pins.at(level, id);
+            // A mark outranks the pin for a town as it does for a jump: the block the owner walked inside the village
+            // is where the banner's circle is drawn and where a board's distance is measured, and it is the same block
+            // /tmtp and the page's needle point at.
+            BlockPos pin = Marks.at(id) != null ? Marks.at(id) : Pins.at(level, id);
             if (pin != null) set(level, id, pin, TOWN_RADIUS);
         }
     }

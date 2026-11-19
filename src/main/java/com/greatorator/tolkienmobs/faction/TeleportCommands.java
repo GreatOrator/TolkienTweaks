@@ -185,6 +185,12 @@ public final class TeleportCommands {
      */
     @Nullable
     private static Target named(ServerLevel arda, String name) {
+        // A mark outranks both: it is the block somebody walked at the build's own door, where a caller asking for
+        // that name wants to be put down - and a pin is the corner a template was planted from, which is a wall.
+        BlockPos marked = Marks.at(name);
+        if (marked != null) {
+            return new Target(marked, "a mark walked on " + name);
+        }
         Places.Place place = Places.place(arda, name);
         if (place != null && arda.dimension().equals(place.dimension())) {
             return new Target(place.centre(), "the place named " + name);

@@ -4,7 +4,10 @@ The working state of the campaign, written so a session picking this up cold doe
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
-**Last touched:** 19 November 2026 - a leg that runs beside a river now steps the line inland instead of refusing the
+**Last touched:** 19 November 2026 - a road no longer begins under a build that is still going up (the valley's road
+waited for the city and left a gap in Road Test 7), and the twelve builds the owner has visited are marked at the block a
+traveller should arrive at, which `/tmtp`, the page's needle and the sign boards all read; earlier the same day, a leg that
+runs beside a river now steps the line inland instead of refusing the
 road, planned against the drawing with `tools/roadprobe`; before that, 18 November 2026 - every walked road is erased
 and a road is now planned from its two ends by
 `RoadPlan`, kept in the save and laid from that plan; **one road has been laid in a world and it was laid under a river**,
@@ -48,6 +51,30 @@ side project.
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **south edge re-cut, awaiting a restart**; joins unseen | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
 | 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands and was called perfect; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
 | 11 | **The Carrock** - the shaped rock in the Anduin | cut, base plate trimmed, pinned at 8307, 187, -4165, **stood by the world on the first start** and bedded into the river with stone; not seen standing yet | `Carrock`, `Pins.SOURCE`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
+
+## 19 November 2026 - a road waits for its build, and the visited builds have marks
+
+Two changes, both compiled with `./gradlew compileJava -x createMinecraftArtifacts -q --no-build-cache` (exit 0) and
+neither seen in a game.
+
+- **A road no longer begins under a build that is still going up.** The ground begins every road the world is given - a
+  chunk the road passes through starts it, and so does a player within 32 blocks - and a city is raised band by band with
+  its ring dressed after the last band, so the road out of Rivendell graded country the dressing then changed under it.
+  That is Road Test 7's gap: the strip from the first bridge to the road's own end, with the road's own note saying it was
+  down so a second laying owed nothing. `Roads.BUILDS` now names the build each of the valley's three roads leaves and
+  `Roads.waits` asks `TownHalls.waits` (the same answer a town's hall waits on); `RoadCorridor.mayBegin` holds the road
+  until the build is finished and the ground asks again a second later. Only a road that names its build is held.
+  **Still owed:** a game check - the road out of the valley should begin by itself once the city is whole, and the strip
+  already missing should come back after `/tmroad forget` at the gap and one visit. If the pass refuses it, the chat says
+  which leg and why; that sentence is the next thing to read.
+- **The visited builds are marked, and one answer feeds `/tmtp`, the needle and the boards.** `Marks` holds the owner's
+  own fifteen blocks - Rivendell, Hobbiton, Thorenhad/Elladan's camp, Barachen's fire, the wood ruin, the three crags and
+  Matuna's lair, Glóin's camp, the goblin fires and Gundabad - keyed as the commands ask, and `/tmtp` answers a name with
+  its mark before the place or the pin. `Waypoint` reads the same marks for a site's page, a named place and the step after
+  it; a body the campaign stands keeps its own block. A mark is not a pin, so no build is seated anywhere new. **Gundabad
+  is a town** in `Places.TOWNS` now (`<- town` on the owner's list), and a town with no place yet is stood on its mark, so
+  a board's distance and the banner's circle are measured from the block a player can stand on. **Still owed:** one in-game
+  look at a jump per name, one page's needle, and a board's town list with Gundabad on it.
 
 ## 18 November 2026 - the roads are planned, not walked
 
