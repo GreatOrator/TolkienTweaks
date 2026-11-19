@@ -43,6 +43,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * highest level the drawing gives the span, and the deck stands {@link #DECK_OVER_WATER} blocks over it - the rule
  * both walked spans were built to. The pieces already repeat to any length, so a span is only refused when the water
  * is too wide to bridge at all, and then the log says which stretch and how wide.
+ * <p>
+ * A road beside a river is not a road across it. A dry lane within {@link #BANK_MARGIN} lanes of drawn water is priced
+ * as the bank it is, so the walk steps the line inland rather than skimming the edge where its own sixteen-block
+ * readings cannot see the channel - which is what planned two spans over one channel with a stretch of road doubling
+ * back between them. And water at the two ends of the leg is left out of the road: a road begins and ends on the bank,
+ * since a mark in the shallows has no dry ground behind it to stand an abutment on.
  */
 final class RoadPlan {
     /** How far apart the plan reads the drawing along the line between the two ends, in blocks. */
@@ -90,6 +96,21 @@ final class RoadPlan {
      * once wherever the country allows it at all.
      */
     private static final double CROSS_AGAIN = 12000.0D;
+    /**
+     * How far off drawn water a dry lane is priced to keep, in lanes.
+     * <p>
+     * The walk reads the drawing a lane at a time and the line between two lanes is a staircase of single blocks, so a
+     * road that skims a bank clips the water's edge between two readings the walk never priced. The dense pass finds
+     * those clips, and what they plan is two spans over one channel with a stretch of road doubling back between them -
+     * the doubled crossing - or a whole leg given up for water the road never meant to cross. Three lanes is more than
+     * a step can shift (see SHIFT), so the lane inside that reach is priced as the bank it is and the walk steps the
+     * line inland instead.
+     */
+    private static final int BANK_MARGIN = 3;
+    /** How far that reach is in blocks, which is how the neighbouring columns are read. */
+    private static final int BANK_OFFSET = BANK_MARGIN * LANE;
+    /** What a dry lane inside {@link #BANK_MARGIN} of drawn water costs, per step. */
+    private static final double BANK_COST = 400.0D;
     /** How far apart the bends a planned road is laid through are, in blocks. */
     private static final int MARK = 320;
     /** How far either side of a river's middle the plan will look for dry ground, in blocks. */
@@ -143,14 +164,12 @@ final class RoadPlan {
      */
     static Plan of(String id, Roads.Kind kind, boolean town, BlockPos from, BlockPos to) {
         if (from == null || to == null) return new Plan(List.of(), null);
-        Plan plan = null;
-        try {
-            plan = chain(id, from, to);
-        } catch (RuntimeException failed) {
-            // Reading the drawing is never the reason a road cannot be laid: a plan that could not read it is a road laid
-            // straight, which is where every road without marks starts. A refusal is different, and is not caught here.
-            LOGGER.warn("Road plan {}: the drawing could not be read for {}, {} to {}, {}: {}", id,
-                    from.getX(), from.getZ(), to.getX(), to.getZ(), failed.toString());
+        Plan plan = walk(id, from, to, false);
+        if (plan != null && plan.refused()) {
+            // Water the walk would not bridge is not the end of the road: the leg is walked again with the bank priced,
+            // which steps the line inland along it. A road does not need the water's edge; it needs a way round it.
+            Plan inland = walk(id, from, to, true);
+            if (inland != null) plan = inland;
         }
         if (plan != null && plan.refused()) {
             // No road is better than a road through the water: the straight line this used to fall back to is a paved
@@ -169,6 +188,19 @@ final class RoadPlan {
             if (town) BANDED.add(section.id());
         }
         return new Plan(sections, null);
+    }
+
+    /** One walk of a leg, or null when the drawing could not be read for it at all. */
+    private static Plan walk(String id, BlockPos from, BlockPos to, boolean inland) {
+        try {
+            return chain(id, from, to, inland);
+        } catch (RuntimeException failed) {
+            // Reading the drawing is never the reason a road cannot be laid: a plan that could not read it is a road laid
+            // straight, which is where every road without marks starts. A refusal is different, and is not caught here.
+            LOGGER.warn("Road plan {}: the drawing could not be read for {}, {} to {}, {}: {}", id,
+                    from.getX(), from.getZ(), to.getX(), to.getZ(), failed.toString());
+            return null;
+        }
     }
 
     /** What a plan came to: the sections to lay in order, or the reason it will lay none at all. */
@@ -225,8 +257,15 @@ final class RoadPlan {
         }
     }
 
-    /** The sections of one road, or null when the drawing says nothing and the road is to be laid straight. */
-    private static Plan chain(String id, BlockPos from, BlockPos to) {
+    /**
+     * The sections of one road, or null when the drawing says nothing and the road is to be laid straight.
+     * <p>
+     * {@code inland} is the second walk, taken only when the first refuses: it prices the lane inside
+     * {@link #BANK_MARGIN} lanes of water as the bank it is, so the line steps inland along the bank instead of
+     * skimming an edge its own sixteen-block readings cannot see. The first walk is left exactly as it was, so a road
+     * that planned before plans the same line now.
+     */
+    private static Plan chain(String id, BlockPos from, BlockPos to, boolean inland) {
         double dx = to.getX() - from.getX();
         double dz = to.getZ() - from.getZ();
         double span = Math.hypot(dx, dz);
@@ -249,8 +288,14 @@ final class RoadPlan {
                 int x = (int) Math.round(centreX - uz * across);
                 int z = (int) Math.round(centreZ + ux * across);
                 ArdaMap.Sample sample = ArdaMap.sample(x, z);
+                boolean wet = sample.river() && sample.water() > sample.height();
+                boolean bank = inland && !wet
+                        && (isWet((int) Math.round(centreX - uz * (across - BANK_OFFSET)),
+                        (int) Math.round(centreZ + ux * (across - BANK_OFFSET)))
+                        || isWet((int) Math.round(centreX - uz * (across + BANK_OFFSET)),
+                        (int) Math.round(centreZ + ux * (across + BANK_OFFSET))));
                 drawn[step * lanes + lane] = new int[]{x, z, sample.height(), sample.water(),
-                        sample.river() ? 1 : 0};
+                        sample.river() ? 1 : 0, bank ? 1 : 0};
             }
         }
 
@@ -273,13 +318,14 @@ final class RoadPlan {
                 int[] here = drawn[step * lanes + lane];
                 boolean wet = here[4] == 1;
                 double toll = wet ? RIVER_TOLL * (1.0D + Math.max(0, here[3] - here[2])) : 0.0D;
+                double bank = wet || here[5] == 0 ? 0.0D : BANK_COST;
                 for (int back = -SHIFT; back <= SHIFT; back++) {
                     int was = lane + back;
                     if (was < 0 || was >= lanes) continue;
                     int[] there = drawn[(step - 1) * lanes + was];
                     double rise = Math.abs(here[2] - there[2]);
                     double over = Math.max(0.0D, rise - TARGET_GRADE * LANE);
-                    double price = LANE + GRADE_PENALTY * over * over + TURN_COST * Math.abs(back) + toll;
+                    double price = LANE + GRADE_PENALTY * over * over + TURN_COST * Math.abs(back) + toll + bank;
                     for (int state = 0; state < longest; state++) {
                         double before = cost[state][was];
                         if (before == Double.MAX_VALUE) continue;
@@ -344,6 +390,23 @@ final class RoadPlan {
         int dry = 1;
         int bridges = 0;
         int index = 0;
+        // A mark in the water is not a crossing. Where the road's own first blocks are drawn as river, the road begins
+        // on the bank the water ends on - the first dry block of its own line - rather than standing a span from a
+        // block that has no dry ground behind it to put an abutment on. That is the answer a surveyor gives when the
+        // pin is in the shallows, and it is what lets a leg pinned in a pool still be a road: the walk steps its middle
+        // inland, and the water at the two ends is left to the pin.
+        if (!ground.isEmpty() && ground.get(0)[4] == 1) {
+            while (index < ground.size() && ground.get(index)[4] == 1) index++;
+            if (index >= ground.size()) {
+                return new Plan(List.of(), "the line is water from end to end, so there is no bank to start the road on");
+            }
+            fromX = ground.get(index)[0];
+            fromZ = ground.get(index)[1];
+            cursor = index;
+        }
+        int endX = to.getX();
+        int endZ = to.getZ();
+        int endIndex = ground.size() - 1;
         while (index < ground.size()) {
             if (ground.get(index)[4] == 0) {
                 index++;
@@ -352,6 +415,14 @@ final class RoadPlan {
             int began = index;
             while (index < ground.size() && ground.get(index)[4] == 1) index++;
             int ended = index - 1;
+            if (ended == ground.size() - 1) {
+                // The far end is in the water too: the road stops at the last dry block it reached, and the water
+                // past it is no more a crossing than the water it started in.
+                endX = ground.get(began - 1)[0];
+                endZ = ground.get(began - 1)[1];
+                endIndex = began - 1;
+                break;
+            }
             Span span = crossing(id + "_bridge_" + (bridges + 1), ground, began, ended);
             if (span.crossing() == null) return new Plan(List.of(), span.refusal());
             Route.Crossing water = span.crossing();
@@ -369,10 +440,10 @@ final class RoadPlan {
             fromZ = far[1];
             cursor = ended;
         }
-        if (Math.hypot(to.getX() - fromX, to.getZ() - fromZ) >= 1.0D) {
+        if (Math.hypot(endX - fromX, endZ - fromZ) >= 1.0D) {
             String name = dry == 1 ? id : id + "_" + dry;
-            sections.add(new Route.Riverless(name, 0, 0, 0, 0, fromX, fromZ, to.getX(), to.getZ()));
-            marks.put(name, marks(ground, cursor, ground.size() - 1));
+            sections.add(new Route.Riverless(name, 0, 0, 0, 0, fromX, fromZ, endX, endZ));
+            marks.put(name, marks(ground, cursor, endIndex));
         }
         MARKS.putAll(marks);
         return new Plan(sections, null);
@@ -400,6 +471,12 @@ final class RoadPlan {
             }
         }
         return blocks;
+    }
+
+    /** Whether the drawing gives a column water standing over its bed: the test the line is cut on. */
+    private static boolean isWet(int x, int z) {
+        ArdaMap.Sample sample = ArdaMap.sample(x, z);
+        return sample.river() && sample.water() > sample.height();
     }
 
     /**

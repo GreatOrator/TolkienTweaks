@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A road leg that ran beside a river gave the road up for water it never meant to cross, and now it steps inland along
+          the bank.** The walk reads the drawing a lane at a time, and the line it leaves between two lanes is a staircase of
+          single blocks, so a line that follows a bank clips the water's edge between two readings the walk never priced. The
+          dense pass found those clips and measured them at the *pool* the road's own entry stood in rather than at the water
+          the road crossed: planning `6420, -3560` to `6600, -3560`, both ends inside the mountains' wide bend, refused with
+          `the water at 6420, -3560 is 110 columns wide, past the 96 this will bridge`, and none of that leg could be laid.
+          **Two answers, both kept behind the refusal.** A refused leg is walked a second time with the bank priced: a dry
+          lane within `BANK_MARGIN` (3 lanes, 48 blocks) of drawn water costs `BANK_COST` (400) a step, so the road keeps off
+          the edge and the line steps inland along the bank - and only that second walk pays for it, so every leg that
+          planned before plans the same line now. And water at a leg's own two ends is the bank rather than a crossing: where
+          the road's first blocks are drawn as river the road begins on the first dry block of its own line, since a mark in
+          the shallows has no dry ground behind it to stand an abutment on, with the same rule at the far end; a line that is
+          water from end to end still refuses, and so does a leg too short for the walk, which the plan has always laid
+          straight. **Planned against the drawing, no world:** `6420, -3560` to `6600, -3560` now plans one section, `6436,
+          -3576` to `6589, -3560` - the pin in the water, the road beginning sixteen blocks inland of it. The geometry that
+          was signed off is untouched: `11813, -3901` to `8229, -3654` still spans at 11649, -4080 (52 wide, deck 170) and
+          8551, -3626 (46, deck 188), and `6398, -3654` to `8229, -3654` still spans 52 at 6668, deck 195 - the numbers the
+          test world laid. **The doubled crossing is not covered by this and is still there:** `6300, -3580` to `6800, -3580`
+          plans a 45-wide span at 6418, -3612, a section running back west to 6383, -3585, and a second 56-wide span at 6399,
+          -3585 - the same water crossed twice, from a clip between the walk's own readings. That is the next thing in the
+          planner. **The instrument is in the repo:** `tools/roadprobe` plans a leg against `ArdaMap` alone - no chunk, no
+          world, no client - through `./gradlew -I tools/roadprobe.gradle roadProbe -PprobeArgs="leg WILD <x1> <z1> <x2>
+          <z2>"`. Nothing here has been laid in a world, so what the pass makes of a section that begins on a bank rather
+          than at the pin is unverified.
+
 - **The raise laid one band and called the whole city finished, so a fresh world got a floor and a sky.** Road Test 6,
           walked with no commands at all: the raise started from the pin, band 1 of 6 (the floor) took its 132 pieces and one
           `out of made ground` line, and then bands 2, 3, 4, 5 and the whole city each reported "is down" **forty to two hundred**

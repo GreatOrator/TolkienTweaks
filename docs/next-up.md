@@ -4,7 +4,9 @@ The working state of the campaign, written so a session picking this up cold doe
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
-**Last touched:** 18 November 2026 - every walked road is erased and a road is now planned from its two ends by
+**Last touched:** 19 November 2026 - a leg that runs beside a river now steps the line inland instead of refusing the
+road, planned against the drawing with `tools/roadprobe`; before that, 18 November 2026 - every walked road is erased
+and a road is now planned from its two ends by
 `RoadPlan`, kept in the save and laid from that plan; **one road has been laid in a world and it was laid under a river**,
 the plan now reads its line a block at a time to find the water, and that fix has **not been run yet**; the state before
 that was 17 November - the mustering halls are pinned per town and raise themselves, the marks the world
@@ -186,7 +188,11 @@ line read a block at a time so a river is bridged. Every one compiled with
   run east between two spans. The old decks stay standing: the sweep only clears timber inside a span's own box, so
   clear the ground at 11680..11760, -3920..-3870 before judging what the new one looks like. A port of the walk over a
   channel with an island in it takes one run under the new rule and two under the old; the drawing itself has not been
-  re-planned.
+  re-planned. **And a probe on the drawing, 19 November, still finds one:** `6300, -3580` to `6800, -3580` plans a
+  45-wide span at 6418, -3612, a section running back west to 6383, -3585, and a 56-wide span at 6399, -3585 - the same
+  water crossed twice - because the clip lies between two of the walk's own sixteen-block readings and the walk never
+  priced it. The bank-margin walk that closed the refusal above is not the answer to this one; it is the next thing in
+  the planner.
 - **The laid network is in the code, and the test world is no longer the only place it exists.** `Roads.NETWORK` names
   the seven roads the test world laid, each as the two ends it was pinned between and at the three-wide track, planned
   from the drawing when the class loads: 11813, -3901 to 8229, -3654 (the old forest road east of Mirkwood to Glóin's
@@ -217,9 +223,22 @@ line read a block at a time so a river is bridged. Every one compiled with
   the one place the ground is generated that G's line touches) or anywhere within 32 blocks of a leg's line and read the
   log - a `begun from the ground` line means the corridor found it and the road is laying, or refused with a reason in
   the chat within 128 blocks. Nothing at all in the log within 32 blocks of a road means neither path is seeing it.
-- **A leg along a river now refuses.** Reading the water a block at a time means a leg that runs beside the water rather
-  than across it refuses by the width it would bridge. True as an answer, poor as a road: the next thing to try is
-  stepping the line inland along a bank rather than giving the leg up.
+- **A leg that runs beside a river stepped inland instead of refusing - fixed and planned offline, 19 November.**
+  Reading the water a block at a time meant a leg along a bank was measured at the pool its own entry stood in: planning
+  6420, -3560 to 6600, -3560, both ends inside the mountains' wide bend, refused with `the water at 6420, -3560 is 110
+  columns wide, past the 96 this will bridge`. A refused leg is now walked a second time with the bank priced - a dry
+  lane within `BANK_MARGIN` (3 lanes, 48 blocks) of drawn water costs `BANK_COST` (400) a step, so the line steps inland
+  along the bank - and water at a leg's own two ends is the bank rather than a crossing, so a pin in the shallows begins
+  on the first dry block of its own line. Only the second walk pays for the margin, so every leg that planned before
+  plans the same line now. **Planned against the drawing with `tools/roadprobe`, no world:** that leg now plans one
+  section, 6436, -3576 to 6589, -3560 - the pin in the water, the road beginning sixteen blocks inland of it; the
+  signed-off geometry is unchanged, `11813, -3901` to `8229, -3654` still spanning at 11649, -4080 (52 wide, deck 170)
+  and 8551, -3626 (46, deck 188), and `6398, -3654` to `8229, -3654` still spanning 52 at 6668, deck 195, which are the
+  numbers the test world laid; a line that is water from end to end still refuses. **Not run in a world:** nothing has
+  laid one of these roads, so what the pass makes of a section that begins on a bank rather than at the pin is
+  unverified. **The instrument:** `tools/roadprobe` plans a leg against `ArdaMap` alone - no chunk, no world, no client -
+  with `./gradlew -I tools/roadprobe.gradle roadProbe -PprobeArgs="leg WILD <x1> <z1> <x2> <z2>"`, and `sample`/`along`
+  print what the drawing gives a column or a line of them.
 - **`plan` is a look, not a plan.** Nothing is written to `road_plans` by it, so a road surveyed before a restart has to be
   surveyed again.
 - **Untimed.** The planner reads one sample per lane per step and now every block of the chosen line; nothing has measured

@@ -1,0 +1,32 @@
+// Runs tools/roadprobe against the mod's runtime classpath, so a road leg can be planned from the drawing on a machine
+// with no world, no chunks and no client:
+//
+//   ./gradlew -I tools/roadprobe.gradle roadProbe -PprobeArgs="leg WILD 6420 -3560 6600 -3560" -x createMinecraftArtifacts
+//
+// The probe itself is tools/roadprobe/com/greatorator/tolkienmobs/faction/RoadProbe.java. It plans through RoadPlan and
+// ArdaMap only, so what it answers is what a world would plan, before any ground is moved.
+gradle.projectsEvaluated {
+    def root = gradle.rootProject
+    def out = root.layout.buildDirectory.dir('roadprobe-tools')
+    def java25 = { spec -> spec.languageVersion.set(JavaLanguageVersion.of(25)) }
+    def toolchains = root.extensions.getByType(org.gradle.jvm.toolchain.JavaToolchainService)
+
+    root.tasks.register('compileRoadProbe', JavaCompile) {
+        dependsOn root.tasks.named('compileJava'), root.tasks.named('processResources')
+        source = root.fileTree('tools/roadprobe') { include '**/*.java' }
+        classpath = root.sourceSets.main.runtimeClasspath
+        destinationDirectory.set(out)
+        options.encoding = 'UTF-8'
+        javaCompiler.set(toolchains.compilerFor(java25))
+    }
+
+    root.tasks.register('roadProbe', JavaExec) {
+        dependsOn root.tasks.named('compileRoadProbe')
+        classpath = root.files(out, root.sourceSets.main.runtimeClasspath)
+        mainClass.set('com.greatorator.tolkienmobs.faction.RoadProbe')
+        workingDir = root.projectDir
+        systemProperty 'java.awt.headless', 'true'
+        javaLauncher.set(toolchains.launcherFor(java25))
+        args = ((root.findProperty('probeArgs') ?: 'leg WILD 6398 -3654 6481 -3655') as String).trim().split('\\s+') as List
+    }
+}
