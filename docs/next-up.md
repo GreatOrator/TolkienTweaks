@@ -70,13 +70,34 @@ somebody comes within `REACH` 192, and `/hobbiton raise` still asks for it at an
 | 2 | **The roads** - the whole network, rebuilt from two ends per road | **eleven roads in `Roads.NETWORK`**, each as the two ends it was pinned between: Gundabad's road (5578, -6769 to 8583, -3617), the old forest road, the four legs of the vale and the high pass, the wood ruin's nine-block connector, Rivendell to the meeting plaza and the plaza on to Glóin's camp, Rivendell to Elladan's camp, and the short leg at Rivendell's south gate. **Next:** walk the network in a fresh world and check each road lays | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
-| 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Next:** a fresh world and one walk from the gate to the keep's rooms | `docs/gundabad-keep.md` |
+| 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Next:** a fresh world and one walk from the gate to the keep's rooms, and a look at the hold's doorway against the gate's passage (*The keep's doorway* below) | `docs/gundabad-keep.md` |
 | 6 | **Sign posts** | on hold | below, with the recipe |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **raised at every world's start since 20 November**; the south edge's new bank rule and the joins have not been looked at | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
 | 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands and was called perfect; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
 | 11 | **The Carrock** - the shaped rock in the Anduin | cut, base plate trimmed, pinned at 8307, 187, -4165, **stood by the world on the first start** and bedded into the river with stone; not seen standing yet | `Carrock`, `Pins.SOURCE`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
+
+## The keep's doorway - one thing to look at, 20 November
+
+The hold is placed around the template's far doorway: its local x 104..108 comes out at world x **5620…5624** on the
+south wall at z -6930, and `clearMouth` dresses the ground beyond it at x 5616…5628. The passage the gate carries north
+to that wall is twenty-nine columns wide - the keep's local x 47..75, world x **5563…5591**, its middle on 5577 - and
+`GundabadGate.extendHall` cuts the wall over every one of those columns, fourteen courses deep (`HALL_DOOR_DEPTH`), so
+the opening the gate makes through the wall and the doorway the hold's own plan is measured by are not the same
+opening: they are two, and the one the hall arrives at ends twenty-nine blocks west of the one the plan was written
+around. The order is the other half of the question. `GundabadKeep.autospawn` calls `extendHall` *before*
+`Sites.standsAt` asks whether a hold already stands, so on a first start the passage is cut through the wall and then
+the template is laid over it and writes that wall whole - which is what the class means by the keep's own doorway being
+the only way in.
+
+**None of that is a finding, and nothing here has been walked.** It may be exactly right: the hold's rooms are one
+floor over the rock, the passage is level with them, and the walk from the hall to the far door may be inside the
+hold rather than through the wall. **The check is one first start and one walk** - up the gate's passage to the hold's
+rooms - looking at two things: whether the passage comes out into the hold where the hall ends rather than at a wall
+the template laid over it, and whether the doorway at 5616…5628 is a door somebody can actually reach and walk
+through. If the passage ends in wall, the next thing to read is the order of those two calls and `HALL_DOOR_DEPTH`,
+not the template.
 
 ## 19 November 2026 - a road waits for its build, and the visited builds have marks
 
@@ -786,7 +807,8 @@ all unverified.
   `KEEP_Z` -7112, `KEEP_FLOOR` 176 - the rooms' floor 189, level with the passage - with the box x 5516…5637,
   z -7112…-6930 and the south wall at -6930 where `keepWall()` ends the hall; `GundabadKeep.autospawn` reads the
   template's own blocks through `Sites.standsAt` and carries the hall to the keep's wall every pass. The check still
-  owed is a fresh world and one walk from the gate to the rooms.
+  owed is a fresh world and one walk from the gate to the rooms, and *The keep's doorway* above says what to look at
+  on that walk.
 
 ## On hold, and what unblocks each
 
