@@ -12,6 +12,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -27,6 +28,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,11 +61,14 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * there, and generation out of a tick is what held a first attempt at this for the minute the watchdog allows. So the
  * chunks are held with tickets a chunk at a time, vanilla generates them on its own threads, and each is taken as it
  * comes so the game's finishing of its sections and light is paid a chunk's worth a tick and never a region's.</li>
- * <li><strong>Nothing is done far from anybody.</strong> A village nobody has walked to is a thousand chunks nobody has
- * looked at. The pass begins when somebody comes within {@link #REACH} of the footprint - not in an empty world, where
- * there is no player keeping the chunks ticking while they finish. `/hobbiton raise` asks for it anyway, and so does
- * {@code raiseShireOnStart} in the mod's server settings, which is what a measurement run and a server that prepares
- * its own ground use.</li>
+ * <li><strong>The village is up before anybody can walk into it.</strong> The portal out of the overworld opens on the
+ * village's own crossing, inside its footprint, so a village raised by a player's arrival is one whose clearing pass
+ * takes the doorway away under the traveller. So the pass begins at the start of a world, on the server's own quiet
+ * time, by {@code raiseShireOnStart} in the mod's server settings - on by default. A world whose setting is off keeps
+ * the older rule, and begins when somebody comes within {@link #REACH} of the footprint, which is the shape a hand
+ * watching it come up wants; `/hobbiton raise` asks for it at any time in either world. A dedicated server that pauses
+ * itself when nobody has been on it does not tick the world at all, so the pass lifts that pause for its own length and
+ * gives it back when the village stands (see {@link #holdAwake}).</li>
  * <li><strong>What is done in a tick is bounded by time, not by a count.</strong> The job spends at most
  * {@link #BUDGET_MS} a tick and stops between pieces, bands and chunks, so the world keeps its twenty milliseconds
  * whatever the village is doing to it.</li>
@@ -156,6 +161,13 @@ public final class Hobbiton {
 
     /** The village being raised, or null when there is one standing or nothing to raise. */
     private static Standing standing;
+    /**
+     * The server's own pause-when-empty setting while this pass holds it at zero, or -1 when it holds none.
+     * <p>
+     * A dedicated server that pauses itself with nobody on it does not tick its world, so the pass - which by design may
+     * run with nobody online - is given the time by lifting that pause and giving the number back when it ends.
+     */
+    private static int heldPause = -1;
     /**
      * A corner this world notes a village at whose ground could not be read at start, or null.
      * <p>
@@ -333,6 +345,7 @@ public final class Hobbiton {
             return 0;
         }
         work.found = true;
+        holdAwake(source.getServer());
         source.sendSuccess(() -> Component.literal("Raising the Shire: " + work.parts.size() + " pieces to lay, then"
                 + " the country out of it, then the ring - at most " + BUDGET_MS + " ms a tick."), true);
         return work.parts.size();
@@ -371,7 +384,44 @@ public final class Hobbiton {
         if (arda != null) TownHalls.raise(arda, "hobbiton");
         if (work == null || !TolkienMobsConfig.raiseShireOnStart) return;
         work.found = true;
+        holdAwake(event.getServer());
         LOGGER.info("The Shire: raising the village at the start, with nobody near it, as the config asks");
+    }
+
+    /**
+     * Lifts the server's own pause for the length of the pass, and why it has to.
+     * <p>
+     * A dedicated server stops ticking its world once nobody has been on it for {@code pause-when-empty-seconds}, and
+     * the stop is total: measured on 20 November on a fresh level with the property set to 5 s, the log reads
+     * {@code Server empty for 5 seconds, pausing} part way through the pass and the pass never took another step. The
+     * start-of-world pass is exactly the case that runs with nobody online, so on a server left to its own settings it
+     * would never finish - which is the whole point of raising the village before anybody arrives. In the source, the
+     * paused branch of {@code MinecraftServer.tickServer} returns before the tick event and before the level's own
+     * tick, so there is nothing for the pass to be woken by: the setting itself is the thing to move.
+     * <p>
+     * The server's own setting is put back the moment the pass ends, so the file it is written in is changed twice and
+     * ends as it began. A server stopped mid-pass leaves it at zero, which costs that server the idle time it would
+     * have saved and nothing else.
+     */
+    private static void holdAwake(MinecraftServer server) {
+        if (heldPause >= 0) return;
+        if (!(server instanceof DedicatedServer dedicated)) return;
+        int seconds = dedicated.pauseWhenEmptySeconds();
+        if (seconds <= 0) return;
+        heldPause = seconds;
+        dedicated.setPauseWhenEmptySeconds(0);
+        LOGGER.info("The Shire: this server pauses when empty after {} s, which is shorter than the pass; the pause is"
+                + " lifted until the village stands", seconds);
+    }
+
+    /** Gives the server its pause back, if this pass took it. */
+    private static void releaseAwake(MinecraftServer server) {
+        if (heldPause < 0) return;
+        int seconds = heldPause;
+        heldPause = -1;
+        if (!(server instanceof DedicatedServer dedicated)) return;
+        dedicated.setPauseWhenEmptySeconds(seconds);
+        LOGGER.info("The Shire: the server's pause when empty is back to {} s", seconds);
     }
 
     @SubscribeEvent
@@ -410,6 +460,7 @@ public final class Hobbiton {
             if (done) {
                 work.release(level);
                 standing = null;
+                releaseAwake(event.getServer());
                 note(level, work.planted);
                 // The town's hall goes up with the village and after it: this pass has just laid the cut, cleared the
                 // footprint and dressed the ring, and a hall stood in that ground first would have been cleared with the
@@ -424,16 +475,25 @@ public final class Hobbiton {
             LOGGER.warn("The Shire: the village could not be raised: {}", unreadable.getMessage());
             work.release(level);
             standing = null;
+            releaseAwake(event.getServer());
         }
+    }
+
+    /** A server stopped with a pass half done gives its pause back before it goes. */
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        releaseAwake(event.getServer());
     }
 
     /**
      * Whether anybody is near enough to see the village come up.
      * <p>
-     * A world with nobody in it raises nothing. That is not only an economy: measured on a server with no players, the
-     * first block written into the 1326 freshly generated chunks under the village waited forty-three seconds for the
-     * game to finish them, all in one tick - and it waited there because no player was standing in the region to keep
-     * its chunks ticking while they finished. The reach rule keeps that cost where the chunks are being ticked anyway.
+     * Only asked when the world's setting leaves the pass until somebody is near. That is not only an economy: measured
+     * on a server with no players, the first block written into the 1326 freshly generated chunks under the village
+     * waited forty-three seconds for the game to finish them, all in one tick - and it waited there because no player
+     * was standing in the region to keep its chunks ticking while they finished. Asked a chunk at a time, that drain is
+     * paid a chunk's worth a tick instead (see {@link Standing#awaitGround}), which is what lets the pass run at a start
+     * with nobody in the world at all.
      */
     private static boolean watched(ServerLevel level, CutCommands.Box box) {
         for (ServerPlayer player : level.players()) {

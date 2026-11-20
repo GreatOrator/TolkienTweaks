@@ -571,12 +571,28 @@ waits for the line, prints the numbers and puts `server.properties` and the conf
 with **nobody online** the village stood in **1200 ticks (60.0 s)**, and 1210 (60.5 s) on the run before it: a warm
 build, 1326 chunks of ground, 143 pieces, 1290 bands and 701 dress steps, and no tick went near the sixty-second
 watchdog. That is the run that was missing, and
-it is one command away from being repeated. What keeps the cost off a player's first start is still the gate - the
-village is raised only while somebody is within `REACH` 192 of it, so the chunks are in a view, ticking and being
-finished as the player arrives - plus `/hobbiton raise` for an admin who wants it up in an empty world, and the config
-for a server that would rather prepare it in the dark. **Not seen in a client session**: whether the deck, the mouths
-and the ring look right is still a walk to Hobbiton, and 60 s is wall clock on a warm build, not a bound on a cold
-one. The pass keeps its own tick count now, because the measurement is the line that says it stands.
+it is one command away from being repeated.
+
+**The switch is on by default now, 20 November.** The portal out of the overworld opens on the village's own crossing,
+(-470, 97, -123), which is inside the footprint the pass clears - x -700..-149 by z -512..-44 - so a village raised by
+an arrival is a village that takes the traveller's doorway with it: the pass begins on the first tick after the crossing
+is used and the ammolite doorway is gone about ten seconds later. Raised at the start it stands about a minute into a
+fresh world, before anybody can walk through to it. **And a start is exactly when a server is empty**, so the pass lifts
+the server's own `pause-when-empty-seconds` while it runs and puts it back when the village stands: measured on a fresh
+level with the property at 5 s and nobody online, the log reads `Server empty for 5 seconds, pausing` part way through
+and the pass never takes another step - the paused branch of `MinecraftServer.tickServer` returns before the tick event
+and before the level's own tick, so there is nothing for the pass to be woken by. The lift is
+`DedicatedServer.setPauseWhenEmptySeconds(0)` for the pass's length, given back on the pass finishing, on an unreadable
+cut and on the server stopping with the pass half done, so `server.properties` is written twice and ends as it began. A
+server killed outright mid-pass keeps the zero, which costs it its idle pause and nothing else - as it keeps the level's
+forced-chunk tickets until the next start re-runs the pass.
+
+A world that sets `raiseShireOnStart = false` keeps the older rule: the village is raised only while somebody is within
+`REACH` 192 of it, so the chunks are in a view, ticking and being finished as the player arrives. `/hobbiton raise`
+still asks for it at any time in either world, and a world that already holds the village is left alone. **Not seen in a
+client session**: whether the deck, the mouths and the ring look right is still a walk to Hobbiton, and 60 s is wall
+clock on a warm build, not a bound on a cold one. The pass keeps its own tick count, because the measurement is the line
+that says it stands.
 
 **Where the roads go next, and it is not built.** The Shire to Bree, Bree to Rivendell, and Glóin's camp to Gundabad -
 three routes for what `Roads.ROUTES` has two of, and the village is now a town a road can end at. Nothing of it is laid;

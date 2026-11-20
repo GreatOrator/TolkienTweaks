@@ -309,12 +309,14 @@ public class TolkienMobsConfig {
                         "picks this up the next time it loads (Default 100, or five seconds)")
                 .defineInRange("fireplaceCookTime", 100, 1, 2000);
         RAISE_SHIRE_ON_START = BUILDER
-                .comment("Raises the Shire's village at the start of a world with nobody near it, instead of waiting",
-                        "for a player to come within 192 blocks of it. A server that prepares its village while",
-                        "nobody is watching spends the world's own quiet time on it, and a measurement run has",
-                        "something to watch without a client. A world that already holds the village is left alone",
-                        "(Default false)")
-                .define("raiseShireOnStart", false);
+                .comment("Raises the Shire's village at the start of a world, with nobody near it, instead of waiting",
+                        "for a player to come within 192 blocks of it. On by default: the portal out of the overworld",
+                        "opens onto the village's own crossing, and a village raised by somebody's arrival is a village",
+                        "whose clearing pass takes that doorway away under them. Raised at the start it stands before",
+                        "anybody can reach the portal, at about a minute of a quiet server's time. A world that",
+                        "already holds the village is left alone, and the pass is held off by a server that pauses",
+                        "when empty (Default true)")
+                .define("raiseShireOnStart", true);
         BUILDER.pop();
 
         BUILDER.comment("How a Shire pipe draws, and what each strain of pipe-weed leaves behind once it is smoked.",

@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The Shire stands before anybody can reach the portal, and the pass keeps the server awake to do it.** The portal out
+          of the overworld opens on the village's own crossing, -470, 97, -123, which is inside the footprint its clearing
+          pass works over - x -700..-149 by z -512..-44 - so a village raised by somebody's arrival is a village that
+          takes the traveller's doorway away: the pass begins on the first tick after the crossing is used and the
+          ammolite doorway goes about ten seconds later. Raised at the start it stands about a minute into a fresh world,
+          which is why `raiseShireOnStart` in the mod's server settings is now on by default. **And the start of a world
+          is exactly when a dedicated server is empty**, so the pass lifts the server's own
+          `pause-when-empty-seconds` while it runs and gives the number back the moment the village stands. That half was
+          measured, not assumed: a fresh level with the property at 5 s and nobody online logs `Server empty for 5
+          seconds, pausing` part way through the pass, and the pass never takes another step - the paused branch of
+          `MinecraftServer.tickServer` returns before the tick event and before the level's own tick, so nothing wakes
+          a pass the server has stopped ticking. The lift is `DedicatedServer.setPauseWhenEmptySeconds(0)` for the pass's
+          length and the old number back on the way out: when the pass finishes, when the cut cannot be read, and when
+          the server stops with the pass half done, so `server.properties` is written twice and ends as it began. A
+          server killed outright mid-pass keeps the zero, which costs it its idle pause and nothing else - as it keeps
+          the level's forced-chunk tickets until the next start re-runs the pass. A world that sets the switch to false
+          keeps the older rule, the pass beginning when somebody comes within `REACH` 192 of the footprint, and
+          `/hobbiton raise` still asks for it at any time in either world; a world that already holds the village is
+          left alone. **Nothing here has been seen in a client session**: the pause lift is read out of a dedicated
+          server's own log, and whether the village looks right from the crossing is still a walk to Hobbiton.
+
 - **A road that meets one channel twice is walked again straight, so the planner no longer plans two spans over the
           same water.** The drawing probe at 6300, -3580 to 6800, -3580 planned five sections - a 45-wide span at
           6418, -3612, a road running back west to 6383, -3585 and a 56-wide span at 6399, -3585 - and a trace of the
