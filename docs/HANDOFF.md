@@ -2,7 +2,9 @@
 
 This is the note that survives a compacted conversation. The transcript can be summarised away; this file is not. Read
 it before starting, then `CHANGELOG.md` for the per-change history and `docs/arda-roads.md` for how the roads are
-designed. Update it at the end of a session rather than trusting the chat to be there next time.
+designed. Update it at the end of a session rather than trusting the chat to be there next time. The dated sections
+below are history; the running state is `docs/next-up.md`, and the newest section at the end of this file is the
+handover.
 
 ## The goal
 
@@ -27,7 +29,7 @@ with no commands typed. A player walks the chapter and the world has already bui
 | `faction/Pins.java` | The scouted spots: `SOURCE`, crag pins, the ford marker. "The pin wins, the marker only informs facing." |
 | `faction/Keepers.java` | The bodies the line has stood, by tag, UUID and last ground, so a keeper is found in an unloaded chunk. |
 | `faction/Sites.java` | Seats a build at its pin with no drift, underpins it, sweeps the ground to its roofline, and plans a road for it. |
-| `faction/Roads.java` | `ROUTES`: Rivendell's crossing, Elladan's camp's branch (`ELLADAN_BRANCH`, wild), the Thorenhad main road (`THORENHAD_ROAD`, banded, 4633,-3331 to the ford), Barachen's fire's track; `BENDS`, `KINDS`, `BANDED`, `BUILDS` by route. |
+| `faction/Roads.java` | `NETWORK`: the eleven roads every world is given, each as its two ends and planned by `RoadPlan` when the class loads; `ROUTES` is what the world actually holds (nothing at load, then a plan is added as it is made or read back); `BENDS`, `KINDS`, `BANDED` and `CUTS` are empty tables the planned roads answer through, and `BUILDS`/`waits` hold a road until its town stands. |
 | `faction/RoadCommands.java` | The road pass: sweep, bridge, pillars, search, grade, lips, and `Progress` (the road's own record). |
 | `faction/Dressing.java` | The city's own drape and the check that plans a road when one is not down. |
 | `faction/RoadPaint.java` | Roads painted at world generation, as a pure function of the column. |
@@ -44,9 +46,12 @@ Barachen's camp, and seventy-eight columns of the camp's road left hanging when 
 The city raises itself in `CityCommands.rouse`: one piece at a time while a player is within 160 blocks of its box,
 nearest piece first, and only into chunks already made - `lay(..., false)` never generates ground for a piece, so
 the city fills in as it is walked. `lay(..., true)` is the hand's own path (`/tmcity band`) and still makes its
-ground. The cadence follows `MinecraftServer.getCurrentSmoothedTickTime()` between four ticks and twenty. Two
-consequences: a city nobody walks does not finish, and therefore the road that waits on it does not plan; and a
-band can sit half-laid until the player's view reaches its far pieces.
+ground. The cadence follows `MinecraftServer.getCurrentSmoothedTickTime()` between four ticks and twenty. A band
+whose far pieces are ground no standing player loads would otherwise wait for ever, so after five empty passes the
+raise makes the ground for the nearest waiting piece and lays it, one piece a pass, and logs what the band is waiting
+on; that is what closed "Rivendell only goes about half way" (Road Test 7, signed off 18 November). A road that names
+its build waits for the city through `Roads.waits`, so the road out of the valley is laid after the dressing rather
+than under it.
 
 Sugar cane is placed only by `TolkienPlacedFeatures.PLACED_SHORE_REEDS`: `not(water)` at the position *and*
 `would_survive` for the cane itself, because either one alone leaves a case - the refusal lets a position above a
@@ -360,8 +365,9 @@ the three bends are written in `Roads` - the four crags, the ruin's connector an
 
 ## What the player is likely to ask next
 
-Trees back in some form; the seam between old and new chunks; whether the two crags stood; whether the camp road
-finished; widening the sweep's reach per build; reporting what a sweep came to.
+`docs/next-up.md` is the running list - on 20 November that is Carn Dûm's ground first, then the fresh-world checks
+the road rework and the Shire's start still owe. The list that used to stand here was the chapter-one forecast and
+is history.
 
 The drawing's default country is `Country.TEMPERATE_SEA`, so any cell a fill misses is sea, and the shore is read
 off the ground now, not off the blended cell height, which is what stopped a cell drawn at 70 beside a sea drawn at
@@ -588,7 +594,7 @@ the two calls.
 
 The running state is `docs/next-up.md`; this is what changed under the roads since the note above.
 
-The old forest road east of Glóin's camp is laid and seen (`OLD_FOREST_ROAD`, 8231, -3641 to 11842, -3877, five wide,
+The old forest road east of Glóin's camp is laid and seen (`OLD_FOREST_ROAD` - the walked route, now planned from its two ends; 8231, -3641 to 11842, -3877, five wide,
 every ammolite mark a bend), and it is graded on halves now - `MAX_STEP` 0.5 with the slab laid *on top* of the road
 block, so the slab is the step rather than a patch under it. It climbed into Mirkwood's canopy because the hardened
 leaves are a plain `Block` and nothing had tagged them, so the no-leaves heightmap read the crowns as ground; all nine
@@ -629,7 +635,7 @@ mark rather than part of the build and was left where it stood. The reason no ho
 deepslate, so every world answered "already standing". It reads the template's own blocks now, opening the box first so
 an unvisited hold is read rather than assumed missing. The keep's autospawn also carries the hall to the wall every
 pass, because a world whose gate already stood had its chamber ending at the older wall. **The placement looked off in
-game and is on hold, not tuned**: the world it was looked at in was built around the older plan, so it is read from a
+game and was on hold at the time** (settled at `KEEP_FLOOR` 176 on 18 November - see the end of this file): the world it was looked at in was built around the older plan, so it is read from a
 brand-new world, which is how the rest of the walk is meant to be done.
 
 **The captain's hunt.** `keepDugorim` filled the seat from page 2-7, and that page stays in the player's book until
@@ -646,3 +652,31 @@ the biome audit is closed whole with its four leaf textures called right.
 **The walk.** Chapter two was played in the test world from the chapter-one seam through page 32 - camp, Ulmug's fires,
 the hold raised from its page, the vault, Gimli in his own cave, the captain and the wraith below the stair - and paused
 there: pages 33 to 36 are all Carn Dûm ground, and Carn Dûm is what quests go to next.
+
+## Where we stopped - 20 November 2026
+
+The running state is `docs/next-up.md`; this is what changed since 15 November, so the dated sections above are not
+mistaken for the present.
+
+- **The Shire stands at every world's start (`0e2c70f2`).** `raiseShireOnStart` defaults `true`, because the arrival
+  portal opens on the village's own crossing inside the footprint the pass clears. The pass also lifts the dedicated
+  server's `pause-when-empty-seconds` for its length and gives it back when the village stands - measured, not assumed:
+  a fresh level with the property at 5 s and nobody online froze the pass at `Server empty for 5 seconds, pausing`, and
+  with the lift the village stood in 1053 ticks (52.7 s). Not seen in a client session.
+- **The roads are planned from their two ends, not walked (`f1c7497e` onwards, 18 November).** The twenty-one walked
+  routes are erased; `Roads.NETWORK` holds eleven roads as two ends each, `RoadPlan` plans them against the drawing, and
+  the plan is kept in `road_plans`. Since then a leg beside a river steps inland (`6ff7d617`), a road waits for its
+  build (`f3c98759`), and a crossing that met one channel twice is walked straight (`ee907452`). **None of those three
+  has been laid in a world**, and no restart has ever read `road_plans.dat` back.
+- **The visited builds are marked (`f3c98759`).** `Marks` holds the owner's fifteen blocks; `/tmtp`, `Waypoint`, the
+  page's needle and the sign boards read them; Gundabad is a town. Not seen in a game.
+- **The mustering halls are pinned per town (`067ae6cd`-`4b66b978`, 17 November).** Hobbiton's stands at -529, 101, -74
+  and was called perfect in game; its pin is in `Pins.SOURCE`.
+- **The keep's placement is settled at `KEEP_FLOOR` 176 (`9f88c9a0`, 18 November).** A fresh world showed the rooms on
+  200 with the chamber's floor on 189; the pin is 176, the rooms' floor 189. A walk from the gate to the rooms in a
+  fresh world is the check still owed.
+- **The Carrock and the Shire's south edge are built and unseen.** The rock stands itself at 8307, 187, -4165 and beds
+  itself into the river; the village's south bank rule (`BANK_BLOCKS` 3, `DRESS_VERSION` 2) has not been looked at, and
+  neither have the Shire's joins.
+- **Chapter two is played through page 32 and paused at 33.** Pages 33-36 are Carn Dûm ground, and Carn Dûm is what
+  quests go to next.

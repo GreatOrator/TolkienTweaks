@@ -65,13 +65,12 @@ on 15 November, taking the template's bottom courses for the floor the rooms sta
 number shows exactly what it costs: the keep's rooms on **200** with the chamber's floor on **189**, the chamber
 opening into the void under them and the keep's floor standing as the chamber's ceiling, so a hold with no way in.
 
-**On hold, 15 November 2026.** The plan above is what the code carries, but the placement it gives looked wrong in
-game, and the world it was looked at in was built around the older plan - an old gate, its hall ending at the older
-wall, and the mock-up seat forty-five blocks west of the hold. Nothing measured in that world can settle it, so the
-placement is not being tuned against it: it is read from a **brand-new world** generated for the quest walk, whose
-ground is drawn by the current `ArdaMap` and whose keep autospawns at this plan. The constants stay put until that
-world says otherwise - `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` 187 - because moving a hold twice is cutting a hall
-twice, and the hall out of the gate follows `keepWall()` wherever it goes.
+**Settled, 18 November 2026, at `KEEP_FLOOR` 176.** The 187 was the template's base read as its floor: a fresh
+world drew the keep exactly at that plan and had no way in, with the rooms on **200** and the chamber's floor on
+**189** - the chamber opening into the void under them and the keep's floor standing as its ceiling. `9f88c9a0`
+dropped the eleven courses, so the constants read `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` **176**: the rooms'
+floor 189, level with the passage, which is the plan this file's own numbers give. **The check still owed** is a
+brand-new world and one walk from the gate to the rooms.
 
 **Two things followed the move.** The captain and the wraith are placed from `ArdaMap.keepThrone()` and
 `keepThroneWatch()` - the seat is thirty blocks in from the plan's corner, seventeen up and seventy-six back - so they
@@ -93,7 +92,7 @@ Both are in `Sites.build`, and both are right for a building on the surface and 
    **267, the mountain's surface**, so the keep would be laid on the crown - seventy-eight blocks above the
    passage, on the shelf, in the open.
 2. **Sweeping.** `sweep(...)` carries the ground around a build to its roofline and, inside the footprint,
-   cuts it down to the build's own floor. Buried, it would cut a **122 × 183 pit from 267 down to 187** -
+   cuts it down to the build's own floor. Buried, it would cut a **122 × 183 pit from 267 down to 176** -
    the entire keep quarried out of the mountain and left in a hole.
 
 The mechanism for both already exists: `Sites.ON_THE_PIN` takes the pin's own height with no question asked
@@ -109,10 +108,10 @@ location, like the gate. `/tmpin build <name>` - which pins the caller's feet, a
 template's **corner** - stays as it is for everything a builder can walk to.
 
 `/tmpin build <name>` pins **the caller's feet**, and the pin is the template's **corner**, not its centre.
-That is a problem here that is not a problem anywhere else: the corner at (5516, 187, −7112) is inside solid
+That is a problem here that is not a problem anywhere else: the corner at (5516, 176, −7112) is inside solid
 rock, so there is nowhere to stand. The three ways out:
 
-- **Coordinates on the command** - `/tmpin build keep 5516 187 −7112`. The smallest change, and the only one
+- **Coordinates on the command** - `/tmpin build keep 5516 176 −7112`. The smallest change, and the only one
   that makes a buried build pinnable at all without digging to it first.
 - **A plan of its own**, the way the gate has `ArdaMap.gatePlan()` and `/tmgate site` - the keep is a fixed
   piece of one location, so it can be written down once rather than measured per world.
@@ -126,7 +125,7 @@ underground, the nine pieces divide between the hold below and the camp at the g
 
 | piece | size (w × h × d) | where it belongs, and why |
 |---|---|---|
-| `orc_hall` | 35 × 34 × 22 | **underground, off the keep's own floor**: floor 187, roof 220, with 47 blocks of rock over it under the crown. A second vaulted chamber of the hold, reached from the keep's side - the one piece big enough to be a room of its own rather than an outbuilding. |
+| `orc_hall` | 35 × 34 × 22 | **underground, off the keep's own floor**: floor 189, roof 222, with 45 blocks of rock over it under the crown. A second vaulted chamber of the hold, reached from the keep's side - the one piece big enough to be a room of its own rather than an outbuilding. |
 | `orc_hall_2` | 15 × 14 × 20 | **underground**, a guard room beside the doorway at the keep's south wall: the first room met coming up the passage. |
 | `orc_tower` | 12 × 22 × 13 | a pair **on the crown at 267**, flanking the pass's axis about x 5540 and x 5610: the hold's watch posts, 22 tall over the mountain's own lid. |
 | `orc_butcher` | 23 × 20 × 29 | **the courtyard below**, against the east foot of the rise (z −6900, x 5600): the camp's working block, where the army is. |
@@ -146,9 +145,10 @@ Settled by the ground and the templates: the rooms' floor top is 189, its pin is
 box is 122 × 26 × 183 running from z −7112 to −6930, its south wall meets the passage after 19 more blocks,
 and it is buried under 18 to 55 blocks of rock with a doorway to cut in a wall that has none.
 
+The pin route is settled by the plan (`ArdaMap.keepPlan()`), so nothing has to be walked into the rock.
+
 Not settled:
 
-- **The pin route.** Coordinates on `/tmpin build`, a plan like the gate's, or a dug shaft.
 - **The doorway's shape.** 29 wide and ten tall is the passage's own section; a dwarven door might be
   narrower with the full width opening into a hall just inside.
 - **Whether the crown is used at all.** Two watch posts at 267 is a skyline the pass's shaping never asked

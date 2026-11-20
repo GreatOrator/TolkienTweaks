@@ -4,27 +4,30 @@ The working state of the campaign, written so a session picking this up cold doe
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
-**Last touched:** 19 November 2026 - a road that met one channel twice is walked again with its crossing held
-straight, planned against the drawing with `tools/roadprobe`, and a road no longer begins under a build that is
-still going up (the valley's road waited for the city and left a gap in Road Test 7); the twelve builds the owner has
+**Last touched:** 20 November 2026 - the Shire is raised on every world's start now (`raiseShireOnStart` defaults
+`true`), because the arrival portal opens on the village's own crossing, -470, 97, -123, and the clearing pass took
+the doorway with it; a dedicated server's `pause-when-empty-seconds` is lifted for the length of that pass, measured
+rather than assumed: a fresh level with nobody online stood the village in **1053 ticks (52.7 s)** and had its pause
+back afterwards. Before that, 19 November - a road that met one channel twice is walked again with its crossing held
+straight, planned against the drawing with `tools/roadprobe`; a road no longer begins under a build that is still
+going up (the valley's road waited for the city and left a gap in Road Test 7); the twelve builds the owner has
 visited are marked at the block a traveller should arrive at, which `/tmtp`, the page's needle and the sign boards all
-read; earlier the same day, a leg that
-runs beside a river now steps the line inland instead of refusing the
-road, planned against the drawing with `tools/roadprobe`; before that, 18 November 2026 - every walked road is erased
-and a road is now planned from its two ends by
-`RoadPlan`, kept in the save and laid from that plan; **one road has been laid in a world and it was laid under a river**,
-the plan now reads its line a block at a time to find the water, and that fix has **not been run yet**; the state before
-that was 17 November - the mustering halls are pinned per town and raise themselves, the marks the world
-draws are behind one client switch that ships on, and the Shire's south cliff is dressed by a new bank rule that has not
-run yet; and the Carrock is cut, trimmed of its base plate, pinned at 8307, 187, -4165 and stood there by the world on
-the first start. **Signed off in game that day:** Hobbiton's hall (and its pin, now in `Pins.SOURCE`) and every quest mark, icon
-for icon - neither needs another hand. Read *17 November* below for what was done and what is still open, and *The Shire
-map* for the village itself.
+read; and a leg that runs beside a river now steps the line inland instead of refusing the road. Before that,
+18 November - every walked road is erased and a road is now planned from its two ends by `RoadPlan`, kept in the save
+and laid from that plan; **one road has been laid in a world and it was laid under a river**, the plan now reads its
+line a block at a time to find the water, and that fix has **not been run yet**. Before that, 17 November - the
+mustering halls are pinned per town and raise themselves, the marks the world draws are behind one client switch
+that ships on, and the Shire's south cliff is dressed by a new bank rule that has not run yet; the Carrock is cut,
+trimmed of its base plate, pinned at 8307, 187, -4165 and stood there by the world on the first start. **Signed off in
+game that day:** Hobbiton's hall (and its pin, now in `Pins.SOURCE`) and every quest mark, icon for icon - neither
+needs another hand. Read *20 November* below for the Shire's start, *17 November* for the halls and the marks, and
+*The Shire map* for the village itself.
 
 The whole Gundabad line is walked and settled; chapter two is proven to page 32 and
-**paused** there; the road east of Glóin's camp is final with both bridges; the keep's placement is **settled at
-`KEEP_FLOOR` 176** by a world that showed the rooms eleven courses over the chamber's floor. Work stopped here to go to a
-side project.
+**paused** there; the road east of Glóin's camp is the old forest road, planned from its two ends with both crossings
+in its plan; the keep's placement is **settled at `KEEP_FLOOR` 176** by a world that showed the rooms eleven courses
+over the chamber's floor. The last thing built is the Shire's start on 20 November; the quest walk itself is still
+paused there.
 
 ## Where we stopped
 
@@ -38,19 +41,40 @@ side project.
   under them and the keep's floor was the chamber's ceiling. The number that was wrong is `KEEP_FLOOR`: the template's
   rooms are lifted thirteen courses over its base, so the pin is **176**, not 187. See `docs/gundabad-keep.md`.
 
+## 20 November 2026 - the Shire stands at every world's start
+
+The portal out of the overworld opens on the village's own crossing, -470, 97, -123, which is inside the footprint
+the clearing pass works over (x -700..-149 by z -512..-44), so a village raised by a player's arrival is a village
+that takes that player's doorway away: the pass begins on the first tick after the crossing is used and the
+ammolite doorway goes about ten seconds later. `raiseShireOnStart` now defaults `true`, so the village is raised at
+the world's start, about a minute into a fresh world, before anybody can walk through to it.
+
+A start is exactly when a dedicated server is empty, so the pass holds the server's own `pause-when-empty-seconds`
+at 0 for its length and gives the number back when the village stands. That half was measured, not assumed: a fresh
+level with the property at 5 s and nobody online logs `Server empty for 5 seconds, pausing` part way through the
+pass and never takes another step, because the paused branch of `MinecraftServer.tickServer` returns before the tick
+event and before the level's own tick. With the lift, the village stood at -700, 87, -512 in **1053 ticks (52.7 s)**
+and the log read `the server's pause when empty is back to 5 s`. A server killed outright mid-pass keeps the zero,
+which costs it its idle pause and nothing else, as it keeps the level's forced-chunk tickets until the next start
+re-runs the pass.
+
+**Not seen in a client session:** whether the deck, the mouths and the ring look right from the crossing is still a
+walk to Hobbiton. A world that sets `raiseShireOnStart = false` keeps the older rule, the pass beginning when
+somebody comes within `REACH` 192, and `/hobbiton raise` still asks for it at any time. The commit is `0e2c70f2`.
+
 ## The list
 
 | # | Item | Status | Where the detail is |
 |---|------|--------|---------------------|
 | 1 | **Carn Dûm's ground** - the camps on its borders and the wight's hall | **next** | nothing has looked at it yet; `carndum` is only a place canon'd to `ANGMAR` |
-| 2 | **The roads** - the whole network, rebuilt from two ends per road | **eleven roads in `Roads.NETWORK`**, read back from the store of the world that walked them: the old forest road, the four high-pass legs, Rivendell to the meeting plaza and the plaza on to Glóin's camp, Rivendell to Elladan's camp, the short leg at Rivendell's south gate, and Gundabad's road (5578, -6769 to 8583, -3617). **Next:** walk the network in a fresh world and check each road lays | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
+| 2 | **The roads** - the whole network, rebuilt from two ends per road | **eleven roads in `Roads.NETWORK`**, each as the two ends it was pinned between: Gundabad's road (5578, -6769 to 8583, -3617), the old forest road, the four legs of the vale and the high pass, the wood ruin's nine-block connector, Rivendell to the meeting plaza and the plaza on to Glóin's camp, Rivendell to Elladan's camp, and the short leg at Rivendell's south gate. **Next:** walk the network in a fresh world and check each road lays | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
 | 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Next:** a fresh world and one walk from the gate to the keep's rooms | `docs/gundabad-keep.md` |
 | 6 | **Sign posts** | on hold | below, with the recipe |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
-| 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **south edge re-cut, awaiting a restart**; joins unseen | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
+| 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **raised at every world's start since 20 November**; the south edge's new bank rule and the joins have not been looked at | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
 | 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands and was called perfect; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
 | 11 | **The Carrock** - the shaped rock in the Anduin | cut, base plate trimmed, pinned at 8307, 187, -4165, **stood by the world on the first start** and bedded into the river with stone; not seen standing yet | `Carrock`, `Pins.SOURCE`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
 
@@ -92,7 +116,7 @@ line read a block at a time so a river is bridged. Every one compiled with
   wood ruin and its link, the mountain way, the ford way, the three cave roads, the high pass road with its bridge and its
   climb, Glóin's road with its stream crossing and the road east, and the old forest road with both of its fords. The
   builds are all still standing, so the network comes back one place at a time. **Signed off 18 November:** the owner
-  compared all twenty-one walked routes against the seven roads that replaced them and found no destination missing -
+  compared all twenty-one walked routes against the seven roads that replaced them that night and found no destination missing -
   the network came back as fewer, longer sections over the same ground, which is the whole of what the planner was for.
 - **A road is now two ends and a plan.** `RoadPlan` walks the drawing - `ArdaMap.sample`, sixteen blocks a lane, ±192 wide -
   and prices grade over 0.35, turn, and river depth. No chunk is read or generated to plan one, and it leaves a bend every
@@ -161,7 +185,7 @@ line read a block at a time so a river is bridged. Every one compiled with
   `room`, `QuestGivers`' campaign givers by `groundNear` with twelve tries - so nothing here has to wait for a band, and
   no fix is owed.
 
-### Still open from tonight
+### Still open from the road tests (18-19 November)
 
 - **The bridge has not been seen.** The first road laid in a world went under a river more than four blocks deep with no
   span over it: the plan was cut into sections from water read at the sixteen-block steps, and the channel fell between two
@@ -180,7 +204,7 @@ line read a block at a time so a river is bridged. Every one compiled with
   two pins again - `6398 -3654` to `6481 -3655` is the short one on the screenshots - and the chat should say `2 sections`
   with a span of about forty columns rather than nothing at all. If it still refuses, the next thing to read is `dry()`
   itself: the reading at 6471, -3645 that walks west across the channel should find the west bank at about 6420.
-- **The crossing fix works, and the deck it planned was missing - which is the next unrun fix.** `pin 6398 -3654 8229
+- **The crossing fix works, and the deck it planned was missing - fixed in `98e397cd`, unrun.** `pin 6398 -3654 8229
   -3654` planned and laid three sections, and the log's span is `6668, -3799 to 6668, -3748, deck 195`: fifty-one
   columns, the ford's own size, so nothing about the width was wrong. The pass stood the two abutments and no middles.
   Read out of the save at x 6668, the oak ends sit at z -3807..-3799 and -3748..-3740 and everything between them is
@@ -206,7 +230,7 @@ line read a block at a time so a river is bridged. Every one compiled with
   the existing mess:** stand near the old road and forget twice, once per road - each reply names the road and says how
   many sections went - then delete the regions and pin once;   nothing else should lay. Then restart and confirm no planned
   road begins by itself before a command is given.
-- **A channel was crossed twice, and the walk will not dip in and out again - unrun.** The same road's single clean plan
+- **A channel was crossed twice, and the walk will not dip in and out again - fixed in `ee907452`, unrun.** The same road's single clean plan
   (one plan, one pass per section, 05:07) still held two spans over one channel: `bridge_1` 11759, -3882 to 11710, -3882
   and `bridge_2` 11739, -3908 to 11685, -3908, joined by `_2` running *east* from 11694, -3882 to 11755, -3908 - a
   hairpin, and what looked like two roads and two bridges were the plan's own doubled crossing (the save has decks at
@@ -228,24 +252,24 @@ line read a block at a time so a river is bridged. Every one compiled with
   `DRY_AFTER_CROSSING` lanes, and `RoadPlan.of` walks that leg a second time with a lane change refused on every step
   that leaves water: a straight crossing, on the lane the road reached the bank on. The first walk is untouched, so a
   leg whose line was sound plans the same line it did. **Probed:** that leg is three sections with one 45-wide span at
-  6424, -3627 (deck 188) and no section running back, and all ten other legs - the seven roads in `Roads.NETWORK`, the
-  Gundabad road, the 6398, -3654 pin and the 6420, -3560 bank leg - are byte for byte what they were, so no road already
+  6424, -3627 (deck 188) and no section running back, and every other leg probed - the roads in `Roads.NETWORK`, the 6398, -3654 pin and the 6420, -3560 bank leg - are byte for byte what they were, so no road already
   laid moves. **Not run in a world:** this is a planning change and nothing has laid it; the next fresh world is where
   the one-span crossing shows.
 - **The laid network is in the code, and the test world is no longer the only place it exists.** `Roads.NETWORK` names
-  the seven roads the test world laid, each as the two ends it was pinned between and at the three-wide track, planned
-  from the drawing when the class loads: 11813, -3901 to 8229, -3654 (the old forest road east of Mirkwood to Glóin's
-  camp, five sections with spans at 11649, -4080 and 8551, -3626), then the high pass legs 4515, -2446 to 4705, -3169;
-  4516, -2512 to 4562, -2398; 4528, -2541 to 4624, -2480; 4776, -3063 to 4684, -3050; 4819, -2887 to 4647, -3315; and
-  4787, -3059 to 4778, -3059. Eleven sections in the seven roads, with the ids their pins were given, so the geometry
-  in a fresh world is the geometry in the test world. `Roads.planned` is what tells a session plan from a named road
-  now; a named road is begun by any chunk of its ground that loads, as the walked network was. **What to check on the
-  fresh world:** the start log should carry a `Road plan <id>: …` line for each of the eleven sections before the world
-  is entered, and the roads should lay themselves as the ground comes in - two bridges on the old forest road and none
-  on the high pass legs. That the seven cover the same destinations as the twenty-one walked routes is not a guess: the
-  owner read the two lists against each other and signed it off, so nothing from the old network is still owed. The
-  hold's road is the first entry of the same table, and its two ends are in: `GUNDABAD_GATE` at 5578, -6769 and
-  `GUNDABAD_JOIN` at 8583, -3617, read back from the store of the world that laid it, under the id those pins gave it.
+  eleven roads, each as the two ends it was pinned between and at the three-wide track, planned from the drawing when
+  the class loads: Gundabad's road (5578, -6769 to 8583, -3617), the old forest road east of Mirkwood to Glóin's camp
+  (11813, -3901 to 8229, -3654, five sections with spans at 11649, -4080 and 8551, -3626), the four legs of the vale
+  and the high pass (4515, -2446 to 4705, -3169; 4528, -2541 to 4624, -2480; 4776, -3063 to 4684, -3050; 4819, -2887
+  to 4647, -3315), the wood ruin's nine-block connector (4787, -3059 to 4778, -3059), Rivendell to the meeting plaza
+  and the plaza on to Glóin's camp (5105, -3413 to 5605, -3622; 5606, -3622 to 8229, -3654), Rivendell to Elladan's
+  camp (5200, -3033 to 4647, -3315) and the short leg at Rivendell's south gate (5111, -3399 to 5072, -3221), with the
+  ids their pins were given, so the geometry in a fresh world is the geometry in the test world. `Roads.planned` is
+  what tells a session plan from a named road now; a named road is begun by any chunk of its ground that loads, as the
+  walked network was. **What to check on the fresh world:** the start log should carry a `Road plan <id>: …` line for
+  each section before the world is entered, and the roads should lay themselves as the ground comes in - two bridges
+  on the old forest road and none on the high pass legs. That the roads cover the same destinations as the twenty-one
+  walked routes is not a guess: the owner read the two lists against each other and signed it off, so nothing from the
+  old network is still owed.
 - **Road Test 2 laid nothing, and the reason is where the roads are.** The fresh world was entered at Rivendell
   (raised at 5200..5753 x, -3370..-2859 z) and left there: the old forest road runs 8229, -3654 to 11813, -3901 and the
   high pass legs sit at 4515..4819 x, so the nearest road line to the city's west edge is 380 blocks away, and the
@@ -352,9 +376,10 @@ map* below.
 
 ## The Shire map - cut 15 November, placed 16 November 2026
 
-**Where it stands.** The build is cut and in a test world at pin **(-700, 87, -512)**; `place`, `clear` and `drape` have
-all three been run on it. The river is now **rerouted round the west of it, a branch drawn out of its south mouth, and
-the two brought together in a Y south of the village** (16 November - see below); the mask change needs a world made
+**Where it stands.** The build is cut and in a test world at pin **(-700, 87, -512)**; `place`, `clear` and `drape`
+have all three been run on it, and since 20 November every world raises it on its first start with no command typed.
+The river is now **rerouted round the west of it, a branch drawn out of its south mouth, and the two brought
+together in a Y south of the village** (16 November - see below); the mask change needs a world made
 after it. What has still not been seen in a world is any of the river work, or the drape reading a village's outline
 from under its trees.
 
@@ -594,10 +619,10 @@ client session**: whether the deck, the mouths and the ring look right is still 
 clock on a warm build, not a bound on a cold one. The pass keeps its own tick count, because the measurement is the line
 that says it stands.
 
-**Where the roads go next, and it is not built.** The Shire to Bree, Bree to Rivendell, and Glóin's camp to Gundabad -
-three routes for what `Roads.ROUTES` has two of, and the village is now a town a road can end at. Nothing of it is laid;
-the Shire's own ring is dressed with no road, because `Roads.forGround` answers for the valley and a route to a village
-that had no ground until this week is a route planned against a map that did not have it in.
+**Where the roads go next, and it is not built.** The Shire to Bree, and Bree on to Rivendell - two routes for
+towns that have no road between them, now that Gundabad's road joins the old forest road at 8583, -3617. Nothing of
+either is laid; the Shire's own ring is dressed with no road, because `Roads.forGround` answers for the valley and a
+route to a village that had no ground until this week is a route planned against a map that did not have it in.
 
 **What has not been checked.** None of the river work has been seen in a world: the bypass's new bend and its fall, the
 branch's valley and its mouth at the wall, the fork, and the merged channel's run to the bay are all unbuilt territory.
@@ -641,27 +666,29 @@ of the village - is left as a staircase beside the water. Settling those columns
 it wants `DRESS_VERSION` bumped so the fix reaches villages that already stand, and it would be re-run over whatever the
 river's mouths look like now. Not started: the fix is easy to describe and easy to get wrong beside the water.
 
-## Roads - final, nothing outstanding
+## The old forest road - history, since re-planned from its two ends
 
-Laid, raised and called right in game:
+This is the first road the walk laid and called right in game, and its walked form is gone: `Roads.ROUTES` holds no
+hand-written route now, and the same road is `tolkienmobs:roads/planned_11813_-3901_8229_-3654` in `Roads.NETWORK`,
+planned from its two ends against the drawing. What it laid is worth remembering, because the plan is judged against it:
 
-- **The old forest road.** `OLD_FOREST_ROAD` in `Roads.ROUTES`: 8231, -3641 to 11842, -3877, three thousand eight hundred
-  blocks, five wide (`Kind.WILD_WIDE`), the hundred and one ammolite marks each a bend. Graded on halves, so the terraces
-  are stairs rather than jumps.
+- **The walked road.** 8231, -3641 to 11842, -3877, three thousand eight hundred blocks, five wide, the hundred and one
+  ammolite marks each a bend, graded on halves so the terraces are stairs rather than jumps.
 - **Mirkwood.** The road walked up into the canopy until the nine hardened leaves were tagged `minecraft:leaves`
   (`0e5e98fb`); it walks the floor now.
-- **Both crossings**, on nine-wide decks of `bridge_end`/`bridge_middle` with oak-log piers drawn to the bed:
+- **The two crossings, as they were stood** - nine-wide decks of `bridge_end`/`bridge_middle` with oak-log piers drawn
+  to the bed. These are the old walked bridges; the plan now spans the same rivers at 8551, -3626 (46 wide, deck 188)
+  and 11649, -4080 (52 wide, deck 170), which is the geometry a fresh world gets.
 
-| crossing | route | banks (east → west) | deck | abutments' base | middles' base | water |
+| crossing | old route | banks (east → west) | deck | abutments' base | middles' base | water |
 | --- | --- | --- | --- | --- | --- | --- |
 | Old Ford | `OLD_FORD_BRIDGE` | 8520, -3668 → 8481, -3668 | 189 | 188 | 187 | 186 |
 | Forest River | `FOREST_RIVER_BRIDGE` | 11775, -3841 → 11736, -3841 | 169 | 168 | 167 | 167 |
 
-If a deck ever has to move it is three runs of one command: `/tmroad forget` then `/tmroad build` at the crossing, and
-again at the road's camp end (8231, -3641) so the approaches re-grade onto it - a road already laid keeps its heights.
-A span is a `Route.Crossing` stood from its **east** bank down the axis, and a road leaves water to it within
-`CROSSING_ACROSS` (12 blocks) of the span's line. `docs/arda-roads.md`, section *Water a road was told about*, has the
-design.
+A road already laid keeps its heights, so the old decks stay where they are; `/tmroad forget` at the crossing and its
+camp end is still how a leg is re-laid. A span is planned as a `Route.Crossing` from its banks, and a road leaves water
+to it within `CROSSING_ACROSS` (12 blocks) of the span's line. `docs/arda-roads.md`, section *Water a road was told
+about*, has the design.
 
 ## Quests - chapter two
 
@@ -673,7 +700,8 @@ Eleven pages, 26 to 36, written and wired; **played through page 32** and workin
   `ArdaMap.keepThrone()`/`keepThroneWatch()`, so they follow the hold.
 - **The gate and cave** stand themselves as the server comes up; the coal lattice door is x 5575-5581, y 190-199,
   z -6856 and opens for `item_keystone` within 12 blocks.
-- **The keep** stands itself too, but its placement is on hold (item 5).
+- **The keep** stands itself, and its placement is **settled at `KEEP_FLOOR` 176** - its rooms' floor 189,
+  level with the passage. A fresh world and one walk from the gate to the rooms is the check still owed (item 5).
 - **Pages 33-36** are Carn Dûm ground and are paused (items 1 and 3).
 
 **Red for the door, green for the boards - 16 November.** Two more inks, both the drawn gold art with its three shades
@@ -754,6 +782,11 @@ all unverified.
 - **The spikes are settled** as decoration with incidental damage.
 - **The biome audit is closed whole** - eleven findings applied, the Barrow-downs' deadwood kept on purpose, the four new
   leaf textures called right. `docs/arda-biome-canon.md`.
+- **The keep's placement is settled at `KEEP_FLOOR` 176** (18 November). `ArdaMap` carries `KEEP_X` 5516,
+  `KEEP_Z` -7112, `KEEP_FLOOR` 176 - the rooms' floor 189, level with the passage - with the box x 5516…5637,
+  z -7112…-6930 and the south wall at -6930 where `keepWall()` ends the hall; `GundabadKeep.autospawn` reads the
+  template's own blocks through `Sites.standsAt` and carries the hall to the keep's wall every pass. The check still
+  owed is a fresh world and one walk from the gate to the rooms.
 
 ## On hold, and what unblocks each
 
@@ -762,20 +795,13 @@ all unverified.
   road's junction, its arm turned to the side the town lies, and `setDestination(board, place)` called with the
   distance measured for it. Nothing places posts today, and no posting pass waits on it - a hand-placed post already
   reads right.
-- **The keep's placement** - unblocked by a **brand-new world**, which is also how the rest of the quest walk is meant
-  to be done. `ArdaMap` carries `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` 187 (box x 5516…5637, z -7112…-6930, floor
-  top 189, south wall at -6930 where `keepWall()` ends the hall), the captain and wraith follow it, and the owner's old
-  mock-up of the seat - slab and red carpet at (5501, 192, -7024) - is left standing west of the hold and can go.
-  `GundabadKeep.autospawn` reads the template's own blocks through `Sites.standsAt`, with the box opened first, and
-  carries the hall to the keep's wall every pass.
 - **Chinese** - unblocked by a public release; the rework's lines are translated then, not line by line.
 
 ## Not started
 
-- **The roads from Glóin's camp to Gundabad.** `ROUTES` stops at the old forest road (`GLOIN_ROAD_EAST` runs
-  6493, -3662 → 8234, -3590, with the camp's spur at 8215..8242, -3674..-3553). Nothing goes west or north toward the
-  hold at 5516, -7112, whose gate approach is around 5577, -6830, and pages 2-1 to 2-3 are a walk - so the walk wants a
-  road under it: a new `Route` (or legs, with a `Route.Crossing` for water), pinned in `Pins.SOURCE` if it needs a mark.
+- **The Shire to Bree, and Bree on to Rivendell.** The two town roads nothing carries yet. Gundabad's road is in
+  `Roads.NETWORK` now, running from the gate at 5578, -6769 to the old forest road at 8583, -3617, so the hold no
+  longer waits on one. Bree has a catalogue entry and no ground, so its end waits on a build and a pin first.
 - **Chapter three.** Eleven pages (3-1 to 3-11) written, nothing in `Campaign`. Before code it needs ground, bodies and
   objects: Mitheithel, Stoneyford, **the Watchers**, the dead stones, Dol Guldur and the Moria camp; five bodies
   (Aragorn, Guthwine, Manwyn, Narmos, Rurain) and the wight as the Ancient Spirit; two props and one charm. Its first
