@@ -45,18 +45,20 @@ block from that map would import that error with false precision. Cell waypoints
 
 ## Two kinds of route
 
-A route is written down once per build, in `Roads`. Where the road crosses water it is a `Route.Crossing`: the
-path's last block, the two banks, the line of the span, the deck and the pieces that stand it up. Where it crosses
-none - which is every road between two builds on the same bank - it is a `Route.Riverless`: the build's footprint
-and entry point, and the far end a surveyor marked. Two ends and the distance between them is the whole route; the
-search finds the way, the grade lays it, and there is nothing to bridge.
+A route is a section in `Roads`. Where the road crosses water it is a `Route.Crossing`: the path's last block,
+the two banks, the line of the span, the deck and the pieces that stand it up. Where it crosses none - which is
+every road between two builds on the same bank - it is a `Route.Riverless`: the build's footprint and entry
+point, and the far end a surveyor marked. Two ends and the distance between them is the whole route; the search
+finds the way, the grade lays it, and there is nothing to bridge.
 
-Two sections are walked for now, and they meet: `rivendell` is the `Crossing` over the ford, and Thorenhad's camp is
-the `Riverless` road from the block beside its door at 4648, 90, -3314 to the marker at 4972, 86, -3075 where that
-crossing's exit stops. A section ends where the next one begins rather than at the far bank, so neither pass grades
-country the other has already laid. A road is also stepped from the block its pass has reached rather than from the
-building it leaves, which is what lets a section fill in as it is walked; and its grade is held within four blocks of
-the ground, so a hill is walked over instead of bored through.
+The roads are planned now rather than walked: `Roads.NETWORK` names eleven roads, each by the two blocks it runs
+between, and `RoadPlan` works the way out from the drawing - a lane walk over `ArdaMap.sample` - and cuts the
+result into sections, a span among them wherever the line crosses water. Three of the eleven are the valley's,
+carried in `Roads.BUILDS` and waiting for the city to stand. A section ends where the next one begins rather
+than at the far bank, so neither pass grades country the other has already laid. A road is also stepped from the
+block its pass has reached rather than from the building it leaves, which is what lets a section fill in as it
+is walked; and its grade is held within four blocks of the ground, so a hill is walked over instead of bored
+through.
 
 The far end is ground rather than a deck, which is why a dry road needs no water numbers at all: the grade arrives
 on whatever the ground there is, so nothing has to be levelled onto a span.
@@ -99,7 +101,7 @@ four blocks to the pixel (`build/arda-roads-detail.jpg`).
    ridge; a country can absorb that, a 512-block road cannot — it would climb the mountain instead of
    entering the valley.
 
-## Candidate first routes (proposals; none checked in game)
+## Candidate first routes (the first sketch; never built)
 
 Cells are `column, row` in the drawing's own grid; a cell's middle is `(column - 10) * 512 + 256`,
 `(row - 20) * 512 + 256` in blocks. Each waypoint is in a country the drawing actually paints: Eriador,
@@ -120,20 +122,23 @@ The ends that are already pinned in code (Rivendell 18/12, the Ford 17/13, Glói
 troll caves) are trustworthy. The rest — Bree 12/20, Weathertop 15/18, Tharbad 14/24, Dale 35/6, Minas
 Tirith 25/28, Edoras 26/24 — are proposals, read off the drawing's countries and the canon map's labels.
 
-`tools/arda_roads.py` renders these over the reference terrain, with the grid and the campaign's pinned
-places, so a route can be seen against the ground before anything is built.
+`tools/arda_roads.py` renders these over the reference terrain, with the grid and the campaign's pinned places,
+so a route can be seen against the ground before anything is built. None of them was: the roads that exist were
+planned from pinned ends in a test world, which is the network at the end of this file.
 
 ## The surface, as decided
 
 **Width is set by the band a column stands in, and a route may name its own instead**, because which road is a
-highway and which is a track to a cave is decided by what it serves - that is, as the builds are placed. Three
-kinds, named for where each belongs:
+highway and which is a track to a cave is decided by what it serves - that is, as the builds are placed. Five
+kinds now, named for where each belongs:
 
 | kind | blocks | half-width | where |
 | --- | --- | --- | --- |
 | `wild` | 3 | 1 | open country: the track between places, out to a camp or a cave |
 | `transition` | 5 | 2 | 64 down to 16 blocks of a settlement, where the paving starts |
 | `urban` | 7 | 3 | inside 16 blocks of a settlement: its own street |
+| `wild_wide` | 5 | 2 | a track walked out before its country is known: the country's own surface, two abreast |
+| `main` | 7 | 3 | a road that carries traffic: a street's width, but the country's own surface |
 
 The band decides the kind of a road that does not say otherwise, so an ordinary road widens as it comes in from the
 country to a gate. A hairpin's apron is one kind wider than the run it turns - five through a switchback on a wild
@@ -142,8 +147,9 @@ reference surface shows; the wider two keep a clean edge.
 
 **The bands are for roads, not for every build.** A settlement's own road is banded: seven blocks of its street
 inside the wall's band, five where the paving starts, three out in the country, so it widens as it comes in to the
-gate. A road that is a road rather than a build's way out is banded too - the valley's main road runs from a camp to a
-crossing and belongs to neither, so it is a road at the ends it serves and a track between. `Roads.BANDED` names them.
+gate. A road that is a road rather than a build's way out can be banded too - the valley's main road runs from a camp to a
+crossing and belongs to neither, so it is a road at the ends it serves and a track between. `Roads.BANDED` names
+those, though the table is empty today: a planned road names its kind instead and is one width end to end.
 
 **Every other build is a wild place**, a camp or a ruin or a cave mouth - nearly every build in the chapter - and its
 own way out is a wild track from its own door: three blocks wide, the country's own gravel and dirt, no paving at all.
@@ -151,7 +157,8 @@ Naming the banded roads rather than the wild tracks means a build added later is
 
 **A road may name its kind instead**, in `Roads.KINDS`, and is then laid at it from end to end: a road kept seven
 blocks wide across a moor as much as through a gate, with that kind's mix all the way. A named kind overrides the
-bands, and it is how a road that is deliberately one width is made - none is named yet.
+bands, and it is how a road that is deliberately one width is made - none is named in `Roads.KINDS` yet, though a
+planned road is given its kind when it is planned.
 
 **Three bands, by distance from the nearest location**, in blocks, measured at generation time to a
 *pinned* cell centre (`ArdaMap.centreOf`, the way `Places.CANON_CELL` pins Rivendell). It has to be a
@@ -193,15 +200,16 @@ wild road's gravel falls if the ground under it is ever removed - a note, not a 
 
 ## What is not decided
 
-- Whether these seven routes are the right seven, and whether their bends match the canon map well enough.
+- Whether the eleven roads in the network are the right eleven, and whether their bends match the canon map well
+  enough.
 - Which road towns get pinned cells, and to which cells: that is the first actual change, and it is small.
 - The band radii themselves (64, and 16 inside that), and which locations own a band: both fixed as the
   builds are placed.
 - How a road crosses a river — ford today, bridge later.
 - How a road behaves on the ground the drawn cells and the painted relief disagree about, Rivendell's
   approach being the obvious case.
-- Whether the campaign's own road (chapter two speaks of the road east of Mirkwood) is built first, since no
-  ground under it exists yet and a page already sends players along it.
+- Whether the network is the whole survey: the country between its roads is nobody's, and a road is only added by
+  naming its two ends.
 
 ## Roads the world generates
 
@@ -210,6 +218,10 @@ exist yet, so the road has to be a pure function of x and z, exactly the way the
 `RoadPaint`: a table of lines, each a list of block waypoints and a half-width, and the generator does the rest -
 `ArdaChunkGenerator.reshape` cuts and fills the corridor to the road's grade, and `buildSurface` paves it after the
 surface rules have dressed the new ground.
+
+The table is empty as of 20 November: no `Line` is written, and every road the world lays is a `Route` planned
+from two pinned ends and carried by the pass described below. A line remains the way a road with no build behind
+it at either end would be painted by generation.
 
 The grade is the line's own heights. A waypoint carries the height the scout stood at, the height between two
 waypoints is a cubic through theirs - eased at each waypoint so the profile curves through a bend instead of kinking
@@ -234,9 +246,10 @@ blocks either side of it, averaged, so the road follows the contours of whicheve
 contours of the one it was scouted in. That is the form a road baked between two markers takes - a marker says where
 the road goes, and says nothing about a height that has to survive a change of terrain code or a different seed.
 
-A line is for a road with no build behind it at either end. A build's own road is a route: `Roads` holds one per build,
-`RoadCommands` searches and grades it, and the world runs that pass for whichever build a route has been walked for as
-soon as the build is standing - the same builder that laid the valley's road, so a road between two buildings never
+A line is for a road with no build behind it at either end. A build's own road is a route: `Roads` holds the network,
+and a road planned at a build joins the same list; `RoadCommands` searches and grades it, and the world runs that pass
+for whichever build a route has been planned for once that build is standing (`Roads.waits`) - the same
+builder that laid the valley's road, so a road between two buildings never
 needs a height written down for it. That the road is down is written into the world's own site record beside the
 building it belongs to, so a restart finds it laid rather than searching and grading the same ground again.
 A road that was stopped half-laid is carried the same way: the pass writes its own stage, the alignment the search
@@ -288,19 +301,20 @@ the columns into the pieces a crossing splits them into, and prints a line every
 the surface. It can only read a world that still has the road in it - a stretch whose chunks were never saved has no
 line to recover, and a box of ordinary terrain reports as pieces of gravel rather than a road.
 
-The pass below is still the shape a road with ground under it is laid by, and it is still the only thing that bridges
-one: a generated line follows the grade its waypoints give, so the roads the scouted world walked - the valley's
-approach with its span and its switchback, and the two between the chapter's camps - keep being laid by the pass, and
-a section of those is promoted to a generated line only once it is walked densely enough to be described without
-searching it.
+The pass below is still the shape a road with ground under it is laid by, and it is still the only thing that
+bridges one: a generated line follows the grade its waypoints give, so the network's roads - the valley's three,
+and the eight between the camps and Gundabad's gate - are all laid by the pass, a section at a time. A section
+is promoted to a generated line only once it can be described without searching it.
 
 ## Water a road was told about
 
-A span is not lining a road lays: it is a structure of its own - two abutments and the middles between them, stood on
-piers drawn down to the bed - and it is a route already, a `Route.Crossing` with its banks, its deck, the base its
-pieces stand at and the pieces themselves. Both crossings of the old forest road are routes on that pattern,
-`OLD_FORD_BRIDGE` and `FOREST_RIVER_BRIDGE`, and `Roads.water` answers from the routes rather than from a table kept
-beside them: a span is a fact about the water, so every span answers for every road.
+A span is not lining a road lays: it is a structure of its own - two abutments and the middles between them,
+stood on piers drawn down to the bed - and it is a route already, a `Route.Crossing` with its banks, its deck,
+the base its pieces stand at and the pieces themselves. `RoadPlan` reads a run of river columns on the planned
+line as a crossing of that pattern - the banks, the axis and the deck over the water - and makes the span a
+section of the road. `Roads.water` answers from those routes rather than from a table kept beside them: a span
+is a fact about the water, so every span answers for every road. The two hand-written crossings of the old
+forest road (`OLD_FORD_BRIDGE`, `FOREST_RIVER_BRIDGE`) went with the walked routes on 18 November.
 
 What the road does with one is stop. The pass leaves the water to the crossing - the deck, its piers and its abutments
 are that route's own pieces, laid by the pass that walks that route - and picks up on the far bank, so a road never
@@ -317,10 +331,10 @@ The pieces are stood from the near bank *down* the span's axis, which is why a c
 its west one whatever direction the road walks it. Its deck sits two over the water - the middles' base is `deck - 2`
 and the abutments' `deck - 1` - and the stream's crossing east of Glóin's camp is the worked example of the numbers.
 
-`Roads.Wet` keeps the two ways a road can lay water itself, for the day a crossing wants no bridge: `FORD` lays the
-road's own surface at the surveyed height and makes the column under it solid down to the bed, leaving the water
-standing over it; `SPAN` lays a deck across the band with a pier every fourth station. Neither is used by a route today,
-since both of the old forest road's crossings are bridges.
+`Roads.Wet` keeps the two ways a road can lay water itself, for the day a crossing wants no bridge: `FORD` lays
+the road's own surface at the surveyed height and makes the column under it solid down to the bed, leaving the
+water standing over it; `SPAN` lays a deck across the band with a pier every fourth station. `Roads.water`
+reports `SPAN` for every crossing today, and no route asks for a `FORD`.
 
 ## The first road, as built
 

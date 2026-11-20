@@ -18,7 +18,7 @@ before they read the drawing:
 
 | what was scouted | key | asked by |
 | --- | --- | --- |
-| a **name** - a circle of ground announced on arrival, with folk standing in it | the place id: `rivendell`, `thorenhad`, `barachen`, `ford` | `Places.ensure` |
+| a **name** - a circle of ground announced on arrival, with folk standing in it | the place id: `rivendell`, `thorenhad`, `barachen`, `ford`, `keystone`, `carndum` | `Places.ensure` |
 | a **building** - a template raised for the player who was sent to it | the template id: `tolkienmobs:key_structures/barachans_camp`, `tolkienmobs:key_structures/ttmruin_large_2` | `Sites.survey` |
 
 ## The table
@@ -45,7 +45,7 @@ says so, and it is why a pin a block or two out in y is not an error.
 The orc pieces are the exception. They are placed by hand against a wall or the back of a yard, so they
 are pinned at their **front**: the pin is the front's south-west corner, the piece runs back from it by its
 own depth, and it sits **one course below** the pin rather than being seated on the ground. The two lists in `Sites` are
-`FRONT_CORNER` and `ON_THE_PIN`, and they carry the same eight templates.
+`FRONT_CORNER` and `ON_THE_PIN`: the first carries the nine orc templates, the second those nine and the shelter camp.
 
 The corner came out of the owner's own placing rather than from a guess: an `orc_hall` pinned at
 **(5533, 188, −6891)** was laid by hand at **(5533, 188, −6912)** - the pin 21 north, which is the hall's
@@ -74,7 +74,7 @@ comes off the list and gets its own dressing.
 
 Some spots are easier to stand on than to type: a builder marks the middle of a footprint with a block of
 `tolkienmobs:block_ammolite`, and the spot is read out of the world. No template in the pack carries
-ammolite — the gate, the keep and all nine orc pieces were checked — so every ammolite block in a save is a
+ammolite — the gate, the keep and every orc template were checked — so every ammolite block in a save is a
 mark somebody left.
 
 `OrcPieces` is the table those marks are written down in: the template, the block that marks its footprint
@@ -178,7 +178,7 @@ their place, the pit after three at its height. Nothing here is to be moved agai
 
 ## The war camp in front of the gate
 
-Every one of the nine orc pieces carries a **stone** ground course, not a grass one. They were cut in grass country and
+Every orc template carries a **stone** ground course, not a grass one. They were cut in grass country and
 landed on Gundabad's courtyard as green squares, so the grass entry in each template's palette was changed to
 `minecraft:stone` - the courtyard's own block, the one `GundabadGate` writes - with the grass state's properties dropped
 rather than carried over, since `snowy` is not a state stone has. Nothing else in the templates moved: the block counts,
@@ -236,8 +236,9 @@ Both `orc_farm` and `orc_battle_ram` carried a **floating glowstone** at a corne
 The dwarven hold was written down in `ArdaMap` as a **plan** long before anything laid it: `Sites.GUNDABAD` was
 pitched by the campaign's own page, and the numbers - 122 by 26 by 183 - were the template's, with a corner nothing
 could be stood on because the corner is inside solid rock. What *can* be stood on is the mark the owner walked: an
-ammolite on the chamber's floor at **(5577, 189, -6918)**, at the foot of the hold's own doorway. That mark is the
-plan now, read backwards through the template.
+ammolite on the chamber's floor at **(5577, 189, -6918)**, at the foot of the hold's own doorway. That mark is where
+the plan started, read backwards through the template; on 18 November the box was re-centred on the passage out of the
+gate, so the plan is `ArdaMap`'s numbers now rather than the mark's.
 
 | | |
 |---|---|
@@ -245,8 +246,8 @@ plan now, read backwards through the template.
 | the mark's course | that top course, local y 13, so the base is **176** |
 | the doorway | the far one of the south wall, local x 104-108, its middle **106**, five wide and seven tall |
 | the wall's course | local z 182, the last course of the depth |
-| the plan | **x 5471, y 176, z -7100**, unturned |
-| what that puts where | the doorway's middle on the mark's x 5577, its floor on the mark's course 189, the wall on the mark's z -6918, and the rooms in the chamber's own section, 190 to 200 |
+| the plan | **x 5516, y 176, z -7112**, unturned |
+| what that puts where | the box's middle course (local x 61) on the passage's axis **5577**, the doorway's floor on the mark's course **189** (local y 13), the south wall's own course (local z 182) on **-6930**, and the rooms in the chamber's own section, **190 to 200** |
 
 The body runs the rest of its 183 courses west and north into the mountain. Every corner of the box is solid stone at
 176 to 201, with 244 to 315 of rock over it, so the hold is buried by design and only its doorway shows - the way the
@@ -256,27 +257,28 @@ owner's own example had a doorway flush with the floor and the wall running away
 and cleared fourteen courses through where that wall will stand, so the gate lays first and the keep lays over it: the
 keep's own wall and its own five-wide doorway are then written whole, and the clearing the hall made is air the keep's
 rooms already hold. Laid the other way round the hall opens the wall across the chamber's whole width, and the hold
-has no door at all. `GundabadKeep.autospawn` runs after `GundabadGate.autospawn` for exactly that reason, and tests the
-doorway's own floor cell to leave a keep that is already standing alone.
+has no door at all. `GundabadKeep.autospawn` runs after `GundabadGate.autospawn` for exactly that reason, and reads the
+template's own blocks through `Sites.standsAt` to leave a keep that is already standing alone - the test used to be
+the doorway's floor cell, and Arda's rock under the mountain is deepslate too, so every world answered "already
+standing" and the hold was never laid.
 
 `/tmgate keep` lays it by hand at the same plan - no position, no facing, because there is one box the hold fits. The
-box's chunks are asked for by hand before the template is placed: they begin at chunk x 341, z -444, past anything a
+box's chunks are asked for by hand before the template is placed: they begin at chunk x 344, z -445, past anything a
 world keeps loaded for its spawn, and a `hasChunkAt` test there answers no on a first start, which is how a keep that
 was never laid looked exactly like one that was already standing.
 
 ### The doorway's mouth
 
-A wall is not a way in. With the hold laid, the ground south of its wall still stood a course high: course 190 is
-solid across the chamber's whole width, so at the height a player walks the five-wide doorway showed as a **one-block
-slot at its middle column**, and east of it the mountain's rock came down from 196 over the other half of the opening.
-`GundabadKeep.clearMouth` takes a box out around the door:
+A wall is not a way in. With the hold laid, the ground south of its wall still stands a course high: course 190 is
+solid across the chamber's whole width, so at the height a player walks the opening reads as a slot, and east of it the
+mountain's rock comes down from 196. `GundabadKeep.clearMouth` takes a box out around the door:
 
 | | |
 |---|---|
-| columns | the doorway's five (5575-5579) and four more each side, **5571-5583** |
-| out from the wall | **eight courses**, z -6917 to -6910, which is where that ground ends and the chamber is already open |
+| columns | the doorway's five (5620-5624) and four more each side, **5616-5628** |
+| out from the wall | **eight courses**, z -6929 to -6922, which is where that ground ends and the chamber is already open |
 | height | the floor's course **189** is never touched; **190 to 196** is cleared, the door's own seven |
-| measured | 728 cells in the box, **378 taken out** - 283 stone, 84 snow, 6 ice, 5 rockpile |
+| measured | **728 cells** in the box; how many are taken out is printed on each pass |
 
 It is dressed on every pass, whether the hold was just laid or has stood for weeks, so a door re-cut by a later gate
 is dressed again. The floor stays where it is, which is what makes the apron flush with the hold's own floor instead
@@ -288,19 +290,19 @@ The hold is final: one location, one way onto the ground, and one way for a page
 
 | | |
 |---|---|
-| plan | **x 5471, y 176, z -7100**, unturned, 122 by 26 by 183 |
-| doorway | x 5575-5579 (middle **5577**), courses **190-196**, floor course **189** |
-| south wall | **z -6918**, the plane the mark was walked on |
+| plan | **x 5516, y 176, z -7112**, unturned, 122 by 26 by 183 |
+| doorway | the template's far one, local x 104-108 (**5620-5624**), courses **190-196**, floor course **189**; the gate's own cut through the wall is the passage's width, **5563-5591** on the axis 5577 |
+| south wall | **z -6930**, the template's last course |
 | rooms | 190-200, the gate chamber's own section |
 | buried | solid stone at every corner course, 244 to 315 of rock over the top |
 
 **How it comes onto the ground.** `GundabadKeep.autospawn` runs in `MilestoneHandler` straight after
-`GundabadGate.autospawn` and before `OrcPieces.raise`: the gate's hall is carried north to `ArdaMap.keepWall()` and
-cleared through where the keep's wall will stand, so the gate goes first and the keep's own wall and doorway are
-written whole over that clearing. The hold lays itself on the first start of a world, loads its own chunks (the box
-begins at chunk x 341, z -444, past anything a world keeps for its spawn), dresses its doorway's mouth, and is left
-exactly as it is on every start after that - the test is the doorway's own floor cell, which answers with the
-template's deepslate once the hold is up. `/tmgate keep` is the same laying by hand, and it reports the count.
+`GundabadGate.autospawn` and before `OrcPieces.raise`: the gate's hall is carried north to `ArdaMap.keepWall()`
+and cleared through where the keep's wall will stand, so the gate goes first and the keep's own wall and doorway
+are written whole over that clearing. The hold lays itself on the first start of a world, loads its own chunks
+(the box begins at chunk x 344, z -445, past anything a world keeps for its spawn), dresses its doorway's mouth,
+and is left exactly as it is on every start after that - the test is `Sites.standsAt` over the template's own
+blocks. `/tmgate keep` is the same laying by hand, and it reports the count.
 
 **How a page finds it.** `Pins.SOURCE` carries the plan, so `Pins.at(level, Sites.GUNDABAD)` answers the corner in
 every world. `Sites.ON_THE_PIN` holds it, which is the rule that the pin's own height is the height - a box 122 by 183
@@ -309,12 +311,12 @@ cannot be seated by measuring the ground under it, because the ground under it i
 the massif over it. What that costs is the travel stone, which the pack puts at every named building; the hold is
 reached by the campaign's own page and by `/tmgate keep` instead.
 
-**Who stands here.** Gimli, and only Gimli. He is the campaign's one keeper at the hold - `keepGimli` stands a
-`tolkienmobs:dwarf` beside the well at the head of the spiral stair, his post being the middle of the hold plus
-(38, 61) across and (with `GIMLI_LIFT`) thirteen courses up, which is **5570, 190, -6948**: local (99, 152), a room
-column with the well's shaft at x 87-97 and the spiral's steps at x 94-95 beside it. He is tagged
-`tolkienmobs:campaign_gimli` and named in gold, and he is the turn-in for *Last Refuge I* and the giver of
-*Last Refuge II*. Glóin gives and takes every Gundabad page but stands at **his camp**, not here; Dugorim is the
+**Who stands here.** Gimli, and only Gimli - though his post is the cave's dais now, not the well (see *The keeper*
+below). He was first stood beside the well at the head of the spiral stair, at the middle of the hold plus (38, 61)
+across and thirteen courses up; `keepGimli` now stands him on `GundabadCave.post()` and walks an older body there
+rather than standing a second. He is tagged `tolkienmobs:campaign_gimli` and named in gold, and he is the turn-in for
+*Last Refuge I* and the giver of *Last Refuge II*. Glóin gives and takes every Gundabad page
+but stands at **his camp**, not here; Dugorim is the
 Dourhands' captain and the hunt target *below* the stair, an enemy rather than a giver. No camp keeper and no steed:
 `CAMP_OWNERS` holds only Elladan's and Barachen's, and `bodyFor(GUNDABAD)` answers none.
 
@@ -383,12 +385,12 @@ coming in through the mouth should find him already facing them.
 
 ### The captain
 
-Page 2-7 is a hunt of `tolkienmobs:entityttmdwarf`, so any of the pack's dwarves settles it - but the captain the prose
-names is the stage's boss, and he holds the keep's own throne while the page is in hand: `ArdaMap.keepThrone()`, read
-back from the owner's mark as (5501, 193, -7024), the dark stone slab on its carpet, standing as he would with the hall
-in front of him. He is **not** a giver: a giver is made invulnerable on the way into a world, which is the one thing a
-hunt cannot have, so he only carries `tolkienmobs:campaign_dugorim` and is found by it afterwards, which is how a body
-already felled stays down.
+Page 2-7 is a hunt of `tolkienmobs:entityttmdwarf`, so any of the pack's dwarves settles it - but the captain
+the prose names is the stage's boss, and he holds the keep's own throne while the page is in hand:
+`ArdaMap.keepThrone()`, the plan's corner plus (30, 17, 76) - **(5546, 193, -7036)** - the dark stone slab on
+its carpet, standing as he would with the hall in front of him. He is **not** a giver: a giver is made
+invulnerable on the way into a world, which is the one thing a hunt cannot have, so he only carries
+`tolkienmobs:campaign_dugorim` and is found by it afterwards, which is how a body already felled stays down.
 
 ### The fight
 
@@ -413,7 +415,7 @@ the office.
 ### The wraith
 
 A `tolkienmobs:entityttmnazgul` stands four paces down the carpet from the seat, at `ArdaMap.keepThroneWatch()`
-(5501, 193, -7021), also while 2-7 is in hand - and unlike the captain he is not planted: he is given a home area the
+(5546, 193, -7033), also while 2-7 is in hand - and unlike the captain he is not planted: he is given a home area the
 width of the hall and left to fight.
 
 **The page is not paid for the dwarf alone.** When the player carries 2-7 back to Glóin with the count met but no mark

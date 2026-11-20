@@ -8,9 +8,8 @@ down and picked up without re-reading the code. Written 13 November 2026.
 The gate is **eight structure templates**, 160 by 81 by 48, laid by `/tmgate` into a notch in Mount
 Gundabad that is cut to the gate's own box — the walls stand at its edges at the height of its wings,
 the drawn plateau climbs out of the floor fourteen blocks behind its back, and the pass opens south
-into a courtyard. The procedural cut it was judged against is gone. Nothing of it is raised by the
-world yet: it is a command, and a command is not allowed to be the only way a build ever stands
-(`AGENTS.md`).
+into a courtyard. The procedural cut it was judged against is gone. It no longer waits for a command either:
+`GundabadGate.autospawn` lays it as the server comes up, once per world, and a gate already standing is left alone.
 
 ## What the gate is
 
@@ -254,7 +253,7 @@ open here is the keep behind it.
 | | |
 |---|---|
 | `faction/GundabadGate.java` | the parts table, `place`, `clear`, `drape`, `rotationFor`, `missing` |
-| `faction/GateCommands.java` | `/tmgate place` (the site), `here`, `clear`, `clear here` (gamemasters) |
+| `faction/GateCommands.java` | `/tmgate place` (the site), `site`, `here`, `keep`, `cave`, `undress`, `clear`, `clear here` (gamemasters) |
 | `world/registration/ArdaMap.java` | `GATE_*`, `gateFront()`, `PASS_*`, `gundabadPass()` |
 | `resources/data/tolkienmobs/structure/key_structures/gundabad_gate_*` | the eight templates, 1.7 MB |
 | `tools/gate_capture.py` | the capture, with `--trim-sky` and `--from/--to` |
@@ -273,5 +272,5 @@ open here is the keep behind it.
 | `ade3f886` | the floor levelled under the gate |
 
 Verification on all of it: `./gradlew compileJava -x createMinecraftArtifacts -q --no-build-cache`
-green, and the terrain measured offline by mirroring the generator against the same rasters it reads.
-Nothing has been generated or played.
+green, and the terrain measured offline by mirroring the generator against the same rasters it reads. That was the
+check on 13 November; worlds have been generated since, and `docs/next-up.md` is where that stands.

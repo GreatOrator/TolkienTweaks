@@ -1,6 +1,6 @@
 # The mod's commands
 
-Every command the pack registers. All eleven roots are for arranging a world rather than for playing in one:
+Every command the pack registers. All thirteen roots are for arranging a world rather than for playing in one:
 each asks for **creative, or a gamemaster-level operator (op 2)**, and none of them is how a player plays the
 campaign. Nothing here reaches the world by a menu, so this file is also the only list of what the pack can be
 told to do. The sections after the map take the roots one at a time, except the three that have a file of their
@@ -13,17 +13,19 @@ Read this before reaching for one. **Five roots touch blocks, and only one of th
 
 | root | what it is for | blocks |
 |---|---|---|
-| `/tmplace` | **the general one.** `build <name>` lays that building at your feet, facing your way; `orcs` raises the pieces whose spots were marked with ammolite (`OrcPieces`, the four towers on the gate); `add <id> [radius]`, `remove <id>`, `list`, `where`, `forget <targets>` put a name on ground and take it off. | lays a template |
+| `/tmplace` | **the general one.** `build <name>` lays that building at your feet, facing your way; `orcs` raises the pieces whose spots were marked with ammolite (`OrcPieces`: eight towers, four huts, the pit, two rams, the farm and twelve tents); `add <id> [radius]`, `remove <id>`, `list`, `where`, `forget <targets>` put a name on ground and take it off. | lays a template |
 | `/tmpin` | **writes a spot down and nothing else.** `place <id>` pins named ground, `build <name>` pins a template, `list`, `checklist`, `remove <name>`. A pinned build is raised later by the page that names it, not here. | none — it writes |
-| `/tmgate` | the Gundabad gate. `place` / `site` lays it at its own site in the pass, `here` lays it at your feet, `undress` strips the old skirt behind it, `clear` and `clear here` take it out again. It also stands by itself when a world starts. | lays, fills |
+| `/tmgate` | the Gundabad gate. `place` / `site` lays it at its own site in the pass, `here` lays it at your feet, `keep` lays the hold behind it, `cave` re-cuts the cave east of it, `undress` strips the old skirt behind it, `clear` and `clear here` take it out again. It also stands by itself when a world starts. | lays, fills |
 | `/tmcave` | the goblin cave, cut out of ground the world already made: `cut` behind the pin, `dress` to lay the hall from its structure. The campaign does this on its own as a player comes near. | cuts, fills |
 | `/tmcity` | the hand-built Rivendell: `origin`, `summon`, `folk`, `band [count]`, `relay`, `apron`, `drape`, `goto`, `status`. Detailed below. | lays, cuts, fills |
-| `/tmroad` | the graded road out of the valley and the bridge over the Bruinen: `build`, `forget`. Detailed below. | lays, cuts, fills |
+| `/tmroad` | the graded roads, planned from two pinned ends and laid by the pass: `build [x z] [kind]`, `pin <x z> <x z> [kind]`, `plan <x z> [kind]`, `forget`. Detailed below. | lays, cuts, fills |
 | `/tmscene` | the chapter-one seam by hand: `state`, `note`, `play` (a rehearsal, taken away after), `stop`, `skip`, `forget`, `marks`, `route`. | stands bodies |
 | `/tmquest` | the work by hand: `give [count]`, `quit`, `complete [count]`, `spawn`, `campaign_giver <alliance>`. | none — it writes |
 | `/tmfaction` | `set` and `get` a player's standing with the three alliances; the same two are flat as `/tmsetfaction` and `/tmgetfaction`. | none |
 | `/tmcourage` | `get`, or set a player's deeds, so a high rung can be tried without a week of questing. | none |
 | `/tmtp` | the quick map: `list`, then a jump per country, place or build. Points are computed from the drawing, so they follow it. | none |
+| `/tmcut` | the plain hand for a cut that is not the city: `list`, `table <cut>`, `place <cut> [corner]`, `clear <cut> [corner]`, `drape <cut> [corner]`. It plants no marker, stands nobody and opens no road. | lays, cuts |
+| `/tmriver` | reads the drawing's own river rules back out of the world: `at` under the caller, `along <from> <to>` for a section across a valley or a profile down one. | none |
 
 The one distinction that is easy to lose: **`/tmpin` only writes a spot down; `/tmplace build` lays the
 blocks now.** Both read the same table of building names, so anything one knows the other answers to as well.
@@ -88,7 +90,7 @@ ground.
 
 | hand | what it does |
 |---|---|
-| `build` | Sweeps any bridge timbers already in the water, stands the bridge from the shipped `bridge_end`
+| `build [x z] [kind]` | Sweeps any bridge timbers already in the water, stands the bridge from the shipped `bridge_end`
 and `bridge_middle` pieces, and draws every pillar the pieces carry down through air and water to the bed
 under it. Then it searches its own way down the mountain from the path's last block, rounds every corner
 into a curve - eased up to twenty-four blocks either way for an ordinary bend, ten for a switchback, and
@@ -99,6 +101,8 @@ standing it on stone where the ground falls away, turns the higher column of eve
 cobblestone-slab lip, and carries only the road's own three columns over water. Answers with pieces laid,
 pillar blocks drawn, the approach's length and its steepest graded step, and columns laid, cut, filled,
 cleared and left open. |
+| `pin <x z> <x z> [kind]` | Plans a road between two blocks named as numbers - the only form that does not read the caller's own block - and lays nothing. |
+| `plan <x z> [kind]` | Plans a road from the ground the caller stands on to that block, says what the drawing found for the way between them, and lays nothing. |
 
 The waypoints are the ammolite markers walked in the scouted world: the path's last block at 5200, 134,
 -3034, and the two banks at 5055 and 5006 on z -3075. Both ends of the bridge are met along the span's
@@ -195,7 +199,7 @@ than by retyping coordinates out of a debug screen.
 | command | what it does |
 |---|---|
 | *(no argument)*, or `list` | What this world has pinned, and what the build pins for every world. |
-| `checklist` | The fifteen locations the two chapters ask for - six names, nine buildings - each marked `this world`, `every world` or `not pinned`, with the count at the top. Places nothing; it is what scouting still owes. |
+| `checklist` | The seventeen locations the two chapters ask for - six names, eleven buildings - each marked `this world`, `every world` or `not pinned`, with the count at the top. Places nothing; it is what scouting still owes. |
 | `place <id>` | Pins a catalogue name at the caller's feet - one of the sixteen `/tmplace` lists. |
 | `build <name>` | Pins a template at the caller's feet: `camp`/`elledancamp` (Elladan's camp), `tent` (the camp errand's), `ruin`, `cave`/`cave1`, `cave2`, `cave3`, `gloincamp`, `sheltercave`, `gundabad`/`keep`, `weathertop`, `castle`, `arena`, or a full template id. |
 | `remove <name>` | Forgets this world's pin for that name. A pin written into the build is in the jar, not in the world, and this does not touch it. |
@@ -236,8 +240,8 @@ message rather than laid.
 6. **Walk it.** `/tmcity goto`, then `/tmcity status` for which band it is on and whether the shoulder is done.
 7. **After a re-cut.** Replace the folder, `/tmcity relay`, `/tmcity band 8`, and `/tmcity apron` again.
 
-**What is not there yet.** The cut is outside the jar and nothing in the pack generates this city: the valley
-page no longer builds anything at all, `/tmcity` is the only way to raise the city, and the page that names
-the valley dresses whatever is planted there - the build's own marks for the Elves, and its crowd. A world
-that is to have Rivendell without a command needs the cut packed into the mod and a placement written for
-it - the same ground the map draws, raised by the generator or by the page that names the valley.
+**What ships now.** The cut is in the jar and the world generates the city itself: `TolkienStructures.RIVENDELL` is
+one of the assemblies in `TolkienStructureProvider`, at the same pinned anchor (5200, 75, -3370) and in the Imladris
+and Trollshaws biomes, so a fresh world has Rivendell without a command. `/tmcity` remains for looking at a re-cut band
+by band, and the marker file is still the game directory's; a generated city has none, and the hands read the
+structure start in the pin's chunk instead.
