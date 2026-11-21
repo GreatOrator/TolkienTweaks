@@ -182,7 +182,9 @@ public final class GundabadGate {
             }
             for (int z = -DRAPE_REACH; z < 0; z++) {
                 for (int y = base.getY() + 1; y <= top; y++) {
-                    BlockPos at = base.offset(x, y, z);
+                    // y is a world number here and z is the strip's own, so only z is an offset. The old
+                    // `base.offset(x, y, z)` added the world's y to the corner again and cleared nothing.
+                    BlockPos at = base.offset(x, 0, z).atY(y);
                     if (!level.hasChunkAt(at)) continue;
                     if (level.getBlockState(at).isAir()) continue;
                     level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
@@ -340,8 +342,17 @@ public final class GundabadGate {
                 }
                 // The passage's own inside is cleared as it is laid: a course of rubble left in it, or a floor laid a
                 // course high by an earlier pass, would otherwise be something the placing could never take back.
+                // The cell is the corner plus the passage's own x, because y and z here are already world numbers.
+                // `base.offset(x, y, z)` added them to the corner a second time and cleared a box about 377 courses
+                // up and seven thousand blocks north - which is why the mountain went on standing in the passage and
+                // the hall stopped thirteen blocks short of the hold's door, with only `clearMouth`'s eight blocks of
+                // ground out from the wall ever taken out of it.
                 for (int y = floorTop + 1; y < roofY; y++) {
-                    BlockPos inside = base.offset(x, y, z);
+                    // Never the wall's own course. The way in is the template's doorway in it, and a clear as wide
+                    // as the passage would take the wall's lower courses out on every start after the first - the hold
+                    // is written once, and the hall is carried on every pass. The inside ends the course before it.
+                    if (z == end) continue;
+                    BlockPos inside = new BlockPos(base.getX() + x, y, z);
                     if (!level.getBlockState(inside).isAir()) {
                         level.setBlock(inside, Blocks.AIR.defaultBlockState(), 2);
                     }

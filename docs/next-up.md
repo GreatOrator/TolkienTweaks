@@ -28,8 +28,9 @@ game that day:** Hobbiton's hall (and its pin, now in `Pins.SOURCE`) and every q
 needs another hand. Read *21 November* first for the walk that signed the Shire, the roads and the Carrock off, then *20 November* for
 the Shire's start, *17 November* for the halls and the marks, and *The Shire map* for the village itself.
 
-The whole Gundabad line is walked and settled but the hold's entrance; chapter two is proven to page 32 and **paused**
-there; the road east of Glóin's camp is the old forest road, planned from its two ends with both crossings in its plan;
+The whole Gundabad line is walked and settled but the walk in past the hold's door; chapter two is proven to page 32
+and **paused** there; the road east of Glóin's camp is the old forest road, planned from its two ends with both
+crossings in its plan;
 the keep's floor is **settled at `KEEP_FLOOR` 176**, and its entrance was moved twelve east on 21 November so the hold's
 own doorway stands in the gate's chamber. The Shire is **seen whole** and the road network is signed off; the quest
 walk is still paused where it was, at Carn Dûm.
@@ -77,6 +78,20 @@ asked too - 5516 at 176, and at the 187 the plan used between 15 and 18 November
 hold, with only its mouth dressed. **The twelve-east shift is what a world made after 21 November gets; it is not a
 migration.**
 
+**A second fresh world found the passage thirteen blocks short, and the clear was the whole of it.** The hall laid its
+floor, its roof and its two walls for the fifty-three blocks to the keep's wall, and the hold stood at its plan with the
+door the plan was written around - 5571..5575, inside the chamber - but the passage between them was never opened: the
+inside was cleared with `base.offset(x, y, z)`, in which the cell's own y and z are added to the gate's corner as well,
+so the air was written about 377 courses up and seven thousand blocks north, where there is nothing. What stood between
+the hold's mouth and the hall was therefore thirteen blocks of the mountain's own rising ground, from z -6910 to
+-6922 - `clearMouth`'s eight blocks out from the wall being the only rock ever taken out of it, which is what made the
+two read as a tunnel stopping short. `extendHall` now builds the cell from the corner and the passage's own x, and
+`undressBack` - the strip behind the gate, which had the same double offset in its y - is fixed with it. Nothing in the
+plan moves: the passage still ends on the keep's wall at -6930, its inside is cleared to the course before that wall -
+the wall itself is never cleared, because the way in is the template's doorway in it and a hole the passage's width
+would take the door out on every start after the first - and a world that already holds the hold is re-cut on its
+next start, because the hall is carried on every pass.
+
 **A road also now begins from the block a player is set down on.** `RoadCorridor.look` reached 32 blocks, and a road's
 end stands at a build's door while the build's own mark can be much further in: Gundabad's road begins at the gate's
 courtyard, 5578, -6769, and the hold's mark is 5578, 190, -6833, sixty-four blocks away - so a player teleported to
@@ -86,9 +101,11 @@ sections only began at 19:39 when a teleport to the Carrock loaded chunks of its
 Glóin's camp nothing was wrong: the Gundabad road joins the old forest road at 8583, -3617, three hundred and fifty
 blocks east of the camp.)
 
-**Not seen:** the turned hall and the keep's new entrance in a world - the next fresh world is the check for both, and
-the keep's shift is only there: a world that already holds the hold at 5516 keeps it. The Shire's banner on the arrival
-itself is also still unseen.
+**Seen 21 November, in a fresh world:** the hall laid turned, its board on the path side; the Shire's banner fired where
+it should, at the portal; and the keep stood at 5528 with its door at 5571..5575 inside the chamber. **Not seen:** the
+walk from that door up the passage and into the rooms - the passage was the thirteen blocks short above, so the next
+start in a world holding the hold is the check for the clear. A world that already holds the hold at the older 5516
+keeps it.
 
 ## 20 November 2026 - the Shire stands at every world's start
 
@@ -866,8 +883,10 @@ all unverified.
   `KEEP_X` 5528, `KEEP_Z` -7112, `KEEP_FLOOR` 176 - the rooms' floor 189, level with the passage - with the box x 5528…5649,
   z -7112…-6930 and the south wall at -6930 where `keepWall()` ends the hall; `GundabadKeep.autospawn` reads the
   template's own blocks through `Sites.standsAt` and carries the hall to the keep's wall every pass. The x moved twelve
-  east on 21 November so the hold's own doorway stands in the chamber; one walk up the passage in a world made after
-  that is the check left.
+  east on 21 November so the hold's own doorway stands in the chamber, and a fresh world walked on 21 November found it
+  there - with the passage between thirteen blocks short, because the hall's clear was addressed to the wrong cells. The
+  coordinates are fixed (see the 21 November paragraph), and a world that already holds the hold is re-cut on its next
+  start.
 
 ## On hold, and what unblocks each
 

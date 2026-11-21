@@ -187,3 +187,26 @@ of the passage. The template's own file settled the shape of it: four five-wide 
 `KEEP_X` 5528, which puts the 43..47 opening at 5571..5575 in the chamber, `DOOR_X` moved with it (106 to 45) so the
 mouth is dressed at the door that is used, and the gate stopped cutting its own hole through the wall. **Not seen:**
 the walk into the rooms and the hold's first room in a world made after this.
+
+## 21 November 2026 - the way in, walked again
+
+A second fresh world stood the keep at its plan and put the doorway the plan was written around in the chamber, and
+the passage still did not reach it. The hall carried its floor, its roof and its two walls the fifty-three blocks to
+the wall, but **never cleared its own inside**: the air was written through `base.offset(x, y, z)`, where y and z
+are already world numbers, so it went to the cell the gate's corner plus 190 to 199 and -6878 to -6930 gives -
+about 377 courses up and seven thousand blocks north. The mountain therefore went on standing in the passage, and
+what separated the hold's mouth from the gate's hall was **thirteen blocks of its rising ground, z -6910 to
+-6922**. `clearMouth`'s eight blocks out from the wall were the only rock ever taken out of the passage, which is
+what made the two read as a tunnel stopping short.
+
+`extendHall` now builds the cell from the corner and the passage's own x - `new BlockPos(base.getX() + x, y, z)` -
+so the inside is cleared from the rear face to the wall. The same double offset sat in `undressBack`, the strip
+behind the gate that a world laid before the drape learned to keep off the back needs once, and is fixed there with
+it. Nothing in the plan moves: the passage still runs 53 blocks at floor 189 / ceiling 200 and its last course is
+the wall at -6930, with the inside cleared to the course before it - the wall itself is never cleared, since the way
+in is the template's doorway in it and a hole the passage's width would take the door out on every start after the
+first. A world already holding the hold gets its passage cut on the next start, because the hall is carried on
+every pass; no world needs to be made again.
+
+**Not seen:** the cleared passage in a world. The next start of a world holding the hold is the check, and the clear
+logs nothing - the check is the walk, past the sweep's eight blocks and through the door into the rooms.
