@@ -168,9 +168,9 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
     /** The turn the block state gives the model, so the lettering turns with the board. */
     private static float yaw(Direction facing) {
         return switch (facing) {
-            case EAST -> 90.0F;
+            case EAST -> 270.0F;
             case SOUTH -> 0.0F;
-            case WEST -> 270.0F;
+            case WEST -> 90.0F;
             default -> 180.0F;
         };
     }

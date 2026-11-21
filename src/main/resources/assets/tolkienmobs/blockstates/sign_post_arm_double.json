@@ -10,11 +10,11 @@
     },
     "facing=east,level=0": {
       "model": "tolkienmobs:block/sign_post_arm_double",
-      "y": 90
+      "y": 270
     },
     "facing=east,level=2": {
       "model": "tolkienmobs:block/sign_post_arm_double_2",
-      "y": 90
+      "y": 270
     },
     "facing=south,level=0": {
       "model": "tolkienmobs:block/sign_post_arm_double",
@@ -26,11 +26,11 @@
     },
     "facing=west,level=0": {
       "model": "tolkienmobs:block/sign_post_arm_double",
-      "y": 270
+      "y": 90
     },
     "facing=west,level=2": {
       "model": "tolkienmobs:block/sign_post_arm_double_2",
-      "y": 270
+      "y": 90
     }
   }
 }

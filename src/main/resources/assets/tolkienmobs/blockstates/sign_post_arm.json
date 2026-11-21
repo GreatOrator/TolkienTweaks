@@ -18,19 +18,19 @@
     },
     "facing=east,level=0": {
       "model": "tolkienmobs:block/sign_post_arm",
-      "y": 90
+      "y": 270
     },
     "facing=east,level=1": {
       "model": "tolkienmobs:block/sign_post_arm_1",
-      "y": 90
+      "y": 270
     },
     "facing=east,level=2": {
       "model": "tolkienmobs:block/sign_post_arm_2",
-      "y": 90
+      "y": 270
     },
     "facing=east,level=3": {
       "model": "tolkienmobs:block/sign_post_arm_3",
-      "y": 90
+      "y": 270
     },
     "facing=south,level=0": {
       "model": "tolkienmobs:block/sign_post_arm",
@@ -50,19 +50,19 @@
     },
     "facing=west,level=0": {
       "model": "tolkienmobs:block/sign_post_arm",
-      "y": 270
+      "y": 90
     },
     "facing=west,level=1": {
       "model": "tolkienmobs:block/sign_post_arm_1",
-      "y": 270
+      "y": 90
     },
     "facing=west,level=2": {
       "model": "tolkienmobs:block/sign_post_arm_2",
-      "y": 270
+      "y": 90
     },
     "facing=west,level=3": {
       "model": "tolkienmobs:block/sign_post_arm_3",
-      "y": 270
+      "y": 90
     }
   }
 }

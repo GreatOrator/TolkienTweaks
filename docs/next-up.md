@@ -140,7 +140,7 @@ somebody comes within `REACH` 192, and `/hobbiton raise` still asks for it at an
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
 | 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Entrance moved twelve east on 21 November** (*The keep's doorway* below); a world that already holds the hold at 5516 keeps it (`ArdaMap.keepOlderPlans()`), so nothing is laid twice. **Walked 21 November:** the passage clears to the door and the door is open | `docs/gundabad-keep.md` |
-| 6 | **Sign posts** | **built**: `SignPosts` plants one post every 1000 blocks of a laid road and one at each junction, arms naming the towns that way with their distances, the double arm where two towns lie down one road; a plinth already standing answers a target, so it runs on a clock and by hand without stacking. **Not seen in a world** | `SignPosts`, `/tmsign place`; see *The fingerposts* below |
+| 6 | **Sign posts** | **built**: `SignPosts` plants one post every 1000 blocks of a laid road and one at each junction, arms naming the towns that way with their distances, the double arm where two towns lie down one road; a plinth already standing answers a target, so it runs on a clock and by hand without stacking. **Seen in a world 21 November: five faults, all fixed** - a doubled post at a join, arms at the bottom, a town on the wrong arm, east/west arrows turned inward, posts on the road - and **not re-seen since** | `SignPosts`, `/tmsign place`; see *The fingerposts* below |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **raised at every world's start since 20 November**, and **seen whole on 21 November** - ready when the owner came through the portal, joins and south edge with it. Nothing is owed | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
@@ -157,18 +157,32 @@ the Gundabad road ends on the old forest road's line rather than on its end, so 
 against a line, both within 12 blocks, are found. The arms are turned on the ways each junction's roads leave it.
 
 **The arms say what the blocks already know.** A town is down an arm when it lies within sixty degrees of it and
-further than 64 blocks away - a post standing inside the village points at nothing - and the nearest takes the
-single arm's board while the next takes the double's second board. The distance is the block entity's own measure,
-straight line from the board, and the name is the one `Places.towns` already carries.
+further than 64 blocks away - a post standing inside the village points at nothing - and it goes on the arm it
+lies most nearly down and on no other, because a crossing's arms are different roads and a town down one of them
+is not a town down the other. The nearest takes the first board and the next takes the second. The distance is the
+block entity's own measure, straight line from the board, and the name is the one `Places.towns` already carries.
 
 **A post is planted once**, and the plinth is the marker: a target with one already beside it is answered without
 a block being touched. That is what lets the placer run on a clock (every 400 ticks), from `/tmsign place`, and in
 any world without stacking posts, and a shoulder in a chunk nobody has made is not read at all, so a road posts
 itself as the country around it loads.
 
-**Not seen in a world**, and three limits worth knowing: a road is posted only once it is down, no post stands on
-a bridge (the dry sections either side are joined across it), and a third town down one arm's road is left off,
-since an arm carries two boards and no more.
+**Five faults came back from the world on 21 November**, and all five were the placer's rather than the boards'.
+The Gundabad crossing stood **two posts ten blocks apart** - a thousand-block mark that fell beside the junction
+- so a mark within 32 blocks of a junction is that junction's post now, and a join found twice is folded into one.
+The arms hung **at the bottom**, on the lowest shaft: they go beside the top course, flush under the cap, and step
+down a course when a cell is already taken. **Rivendell stood on the Gundabad arm** because both lie west of the
+join and a sixty-degree sector cannot tell two roads apart; a town now goes to the arm it lies most nearly down.
+The **east and west arrows pointed in** - the blockstate turned the south-drawn model with a north-drawn model's
+compass, so `facing=east` showed it facing west - and they point outward now on all twenty-four variants, the
+lettering and the block's own shape with them. And the posts stood **on the road**: five blocks off a 3-wide line
+and inside the road that joins it, because the verge was measured from the road's own kind. The verge is now the
+nearest column clear of every line in the network by the band's half-width and three blocks more.
+
+**Seen in a world on 21 November** as those five faults, all corrected the same day and **not re-seen since**. Three
+limits are worth knowing: a road is posted only once it is down, no post stands on a bridge (the dry sections either
+side are joined across it), and a third town down one arm's road is left off, since an arm carries two boards and
+no more.
 
 ## The keep's doorway - answered in a world, 20-21 November
 

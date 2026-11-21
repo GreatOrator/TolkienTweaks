@@ -51,14 +51,25 @@ import java.util.function.Predicate;
  * left alone.
  * <p>
  * The post itself is the five blocks a fingerpost is: a plinth, {@link #SHAFTS} courses of shaft, and the cap, with
- * the arms in the cells beside the shafts, each pointing away from the post along the road it speaks for. One town
- * down a road gets the single arm; two get the double, whose two boards carry a destination each - and a third town
- * down the same road is left off, since an arm carries two boards and no more.
+ * the arms in the cells beside the <b>top</b> course, where a fingerpost's boards are and where a traveller looks for
+ * them; a course whose cell is already taken is stepped down to rather than the arm being dropped. Each arm points
+ * away from the post along the way it speaks for - the block's own facing is the cell's side, and the blockstate turns
+ * the model so its arrow points that way. One town down a road gets the single arm; two get the double, whose two
+ * boards carry a destination each - and a third town down the same road is left off, since an arm carries two boards
+ * and no more.
+ * <p>
+ * The post stands <b>beside</b> the road and not on it. The verge is not a width guessed from the road's kind: the
+ * pass widens near a town, widens again at a turn, and wears its edge ragged in the country, so the column a post is
+ * stood on is chosen by measuring it against every line in the network - its own road and every road that runs near
+ * the junction it stands at - and taking the nearest one clear of them all. A post in the middle of a crossing is a
+ * post a cart hits, and one five blocks off a 3-wide road was standing in the other road of the join.
  * <p>
  * A post is planted once. The plinth is the marker: a target with one already standing beside it is answered and not
  * planted again, so a world may be asked for its posts on every start, on a clock, and by hand, and the same post is
- * never stacked twice. A target whose chunk is not loaded is not answered either - it waits for a pass that finds it
- * loaded, which is why the clock is there rather than a single sweep at the world's start.
+ * never stacked twice. A join found from two pairs of ends is one join and is folded into one target, and a thousand
+ * block mark within {@link #GUARD} blocks of a junction is that junction's post and is not planted beside it. A
+ * target whose chunk is not loaded is not answered either - it waits for a pass that finds it loaded, which is why the
+ * clock is there rather than a single sweep at the world's start.
  */
 @EventBusSubscriber(modid = TolkienMobsMain.MODID)
 public final class SignPosts {
@@ -79,16 +90,37 @@ public final class SignPosts {
      * narrower than the shortest road in the network.
      */
     private static final int MEET = 12;
-    /** How far past the road's own edge a post stands, so the band is not narrowed by it, in blocks. */
-    private static final int ASIDE = 2;
-    /** The widest a road in the network is laid, and so the half-width the shoulder is measured from. */
-    private static final int WIDEST_HALF = 3;
+    /**
+     * How near a junction a thousand-block mark has to fall before it is that junction's post, in blocks.
+     * <p>
+     * A crossing is the place a traveller has to choose, and a second post a few paces down the road from it says the
+     * same thing twice - the Gundabad crossing stood two posts ten blocks apart for this reason. Half a dozen posts
+     * along one road are set at no cost, so the guard is wide enough to be certain rather than thrifty.
+     */
+    private static final int GUARD = 32;
+    /**
+     * How far past a road's own edge a post stands, in blocks.
+     * <p>
+     * Three rather than one: a road's edge is where its own band ends, and a plinth on the edge is a plinth a cart
+     * scrapes. It is also the width that keeps a post out of a road that joins at a shallow angle, where a column a
+     * couple of blocks off one line is well inside the other's band.
+     */
+    private static final int ASIDE = 3;
+    /**
+     * How far out a verge is looked for before a target is given up on, in blocks.
+     * <p>
+     * A join where two roads run at a shallow angle has a wide wedge between them, and the post belongs outside it
+     * rather than in the mouth of it; a dozen blocks is wider than any wedge in the network and keeps the post within
+     * sight of the crossing it speaks for.
+     */
+    private static final int CLEAR = 12;
     /**
      * How wide a sector one arm speaks for, as the cosine of its half-angle: sixty degrees either side of its line.
      * <p>
      * A board names the towns a traveller would reach by walking the way the arm points, and a town is down that road
-     * when it lies within the sector the road opens onto. Half a right angle either side is what a road's own bearing
-     * can be read to, and it keeps a town behind the post off a board that faces away from it.
+     * when it lies within the sector the road opens onto. A town is given to <b>one</b> arm - the one it lies most
+     * nearly down - because a post at a crossing has arms for every road that meets there and two towns a few degrees
+     * apart belong to different roads: Rivendell was going on the Gundabad arm because both lay west of the join.
      */
     private static final double SECTOR = 0.5D;
     /** How near a town a post may stand and still point at it: closer than this, the post is in the town. */
@@ -99,6 +131,9 @@ public final class SignPosts {
     private static final int SHAFTS = 3;
     /** How often a world looks for roads that are owed posts, in ticks. Twenty seconds. */
     private static final int EVERY = 400;
+    /** The eight columns around a point one block further out, the four square ones before the four diagonal ones. */
+    private static final int[][] AROUND = {
+            {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SignPosts.class);
 
@@ -162,23 +197,34 @@ public final class SignPosts {
         List<Line> lines = lines(level);
         if (lines.isEmpty()) return 0;
         int planted = 0;
-        for (Junction junction : junctions(lines)) {
-            planted += plant(level, junction.x, junction.z, junction.ways, WIDEST_HALF);
+        List<Junction> junctions = junctions(lines);
+        for (Junction junction : junctions) {
+            planted += plant(level, lines, junction.x, junction.z, junction.ways, junction.half);
         }
         for (Line line : lines) {
             if (POSTED.contains(key(level, line.road()))) continue;
             boolean settled = true;
             for (int[] mark : spaced(line)) {
+                // A mark beside a crossing is that crossing's post, and two posts ten paces apart say one thing twice.
+                if (byJunction(junctions, mark[0], mark[1])) continue;
                 int[] way = new int[]{mark[2], mark[3]};
                 // Both ways along the road are spoken for: a traveller arrives from one and leaves by the other.
                 List<int[]> ways = List.of(way, new int[]{-way[0], -way[1]});
-                int done = plant(level, mark[0], mark[1], ways, line.half());
+                int done = plant(level, lines, mark[0], mark[1], ways, line.half());
                 if (done < 0) settled = false;
                 planted += Math.max(0, done);
             }
             if (settled) POSTED.add(key(level, line.road()));
         }
         return planted;
+    }
+
+    /** Whether a mark falls close enough to a junction to be that junction's post rather than one of its own. */
+    private static boolean byJunction(List<Junction> junctions, int x, int z) {
+        for (Junction junction : junctions) {
+            if (Math.hypot(junction.x() - x, junction.z() - z) <= GUARD) return true;
+        }
+        return false;
     }
 
     /** A world and a road, so a road posted in one world is not taken as posted in another. */
@@ -192,8 +238,8 @@ public final class SignPosts {
      * A road is the sections that share its name, in the order the plan made them, and only a road that is down is
      * here at all: a line nobody has graded is a line no traveller walks, and a post beside it would be a post in open
      * country pointing at a road that is not there. The ends are kept with the line because a junction is an end
-     * meeting another road, and the half-width because the shoulder a post stands on is measured from the band's own
-     * edge.
+     * meeting another road, and the half-width because a post is kept clear of the band's own edge - the widest
+     * section's, since a road that widens near a town is that wide wherever a post might stand.
      */
     private static List<Line> lines(ServerLevel level) {
         Set<String> roads = new java.util.LinkedHashSet<>();
@@ -203,7 +249,7 @@ public final class SignPosts {
             List<Route> sections = Roads.sections(road);
             if (sections.isEmpty()) continue;
             boolean laid = false;
-            int half = WIDEST_HALF;
+            int half = 1;
             List<int[]> points = new ArrayList<>();
             for (Route section : sections) {
                 if (section instanceof Route.Crossing) continue;
@@ -214,7 +260,7 @@ public final class SignPosts {
                 for (BlockPos bend : Roads.bends(section)) points.add(new int[]{bend.getX(), bend.getZ()});
                 points.add(new int[]{dry.farX(), dry.farZ()});
                 Roads.Kind kind = Roads.kind(section);
-                if (kind != null) half = Math.max(1, kind.half());
+                if (kind != null) half = Math.max(half, kind.half());
             }
             if (!laid || points.size() < 2) continue;
             lines.add(new Line(road, points, half));
@@ -265,7 +311,8 @@ public final class SignPosts {
      * carries only the ends a surveyor pinned: three of the roads of the vale end on the block 4647, -3315, and the
      * Gundabad road ends on the old forest road's line rather than on its end. Both are junctions to a traveller, so
      * both are found - an end against every other road's ends, and an end against every other road's line. The ways a
-     * junction speaks for are the ways its roads leave it, which is what its arms are turned on.
+     * junction speaks for are the ways its roads leave it, which is what its arms are turned on. One crossing found
+     * twice - an end against an end and the same end against a line - is folded into one target.
      */
     private static List<Junction> junctions(List<Line> lines) {
         List<Junction> found = new ArrayList<>();
@@ -274,37 +321,78 @@ public final class SignPosts {
                 if (a == b) continue;
                 Line one = lines.get(a);
                 Line other = lines.get(b);
+                int half = Math.max(one.half(), other.half());
                 for (int[] end : List.of(first(one), last(one))) {
                     for (int[] far : List.of(first(other), last(other))) {
                         if (Math.hypot(end[0] - far[0], end[1] - far[1]) > MEET) continue;
-                        junction(found, end[0], end[1], away(one, end), away(other, far));
+                        junction(found, end[0], end[1], half, away(one, end), away(other, far));
                     }
                     int[] met = onLine(other.points(), end);
                     if (met == null || Math.hypot(end[0] - met[0], end[1] - met[1]) > MEET) continue;
-                    junction(found, met[0], met[1], away(one, end), along(other.points(), met));
-                    junction(found, met[0], met[1], away(one, end), opposite(along(other.points(), met)));
+                    junction(found, met[0], met[1], half, away(one, end), along(other.points(), met));
+                    junction(found, met[0], met[1], half, away(one, end), opposite(along(other.points(), met)));
                 }
             }
         }
-        return found;
+        return fold(found);
     }
 
-    /** A place roads meet: where it is, and the ways its roads leave it. */
-    private record Junction(int x, int z, List<int[]> ways) {
+    /** A place roads meet: where it is, the ways its roads leave it, and the widest band among them. */
+    private record Junction(int x, int z, List<int[]> ways, int half) {
+    }
+
+    /**
+     * Folds the joins that stand within {@link #GUARD} of each other into one, until no two are that near.
+     * <p>
+     * The same crossing is found more than once - by its ends and by a road's line - and a road's plan runs from its
+     * pin rather than through it, so the two readings can stand a few blocks apart; the Gundabad join was read that
+     * way and stood two posts. Each fold takes the first-kept position and the wider band, and the ways of both, and
+     * the guard is the same one that keeps a mark off a junction, so no crossing can be posted twice.
+     */
+    private static List<Junction> fold(List<Junction> found) {
+        List<Junction> kept = found;
+        for (int pass = 0; pass < 8; pass++) {
+            List<Junction> folded = new ArrayList<>();
+            for (Junction junction : kept) {
+                boolean joined = false;
+                for (int at = 0; at < folded.size(); at++) {
+                    Junction one = folded.get(at);
+                    if (Math.hypot(one.x() - junction.x(), one.z() - junction.z()) > GUARD) continue;
+                    List<int[]> ways = new ArrayList<>(one.ways());
+                    for (int[] way : junction.ways()) if (!same(ways, way)) ways.add(way);
+                    folded.set(at, new Junction(one.x(), one.z(), ways, Math.max(one.half(), junction.half())));
+                    joined = true;
+                    break;
+                }
+                if (!joined) folded.add(junction);
+            }
+            if (folded.size() == kept.size()) return folded;
+            kept = folded;
+        }
+        return kept;
     }
 
     /** Adds a way to the junction near this point, or starts one there. */
-    private static void junction(List<Junction> found, int x, int z, int[]... ways) {
-        for (Junction junction : found) {
-            if (Math.hypot(junction.x() - x, junction.z() - z) > MEET) continue;
+    private static void junction(List<Junction> found, int x, int z, int half, int[]... ways) {
+        for (int at = 0; at < found.size(); at++) {
+            Junction junction = found.get(at);
+            if (Math.hypot(junction.x() - x, junction.z() - z) > GUARD) continue;
             List<int[]> joined = new ArrayList<>(junction.ways());
-            for (int[] way : ways) if (!joined.contains(way)) joined.add(way);
-            found.set(found.indexOf(junction), new Junction(junction.x(), junction.z(), joined));
+            for (int[] way : ways) if (!same(joined, way)) joined.add(way);
+            found.set(at, new Junction(junction.x(), junction.z(), joined, Math.max(junction.half(), half)));
             return;
         }
         List<int[]> list = new ArrayList<>();
-        for (int[] way : ways) if (!list.contains(way)) list.add(way);
-        found.add(new Junction(x, z, list));
+        for (int[] way : ways) if (!same(list, way)) list.add(way);
+        found.add(new Junction(x, z, list, half));
+    }
+
+    /** Whether a list of ways already holds this one: an array compares by identity, so a way is compared by value. */
+    private static boolean same(List<int[]> ways, int[] way) {
+        for (int[] known : ways) {
+            if (known[0] == way[0] && known[1] == way[1]) return true;
+        }
+        return false;
     }
 
     /** A road's two ends. */
@@ -369,26 +457,57 @@ public final class SignPosts {
     }
 
     /**
+     * How far a block stands from a line, measured square to the nearest stretch of it.
+     * <p>
+     * Asked of every road in the network rather than of the road a post speaks for, because the reason a post stood in
+     * the middle of the Gundabad crossing was that it was five blocks off its own 3-wide road and two blocks inside the
+     * road that joins it: a road's own width says nothing about the ground another road has taken.
+     */
+    private static double near(List<int[]> points, double x, double z) {
+        double best = Double.MAX_VALUE;
+        for (int index = 1; index < points.size(); index++) {
+            int[] from = points.get(index - 1);
+            int[] to = points.get(index);
+            double dx = to[0] - from[0];
+            double dz = to[1] - from[1];
+            double length = dx * dx + dz * dz;
+            double along = length == 0.0D ? 0.0D
+                    : Math.clamp(((x - from[0]) * dx + (z - from[1]) * dz) / length, 0.0D, 1.0D);
+            best = Math.min(best, Math.hypot(x - (from[0] + dx * along), z - (from[1] + dz * along)));
+        }
+        return best;
+    }
+
+    /** Whether a column is clear of every road in the network by the verge's own width. */
+    private static boolean clear(List<Line> lines, int x, int z) {
+        for (Line line : lines) {
+            if (near(line.points(), x, z) < line.half() + ASIDE + 0.5D) return false;
+        }
+        return true;
+    }
+
+    /**
      * Plants one post, if the world is owed it.
      * <p>
-     * The post belongs beside the road rather than on it, so the target block is the road's own line and the ground is
-     * looked for a band's half-width out, first on one side and then on the other: the hillside a road is cut into has
-     * a shoulder on one side and a drop on the other, and a post wants the side a walker can stand on. A plinth already
-     * standing within a couple of blocks answers the target - the post is planted once - and a chunk that is not made
-     * is not looked into at all, since posting a road is not a reason to generate the country either side of it.
+     * The post belongs beside the road rather than on it, so the ground is looked for from the target outward - a block
+     * at a time, in the eight directions round it - and the nearest column clear of every road in the network by half
+     * the band and {@link #ASIDE} more is the one the plinth goes on. The ground must be something a plinth can stand
+     * on: a shoulder in the water or over a drop is no place for one, and the block itself would drop the post at the
+     * next update if it were put there. A plinth already standing within a few blocks answers the target - the post is
+     * planted once - and a chunk that is not made is not looked into at all, since posting a road is not a reason to
+     * generate the country either side of it.
      *
      * @return 1 when a post was planted, 0 when there was nothing to do, -1 when the ground is not loaded yet
      */
-    private static int plant(ServerLevel level, int x, int z, List<int[]> ways, int half) {
+    private static int plant(ServerLevel level, List<Line> lines, int x, int z, List<int[]> ways, int half) {
         if (!level.hasChunk(x >> 4, z >> 4)) return -1;
         List<Direction> arms = compass(ways);
         if (arms.isEmpty()) return 0;
-        List<BlockPos> posts = shoulders(level, x, z, ways.get(0), half);
+        if (standing(level, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), x, z)) return 0;
+        List<BlockPos> posts = verges(level, lines, x, z, half);
+        if (posts == null) return -1;
         for (BlockPos post : posts) {
-            if (!level.hasChunk(post.getX() >> 4, post.getZ() >> 4)) return -1;
-            if (standing(level, post)) return 0;
-            // A plinth stands on ground: a shoulder in the water or over air is no place for one, and the block
-            // itself would drop it at the next update if it were put there.
+            if (standing(level, post.getY(), post.getX(), post.getZ())) return 0;
             BlockPos below = post.below();
             if (!level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)) continue;
             Map<Direction, List<String>> boards = named(level, post, arms);
@@ -401,32 +520,46 @@ public final class SignPosts {
         return 0;
     }
 
-    /** The two shoulders a post may stand on, in the order they are tried: the left of the road, then its right. */
-    private static List<BlockPos> shoulders(ServerLevel level, int x, int z, int[] way, int half) {
-        double length = Math.hypot(way[0], way[1]);
-        if (length == 0.0D) return List.of();
-        // Square to the road: the way it is going, turned a quarter turn.
-        double acrossX = -way[1] / length;
-        double acrossZ = way[0] / length;
-        int out = Math.max(1, half) + ASIDE;
-        List<BlockPos> posts = new ArrayList<>(2);
-        for (int side = 1; side >= -1; side -= 2) {
-            int px = (int) Math.round(x + acrossX * out * side);
-            int pz = (int) Math.round(z + acrossZ * out * side);
-            // A shoulder in a chunk nobody has made is not read at all: posting a road is not a reason to make country.
-            if (!level.hasChunk(px >> 4, pz >> 4)) continue;
-            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, px, pz);
-            posts.add(new BlockPos(px, top, pz));
+    /**
+     * The columns a post at this target may stand on, the nearest clear one first, or null while any of them is in a
+     * chunk nobody has made.
+     * <p>
+     * The ring is walked outward from one block past the band's own edge - a post two blocks off a 3-wide road is on
+     * its edge, not beside it - and every column clear of every road is kept, then the list is ordered by how far each
+     * stands from the target. The nearest is what a reader of the board expects: at the crossing, not in the next
+     * field.
+     */
+    private static List<BlockPos> verges(ServerLevel level, List<Line> lines, int x, int z, int half) {
+        int from = Math.max(1, half) + ASIDE + 1;
+        List<BlockPos> posts = new ArrayList<>();
+        for (int out = from; out <= from + CLEAR; out++) {
+            for (int[] step : AROUND) {
+                int px = x + step[0] * out;
+                int pz = z + step[1] * out;
+                // A verge in a chunk nobody has made is not read at all: posting a road is not a reason to make country.
+                if (!level.hasChunk(px >> 4, pz >> 4)) return null;
+                if (!clear(lines, px, pz)) continue;
+                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, px, pz);
+                posts.add(new BlockPos(px, top, pz));
+            }
+            if (!posts.isEmpty()) break;
         }
+        posts.sort(Comparator.comparingDouble(post -> Math.hypot(post.getX() - x, post.getZ() - z)));
         return posts;
     }
 
-    /** Whether a post already stands at or beside this block, read from the plinth that is the post's own marker. */
-    private static boolean standing(ServerLevel level, BlockPos post) {
-        for (int dx = -2; dx <= 2; dx++) {
-            for (int dz = -2; dz <= 2; dz++) {
-                for (int dy = -1; dy <= 1; dy++) {
-                    BlockState state = level.getBlockState(post.offset(dx, dy, dz));
+    /**
+     * Whether a post already stands at or beside this column, read from the plinth that is the post's own marker.
+     * <p>
+     * Read over a column's height rather than at one block, because the plinth stands on whatever ground the verge
+     * had: the check is asked of the target, whose own height is the road's, and of every verge, whose height is a
+     * heightmap read - and the two do not have to agree by a block either way.
+     */
+    private static boolean standing(ServerLevel level, int top, int x, int z) {
+        for (int dx = -3; dx <= 3; dx++) {
+            for (int dz = -3; dz <= 3; dz++) {
+                for (int dy = -2; dy <= 2; dy++) {
+                    BlockState state = level.getBlockState(new BlockPos(x + dx, top + dy, z + dz));
                     if (state.is(TolkienBlocks.SIGN_POST_PLINTH.get())) return true;
                 }
             }
@@ -451,34 +584,39 @@ public final class SignPosts {
      * <p>
      * A town is down an arm when it lies inside the sector that arm opens onto - sixty degrees either side of its
      * line - and not when it is the town the post already stands in: a board that says the village is nought blocks
-     * away is a board nobody needs. The nearest is the one a traveller is going to, so it takes the first board and
-     * the next takes the second; a town behind the arm is another arm's business.
+     * away is a board nobody needs. Where two arms could both claim a town it goes to the one it lies most nearly
+     * down, and only to that one: a crossing's arms are different roads, and a town down one of them is not a town down
+     * the other. The nearest is the one a traveller is going to, so it takes the first board and the next takes the
+     * second; a town behind every arm is another post's business.
      */
     private static Map<Direction, List<String>> named(ServerLevel level, BlockPos post, List<Direction> arms) {
-        Map<Direction, List<String>> boards = new LinkedHashMap<>();
-        List<Places.Place> towns = new ArrayList<>();
+        Map<Direction, List<Places.Place>> thatWay = new LinkedHashMap<>();
+        for (Direction arm : arms) thatWay.put(arm, new ArrayList<>());
         for (Places.Place town : Places.towns(level)) {
             if (!town.dimension().equals(level.dimension())) continue;
-            double away = Math.hypot(town.centre().getX() - post.getX(), town.centre().getZ() - post.getZ());
+            double dx = town.centre().getX() - post.getX();
+            double dz = town.centre().getZ() - post.getZ();
+            double away = Math.hypot(dx, dz);
             if (away < OWN) continue;
-            towns.add(town);
-        }
-        for (Direction arm : arms) {
-            List<Places.Place> thatWay = new ArrayList<>();
-            for (Places.Place town : towns) {
-                double dx = town.centre().getX() - post.getX();
-                double dz = town.centre().getZ() - post.getZ();
-                double away = Math.hypot(dx, dz);
-                if (away < 1.0D) continue;
+            Direction best = null;
+            double down = SECTOR;
+            for (Direction arm : arms) {
                 double cos = (dx * arm.getStepX() + dz * arm.getStepZ()) / away;
-                if (cos < SECTOR) continue;
-                thatWay.add(town);
+                if (cos < down) continue;
+                if (best != null && cos <= down) continue;
+                down = cos;
+                best = arm;
             }
-            if (thatWay.isEmpty()) continue;
-            thatWay.sort(Comparator.comparingDouble(town -> Math.hypot(town.centre().getX() - post.getX(),
+            if (best != null) thatWay.get(best).add(town);
+        }
+        Map<Direction, List<String>> boards = new LinkedHashMap<>();
+        for (Direction arm : arms) {
+            List<Places.Place> towns = thatWay.get(arm);
+            if (towns.isEmpty()) continue;
+            towns.sort(Comparator.comparingDouble(town -> Math.hypot(town.centre().getX() - post.getX(),
                     town.centre().getZ() - post.getZ())));
             List<String> names = new ArrayList<>(BOARDS);
-            for (Places.Place town : thatWay) {
+            for (Places.Place town : towns) {
                 if (names.size() >= BOARDS) break;
                 names.add(town.id());
             }
@@ -491,9 +629,11 @@ public final class SignPosts {
      * The five blocks of one post, and the boards on its arms.
      * <p>
      * The column goes up first, bottom course upward, because the cap will not stand but on a shaft and an arm will
-     * not stand but beside a post. An arm's cell is the one next to the first shaft, which is low enough to read from
-     * the road and leaves the other two courses clear. A cell that already holds something is not taken: the post is
-     * scenery beside a road, not a thing that clears the country for itself.
+     * not stand but beside a post. The arms go beside the <b>top</b> course, flush under the cap, where a fingerpost's
+     * boards are: a single board takes the highest step of its cell and a double the upper half of it, so the pair
+     * hangs where it can be read. A cell already holding something is stepped down a course rather than taken - the
+     * post is scenery beside a road, not a thing that clears the country for itself - and an arm that finds no course
+     * free is left off, since a board across the road is worse than a board missing.
      */
     private static void lay(ServerLevel level, BlockPos post, Map<Direction, List<String>> boards) {
         level.setBlock(post, TolkienBlocks.SIGN_POST_PLINTH.get().defaultBlockState(), 2);
@@ -502,19 +642,28 @@ public final class SignPosts {
         }
         level.setBlock(post.above(SHAFTS + 1), TolkienBlocks.SIGN_POST_CAP.get().defaultBlockState(), 2);
         for (Map.Entry<Direction, List<String>> board : boards.entrySet()) {
-            BlockPos cell = post.above(1).relative(board.getKey());
-            if (!level.getBlockState(cell).isAir()) continue;
-            List<String> towns = board.getValue();
-            boolean twice = towns.size() > 1;
+            stand(level, post, board.getKey(), board.getValue());
+        }
+    }
+
+    /** One arm, on the highest course of the post whose cell it can take, lettered from the top board down. */
+    private static void stand(ServerLevel world, BlockPos post, Direction arm, List<String> towns) {
+        boolean twice = towns.size() > 1;
+        int step = twice ? SignPostDoubleArmBlock.UPPER : 3;
+        for (int up = SHAFTS; up >= 1; up--) {
+            BlockPos cell = post.above(up).relative(arm);
+            if (!world.hasChunk(cell.getX() >> 4, cell.getZ() >> 4)) return;
+            if (!world.getBlockState(cell).isAir()) continue;
             BlockState state = (twice ? TolkienBlocks.SIGN_POST_ARM_DOUBLE.get() : TolkienBlocks.SIGN_POST_ARM.get())
                     .defaultBlockState()
-                    .setValue(SignPostArmBlock.FACING, board.getKey())
-                    .setValue(SignPostArmBlock.LEVEL, twice ? SignPostDoubleArmBlock.LOWER : 0);
-            level.setBlock(cell, state, 2);
-            if (!(level.getBlockEntity(cell) instanceof SignPostArmBlockEntity arm)) continue;
+                    .setValue(SignPostArmBlock.FACING, arm)
+                    .setValue(SignPostArmBlock.LEVEL, step);
+            world.setBlock(cell, state, 2);
+            if (!(world.getBlockEntity(cell) instanceof SignPostArmBlockEntity board)) return;
             for (int index = 0; index < towns.size(); index++) {
-                arm.setDestination(index, towns.get(index));
+                board.setDestination(index, towns.get(index));
             }
+            return;
         }
     }
 }
