@@ -11,6 +11,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The dwarven keep behind the Gundabad gate: the hold the pass was shaped for, stood up at the end of the gate's
@@ -36,8 +38,15 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
  * The doorway's mouth is still dressed - {@link #clearMouth} - because the ground it opens onto is the chamber's, not
  * the build's, and the chamber's ground can stand a course higher than the hold's own, which leaves a five-wide doorway
  * reading as a one-block slot. The dressing is a box around the door and is safe on every pass.
+ * <p>
+ * A world that already holds a hold keeps it. The plan moved twelve east on 21 November, and a world laid before that
+ * has its keep at the older x: laying this build's box over it would put a second hold in the rock, 110 of its 122
+ * columns over the first, with the old south wall standing through the new rooms. So the older plans are asked too -
+ * {@link ArdaMap#keepOlderPlans()} - and a hold found on any of them is the world's hold. The shift east is what a
+ * world made after 21 November gets; it is not a migration.
  */
 public final class GundabadKeep {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GundabadKeep.class);
     /**
      * The doorway the hold is entered by: the second of the south wall's four, which is the one the box's shift puts in
      * the chamber. The template's doorways are cut at local x 13 to 17, 43 to 47, 74 to 78 and 104 to 108 - five wide
@@ -72,8 +81,8 @@ public final class GundabadKeep {
      * Stands the keep at its plan if it is not already there: every world is drawn with the pass, and the pass was
      * shaped for the hold.
      *
-     * @return how many blocks the template holds, or nil if a keep already stood at the plan or the build could not be
-     *         laid
+     * @return how many blocks the template holds, or nil if a keep already stood at this plan or on one of the older
+     *         ones the world may hold, or the build could not be laid
      */
     public static int autospawn(MinecraftServer server) {
         ServerLevel level = server.getLevel(TolkienDimensions.ARDA);
@@ -93,6 +102,19 @@ public final class GundabadKeep {
             // A hold already standing still has its mouth dressed: the ground in front of a doorway is not part of
             // the build, and a doorway the chamber's floor stands a course across is a slot rather than a way out.
             clearMouth(level, plan);
+            return 0;
+        }
+        // A world that already holds a hold keeps the one it has, wherever the plan stood when it was laid. The x moved
+        // twelve east on 21 November, so a world made before that holds its keep at 5516 and this build's plan is
+        // ground it has never seen - and a second hold laid twelve blocks over the first is two south walls through one
+        // set of rooms. The older plans are recognised rather than migrated: a hold is 122 by 183 of rock, and the world
+        // that holds the older one is the world that has something in it.
+        for (BlockPos older : ArdaMap.keepOlderPlans()) {
+            load(level, older, ArdaMap.KEEP_WIDE, ArdaMap.KEEP_DEEP);
+            if (!Sites.standsAt(level, Sites.GUNDABAD, older)) continue;
+            clearMouth(level, older);
+            LOGGER.info("The keep already stands at the older plan {}; this world keeps the hold it has - the shift"
+                    + " east is for a world made after it", older.toShortString());
             return 0;
         }
         int laid = place(level, plan);

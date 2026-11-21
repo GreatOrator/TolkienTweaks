@@ -86,6 +86,13 @@ doorway's floor was `deepslate` - and the mountain's own rock is deepslate, so i
 It now reads the template's own blocks back through `Sites.standsAt`, with the box opened first so an unvisited hold is
 read rather than assumed missing.
 
+**And a world that already holds the hold keeps it (21 November).** That guard asked only for the plan this build writes,
+so a world laid at the older x would have been answered "no hold here" and had a second one laid twelve east - 110 of
+its 122 columns the same rock, the old south wall standing through the new rooms and two doorways facing the passage.
+`ArdaMap.keepOlderPlans()` is asked as well: 5516 at `KEEP_FLOOR` 176, and 5516 at the 187 the plan used between 15 and
+18 November. A world holding either keeps its hold and only has its mouth dressed, so the twelve-east shift is what a
+world made after 21 November gets; it is not a migration.
+
 ## Two passes that would wreck it
 
 Both are in `Sites.build`, and both are right for a building on the surface and wrong for one buried:

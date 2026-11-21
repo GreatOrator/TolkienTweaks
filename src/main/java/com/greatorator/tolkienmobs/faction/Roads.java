@@ -55,7 +55,8 @@ public final class Roads {
     /**
      * The road out of Gundabad: the hold's way down out of its own gate, and the north's road to everything else.
      * <p>
-     * The hold stands at 5516, 187, -7112 in Arda at the head of its own valley, and what the road leaves into is
+     * The hold stands at `ArdaMap.keepPlan()` - 5528, 176, -7112 since 21 November - at the head of its own valley,
+     * and what the road leaves into is
      * country nobody has walked: the nearest road of any age is the chapter's own at the far end of the old forest
      * road, three and a half thousand blocks south. Its two ends were pinned in a test world - the gate block at
      * 5578, -6769 and the join on the old forest road at 8583, -3617 - and everything between them is planned: the

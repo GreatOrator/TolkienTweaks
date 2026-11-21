@@ -8,6 +8,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
+import java.util.List;
+
 /**
  * Arda, as the Middle-earth maps draw it.
  *
@@ -780,6 +782,13 @@ public final class ArdaMap {
     public static final int KEEP_DEEP = 183;
 
     /**
+     * The x the hold was planned at before 21 November, and the floor the plan used between 15 and 18 November: the
+     * corners a keep laid by an older build stands on. Read by {@link #keepOlderPlans()}, never laid from.
+     */
+    public static final int KEEP_X_BEFORE = 5516;
+    public static final int KEEP_FLOOR_BEFORE = 187;
+
+    /**
      * The keep's own bottom course: the template's y 0, thirteen courses under the floor a player walks on.
      * <p>
      * The template's rooms are lifted thirteen courses over its base - the spiral tile's stair is cut under its own
@@ -812,6 +821,21 @@ public final class ArdaMap {
     /** The keep's pin: the template's north-west bottom corner, laid with no rotation. */
     public static BlockPos keepPlan() {
         return new BlockPos(KEEP_X, KEEP_FLOOR, KEEP_Z);
+    }
+
+    /**
+     * The corners a keep laid before 21 November stands on, newest first: the plan the hold had at the floor it was
+     * settled at, and the eleven-course-higher corner worlds were built with between 15 and 18 November.
+     * <p>
+     * The plan moved twelve east on 21 November so the hold's own doorway would stand in the gate's chamber, and a
+     * world laid before that has its keep at the older x. Laying the new box over it would put a second hold in the
+     * rock - 110 of its 122 columns are the same ground, so the old south wall would stand through the new rooms and
+     * two doorways would face the passage. A hold is not something to migrate: moving one is sweeping 122 by 183 of
+     * the mountain and laying it again. So the older plans are recognised, and the world keeps the hold it has.
+     */
+    public static List<BlockPos> keepOlderPlans() {
+        return List.of(new BlockPos(KEEP_X_BEFORE, KEEP_FLOOR, KEEP_Z),
+                new BlockPos(KEEP_X_BEFORE, KEEP_FLOOR_BEFORE, KEEP_Z));
     }
 
     /**

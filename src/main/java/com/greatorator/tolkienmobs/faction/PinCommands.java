@@ -266,6 +266,8 @@ public final class PinCommands {
                     + " the build, not in the world."));
             return 0;
         }
+        // The record of which way the hall was laid belongs to the pin: a hall pinned again is a hall still to be laid.
+        TownHalls.forget(level, town);
         source.sendSuccess(() -> Component.literal("Forgot this world's pin for " + town + "'s hall."), false);
         return 1;
     }

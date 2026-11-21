@@ -65,6 +65,18 @@ perfectly. Three things came back to change.
   a town given one is re-stood when the point moves, so a world holding the old centre is moved to the new one.
 - **The keep's entrance stands in the chamber now** - the twelve-east move and the doorway above.
 
+**Two guards were still owed, and both are fixed.** The hall's was `Sites.wholeAt` read turned - the strict reading,
+every sampled block - so **one block a player changed inside the hall made the next start sweep it and lay it again over
+their work**. `TownHalls` now writes down which way it laid the hall, against the pin, in a file of its own (`halls`),
+and asks that first: a hall recorded turned is returned from without touching a block, and a world made before the
+record existed has the way it stands read off its own blocks - the two orientations compared by a majority, so a changed
+block cannot move the answer - and then noted. Only a hall the record says was laid the other way is taken out and laid
+again. The keep's guard asked only for the plan this build writes, so a world that already held the hold at the older
+5516 would have had a second one laid at 5528, 110 of its 122 columns over the first. `ArdaMap.keepOlderPlans()` is
+asked too - 5516 at 176, and at the 187 the plan used between 15 and 18 November - and a world holding either keeps its
+hold, with only its mouth dressed. **The twelve-east shift is what a world made after 21 November gets; it is not a
+migration.**
+
 **A road also now begins from the block a player is set down on.** `RoadCorridor.look` reached 32 blocks, and a road's
 end stands at a build's door while the build's own mark can be much further in: Gundabad's road begins at the gate's
 courtyard, 5578, -6769, and the hold's mark is 5578, 190, -6833, sixty-four blocks away - so a player teleported to
@@ -74,8 +86,9 @@ sections only began at 19:39 when a teleport to the Carrock loaded chunks of its
 Glóin's camp nothing was wrong: the Gundabad road joins the old forest road at 8583, -3617, three hundred and fifty
 blocks east of the camp.)
 
-**Not seen:** the turned hall and the keep's new entrance in a world - the next fresh world is the check for both - and
-the Shire's banner seen on the arrival itself.
+**Not seen:** the turned hall and the keep's new entrance in a world - the next fresh world is the check for both, and
+the keep's shift is only there: a world that already holds the hold at 5516 keeps it. The Shire's banner on the arrival
+itself is also still unseen.
 
 ## 20 November 2026 - the Shire stands at every world's start
 
@@ -106,12 +119,12 @@ somebody comes within `REACH` 192, and `/hobbiton raise` still asks for it at an
 | 2 | **The roads** - the whole network, rebuilt from two ends per road | **eleven roads in `Roads.NETWORK`**, each as the two ends it was pinned between: Gundabad's road (5578, -6769 to 8583, -3617), the old forest road, the four legs of the vale and the high pass, the wood ruin's nine-block connector, Rivendell to the meeting plaza and the plaza on to Glóin's camp, Rivendell to Elladan's camp, and the short leg at Rivendell's south gate. **Signed off 21 November:** the network laid itself in a fresh world and the crossings did not double back; see *21 November* for the one limit | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
-| 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Entrance moved twelve east on 21 November** (*The keep's doorway* below). **Next:** one walk up the passage in a world made after it | `docs/gundabad-keep.md` |
+| 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Entrance moved twelve east on 21 November** (*The keep's doorway* below); a world that already holds the hold at 5516 keeps it (`ArdaMap.keepOlderPlans()`), so nothing is laid twice. **Next:** one walk up the passage in a world made after it | `docs/gundabad-keep.md` |
 | 6 | **Sign posts** | on hold | below, with the recipe |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **raised at every world's start since 20 November**, and **seen whole on 21 November** - ready when the owner came through the portal, joins and south edge with it. Nothing is owed | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
-| 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands, was called perfect, and is **turned half round since 21 November** so its board faces the path; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
+| 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands, was called perfect, and is **turned half round since 21 November** so its board faces the path; the way it was laid is recorded per pin, so one changed block no longer sweeps and re-lays it; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
 | 11 | **The Carrock** - the shaped rock in the Anduin | cut, base plate trimmed, pinned at 8307, 187, -4165, **stood by the world on the first start**, bedded into the river with stone, and **seen standing on 21 November** - the owner signed it off | `Carrock`, `Pins.SOURCE`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
 
 ## The keep's doorway - answered in a world, 20-21 November
@@ -131,8 +144,10 @@ the passage's own width, fourteen courses deep, on every start - which on a firs
 and on any later start took the doorway with it. The passage now stops at the wall, and the door is the template's own.
 
 **The box still fits the crown** (x 5496..5656): 5528..5649 leaves seven blocks to the east. `KEEP_FLOOR` 176 is
-unchanged, the rooms' floor 189 and the doorway's floor 189, level with the passage. **Not seen:** the walk up the
-passage into the rooms in a world made after this.
+unchanged, the rooms' floor 189 and the doorway's floor 189, level with the passage. **A world that already holds the
+hold keeps it:** `ArdaMap.keepOlderPlans()` names the 5516 corner at 176 and at the 187 the plan used between 15 and 18
+November, and a hold found on either is left standing with only its mouth dressed - the shift is the making of a world
+after 21 November, not a migration. **Not seen:** the walk up the passage into the rooms in a world made after this.
 
 ## 19 November 2026 - a road waits for its build, and the visited builds have marks
 

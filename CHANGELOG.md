@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A hall is no longer swept and laid again because one of its blocks was changed.** `TownHalls` guarded itself with
+          `Sites.wholeAt` read turned - every sampled block, exactly - so a single block a player had moved inside the hall
+          answered "not standing", and the next start took the whole box out and laid the hall again over their work. The
+          way a hall was laid is now written down in this world's own file, `halls`, against the pin it was laid at: a
+          hall recorded turned is returned from without a block being touched, whatever has happened to it since, and
+          only a hall the record says was laid the other way is swept and laid again. A world made before the record
+          existed has the way its hall stands read off its own blocks - the two orientations are compared by a majority
+          through a new `Sites.standsAt` that can be asked turned, so one changed block is not an orientation - and then
+          noted, which is how those worlds come in without anything being turned over. A hall pinned somewhere new has no
+          record at that block and is laid as ground that has never held one, and `/tmpin hall remove` forgets the record
+          with the pin.
+
+- **A world that already holds the keep keeps it.** The hold's plan moved twelve east on 21 November so its own doorway
+          would stand in the gate's chamber, and `GundabadKeep.autospawn` asked only for the plan this build writes - so a
+          world laid at the older 5516 answered "no hold here" and was given a second one at 5528, 110 of its 122 columns
+          over the first, the old south wall standing through the new rooms and two doorways facing the passage.
+          `ArdaMap.keepOlderPlans()` is asked as well now: 5516 at `KEEP_FLOOR` 176, and 5516 at the 187 the plan used
+          between 15 and 18 November. A world holding either keeps its hold and only has its mouth dressed, so the twelve
+          east shift is what a world made after 21 November gets; it is not a migration.
+
 - **A mustering hall stands turned half round, so its board faces the path.** The hall is one build with one front, and
           the owner walked it in the Shire and found the notice board at the end away from the path it stands on.
           `TownHalls` now lays the hall with `Rotation.CLOCKWISE_180` about its box's own middle: the pin, the floor and

@@ -787,6 +787,17 @@ public final class Sites extends SavedData {
      * never rise at all.
      */
     public static boolean standsAt(ServerLevel level, String structure, BlockPos corner) {
+        return standsAt(level, structure, corner, Rotation.NONE);
+    }
+
+    /**
+     * {@link #standsAt} for a piece laid turned: the sampled blocks are turned with it before they are looked for.
+     * <p>
+     * A hall is what this exists for. It lies the same either way round in plan - only its front moves - so "is the
+     * template there" cannot answer which way it was laid: the two orientations are read separately and the one a
+     * majority of the samples answer is the way the piece stands.
+     */
+    public static boolean standsAt(ServerLevel level, String structure, BlockPos corner, Rotation rotation) {
         Identifier id = Identifier.tryParse(structure);
         if (id == null) return false;
         StructureTemplate template = level.getStructureManager().get(id).orElse(null);
@@ -800,7 +811,7 @@ public final class Sites extends SavedData {
         if (samples.isEmpty()) return false;
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int lift = -STANDING_BAND; lift <= STANDING_BAND; lift++) {
-            if (layer(level, samples, corner, lift, cursor)) return true;
+            if (layer(level, samples, corner, lift, rotation, cursor)) return true;
         }
         return false;
     }
@@ -854,13 +865,17 @@ public final class Sites extends SavedData {
         return true;
     }
 
-    /** One layer of the band: whether a majority of the template's own blocks stand at the corner lifted this far. */
+    /**
+     * One layer of the band: whether a majority of the template's own blocks stand at the corner lifted this far, the
+     * samples turned the way the piece was laid.
+     */
     private static boolean layer(ServerLevel level, List<Sample> samples, BlockPos corner, int lift,
-                                 BlockPos.MutableBlockPos cursor) {
+                                 Rotation rotation, BlockPos.MutableBlockPos cursor) {
         int found = 0;
         int y = corner.getY() + lift;
         for (Sample sample : samples) {
-            cursor.set(corner.getX() + sample.x(), y + sample.y(), corner.getZ() + sample.z());
+            int[] at = turnedSample(rotation, sample.x(), sample.z());
+            cursor.set(corner.getX() + at[0], y + sample.y(), corner.getZ() + at[1]);
             BlockState state = level.getBlockState(cursor);
             if (BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString().equals(sample.block())) found++;
         }
