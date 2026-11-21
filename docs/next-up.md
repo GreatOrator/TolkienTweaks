@@ -211,7 +211,11 @@ line read a block at a time so a river is bridged. Every one compiled with
 - **A road is now two ends and a plan.** `RoadPlan` walks the drawing - `ArdaMap.sample`, sixteen blocks a lane, ±192 wide -
   and prices grade over 0.35, turn, and river depth. No chunk is read or generated to plan one, and it leaves a bend every
   320 blocks so the pass's own search only has to sit each leg on the ground. Water on the chosen line becomes a
-  `Route.Crossing` with its banks from the drawn ground and its deck two over the drawn water.
+  `Route.Crossing` with its banks from the drawn ground and its deck two over the drawn water. **A leg too steep to
+  climb is handed over as switchbacks:** the pass settles its surface on half a block a station, so nothing steeper than
+  one in two can be built at all, and the plan now tests every leg against that and breaks a steeper one into traverses
+  across the fall, each mark standing off the line far enough that the leg it carries holds its climb. Marks only - the
+  pass's own grade and hairpins are untouched, and a leg that was walkable plans exactly the marks it did.
 - **Three commands, one road.** `/tmroad plan <x> <z> [kind]` reads the country and says the sections, laying nothing;
   `/tmroad build <x> <z> [kind]` lays them from the block underfoot; `/tmroad pin <x> <z> <x> <z> [kind]` lays them from
   two named ends, so a leg is pinned by the ground it crosses and the same command answers the same road from anywhere -
@@ -279,9 +283,10 @@ line read a block at a time so a river is bridged. Every one compiled with
 
 **Signed off in a world, 21 November.** The owner walked the network in `Work Verification` and calls it fixed: the
 roads laid, the crossings stood bank to bank and no section doubled back over a channel. What follows is the record of
-what those checks were, kept because its numbers are what a re-cut is judged against. **Two things in it are still
-unmeasured:** a climb of more than a few blocks throwing the search off - the owner's one complaint, in the mountains
-near Rivendell - and `road_plans.dat`, which has never been written and read back in a world.
+what those checks were, kept because its numbers are what a re-cut is judged against. **The climb is planned around
+now** - a leg steeper than the grade can lay is handed over as switchbacks rather than as one impossible leg, see *A
+road is now two ends and a plan* - but **it is still unmeasured in a world**, as is `road_plans.dat`, which has never
+been written and read back.
 
 - **The bridge has not been seen.** The first road laid in a world went under a river more than four blocks deep with no
   span over it: the plan was cut into sections from water read at the sixteen-block steps, and the channel fell between two

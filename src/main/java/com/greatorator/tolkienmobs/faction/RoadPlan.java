@@ -36,7 +36,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * The marks it leaves are the bends the pass already knows how to use: one every {@link #MARK} blocks, so each leg of
  * the road is short enough for the pass's own search to refine it against the ground the world actually has. That is
  * the division of labour - this decides where the road goes, the pass decides how it sits - and it is why a leg is
- * searched in a narrow window instead of the bounding box of a whole road.
+ * searched in a narrow window instead of the bounding box of a whole road. A leg whose climb is more than the
+ * grade can lay is broken into switchback marks before it is handed over: the drawing is the only place the climb
+ * is known in advance, and a leg that asks for a block of rise in a block of travel is a leg the pass can only
+ * answer by laying a staircase.
  * <p>
  * Water is part of the same read. A run of river columns on the chosen line is a crossing: the span's own axis is the
  * way the road is travelling there, the banks are the first dry columns either side of the river, the water is the
@@ -118,6 +121,42 @@ final class RoadPlan {
     private static final double BANK_COST = 400.0D;
     /** How far apart the bends a planned road is laid through are, in blocks. */
     private static final int MARK = 320;
+    /**
+     * The steepest rise the grade can lay, in blocks per block of travel.
+     * <p>
+     * The pass settles a road's surface on half a block a station and a station is a block of travel -
+     * `RoadCommands.MAX_STEP` - so one block in two is the most any road can climb: past it the next riser is a jump,
+     * and a jump is not a road. The number is read here rather than moved, because a plan and a grade that disagree
+     * about it is the fault this is for.
+     */
+    private static final double LAYABLE_GRADE = 0.5D;
+    /**
+     * How far off its own line one switchback traverse stands, in blocks.
+     * <p>
+     * A switchback lengthens a road by crossing the fall rather than by walking up it, so the offset is the whole of
+     * what it buys: two marks either side of the line are two offsets apart, and it is that width, not the distance
+     * between them along the line, that makes the leg longer than the country's shortest way. A road is seven wide at
+     * the most and a hairpin's apron is eleven, so twenty-four is the least two traverses of one switchback may stand
+     * apart; the width a leg is given is worked out from the climb it carries, and this is only the floor of it.
+     */
+    private static final int TRAVERSE = 24;
+    /**
+     * How many traverses one leg may be broken into.
+     * <p>
+     * A climb of six hundred blocks wants more than a dozen, and a dozen hairpins in a plan nobody has looked at is
+     * not a road either - the pass searches each leg on the live ground and each is a window of its own. Eight is a
+     * fell's worth of switchbacks and the most one leg is asked for; past that the leg is left as it is and the pass
+     * answers as it always did.
+     */
+    private static final int TRAVERSE_MOST = 8;
+    /**
+     * How wide a switchback may be stood when its own marks do not clear the grade, in blocks.
+     * <p>
+     * The width is what a shoulder rising across the face is answered with: a traverse that still climbs too much is
+     * stood further out, which makes the leg it is on longer. Past this the country is a cliff rather than a face and
+     * the leg is left alone - a plan no worse than the one that laid the road before.
+     */
+    private static final int TRAVERSE_WIDEST = 96;
     /** How far either side of a river's middle the plan will look for dry ground, in blocks. */
     private static final int BANK_SEARCH = 96;
     /**
@@ -461,7 +500,7 @@ final class RoadPlan {
             if (Math.hypot(near[0] - fromX, near[1] - fromZ) >= LANE) {
                 String name = dry == 1 ? id : id + "_" + dry;
                 sections.add(new Route.Riverless(name, 0, 0, 0, 0, fromX, fromZ, near[0], near[1]));
-                marks.put(name, marks(ground, cursor, began));
+                marks.put(name, marks(ground, cursor, began, false));
                 dry++;
             }
             sections.add(water);
@@ -472,7 +511,7 @@ final class RoadPlan {
         if (Math.hypot(endX - fromX, endZ - fromZ) >= 1.0D) {
             String name = dry == 1 ? id : id + "_" + dry;
             sections.add(new Route.Riverless(name, 0, 0, 0, 0, fromX, fromZ, endX, endZ));
-            marks.put(name, marks(ground, cursor, endIndex));
+            marks.put(name, marks(ground, cursor, endIndex, true));
         }
         MARKS.putAll(marks);
         return new Plan(sections, null, doubled);
@@ -670,18 +709,29 @@ final class RoadPlan {
     }
 
     /**
-     * The marks a dry section is bent through: a waypoint every {@link #MARK} blocks of the planned line.
+     * The marks a dry section is bent through: a waypoint every {@link #MARK} blocks of the planned line, with the
+     * switchbacks a leg too steep to lay is broken into.
      * <p>
      * They are not there to hold the road to the line - the pass searches between them - but to keep each leg short
      * enough to be searched in a narrow window. A road four thousand blocks long with no marks on it is one leg, and
      * one leg that long is a bounding box of ten million candidates: past the pass's budget, so it gives up and lays
      * the straight line. Marks every three hundred blocks are what turn that back into a road, and they are the whole
      * of what a scout's ammolite pins were doing.
+     * <p>
+     * A mark is also where the pass is asked to climb, and until now nothing here asked whether the leg between two
+     * of them could be climbed at all. {@link #switchbacks} answers that: a leg whose ends stand more than
+     * {@link #LAYABLE_GRADE} apart per block of travel is broken into the traverses it needs, and every other leg is
+     * the one mark the spacing gives it - so a stretch of road whose own line was walkable plans exactly the marks it
+     * did before.
+     *
+     * @param endsHere whether the line's own block at {@code high} is where the section ends, and so the far end of a
+     *                 leg of its own
      */
-    private static List<BlockPos> marks(List<int[]> line, int low, int high) {
+    private static List<BlockPos> marks(List<int[]> line, int low, int high, boolean endsHere) {
         List<BlockPos> marks = new ArrayList<>();
         if (high - low < 2) return marks;
         double walked = 0.0D;
+        int from = low;
         for (int at = Math.max(low, 1); at < high; at++) {
             int[] before = line.get(at - 1);
             int[] here = line.get(at);
@@ -694,9 +744,92 @@ final class RoadPlan {
                 left += Math.hypot(next[0] - one[0], next[1] - one[1]);
             }
             if (left < MARK / 2.0D) break;
+            switchbacks(line.get(from), here, marks);
             marks.add(new BlockPos(here[0], here[2], here[1]));
             walked = 0.0D;
+            from = at;
+        }
+        // The last leg runs from the last mark to the section's own end, and the pass reaches that end without a mark
+        // to bend through: a climb left over there is the same fault as one in the middle, so it is broken here too.
+        if (endsHere) switchbacks(line.get(from), line.get(high), marks);
+        return marks;
+    }
+
+    /**
+     * The marks a leg needs when its climb is more than the grade can lay: the switchbacks that make the road long
+     * enough to climb it.
+     * <p>
+     * A leg is what the pass searches between two marks, and the two marks are what it has to arrive on. A leg whose
+     * ends stand more than one block in two apart cannot be walked by that search however it settles the line between
+     * them, because the grade it lays is settled on half a block a station - so what has always come back from a
+     * climb of more than a few blocks is not a leg at all, but a fault handed to the pass from the wrong end.
+     * <p>
+     * What the drawing can say is how long the road has to be. A climb of c needs at least c / {@link
+     * #LAYABLE_GRADE} of travel, and if the crow line is shorter than that, the road has to cross the fall and come
+     * back: each crossing of the line adds two {@link #TRAVERSE} widths to its length, so the count is whatever brings
+     * the two together. The marks that come out of it stand alternately either side of the line, and the pass lays a
+     * hairpin between them because that is what its own search does with a leg it can walk.
+     * <p>
+     * The heights are the drawing's, read at the marks themselves rather than along the line, so each traverse is
+     * priced on the ground it stands over. A traverse that still climbs too much - a shoulder rising across the face -
+     * is answered by standing the marks further out, up to {@link #TRAVERSE_WIDEST}; past that the leg is left as it
+     * was, which is the plan that laid this road before this existed and no worse than it.
+     */
+    private static void switchbacks(int[] start, int[] end, List<BlockPos> marks) {
+        double run = Math.hypot(end[0] - start[0], end[1] - start[1]);
+        int climb = Math.abs(end[2] - start[2]);
+        if (run < 1.0D || climb <= LAYABLE_GRADE * run) return;
+        int crossings = (int) Math.ceil(Math.sqrt(Math.max(0.0D, 4.0D * climb * climb - run * run))
+                / (2.0D * TRAVERSE));
+        crossings = Math.max(2, Math.min(TRAVERSE_MOST, crossings));
+        // What each traverse has to be wide for the leg it carries: that leg gains climb/crossings and is asked to
+        // run twice that far, and all of the difference from its along-distance is the traverse's.
+        double each = climb / (double) crossings;
+        double along = run / crossings;
+        int width = (int) Math.ceil(Math.sqrt(Math.max(0.0D, 4.0D * each * each - along * along)));
+        width = Math.max(TRAVERSE, Math.min(TRAVERSE_WIDEST, width));
+        for (; width <= TRAVERSE_WIDEST; width = width * 3 / 2) {
+            List<BlockPos> crossed = traverses(start, end, crossings, width);
+            if (climbable(start, crossed, end)) {
+                marks.addAll(crossed);
+                return;
+            }
+        }
+    }
+
+    /** The marks of one switchback: {@code crossings} traverses across the leg, alternately either side of its line. */
+    private static List<BlockPos> traverses(int[] start, int[] end, int crossings, int width) {
+        double run = Math.hypot(end[0] - start[0], end[1] - start[1]);
+        double ux = (end[0] - start[0]) / run;
+        double uz = (end[1] - start[1]) / run;
+        List<BlockPos> marks = new ArrayList<>(crossings - 1);
+        for (int at = 1; at < crossings; at++) {
+            double along = run * at / (double) crossings;
+            double side = at % 2 == 1 ? width : -width;
+            int x = (int) Math.round(start[0] + ux * along - uz * side);
+            int z = (int) Math.round(start[1] + uz * along + ux * side);
+            marks.add(new BlockPos(x, ArdaMap.sample(x, z).height(), z));
         }
         return marks;
+    }
+
+    /**
+     * Whether every leg of a broken line, the two ends included, climbs no more than the grade can lay.
+     * <p>
+     * The marks were placed across the fall and the drawing read at each of them, so this is the check that the
+     * switchback drawn is one the country has room for: a shoulder rising across the face makes a traverse steeper
+     * than the line it was meant to lengthen, and a leg nobody can walk is what all of this is for.
+     */
+    private static boolean climbable(int[] start, List<BlockPos> line, int[] end) {
+        int[] was = start;
+        for (int at = 0; at <= line.size(); at++) {
+            int[] here = at == line.size() ? end
+                    : new int[]{line.get(at).getX(), line.get(at).getZ(), line.get(at).getY()};
+            double run = Math.hypot(here[0] - was[0], here[1] - was[1]);
+            if (run < 1.0D) return false;
+            if (Math.abs(here[2] - was[2]) > LAYABLE_GRADE * run) return false;
+            was = here;
+        }
+        return true;
     }
 }

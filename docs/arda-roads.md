@@ -58,7 +58,9 @@ carried in `Roads.BUILDS` and waiting for the city to stand. A section ends wher
 than at the far bank, so neither pass grades country the other has already laid. A road is also stepped from the
 block its pass has reached rather than from the building it leaves, which is what lets a section fill in as it
 is walked; and its grade is held within four blocks of the ground, so a hill is walked over instead of bored
-through.
+through. A leg whose climb is more than the grade can lay - the pass settles its surface on half a block a station, so
+nothing steeper than one in two can be built at all - is broken into switchback marks across the fall instead of being
+handed over as one leg nothing can climb.
 
 The far end is ground rather than a deck, which is why a dry road needs no water numbers at all: the grade arrives
 on whatever the ground there is, so nothing has to be levelled onto a span.
