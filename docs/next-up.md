@@ -10,8 +10,8 @@ end of it. The mustering hall is turned half round (its board faced away from th
 Shire's banner is drawn round the portal crossing so it is seen on stepping through, and the keep is moved twelve east
 so its own doorway stands in the gate's chamber instead of ending at a wall; a road now also begins from the block a
 player is set down on, because Gundabad's own mark is sixty-four blocks from its road's end. **The roads now post
-themselves** - a fingerpost every thousand blocks and one at each junction - and a leg too steep to climb is planned
-as the switchbacks it needs. Read *21 November* below.
+themselves** - a fingerpost every thousand blocks and one at each junction, **signed off in a world on 21 November** -
+and a leg too steep to climb is planned as the switchbacks it needs. Read *21 November* below.
 **Before that, 20 November** - the Shire is raised on every world's start now (`raiseShireOnStart` defaults
 `true`), because the arrival portal opens on the village's own crossing, -470, 97, -123, and the clearing pass took
 the doorway with it; a dedicated server's `pause-when-empty-seconds` is lifted for the length of that pass, measured
@@ -140,7 +140,7 @@ somebody comes within `REACH` 192, and `/hobbiton raise` still asks for it at an
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
 | 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Entrance moved twelve east on 21 November** (*The keep's doorway* below); a world that already holds the hold at 5516 keeps it (`ArdaMap.keepOlderPlans()`), so nothing is laid twice. **Walked 21 November:** the passage clears to the door and the door is open | `docs/gundabad-keep.md` |
-| 6 | **Sign posts** | **built**: `SignPosts` plants one post every 1000 blocks of a laid road and one at each junction, arms naming the towns that way with their distances, the double arm where two towns lie down one road; a plinth already standing answers a target, so it runs on a clock and by hand without stacking. **Seen in a world 21 November: five faults, all fixed** - a doubled post at a join, arms at the bottom, a town on the wrong arm, east/west arrows turned inward, posts on the road - and **not re-seen since** | `SignPosts`, `/tmsign place`; see *The fingerposts* below |
+| 6 | **Sign posts** | **built**: `SignPosts` plants one post every 1000 blocks of a laid road and one at each junction, arms naming the towns that way with their distances, the double arm where two towns lie down one road; a plinth already standing answers a target, so it runs on a clock and by hand without stacking. **Signed off in a world, 21 November** - five faults found in the first post and fixed the same day (a doubled post at a join, arms at the bottom, a town on the wrong arm, east/west arrows turned inward, posts on the road), the lettering with them, and the corrected posts confirmed by the owner | `SignPosts`, `/tmsign place`; see *The fingerposts* below |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **raised at every world's start since 20 November**, and **seen whole on 21 November** - ready when the owner came through the portal, joins and south edge with it. Nothing is owed | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
@@ -183,10 +183,10 @@ nearest column clear of every line in the network by the band's half-width and t
 correctly, but half a board away from the plank, past its far end, and on one face only. A pose turned by `Axis.YP`
 and a model turned by a blockstate's `y` do not turn the same way for the same number - the blockstates are the
 chest's, where a south-drawn model at 90 faces west, and the pose at 90 faces east - so the lettering's yaw is
-written as the negation of the model's, east 90 and west 270, and it starts at the shaft end again. **Not re-seen
-since.**
+written as the negation of the model's, east 90 and west 270, and it starts at the shaft end again. **Seen and signed off in a world on
+21 November.**
 
-**Seen in a world on 21 November** as those five faults, all corrected the same day and **not re-seen since**. Three
+**Seen in a world on 21 November** as those five faults, all corrected the same day, and **signed off by the owner** once the lettering followed the arms. Three
 limits are worth knowing: a road is posted only once it is down, no post stands on a bridge (the dry sections either
 side are joined across it), and a third town down one arm's road is left off, since an arm carries two boards and
 no more.
