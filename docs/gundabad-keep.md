@@ -72,8 +72,8 @@ world drew the keep exactly at that plan and had no way in, with the rooms on **
 **189** - the chamber opening into the void under them and the keep's floor standing as its ceiling. `9f88c9a0`
 dropped the eleven courses, so the constants read `KEEP_X` 5528 (5516 until 21 November), `KEEP_Z` -7112,
 `KEEP_FLOOR` **176**: the rooms' floor 189, level with the passage, which is the plan this file's own numbers give.
-**Walked 21 November:** the floor was right and the entrance was not - see *The join* above. **The check still owed**
-is one walk up the passage in a world made after the shift.
+**Walked 21 November:** the floor was right and the entrance was not - see *The join* above. The passage was then
+found cut short and is cleared now, and the door it leads to is open, so nothing here is owed.
 
 **Two things followed the move.** The captain and the wraith are placed from `ArdaMap.keepThrone()` and
 `keepThroneWatch()` - the seat is thirty blocks in from the plan's corner, seventeen up and seventy-six back - so they

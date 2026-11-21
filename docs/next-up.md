@@ -800,7 +800,8 @@ Eleven pages, 26 to 36, written and wired; **played through page 32** and workin
 - **The gate and cave** stand themselves as the server comes up; the coal lattice door is x 5575-5581, y 190-199,
   z -6856 and opens for `item_keystone` within 12 blocks.
 - **The keep** stands itself, and its placement is **settled at `KEEP_FLOOR` 176** - its rooms' floor 189,
-  level with the passage. A fresh world and one walk from the gate to the rooms is the check still owed (item 5).
+  level with the passage - and the walk from the gate's hall to its own door is **signed off on 21 November**
+  (item 5).
 - **Pages 33-36** are Carn Dûm ground and are paused (items 1 and 3).
 
 **Red for the door, green for the boards - 16 November.** Two more inks, both the drawn gold art with its three shades

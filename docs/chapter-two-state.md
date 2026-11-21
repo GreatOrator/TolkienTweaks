@@ -148,8 +148,9 @@ stair. Two things came out of it:
 - **The keep's placement is settled at `KEEP_FLOOR` 176 (18 November 2026).** A fresh world drew the keep exactly
   at its plan and still had no way in: the rooms stood on 200 with the gate's chamber on 189, because the template's
   rooms are lifted thirteen courses over its base and the pin had been read as 187. `9f88c9a0` dropped the eleven
-  courses, so the pin is 176 and the rooms' floor 189, level with the passage. A walk from the gate to the rooms in a
-  fresh world is the check still owed; `docs/gundabad-keep.md` carries the numbers.
+  courses, so the pin is 176 and the rooms' floor 189, level with the passage. **The walk from the gate to the rooms
+  was signed off on 21 November** - the passage clears to the hold's own door and the door is open at the end of it;
+  `docs/gundabad-keep.md` carries the numbers.
 
 **The rest of the chapter is paused (15 November 2026).** Pages 33 to 36 - 33 Steps of Evil I, 34 Steps of Evil II,
 35 Evil Tidings, 36 Fire & Ice - are all Carn Dûm ground, and **Carn Dûm is what quests go to next**. They are not to

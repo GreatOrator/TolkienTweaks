@@ -673,8 +673,8 @@ mistaken for the present.
 - **The mustering halls are pinned per town (`067ae6cd`-`4b66b978`, 17 November).** Hobbiton's stands at -529, 101, -74
   and was called perfect in game; its pin is in `Pins.SOURCE`.
 - **The keep's placement is settled at `KEEP_FLOOR` 176 (`9f88c9a0`, 18 November).** A fresh world showed the rooms on
-  200 with the chamber's floor on 189; the pin is 176, the rooms' floor 189. A walk from the gate to the rooms in a
-  fresh world is the check still owed.
+  200 with the chamber's floor on 189; the pin is 176, the rooms' floor 189. The walk from the gate to the rooms was
+  signed off on 21 November, once `d15a5ebc` cleared the passage: the hold's door is open at the end of it.
 - **The Carrock and the Shire's south edge are built and unseen.** The rock stands itself at 8307, 187, -4165 and beds
   itself into the river; the village's south bank rule (`BANK_BLOCKS` 3, `DRESS_VERSION` 2) has not been looked at, and
   neither have the Shire's joins.
