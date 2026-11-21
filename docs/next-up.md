@@ -5,7 +5,8 @@ then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
 **Last touched:** 21 November 2026 - the owner walked a fresh world, `Work Verification`, and signed off the Shire,
-the road network and the Carrock. The mustering hall is turned half round (its board faced away from the path), the
+the road network and the Carrock, then started it again with the passage clear and found the hold's door open at the
+end of it. The mustering hall is turned half round (its board faced away from the path), the
 Shire's banner is drawn round the portal crossing so it is seen on stepping through, and the keep is moved twelve east
 so its own doorway stands in the gate's chamber instead of ending at a wall; a road now also begins from the block a
 player is set down on, because Gundabad's own mark is sixty-four blocks from its road's end. Read *21 November* below.
@@ -28,12 +29,12 @@ game that day:** Hobbiton's hall (and its pin, now in `Pins.SOURCE`) and every q
 needs another hand. Read *21 November* first for the walk that signed the Shire, the roads and the Carrock off, then *20 November* for
 the Shire's start, *17 November* for the halls and the marks, and *The Shire map* for the village itself.
 
-The whole Gundabad line is walked and settled but the walk in past the hold's door; chapter two is proven to page 32
-and **paused** there; the road east of Glóin's camp is the old forest road, planned from its two ends with both
+The whole Gundabad line is walked and settled, the way in past the hold's door with it; chapter two is proven to
+page 32 and **paused** there; the road east of Glóin's camp is the old forest road, planned from its two ends with both
 crossings in its plan;
 the keep's floor is **settled at `KEEP_FLOOR` 176**, and its entrance was moved twelve east on 21 November so the hold's
-own doorway stands in the gate's chamber. The Shire is **seen whole** and the road network is signed off; the quest
-walk is still paused where it was, at Carn Dûm.
+own doorway stands in the gate's chamber, with the passage to it **walked and the door open** on 21 November. The Shire
+is **seen whole** and the road network is signed off; the quest walk is still paused where it was, at Carn Dûm.
 
 ## Where we stopped
 
@@ -102,10 +103,10 @@ Glóin's camp nothing was wrong: the Gundabad road joins the old forest road at 
 blocks east of the camp.)
 
 **Seen 21 November, in a fresh world:** the hall laid turned, its board on the path side; the Shire's banner fired where
-it should, at the portal; and the keep stood at 5528 with its door at 5571..5575 inside the chamber. **Not seen:** the
-walk from that door up the passage and into the rooms - the passage was the thirteen blocks short above, so the next
-start in a world holding the hold is the check for the clear. A world that already holds the hold at the older 5516
-keeps it.
+it should, at the portal; and the keep stood at 5528 with its door at 5571..5575 inside the chamber. **Then walked, with
+the clear in:** the owner started that world again and reports the hold's door open - the passage runs from the gate's
+hall to the template's own doorway and the way in is there, which was the thirteen blocks above. The rooms past the
+door were not reported on separately. A world that already holds the hold at the older 5516 keeps it.
 
 ## 20 November 2026 - the Shire stands at every world's start
 
@@ -136,7 +137,7 @@ somebody comes within `REACH` 192, and `/hobbiton raise` still asks for it at an
 | 2 | **The roads** - the whole network, rebuilt from two ends per road | **eleven roads in `Roads.NETWORK`**, each as the two ends it was pinned between: Gundabad's road (5578, -6769 to 8583, -3617), the old forest road, the four legs of the vale and the high pass, the wood ruin's nine-block connector, Rivendell to the meeting plaza and the plaza on to Glóin's camp, Rivendell to Elladan's camp, and the short leg at Rivendell's south gate. **Signed off 21 November:** the network laid itself in a fresh world and the crossings did not double back; see *21 November* for the one limit | `RoadPlan`, `/tmroad plan`/`build`/`pin`; see 18 November below |
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
-| 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Entrance moved twelve east on 21 November** (*The keep's doorway* below); a world that already holds the hold at 5516 keeps it (`ArdaMap.keepOlderPlans()`), so nothing is laid twice. **Next:** one walk up the passage in a world made after it | `docs/gundabad-keep.md` |
+| 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Entrance moved twelve east on 21 November** (*The keep's doorway* below); a world that already holds the hold at 5516 keeps it (`ArdaMap.keepOlderPlans()`), so nothing is laid twice. **Walked 21 November:** the passage clears to the door and the door is open | `docs/gundabad-keep.md` |
 | 6 | **Sign posts** | on hold | below, with the recipe |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
@@ -164,7 +165,8 @@ and on any later start took the doorway with it. The passage now stops at the wa
 unchanged, the rooms' floor 189 and the doorway's floor 189, level with the passage. **A world that already holds the
 hold keeps it:** `ArdaMap.keepOlderPlans()` names the 5516 corner at 176 and at the 187 the plan used between 15 and 18
 November, and a hold found on either is left standing with only its mouth dressed - the shift is the making of a world
-after 21 November, not a migration. **Not seen:** the walk up the passage into the rooms in a world made after this.
+after 21 November, not a migration. **Seen 21 November:** the passage clear from the gate's hall to the template's own
+doorway, with the door open at the end of the walk - the thirteen blocks that stopped it are the paragraph above.
 
 ## 19 November 2026 - a road waits for its build, and the visited builds have marks
 
@@ -885,8 +887,8 @@ all unverified.
   template's own blocks through `Sites.standsAt` and carries the hall to the keep's wall every pass. The x moved twelve
   east on 21 November so the hold's own doorway stands in the chamber, and a fresh world walked on 21 November found it
   there - with the passage between thirteen blocks short, because the hall's clear was addressed to the wrong cells. The
-  coordinates are fixed (see the 21 November paragraph), and a world that already holds the hold is re-cut on its next
-  start.
+  coordinates are fixed (see the 21 November paragraph), a world that already holds the hold is re-cut on its next
+  start, and the walk on 21 November found the door open at the end of it.
 
 ## On hold, and what unblocks each
 

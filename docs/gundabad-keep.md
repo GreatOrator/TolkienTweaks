@@ -208,5 +208,6 @@ in is the template's doorway in it and a hole the passage's width would take the
 first. A world already holding the hold gets its passage cut on the next start, because the hall is carried on
 every pass; no world needs to be made again.
 
-**Not seen:** the cleared passage in a world. The next start of a world holding the hold is the check, and the clear
-logs nothing - the check is the walk, past the sweep's eight blocks and through the door into the rooms.
+**Seen 21 November:** the cleared passage, walked from the gate's hall to the hold's own door, and the door is open at
+the end of it - the way past the sweep's eight blocks that the thirteen-block plug used to stop. The clear logs
+nothing, so this is the walk and not a log; the rooms past the door were not reported on separately.
