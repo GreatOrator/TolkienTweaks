@@ -165,12 +165,19 @@ public class SignPostArmRenderer implements BlockEntityRenderer<SignPostArmBlock
         poseStack.popPose();
     }
 
-    /** The turn the block state gives the model, so the lettering turns with the board. */
+    /**
+     * The turn the lettering's own frame needs, which is the <b>negation</b> of the block state's y.
+     * <p>
+     * A pose turned by {@link Axis#YP} and a model turned by a blockstate's {@code y} do not turn the same way
+     * for the same number: the block states are the chest's, where a south-drawn model at {@code y} 90 faces west,
+     * and this frame at 90 faces east. Written out with the model's numbers the lettering stood half a board from
+     * the board it letters, on the far end of the plank and off it, which is what a world showed on 21 November.
+     */
     private static float yaw(Direction facing) {
         return switch (facing) {
-            case EAST -> 270.0F;
+            case EAST -> 90.0F;
             case SOUTH -> 0.0F;
-            case WEST -> 90.0F;
+            case WEST -> 270.0F;
             default -> 180.0F;
         };
     }

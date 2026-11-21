@@ -179,6 +179,13 @@ lettering and the block's own shape with them. And the posts stood **on the road
 and inside the road that joins it, because the verge was measured from the road's own kind. The verge is now the
 nearest column clear of every line in the network by the band's half-width and three blocks more.
 
+**A sixth came back the same day: the lettering stood off the board.** The double arm read `Hobbiton` and `Rivendell`
+correctly, but half a board away from the plank, past its far end, and on one face only. A pose turned by `Axis.YP`
+and a model turned by a blockstate's `y` do not turn the same way for the same number - the blockstates are the
+chest's, where a south-drawn model at 90 faces west, and the pose at 90 faces east - so the lettering's yaw is
+written as the negation of the model's, east 90 and west 270, and it starts at the shaft end again. **Not re-seen
+since.**
+
 **Seen in a world on 21 November** as those five faults, all corrected the same day and **not re-seen since**. Three
 limits are worth knowing: a road is posted only once it is down, no post stands on a bridge (the dry sections either
 side are joined across it), and a third town down one arm's road is left off, since an arm carries two boards and
