@@ -755,7 +755,7 @@ where the paths meet: `ArdaMap.hobbitonMilestone()`, stood with the hold's stone
 tried in the spot and then on top of it, and the paving is not dug up for it. A world older than the stone gets it on its
 next start, and one that has it keeps it.
 
-## The river that did not drape - not called out on the walk, 16-21 November
+## The river that did not drape - settled, not a fault
 
 The owner pointed at (-265, 98, -72): stepped grass terraces running down into water on the village's north-east, straight
 edges and a sand lip - country that was cleared and never settled. It is inside the footprint, not in the ring, and that
@@ -763,7 +763,11 @@ is the reason: the drape settles the columns *outside* the cut's box, while insi
 the cut's own floor and leaves it, so any column the cut does not fill - the river corridor running through the north-east
 of the village - is left as a staircase beside the water. Settling those columns too is a change to the drape's own rule,
 it wants `DRESS_VERSION` bumped so the fix reaches villages that already stand, and it would be re-run over whatever the
-river's mouths look like now. Not started: the fix is easy to describe and easy to get wrong beside the water.
+river's mouths look like now.
+
+**Settled: it is not a fault.** The owner confirmed the terraces read as the village's own bank rather than as ground
+that was missed, so the drape's rule stands as it is - no `DRESS_VERSION` bump, no second pass over the mouths, and
+nothing owed at -265, 98, -72. The paragraph above is kept as the reason the rule is what it is.
 
 ## The old forest road - history, since re-planned from its two ends
 
@@ -880,6 +884,9 @@ all unverified.
 - **The chapter-one seam is final.** The courtyard scene between pages 25 and 26 ran smoothly as staged;
   `docs/departure-scene.md` is a record, not a task.
 - **The spikes are settled** as decoration with incidental damage.
+- **The river's north-east bank is settled - not a fault.** The stepped terraces at -265, 98, -72 are the drape's own
+  rule working: it settles the columns outside the cut's box and leaves those inside it to the cut. Confirmed in the
+  world, so the rule stays and nothing is re-dressed.
 - **The biome audit is closed whole** - eleven findings applied, the Barrow-downs' deadwood kept on purpose, the four new
   leaf textures called right. `docs/arda-biome-canon.md`.
 - **The keep's placement is settled at `KEEP_FLOOR` 176** (18 November, x 5528 since 21 November). `ArdaMap` carries
