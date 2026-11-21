@@ -9,7 +9,9 @@ the road network and the Carrock, then started it again with the passage clear a
 end of it. The mustering hall is turned half round (its board faced away from the path), the
 Shire's banner is drawn round the portal crossing so it is seen on stepping through, and the keep is moved twelve east
 so its own doorway stands in the gate's chamber instead of ending at a wall; a road now also begins from the block a
-player is set down on, because Gundabad's own mark is sixty-four blocks from its road's end. Read *21 November* below.
+player is set down on, because Gundabad's own mark is sixty-four blocks from its road's end. **The roads now post
+themselves** - a fingerpost every thousand blocks and one at each junction - and a leg too steep to climb is planned
+as the switchbacks it needs. Read *21 November* below.
 **Before that, 20 November** - the Shire is raised on every world's start now (`raiseShireOnStart` defaults
 `true`), because the arrival portal opens on the village's own crossing, -470, 97, -123, and the clearing pass took
 the doorway with it; a dedicated server's `pause-when-empty-seconds` is lifted for the length of that pass, measured
@@ -138,12 +140,35 @@ somebody comes within `REACH` 192, and `/hobbiton raise` still asks for it at an
 | 3 | **Chapter two, pages 33-36** | paused on 1 | `docs/chapter-two-state.md` |
 | 4 | **Chapter three** - eleven pages, prose written | not started | `docs/chapter-three.md` |
 | 5 | **The keep's placement** | **settled**: `KEEP_FLOOR` 176 - rooms' floor 189, walked on 190, level with the passage. **Entrance moved twelve east on 21 November** (*The keep's doorway* below); a world that already holds the hold at 5516 keeps it (`ArdaMap.keepOlderPlans()`), so nothing is laid twice. **Walked 21 November:** the passage clears to the door and the door is open | `docs/gundabad-keep.md` |
-| 6 | **Sign posts** | on hold | below, with the recipe |
+| 6 | **Sign posts** | **built**: `SignPosts` plants one post every 1000 blocks of a laid road and one at each junction, arms naming the towns that way with their distances, the double arm where two towns lie down one road; a plinth already standing answers a target, so it runs on a clock and by hand without stacking. **Not seen in a world** | `SignPosts`, `/tmsign place`; see *The fingerposts* below |
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **raised at every world's start since 20 November**, and **seen whole on 21 November** - ready when the owner came through the portal, joins and south edge with it. Nothing is owed | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
 | 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands, was called perfect, and is **turned half round since 21 November** so its board faces the path; the way it was laid is recorded per pin, so one changed block no longer sweeps and re-lays it; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
 | 11 | **The Carrock** - the shaped rock in the Anduin | cut, base plate trimmed, pinned at 8307, 187, -4165, **stood by the world on the first start**, bedded into the river with stone, and **seen standing on 21 November** - the owner signed it off | `Carrock`, `Pins.SOURCE`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
+
+## The fingerposts - built 21 November
+
+**A post every thousand blocks and one at each junction.** `SignPosts` asks `RoadCommands.down` of every dry
+section, turns each laid road into the line its sections' own ends and bends run along, and marks it every 1000
+blocks measured along that line - so a road that switchbacks is not posted twice on one bend and unposted on the
+next. Junctions are read from the network's own ends: three roads end on 4647, -3315 and two on 8229, -3654, and
+the Gundabad road ends on the old forest road's line rather than on its end, so an end against an end and an end
+against a line, both within 12 blocks, are found. The arms are turned on the ways each junction's roads leave it.
+
+**The arms say what the blocks already know.** A town is down an arm when it lies within sixty degrees of it and
+further than 64 blocks away - a post standing inside the village points at nothing - and the nearest takes the
+single arm's board while the next takes the double's second board. The distance is the block entity's own measure,
+straight line from the board, and the name is the one `Places.towns` already carries.
+
+**A post is planted once**, and the plinth is the marker: a target with one already beside it is answered without
+a block being touched. That is what lets the placer run on a clock (every 400 ticks), from `/tmsign place`, and in
+any world without stacking posts, and a shoulder in a chunk nobody has made is not read at all, so a road posts
+itself as the country around it loads.
+
+**Not seen in a world**, and three limits worth knowing: a road is posted only once it is down, no post stands on
+a bridge (the dry sections either side are joined across it), and a third town down one arm's road is left off,
+since an arm carries two boards and no more.
 
 ## The keep's doorway - answered in a world, 20-21 November
 
@@ -905,11 +930,6 @@ all unverified.
 
 ## On hold, and what unblocks each
 
-- **Sign posts** - the towns are the filter now (`Places.TOWNS`, stood at their pins on the first start), so a board
-  cycles the blank and Hobbiton / Bree / Rivendell and nothing else. What is left is the placer: a post stood at a
-  road's junction, its arm turned to the side the town lies, and `setDestination(board, place)` called with the
-  distance measured for it. Nothing places posts today, and no posting pass waits on it - a hand-placed post already
-  reads right.
 - **Chinese** - unblocked by a public release; the rework's lines are translated then, not line by line.
 
 ## Not started

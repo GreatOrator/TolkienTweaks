@@ -1,6 +1,6 @@
 # The mod's commands
 
-Every command the pack registers. All thirteen roots are for arranging a world rather than for playing in one:
+Every command the pack registers. All fourteen roots are for arranging a world rather than for playing in one:
 each asks for **creative, or a gamemaster-level operator (op 2)**, and none of them is how a player plays the
 campaign. Nothing here reaches the world by a menu, so this file is also the only list of what the pack can be
 told to do. The sections after the map take the roots one at a time, except the three that have a file of their
@@ -9,7 +9,7 @@ own: the gate in `docs/gundabad-gate.md`, the cave in `docs/goblin-cave.md`, and
 
 ## The map — which root is which
 
-Read this before reaching for one. **Five roots touch blocks, and only one of them is general.**
+Read this before reaching for one. **Six roots touch blocks, and only one of them is general.**
 
 | root | what it is for | blocks |
 |---|---|---|
@@ -19,6 +19,7 @@ Read this before reaching for one. **Five roots touch blocks, and only one of th
 | `/tmcave` | the goblin cave, cut out of ground the world already made: `cut` behind the pin, `dress` to lay the hall from its structure. The campaign does this on its own as a player comes near. | cuts, fills |
 | `/tmcity` | the hand-built Rivendell: `origin`, `summon`, `folk`, `band [count]`, `relay`, `apron`, `drape`, `goto`, `status`. Detailed below. | lays, cuts, fills |
 | `/tmroad` | the graded roads, planned from two pinned ends and laid by the pass: `build [x z] [kind]`, `pin <x z> <x z> [kind]`, `plan <x z> [kind]`, `forget`. Detailed below. | lays, cuts, fills |
+| `/tmsign` | the fingerposts on the roads: `place` posts whatever the laid roads here are owed - one post every 1000 blocks and one at each junction - and a world does the same for itself every twenty seconds. Detailed below. | stands posts |
 | `/tmscene` | the chapter-one seam by hand: `state`, `note`, `play` (a rehearsal, taken away after), `stop`, `skip`, `forget`, `marks`, `route`. | stands bodies |
 | `/tmquest` | the work by hand: `give [count]`, `quit`, `complete [count]`, `spawn`, `campaign_giver <alliance>`. | none — it writes |
 | `/tmfaction` | `set` and `get` a player's standing with the three alliances; the same two are flat as `/tmsetfaction` and `/tmgetfaction`. | none |
@@ -113,6 +114,25 @@ entry point to the far end, the alignment is simplified and rounded the same way
 ground at the far end instead of on a deck. Nothing is swept, bridged or pillared, and the answer leaves the
 bridge out of it. A route is one line in `Roads` - a `Route.Crossing` where there is water, a
 `Route.Riverless` where there is not - so a dry road is the build's entry point and a far end.
+
+## `/tmsign` — the fingerposts on the roads
+
+| command | what it does |
+|---|---|
+| `place` | Posts whatever the roads here are owed: one post every thousand blocks of a laid road, measured along
+the road, and one at each junction where a road ends on another. A post already standing answers for itself, so a
+second `place` plants only what is missing. |
+
+A post is five blocks - a plinth, three courses of shaft and a cap - standing on the shoulder rather than in the
+band, with its arms in the cells beside the shafts, each pointing away from the post along the road it speaks for.
+An arm names the nearest town that lies down it (within sixty degrees of its line, and not the town the post
+already stands in) with the distance the arm measures for itself; when a second town lies the same way the double
+arm takes both, one destination per board. A third town down one road is left off, an arm carrying two boards.
+
+Nothing is planted twice: the plinth is the marker a target is answered by. A road is posted only once it is down,
+no post stands on a bridge, and a target whose chunk is not loaded waits for the next pass rather than making the
+country to stand a sign in. The world does this for itself every 400 ticks, so a road laid during a session is
+posted as its ground loads; `/tmsign place` does the same on demand and reports how many posts it planted.
 
 ## `/tmquest` — work, given by hand
 
