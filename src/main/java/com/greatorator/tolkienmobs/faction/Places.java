@@ -431,6 +431,18 @@ public final class Places extends SavedData {
     }
 
     /**
+     * The block a town's banner is drawn round, where the town has an arrival point of its own.
+     * <p>
+     * A mark is where a player is set down inside a build, which is the right centre for a jump and a board and the
+     * wrong one for the Shire: its village is entered through the portal in the overworld, and a circle drawn round
+     * the mark inside the village does not reach the crossing. Measured 20 November, the mark at -150, 114, -382 stands
+     * four hundred blocks from the doorway at -470, 97, -123 - further than the town's own radius - so the first thing
+     * a traveller does in Arda, stepping out of that doorway, was the one place the Shire was never announced. The
+     * crossing is the same constant the portal itself crosses at, so the banner and the doorway cannot drift apart.
+     */
+    private static final Map<String, BlockPos> ANNOUNCE = Map.of("hobbiton", ArdaMap.hobbitonGate());
+
+    /**
      * The towns stood where their pins are, with no player to ask.
      * <p>
      * {@link #ensure} is the campaign's way of naming ground a page needs, and it needs somebody standing there to ask
@@ -441,7 +453,17 @@ public final class Places extends SavedData {
      */
     public static void standTowns(ServerLevel level) {
         for (String id : TOWNS) {
-            if (known(id) == null || place(level, id) != null) continue;
+            if (known(id) == null) continue;
+            // A town with an arrival point is drawn round that, and re-stood when the point moves: the circle is this
+            // code's rather than a scout's, so a world told about the old centre is told about the new one.
+            BlockPos arrival = ANNOUNCE.get(id);
+            if (arrival != null) {
+                Place existing = place(level, id);
+                if (existing != null && existing.centre().equals(arrival) && existing.radius() == TOWN_RADIUS) continue;
+                set(level, id, arrival, TOWN_RADIUS);
+                continue;
+            }
+            if (place(level, id) != null) continue;
             // A mark outranks the pin for a town as it does for a jump: the block the owner walked inside the village
             // is where the banner's circle is drawn and where a board's distance is measured, and it is the same block
             // /tmtp and the page's needle point at.

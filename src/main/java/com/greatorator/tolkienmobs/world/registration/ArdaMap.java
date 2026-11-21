@@ -760,25 +760,20 @@ public final class ArdaMap {
      * <p>
      * The keep is underground by design - a hall cut into the mountain with the pass's own crown standing over it at
      * 267 - so it is written down here as a plan rather than surveyed: its corner is inside solid rock and nobody can
-     * stand on it to pin it. What <em>can</em> be stood on is the mark the owner walked: an ammolite on the chamber's
-     * floor at (5577, 189, -6918), at the foot of the keep's own doorway, and the box below is that mark read back
-     * through the template.
+     * stand on it to pin it. The floor is the one number the world settled: the template's rooms are lifted thirteen
+     * courses over its base, so the base is 176 and the rooms' floor is 189, level with the passage.
      * <p>
-     * The template carries the hold's floor as the rock under it - fourteen courses of deepslate whose top course is
-     * the floor a player stands on, with the rooms over it, the doorways cut from course fourteen. So the mark's
-     * course is that top course, local y 13, and the base is 176: the doorway's floor lands on 189 and the rooms fill
-     * the chamber's own section, 190 to 200, to the block. The two ends land on the passage rather than on the mark's
-     * own block: the box is centred there, 5516 being the corner that puts the middle of its hundred and twenty-two
-     * courses on the passage's axis 5577 (twenty blocks of rock west of the passage, nineteen east), and the south
-     * wall's own course, local z 182, on -6930 - nineteen past the passage's old end, which is where the ground over the
-     * box is 230 and more. It read x 5471 with the far doorway's middle on the mark; that put the body's own weight off
-     * the passage, and the box was measured for the centred one.
+     * The x is the entrance's number rather than the box's. The south wall's four five-wide openings stand on a
+     * thirty-block beat - local x 13..17, 43..47, 74..78 and 104..108 - so the box centred on the passage's axis
+     * (5516) shared only one column with the pass, and the opening the first plan was written around stood twenty-nine
+     * blocks east of it: the chamber ended at wall. Twelve east (5528) puts the 43..47 opening at world 5571..5575,
+     * well inside the pass's 5563..5591, and that is the door the hold is entered by - see docs/gundabad-keep.md.
      * <p>
-     * The hall out of the gate is carried north to {@link #keepWall()} and its doorway is cut the wall's depth beyond
-     * that, so the gate is laid first and the keep laid over it: the keep's own wall and its doorway then stand whole,
-     * and the cut behind them is air the keep's rooms already hold.
+     * The box stays under the crown: the crown runs x 5496..5656, so 5528..5649 is still inside it with seven blocks
+     * to spare on the east. The south wall's own course, local z 182, is on -6930 - nineteen past the passage's old
+     * end, where the ground over the box is 230 and more.
      */
-    public static final int KEEP_X = 5516;
+    public static final int KEEP_X = 5528;
     public static final int KEEP_Z = -7112;
     public static final int KEEP_WIDE = 122;
     public static final int KEEP_TALL = 26;

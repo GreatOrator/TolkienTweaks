@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A mustering hall stands turned half round, so its board faces the path.** The hall is one build with one front, and
+          the owner walked it in the Shire and found the notice board at the end away from the path it stands on.
+          `TownHalls` now lays the hall with `Rotation.CLOCKWISE_180` about its box's own middle: the pin, the floor and
+          the footprint do not move, only the front does - the box is placed from its far corner and the template read
+          back turned to match. A hall standing the other way is taken out before the new one goes down, because the
+          file does not carry every cell of its 16x15x16 box (972 air, 1307 missing of 3840) and a turned lay over an
+          unturned hall would leave the old walls standing where the file says nothing. Its own bottom course is
+          complete, so the floor comes back with the lay, and the guard is `Sites.wholeAt` read turned, which leaves a
+          hall that already stands turned alone.
+
+- **The Shire is announced at the portal, which is where a traveller arrives.** `Places.standTowns` drew a town's
+          circle round its mark, and the Shire's mark is (-150, 114, -382) - four hundred blocks from the crossing at
+          (-470, 97, -123) and further than the town's own 280-block radius, so the first thing a player does in Arda,
+          stepping out of that doorway, was the one place the village was never named. `Places` now has an `ANNOUNCE`
+          point per town, read from `ArdaMap.hobbitonGate()` - the same constant the portal itself crosses at, so the
+          banner and the doorway cannot drift - and a town given one is re-stood when the point moves, so a world that
+          was told about the old centre is told about the new one on its next start.
+
+- **The keep's own doorway now stands in the gate's chamber.** The owner walked `Work Verification` up the passage and
+          found the hold's entrance at wall: the south wall reached the chamber with wall over twenty-six of its
+          twenty-nine columns, and the doorway the plan was written around was twenty-nine blocks east of it. Read from
+          the template, the wall carries four five-wide, seven-tall openings at local x 13..17, 43..47, 74..78 and
+          104..108, two courses of wall behind them and twelve at local 58..63. The plan moves **twelve east**, `KEEP_X`
+          5516 to 5528, which puts the 43..47 opening at world 5571..5575 inside the passage's 5563..5591;
+          `GundabadKeep.DOOR_X` follows it (106 to 45) so `clearMouth` dresses the ground in front of the door the hold
+          is entered by. **And the gate no longer cuts a passage through that wall:** `extendHall` cut a hole the
+          passage's own width, fourteen courses deep, on every start - on a first start the template wrote over it and on
+          any later start it took the doorway with it - so the passage now ends at the wall and the door is the keep's
+          own. The box still fits the crown (x 5496..5656) with seven blocks to the east.
+
+- **A road begins from the block a player is set down on, not only from within thirty-two blocks of its line.**
+          `RoadCorridor.look` reached 32 blocks, and a road's end stands at a build's door while the build's own mark -
+          the block `/tmtp` puts a caller on - can be much further inside it. Gundabad's road begins at the gate's
+          courtyard, 5578, -6769, and the hold's mark is 5578, 190, -6833, sixty-four blocks away, so a player
+          teleported to the hold stood outside the reach of its own road and nothing began; the log of `Work
+          Verification` shows the road's first section begun at world start from 5704, -6680 and waiting on ground
+          nobody was near, with its next sections only begun at 19:39 when a teleport to the Carrock loaded chunks of
+          its line. The reach is 96 now, and the cost of the wider reach is a pass that waits for its head's ground,
+          which is what it already did.
+
 - **The Shire stands before anybody can reach the portal, and the pass keeps the server awake to do it.** The portal out
           of the overworld opens on the village's own crossing, -470, 97, -123, which is inside the footprint its clearing
           pass works over - x -700..-149 by z -512..-44 - so a village raised by somebody's arrival is a village that

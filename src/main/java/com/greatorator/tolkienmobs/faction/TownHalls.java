@@ -5,6 +5,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -36,6 +37,15 @@ public final class TownHalls {
     private static final Logger LOGGER = LoggerFactory.getLogger(TownHalls.class);
     /** The prefix a hall pin is kept under, so a pin can be read back as a town's hall. */
     private static final String KEY = "hall:";
+
+    /**
+     * Which way a hall is turned on its pin: half round, so the front faces the way it was pinned for.
+     * <p>
+     * The hall is one build with one front, and the owner walked it in the Shire and found the notice board at the end
+     * away from the path. Half a turn about the box's own middle leaves the pin, the floor and the footprint exactly
+     * where they were - only the front moves - so the same pin now stands the hall the right way round.
+     */
+    private static final Rotation TURNED = Rotation.CLOCKWISE_180;
 
     private TownHalls() {
     }
@@ -85,9 +95,8 @@ public final class TownHalls {
      * <p>
      * The pin is the block the builder stood in, so the hall's own ground course is laid in the block they stood on:
      * the floor comes up into that block rather than sitting a course above it, and the builder keeps their footing on
-     * the hall's floor. It is laid unturned - a template has one front, and which way that front should face is the
-     * town's business rather than a pin's - and it is left alone once it stands, since the guard reads the template's
-     * own blocks back out of the world.
+     * the hall's floor. It is laid turned half round ({@link #TURNED}) and left alone once it stands, since the guard
+     * reads the template's own blocks back out of the world.
      *
      * @return how many blocks the template holds, or nil when there is no pin, no town, the town is not finished yet or
      *         the hall already stands
@@ -98,7 +107,15 @@ public final class TownHalls {
         return stand(level, town, pin);
     }
 
-    /** Lays the town's hall with its low corner under the pin, holding to the template's own blocks as the guard. */
+    /**
+     * Lays the town's hall turned half round on the pin, holding to the template's own blocks as the guard.
+     * <p>
+     * A half turn about the box's own middle keeps the pin, the floor and the footprint where they are, so the box is
+     * placed from its far corner and the template is read back turned to match. A hall standing the other way is taken
+     * out first: the file does not carry every cell of its box, so a turned lay over an unturned hall would leave the
+     * old walls standing where the file says nothing. Its own bottom course is complete, so the floor comes back with
+     * the lay.
+     */
     private static int stand(ServerLevel level, String town, BlockPos pin) {
         String template = template(town);
         if (template == null) return 0;
@@ -110,12 +127,26 @@ public final class TownHalls {
         if (size.getX() <= 0 || size.getY() <= 0 || size.getZ() <= 0) return 0;
         BlockPos corner = pin.below();
         load(level, corner, size.getX(), size.getZ());
-        if (Sites.standsAt(level, template, corner)) return 0;
-        build.placeInWorld(level, corner, corner,
-                new StructurePlaceSettings().setRotation(Rotation.NONE), level.getRandom(), 2);
-        LOGGER.info("{}'s hall stands at {} - {} blocks of {}, laid unturned on the pin",
+        BlockPos at = corner.offset(size.getX() - 1, 0, size.getZ() - 1);
+        if (Sites.wholeAt(level, template, at, TURNED)) return 0;
+        sweep(level, corner, size);
+        build.placeInWorld(level, at, at,
+                new StructurePlaceSettings().setRotation(TURNED), level.getRandom(), 2);
+        LOGGER.info("{}'s hall stands at {} - {} blocks of {}, turned half round on the pin",
                 town, corner.toShortString(), size.getX() * size.getY() * size.getZ(), template);
         return size.getX() * size.getY() * size.getZ();
+    }
+
+    /** Takes the hall's own box out, so a hall laid again is a hall and not the old one with a second in it. */
+    private static int sweep(ServerLevel level, BlockPos low, Vec3i size) {
+        int cleared = 0;
+        for (BlockPos at : BlockPos.betweenClosed(low,
+                low.offset(size.getX() - 1, size.getY() - 1, size.getZ() - 1))) {
+            if (level.getBlockState(at).isAir()) continue;
+            level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+            cleared++;
+        }
+        return cleared;
     }
 
     /** Asks for every chunk the hall's box touches, so a hall pinned in country nobody has visited has ground. */

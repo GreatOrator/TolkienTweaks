@@ -185,8 +185,17 @@ public final class RoadCorridor {
         }
     }
 
-    /** How near a player stands to a road's recorded line for the ground to begin it, in blocks. */
-    private static final int NEAR = 32;
+    /**
+     * How near a player stands to a road's recorded line for the ground to begin it, in blocks.
+     * <p>
+     * Ninety-six rather than the thirty-two this was, measured on 20 November: a road's end stands at a build's door,
+     * and a build's own mark - the block /tmtp sets a caller on - can be sixty blocks inside it. Gundabad's road begins
+     * at the gate's courtyard, 5578, -6769, and the hold's mark is 5578, 190, -6833, sixty-four blocks away, so a
+     * player teleported to the hold stood outside the reach of its own road and nothing began; the road's next section
+     * started the moment a teleport to the Carrock loaded a chunk of its line. The cost of the wider reach is a pass
+     * that waits for its head's ground, which is what it does anyway.
+     */
+    private static final int NEAR = 96;
 
     /** How often the players are looked at, in ticks: once a second, which is nearer than a walker outruns a road's start. */
     private static final int NEAR_EVERY = 20;

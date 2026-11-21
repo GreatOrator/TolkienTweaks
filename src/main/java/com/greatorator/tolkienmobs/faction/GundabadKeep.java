@@ -21,31 +21,30 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
  * so placing it is placing the world's own build: every cell the file holds goes down, the rock with it, and the air
  * inside it with it. Nothing is dressed afterwards, because there is nothing to dress - the build is the hold.
  * <p>
- * What {@link ArdaMap#keepPlan()} gives is the corner it was measured to, not a corner somebody walked: the keep is
- * underground, so the only point of it that could be stood on is the doorway's floor, and the owner marked that with an
- * ammolite on the chamber's floor. {@link #DOOR_X}, {@link #DOOR_FLOOR} and {@link #DOOR_FACE} are the template's own
- * coordinates of that doorway, and the plan is the mark worked backwards through them - so the doorway's middle lands
- * on the mark's x, its floor on the mark's course, and the wall on the mark's plane, with the body running the rest of
- * the template's depth into the mountain behind it.
+ * What {@link ArdaMap#keepPlan()} gives is the corner the box is written at, not a corner somebody walked: the keep is
+ * underground, so it is a plan rather than a survey. The x is the entrance's number rather than the box's. The south
+ * wall's four five-wide openings stand on a thirty-block beat, so a box centred on the chamber's axis put none of them
+ * in the chamber - the passage ended at wall - and twelve east brings the 43..47 opening to world 5571..5575, inside
+ * the pass's 5563..5591. That is the door the hold is entered by, and {@link #DOOR_X} names it for the mouth.
+ * {@link #DOOR_FLOOR} and {@link #DOOR_FACE} are the template's own course and plane of that wall.
  * <p>
- * The order matters. {@code GundabadGate} carries its chamber north to the keep's wall and clears a door through where
- * that wall will stand, so the gate is laid first and the keep laid over it: the keep's own wall is then written whole,
- * with its own doorway the only way in, and the clearing the hall made is air the keep's rooms already hold. Laid the
- * other way round the hall cuts a passage as wide as the chamber through the keep's wall, and the hold has no door.
+ * The way in is the keep's own door. The gate carries its chamber north to the keep's wall and stops there; the wall is
+ * the template's, and the hold is entered through the opening in it. The gate no longer cuts a passage as wide as the
+ * chamber through that wall, because it would take the doorway with it - a hold entered through a hole the width of the
+ * hall has no door at all.
  * <p>
- * Once the wall is whole the doorway's mouth is dressed - {@link #clearMouth} - because the ground it opens onto is
- * the chamber's, not the build's: the chamber's floor stands a course higher than the hold's own and the mountain's
- * rock comes down over the eastern half of the opening, so the wall alone would leave a five-wide doorway reading as a
- * one-block slot. The dressing is a box around the door and is safe on every pass.
+ * The doorway's mouth is still dressed - {@link #clearMouth} - because the ground it opens onto is the chamber's, not
+ * the build's, and the chamber's ground can stand a course higher than the hold's own, which leaves a five-wide doorway
+ * reading as a one-block slot. The dressing is a box around the door and is safe on every pass.
  */
 public final class GundabadKeep {
     /**
-     * The doorway the plan is written around: the far one of the south wall, which is the one an ammolite was put at
-     * the foot of. The template's doorways are cut at local x 13 to 17, 43 to 47, 74 to 78 and 104 to 108 - five wide
-     * and seven tall, from course fourteen up - and the far one is taken so the keep's body runs away from the way in
-     * rather than straddling it.
+     * The doorway the hold is entered by: the second of the south wall's four, which is the one the box's shift puts in
+     * the chamber. The template's doorways are cut at local x 13 to 17, 43 to 47, 74 to 78 and 104 to 108 - five wide
+     * and seven tall, from course fourteen up - and with the plan at 5528 this one stands at world 5571..5575, inside
+     * the pass's 5563..5591 rather than twenty-nine blocks east of it.
      */
-    private static final int DOOR_X = 106;
+    private static final int DOOR_X = 45;
 
     /** The course that doorway's floor is the top of: the fourteen courses of deepslate under the rooms. */
     private static final int DOOR_FLOOR = 13;

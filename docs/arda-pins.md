@@ -238,29 +238,30 @@ pitched by the campaign's own page, and the numbers - 122 by 26 by 183 - were th
 could be stood on because the corner is inside solid rock. What *can* be stood on is the mark the owner walked: an
 ammolite on the chamber's floor at **(5577, 189, -6918)**, at the foot of the hold's own doorway. That mark is where
 the plan started, read backwards through the template; on 18 November the box was re-centred on the passage out of the
-gate, so the plan is `ArdaMap`'s numbers now rather than the mark's.
+gate, and on 21 November it moved twelve east so one of the south wall's own openings stands in that passage. The plan
+is `ArdaMap`'s numbers now rather than the mark's.
 
 | | |
 |---|---|
 | floor as the template carries it | fourteen courses of deepslate, its **top course the floor a player stands on**, rooms over it, doorways from course fourteen up |
 | the mark's course | that top course, local y 13, so the base is **176** |
-| the doorway | the far one of the south wall, local x 104-108, its middle **106**, five wide and seven tall |
+| the doorway | the second of the south wall's four, local x 43-47, its middle **45**, five wide and seven tall |
 | the wall's course | local z 182, the last course of the depth |
-| the plan | **x 5516, y 176, z -7112**, unturned |
-| what that puts where | the box's middle course (local x 61) on the passage's axis **5577**, the doorway's floor on the mark's course **189** (local y 13), the south wall's own course (local z 182) on **-6930**, and the rooms in the chamber's own section, **190 to 200** |
+| the plan | **x 5528, y 176, z -7112**, unturned |
+| what that puts where | the doorway at world **5571-5575**, inside the passage's **5563-5591** (the passage's axis 5577 is four east of the door's middle), its floor on the mark's course **189** (local y 13), the south wall's own course (local z 182) on **-6930**, and the rooms in the chamber's own section, **190 to 200** |
 
 The body runs the rest of its 183 courses west and north into the mountain. Every corner of the box is solid stone at
 176 to 201, with 244 to 315 of rock over it, so the hold is buried by design and only its doorway shows - the way the
 owner's own example had a doorway flush with the floor and the wall running away from it either side.
 
-**Order is the other half of it.** The gate's hall is carried north to `ArdaMap.keepWall()` - the keep's south wall -
-and cleared fourteen courses through where that wall will stand, so the gate lays first and the keep lays over it: the
-keep's own wall and its own five-wide doorway are then written whole, and the clearing the hall made is air the keep's
-rooms already hold. Laid the other way round the hall opens the wall across the chamber's whole width, and the hold
-has no door at all. `GundabadKeep.autospawn` runs after `GundabadGate.autospawn` for exactly that reason, and reads the
-template's own blocks through `Sites.standsAt` to leave a keep that is already standing alone - the test used to be
-the doorway's floor cell, and Arda's rock under the mountain is deepslate too, so every world answered "already
-standing" and the hold was never laid.
+**The way in is the hold's own door.** The gate's hall is carried north to `ArdaMap.keepWall()` - the keep's south
+wall - and stops there; the hold is entered through the template's five-wide opening in that wall, the one the plan was
+moved twelve east to bring into the chamber. The gate used to cut a hole the passage's own width, fourteen courses
+deep, through the wall on every start: on a first start the keep then wrote over it, and on any later start it took the
+doorway with it. `GundabadKeep.autospawn` runs after `GundabadGate.autospawn` and reads the template's own blocks
+through `Sites.standsAt` to leave a keep that is already standing alone - the test used to be the doorway's floor cell,
+and Arda's rock under the mountain is deepslate too, so every world answered "already standing" and the hold was never
+laid.
 
 `/tmgate keep` lays it by hand at the same plan - no position, no facing, because there is one box the hold fits. The
 box's chunks are asked for by hand before the template is placed: they begin at chunk x 344, z -445, past anything a
@@ -269,13 +270,14 @@ was never laid looked exactly like one that was already standing.
 
 ### The doorway's mouth
 
-A wall is not a way in. With the hold laid, the ground south of its wall still stands a course high: course 190 is
-solid across the chamber's whole width, so at the height a player walks the opening reads as a slot, and east of it the
-mountain's rock comes down from 196. `GundabadKeep.clearMouth` takes a box out around the door:
+A wall is not a way in. The ground south of the wall can stand a course high - course 190 solid across the chamber,
+so at the height a player walks the opening reads as a slot - and the mountain's rock can come down over half of it.
+That was measured at the old far doorway; at the new one the mouth is the passage's own floor, and the box clears
+nothing it should not. `GundabadKeep.clearMouth` takes a box out around the door:
 
 | | |
 |---|---|
-| columns | the doorway's five (5620-5624) and four more each side, **5616-5628** |
+| columns | the doorway's five (5571-5575) and four more each side, **5567-5579** |
 | out from the wall | **eight courses**, z -6929 to -6922, which is where that ground ends and the chamber is already open |
 | height | the floor's course **189** is never touched; **190 to 196** is cleared, the door's own seven |
 | measured | **728 cells** in the box; how many are taken out is printed on each pass |
@@ -290,16 +292,16 @@ The hold is final: one location, one way onto the ground, and one way for a page
 
 | | |
 |---|---|
-| plan | **x 5516, y 176, z -7112**, unturned, 122 by 26 by 183 |
-| doorway | the template's far one, local x 104-108 (**5620-5624**), courses **190-196**, floor course **189**; the gate's own cut through the wall is the passage's width, **5563-5591** on the axis 5577 |
+| plan | **x 5528, y 176, z -7112**, unturned, 122 by 26 by 183 |
+| doorway | the template's second, local x 43-47 (**5571-5575**), courses **190-196**, floor course **189**, inside the passage's **5563-5591**; the gate cuts nothing through the wall |
 | south wall | **z -6930**, the template's last course |
 | rooms | 190-200, the gate chamber's own section |
 | buried | solid stone at every corner course, 244 to 315 of rock over the top |
 
 **How it comes onto the ground.** `GundabadKeep.autospawn` runs in `MilestoneHandler` straight after
 `GundabadGate.autospawn` and before `OrcPieces.raise`: the gate's hall is carried north to `ArdaMap.keepWall()`
-and cleared through where the keep's wall will stand, so the gate goes first and the keep's own wall and doorway
-are written whole over that clearing. The hold lays itself on the first start of a world, loads its own chunks
+and ends there, and the hold is entered through its own doorway. The hold lays itself on the first start of a world,
+loads its own chunks
 (the box begins at chunk x 344, z -445, past anything a world keeps for its spawn), dresses its doorway's mouth,
 and is left exactly as it is on every start after that - the test is `Sites.standsAt` over the template's own
 blocks. `/tmgate keep` is the same laying by hand, and it reports the count.

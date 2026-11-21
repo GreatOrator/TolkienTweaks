@@ -30,10 +30,10 @@ pin's y is 176.**
 
 | | |
 |---|---|
-| pin | **(5516, 176, −7112)** - the template's own north-west bottom corner, no rotation |
+| pin | **(5528, 176, −7112)** - the template's own north-west bottom corner, no rotation |
 | floor | rooms' floor block **189**, walked on **190**, level with the passage's floor and interior |
-| box | **x 5516 … 5637**, **z −7112 … −6930**, roof course **201** |
-| across | centred on the passage's axis (x 5577) to within half a block, with ~20 blocks of rock to the west and ~19 to the east inside the crown's 160 |
+| box | **x 5528 … 5649**, **z −7112 … −6930**, roof course **201** |
+| across | twelve east of centred, so the south wall's 43..47 opening stands at world 5571..5575 inside the passage (5563..5591); the box is still inside the crown's x 5496..5656 with seven blocks to spare |
 | south wall | **z −6930**, where the rock stands **230 … 249** over it - the shallowest cover anywhere on the box, and still 18 blocks above the roof |
 | north wall | **z −7112**, three blocks past the crown's own end, where the drawn ground is 279 |
 | gap to the passage | **none.** The passage is carried to the wall: 53 blocks out from the rear face, its last course on **z −6930** |
@@ -45,19 +45,21 @@ Two numbers are choices rather than measurements:
   would break out of the slope as a stone roof. Nineteen blocks further north puts the whole box under 230
   or more, and the passage was carried those nineteen blocks (`HALL_INTO_ROCK` gives way to the plan:
   `ArdaMap.keepWall()`).
-- **x 5516, not 5517.** A 122-wide template cannot centre on a 29-wide passage to the block; 5516 leaves
-  twenty blocks of rock west and nineteen east.
+- **x 5528, not 5516.** A 122-wide template cannot centre on a 29-wide passage to the block, and centring it put
+  none of its south-wall openings in the passage at all: at 5516 the nearest of the four shared one column with it and
+  the one the first plan was written around stood twenty-nine blocks east. Twelve east puts the 43..47 opening at
+  5571..5575, which is the door, and leaves seven blocks of crown to the east.
 
-**The join is built.** The passage runs 53 blocks at floor 189 / ceiling 200, its last course on the keep's
-south wall, and a **29 wide × 10 tall** doorway is cut through that wall. The template has **no door on any
-of its four faces** - all four are wall at floor level, which is what an interior level of a dwarven hold
-looks like - so the doorway is ours, and it is cut **fourteen courses deep**, which is the deepest the wall
-goes across the passage's own columns (one course at the face, one behind most of the eastern half, three to
-nine on the west, fourteen where an inner mass stands just inside it). It is cleared every time the hall is
-laid, so **raising the keep and then laying the gate again is what opens the door**; until a keep stands
-there it is a pocket in the rock.
+**The join is the hold's own door, 21 November.** The passage runs 53 blocks at floor 189 / ceiling 200 and its last
+course is the keep's south wall. That wall carries **four five-wide, seven-tall openings** at local x 13..17, 43..47,
+74..78 and 104..108 - read from the template itself, not guessed - and behind them it is two courses deep over most of
+the passage's twenty-nine columns, twelve at local 58..63 where an inner mass stands. The plan is written twelve east of
+centred so the **43..47 opening stands at world 5571..5575**, inside the passage's 5563..5591; that is the way in. The
+gate used to cut a hole the passage's own width, fourteen courses deep, through that wall on every start - which on a
+first start the template then wrote over and on any later start took the doorway with it - so **it no longer cuts one**:
+the passage stops at the wall and `clearMouth` dresses the ground in front of the door.
 
-The keep's plan lives in `ArdaMap` beside the gate's - `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` 176, `KEEP_WIDE`
+The keep's plan lives in `ArdaMap` beside the gate's - `KEEP_X` 5528, `KEEP_Z` -7112, `KEEP_FLOOR` 176, `KEEP_WIDE`
 122, `KEEP_TALL` 26, `KEEP_DEEP` 183, `keepPlan()` and `keepWall()` - because the passage's end is the keep's wall in
 every world and must not be measured off rock that the hall itself changes. It read 5471/-7100/176 until 15 November
 2026, the first plan; x and z moved to the box this file was measured for, and y stayed 176. It was then read as 187
@@ -68,9 +70,10 @@ opening into the void under them and the keep's floor standing as the chamber's 
 **Settled, 18 November 2026, at `KEEP_FLOOR` 176.** The 187 was the template's base read as its floor: a fresh
 world drew the keep exactly at that plan and had no way in, with the rooms on **200** and the chamber's floor on
 **189** - the chamber opening into the void under them and the keep's floor standing as its ceiling. `9f88c9a0`
-dropped the eleven courses, so the constants read `KEEP_X` 5516, `KEEP_Z` -7112, `KEEP_FLOOR` **176**: the rooms'
-floor 189, level with the passage, which is the plan this file's own numbers give. **The check still owed** is a
-brand-new world and one walk from the gate to the rooms.
+dropped the eleven courses, so the constants read `KEEP_X` 5528 (5516 until 21 November), `KEEP_Z` -7112,
+`KEEP_FLOOR` **176**: the rooms' floor 189, level with the passage, which is the plan this file's own numbers give.
+**Walked 21 November:** the floor was right and the entrance was not - see *The join* above. **The check still owed**
+is one walk up the passage in a world made after the shift.
 
 **Two things followed the move.** The captain and the wraith are placed from `ArdaMap.keepThrone()` and
 `keepThroneWatch()` - the seat is thirty blocks in from the plan's corner, seventeen up and seventy-six back - so they
@@ -108,10 +111,10 @@ location, like the gate. `/tmpin build <name>` - which pins the caller's feet, a
 template's **corner** - stays as it is for everything a builder can walk to.
 
 `/tmpin build <name>` pins **the caller's feet**, and the pin is the template's **corner**, not its centre.
-That is a problem here that is not a problem anywhere else: the corner at (5516, 176, −7112) is inside solid
+That is a problem here that is not a problem anywhere else: the corner at (5528, 176, −7112) is inside solid
 rock, so there is nowhere to stand. The three ways out:
 
-- **Coordinates on the command** - `/tmpin build keep 5516 176 −7112`. The smallest change, and the only one
+- **Coordinates on the command** - `/tmpin build keep 5528 176 −7112`. The smallest change, and the only one
   that makes a buried build pinnable at all without digging to it first.
 - **A plan of its own**, the way the gate has `ArdaMap.gatePlan()` and `/tmgate site` - the keep is a fixed
   piece of one location, so it can be written down once rather than measured per world.
@@ -141,7 +144,7 @@ an army stands on it", and that is where six of the nine pieces go.
 
 ## What is settled, and what is not
 
-Settled by the ground and the templates: the rooms' floor top is 189, its pin is **(5516, 176, −7112)**, its
+Settled by the ground and the templates: the rooms' floor top is 189, its pin is **(5528, 176, −7112)**, its
 box is 122 × 26 × 183 running from z −7112 to −6930, its south wall meets the passage after 19 more blocks,
 and it is buried under 18 to 55 blocks of rock with a doorway to cut in a wall that has none.
 
@@ -149,8 +152,8 @@ The pin route is settled by the plan (`ArdaMap.keepPlan()`), so nothing has to b
 
 Not settled:
 
-- **The doorway's shape.** 29 wide and ten tall is the passage's own section; a dwarven door might be
-  narrower with the full width opening into a hall just inside.
+- **The doorway's shape - settled 21 November.** The passage's own section is 29 wide and ten tall, and the way in is
+  the template's five-wide door at 5571..5575 with wall either side of it.
 - **Whether the crown is used at all.** Two watch posts at 267 is a skyline the pass's shaping never asked
   for; if the hold is meant to be entirely underground they belong down in the courtyard instead.
 - **`orc_hall`'s 34 blocks.** Only 47 of rock stand over it at the back of the crown, and less towards the
@@ -166,3 +169,14 @@ row. Read from the plan point the same numbers land on (5593, 188, −6852), sto
 "not standing" every time the server came up and re-laid the whole gate: its template's air took the half of
 anything standing on the footprint that was inside the box. The marker cell that answers correctly is
 **(5513, 188, −6852)**, and it is netherrack in the test world.
+
+## 21 November 2026 - the entrance, settled in a world
+
+The owner walked `Work Verification` up the gate's passage. The floor was right - the rooms on 189, level with the
+passage, the number 18 November settled - and the way in was not: the hold's south wall reached the chamber with wall
+over twenty-six of its twenty-nine columns, and the doorway the plan was written around stood twenty-nine blocks east
+of the passage. The template's own file settled the shape of it: four five-wide openings at local x 13..17, 43..47,
+74..78 and 104..108, wall two courses deep behind them, twelve at local 58..63. The plan moved **twelve east** to
+`KEEP_X` 5528, which puts the 43..47 opening at 5571..5575 in the chamber, `DOOR_X` moved with it (106 to 45) so the
+mouth is dressed at the door that is used, and the gate stopped cutting its own hole through the wall. **Not seen:**
+the walk into the rooms and the hold's first room in a world made after this.

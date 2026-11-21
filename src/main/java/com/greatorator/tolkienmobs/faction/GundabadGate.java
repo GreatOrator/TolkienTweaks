@@ -99,17 +99,6 @@ public final class GundabadGate {
     private static final int HALL_WALL = 2;
     private static final int HALL_ROOF = 3;
     /**
-     * How many courses of the keep's own wall the doorway is cut through, so a wall laid after the hall still opens.
-     * <p>
-     * Measured, not guessed. Across the passage's own twenty-nine columns (keep x 47 to 75) the keep's south wall is a
-     * single course at the face, one course deep behind most of the eastern half, three to nine on the west, and up to
-     * fourteen where an inner mass stands just inside it. Fourteen is the depth that opens a way through at every one
-     * of the twenty-nine columns rather than only at the middle ones, and what it cuts is the keep's own wall and the
-     * inner mass behind it - never the rock, which the template replaces anyway.
-     */
-    private static final int HALL_DOOR_DEPTH = 14;
-
-    /**
      * The chamber's own floor and ceiling, measured off the rear face and then fixed: the floor's top is two courses
      * above the build's base (y 189) and the first course of rock over the passage is thirteen (y 200). They are fixed
      * because reading them off the world means reading around the rubble that is lying in the passage, and one stray
@@ -366,12 +355,11 @@ public final class GundabadGate {
 
         // Its two walls, outside the passage, stepping a course lower outward. They run as far north as the passage
         // does, which is the keep's wall.
-        int wallEnd = end;
         for (int side = 0; side < 2; side++) {
             int x = 0;
             for (int w = 0; w < HALL_WALL; w++) {
                 x = side == 0 ? lowX - 1 - w : highX + 1 + w;
-                for (int z = base.getZ() - 1; z >= wallEnd; z--) {
+                for (int z = base.getZ() - 1; z >= end; z--) {
                     int top = roofY + HALL_ROOF - 1 + rough(x, z, 2) - w;
                     for (int y = base.getY(); y <= top; y++) {
                         added += lay(level, base.getX() + x, y, z);
@@ -379,20 +367,10 @@ public final class GundabadGate {
                 }
             }
         }
-        // The doorway: the keep's south wall stands on the passage's last course, and the keep is laid after this hall,
-        // so the way in is cleared the depth of that wall beyond the end and cut again every time the hall is laid.
-        // Laying the gate after a keep has been raised is therefore what opens the hall into it; until a keep stands
-        // there, the clearing is a pocket a wall deep in the rock the passage already ends in, and nothing else.
-        for (int z = wallEnd; z > wallEnd - HALL_DOOR_DEPTH; z--) {
-            for (int x = lowX; x <= highX; x++) {
-                for (int y = floorTop + 1; y < roofY; y++) {
-                    BlockPos inside = new BlockPos(base.getX() + x, y, z);
-                    if (!level.getBlockState(inside).isAir()) {
-                        level.setBlock(inside, Blocks.AIR.defaultBlockState(), 2);
-                    }
-                }
-            }
-        }
+        // Nothing is cut through the wall. The passage ends on the keep's own south wall and the way in is the
+        // template's doorway in it - the one ArdaMap.KEEP_X was moved twelve east to bring into the chamber. Cutting a
+        // hole the passage's own width, fourteen courses deep, is what used to open the hold; it also took the doorway
+        // with it on every start after the first, which left a hold with a hole instead of a door.
         return added;
     }
 
