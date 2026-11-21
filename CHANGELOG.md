@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A fingerpost near a chunk border no longer waits forever for the column across it.** The placer reads the
+verge outward from its target in a ring, and gave up on the whole post when any column in that ring stood in a
+chunk nobody had made - so a target a few blocks from a border answered the same nothing every twenty seconds,
+however long the road around it had been loaded. The unread column is passed over now and the nearest loaded one
+is planted; only a target whose whole ring is in unmade country is left for a later pass. **Not seen in a
+world.**
+
 - **The fingerposts' lettering now sits on the boards instead of half a board off them.** A world showed the double arm reading `Hobbiton` and `Rivendell` correctly but lettered past the far end of the plank and on one face only: a pose turned by `Axis.YP` and a model turned by a blockstate's `y` do not turn the same way for the same number, so writing the lettering's yaw as the model's put it a hundred and eighty degrees along the board. The yaw is the model's negation now - east 90, west 270 - and the words start at the shaft end again. **Not re-seen in a world.**
 
 - **The fingerposts were fixed where the world found them wrong: one post per crossing, arms at the top, one town per arm, arrows pointing outward, and the post on the verge instead of the road.** The placer's first pass in a world stood two posts ten blocks apart at the Gundabad crossing, hung the boards at the bottom of the post, put Rivendell on the Gundabad arm, showed east and west arms pointing back at the shaft, and stood the post on the paving. A thousand-block mark within 32 blocks of a junction is that junction's post now and a join found from two pairs of ends is folded into one target; the arms go beside the top course, flush under the cap, and step down a course when a cell is taken; a town goes on the arm it lies most nearly down and on no other, so two roads meeting at a shallow angle no longer share a board; the two blockstates turned a south-drawn model with a north-drawn model's compass, so `facing=east` showed an arm facing west - east and west now turn the right way, the lettering and the block's shape with them; and the verge is the nearest column clear of every road in the network by the band's half-width and three blocks more, rather than a width guessed from the road's own kind.

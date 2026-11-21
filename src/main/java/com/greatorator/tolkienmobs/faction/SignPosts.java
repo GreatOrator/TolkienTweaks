@@ -521,29 +521,40 @@ public final class SignPosts {
     }
 
     /**
-     * The columns a post at this target may stand on, the nearest clear one first, or null while any of them is in a
-     * chunk nobody has made.
+     * The columns a post at this target may stand on, the nearest clear one first, or null when not one of them is in
+     * a chunk that has been made.
      * <p>
      * The ring is walked outward from one block past the band's own edge - a post two blocks off a 3-wide road is on
      * its edge, not beside it - and every column clear of every road is kept, then the list is ordered by how far each
      * stands from the target. The nearest is what a reader of the board expects: at the crossing, not in the next
      * field.
+     * <p>
+     * A column in a chunk nobody has made is passed over, not waited for. A target near a chunk border has a ring
+     * that reaches over it, and holding the whole post back for the one column it cannot read is a post that never
+     * stands: the clock would ask for it every twenty seconds, find the same unread column, and answer the same
+     * nothing, however long the road was walked. The nearest column that is loaded is a foot away from the one that
+     * is not, and a post a block further along the verge is a post. Only a target with nothing readable at all - the
+     * whole ring in country nobody has made - is left for a later pass.
      */
     private static List<BlockPos> verges(ServerLevel level, List<Line> lines, int x, int z, int half) {
         int from = Math.max(1, half) + ASIDE + 1;
         List<BlockPos> posts = new ArrayList<>();
+        boolean read = false;
         for (int out = from; out <= from + CLEAR; out++) {
             for (int[] step : AROUND) {
                 int px = x + step[0] * out;
                 int pz = z + step[1] * out;
-                // A verge in a chunk nobody has made is not read at all: posting a road is not a reason to make country.
-                if (!level.hasChunk(px >> 4, pz >> 4)) return null;
+                // A verge in a chunk nobody has made is not read at all, and not waited for either: posting a road is
+                // not a reason to make country, and one unread column across a border must not hold up the post.
+                if (!level.hasChunk(px >> 4, pz >> 4)) continue;
+                read = true;
                 if (!clear(lines, px, pz)) continue;
                 int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, px, pz);
                 posts.add(new BlockPos(px, top, pz));
             }
             if (!posts.isEmpty()) break;
         }
+        if (!read) return null;
         posts.sort(Comparator.comparingDouble(post -> Math.hypot(post.getX() - x, post.getZ() - z)));
         return posts;
     }

@@ -167,6 +167,12 @@ a block being touched. That is what lets the placer run on a clock (every 400 ti
 any world without stacking posts, and a shoulder in a chunk nobody has made is not read at all, so a road posts
 itself as the country around it loads.
 
+**A post near a chunk border no longer waits for the column across it.** The verge is read outward from the
+target in a ring, and a column in a chunk nobody has made was passed over - but the whole target was held back
+with it, so a post whose ring reached over a border answered the same nothing every twenty seconds however long
+the road had been walked. The unread column is skipped now and the nearest loaded one is planted; only a target
+whose whole ring is in unmade country is left for a later pass. **Not seen in a world.**
+
 **Five faults came back from the world on 21 November**, and all five were the placer's rather than the boards'.
 The Gundabad crossing stood **two posts ten blocks apart** - a thousand-block mark that fell beside the junction
 - so a mark within 32 blocks of a junction is that junction's post now, and a join found twice is folded into one.
@@ -190,6 +196,32 @@ written as the negation of the model's, east 90 and west 270, and it starts at t
 limits are worth knowing: a road is posted only once it is down, no post stands on a bridge (the dry sections either
 side are joined across it), and a third town down one arm's road is left off, since an arm carries two boards and
 no more.
+
+## The switchbacks - surveyed 21 November, nowhere to fire yet
+
+**No leg of the network climbs more than half its own run.** `RoadPlan` breaks a leg into switchbacks when its
+two marks stand more than `LAYABLE_GRADE` 0.5 apart per block - 160 blocks over the 320 between marks - and the
+drawing does not do that anywhere on the eleven roads. Every 320-block leg of all eleven was read from the game's
+own masks - `arda/height.png` raised toward the 318 crown by `arda/mountains.png`, then the crags `ragged` adds on
+42 blocks of rock - which is the ground `ArdaMap.sample` answers the plan with, less the pass's own carve and the
+vale blend: 47 legs, and the steepest is **0.23**.
+
+**The leg most likely to need them** is the old forest road east of Glóin's camp, the climb from **6893, -3638**
+(ground 220) to **7215, -3642** (ground 293), 73 blocks over 322 - two blocks in nine. Nothing is expected of the
+plan there: one mark at the 320-block beat each side, no traverse marks and no hairpins, and the pass lays the
+climb at its usual half-block a station. Next steepest are the Gundabad road's climb over the hold's ridge - 6252,
+-6062 (ground 254) to 6473, -5830 (308), 0.17 - and its descent off the same ridge, 7832, -4405 to 8053, -4173,
+0.22.
+
+**Read rather than seen.** The masks were calibrated against two known heights - the Carrock, mask 188 and world
+187, and the Shire crossing, 106 and 97 - and the saved world's plan store is empty (a 30-byte `road_plans.dat`),
+so the marks the world actually holds could not be read back. The walk is still worth making because the plan's
+own line wanders up to 32 blocks either side of the pin-to-pin chord, and a leg that runs up a crag is the one
+thing that could put a climb near the trigger: a switchback at that climb means the line is steeper than the
+drawing's chord and should be written down, and no switchback means the placer's guard is what the walk confirmed.
+
+**Where it would fire** is the Gundabad pass's wall, where the ground rises `PASS_STEP` 2.5 blocks per block away
+from the corridor floor: a leg pinned across it would be broken into traverses at once.
 
 ## The keep's doorway - answered in a world, 20-21 November
 
