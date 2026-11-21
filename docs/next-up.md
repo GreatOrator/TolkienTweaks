@@ -220,8 +220,37 @@ own line wanders up to 32 blocks either side of the pin-to-pin chord, and a leg 
 thing that could put a climb near the trigger: a switchback at that climb means the line is steeper than the
 drawing's chord and should be written down, and no switchback means the placer's guard is what the walk confirmed.
 
-**Where it would fire** is the Gundabad pass's wall, where the ground rises `PASS_STEP` 2.5 blocks per block away
-from the corridor floor: a leg pinned across it would be broken into traverses at once.
+**The wall that makes them fire** is the Gundabad pass's own: away from the corridor floor the ground rises
+`PASS_STEP` 2.5 blocks per block, and a leg pinned across it is broken into traverses at once. **The test leg** is
+**5610, -6790 to 5706, -6790** - 96 blocks east, the ground 185 under the first pin and 311 under the second, so the
+climb is **126 over 96**, 1.31 a block, two and a half times the trigger. It cuts into **five traverses 47 wide**, and
+every leg between them climbs at 0.45 or less: the road works north and south of the pin line by 47 blocks on its way
+east, some 390 blocks of road for the climb, with four hairpins at the marks - **5629, -6743** (184), **5648, -6837**
+(218), **5668, -6743** (261) and **5687, -6837** (299).
+
+**To fire it without laying anything**, stand on the east pin and plan to the west one:
+
+    /tmroad plan 5610 -6790        (standing at 5706, -6790)
+
+`plan` names one end and takes the block underfoot for the other, and lays nothing. Chat answers "1 section at 3 wide,
+planned, nothing laid"; the bend count is in the log, one line a section (`logs/latest.log`):
+
+    Road plan <id>: <id>, 5706, -6790 to 5610, -6790, 4 bends
+
+**Four bends means the branch fired.** Zero means it did not, and the leg wants a steeper pin - 5610, -6810 to 5706,
+-6810 climbs 119 over 96 and takes the same five traverses. To see the hairpins on the ground instead, `/tmroad pin
+5610 -6790 5706 -6790` names both ends and lays at once: a real road of about 390 blocks in that world, which `/tmroad
+forget` unplans but does not unbuild.
+
+**A leg shorter than `LANE` 4 - 64 blocks - never reaches the switchbacks:** `chain` gives up on the span, so no marks
+are stored and the road is laid straight. 64 is the floor. At exactly 64 the same wall gives three traverses 91 wide,
+a hairpin 182 blocks apart for 64 of advance, which is a stranger road than the 96-block leg for no less walking.
+
+**These heights are the world's, not the drawing's:** every figure above is the top block of the saved world
+`Progress Check 1`, read with `tools/world_height.py`, which stands a block or two above the ground the plan samples.
+The bend count is what to check rather than the width - the width moves out in half again (47 to 70) if a traverse
+comes out steeper, and five traverses is what the arithmetic gives for any climb between 107 and 152 blocks over 96.
+**Not seen in a game:** no leg has been planned across that wall yet, so the branch is unexercised by a walk.
 
 ## The keep's doorway - answered in a world, 20-21 November
 
