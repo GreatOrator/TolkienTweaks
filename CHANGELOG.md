@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **Bree's pass now says which folder it read when there is no cut, and the notes name the save's folder instead of
+`run/`.** A world asked to raise the town with no `bree` cut got an empty list back and stood nothing in silence -
+ten minutes over the site read exactly like a pass nobody had asked for. `Bree.autospawn` warns with the folder it
+looked in, and `docs/bree.md` and `docs/next-up.md` carry the cut at `<save>/tolkienmobs/cuts/bree/`, which is what
+`CutCommands.folder` resolves, in place of the `run/tolkienmobs/cuts/` the earlier command wrote, where no world
+looks. **Not seen in a world.**
+
 - **A fingerpost near a chunk border no longer waits forever for the column across it.** The placer reads the
 verge outward from its target in a ring, and gave up on the whole post when any column in that ring stood in a
 chunk nobody had made - so a target a few blocks from a border answered the same nothing every twenty seconds,

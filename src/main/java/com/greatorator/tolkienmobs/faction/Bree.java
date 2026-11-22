@@ -115,7 +115,13 @@ public final class Bree {
             LOGGER.warn("Bree: the town's cut could not be read, so it is not raised: {}", unreadable.getMessage());
             return null;
         }
-        if (parts.isEmpty()) return null;
+        if (parts.isEmpty()) {
+            // A pass that has nothing to lay and says nothing is the worst answer a caller can get: name the
+            // folder that was read, so a world waiting on a cut is not a world that has to be read to find out.
+            LOGGER.warn("Bree: no bree cut to raise - nothing in {}, and nothing in the jar beside it",
+                    CutCommands.folder(level).resolve(CUT));
+            return null;
+        }
         standing = new Standing(parts, corner, CutCommands.Box.of(parts, corner));
         LOGGER.info("Bree: {} pieces of the town are to be laid at {} over {} chunks, when somebody is within {}"
                         + " blocks", parts.size(), corner.toShortString(), standing.groundChunks(), REACH);

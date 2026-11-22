@@ -164,18 +164,23 @@ columns at a time, and hands the rest to `Dressing.begin` with the town's own de
 `/bree raise` asks for it at any time; a world otherwise begins at a start, or when somebody is within 192 blocks.
 `Bree.complete` answers from the note alone. `Pins.SOURCE` carries the town at `ArdaMap.breeCentre()`, 1272, 122, 80.
 
-**Nothing has been raised yet.** There is no `bree` cut in the jar or the save, so `autospawn` logs that it has none and
-stands nothing. The cut is taken out of the Bree-Town save and left in `run/tolkienmobs/cuts/bree/`:
+**Nothing has been raised yet.** There is no `bree` cut in the jar or the save, so `autospawn` warns that it has none
+and stands nothing. The cut is taken out of the Bree-Town save and left in the *played* world's own
+`tolkienmobs/cuts/bree/` - `CutCommands.folder` reads the save, never `run/`:
 
-    python tools/grab_build.py --world "run/saves/Bree-Town" --from 11504,14,7856 --to 11999,121,8527 \r
-        --out run/tolkienmobs/cuts/bree --name bree
+    python tools/grab_build.py --world "run/saves/Bree-Town" --from 11504,14,7856 --to 11999,121,8527 \
+        --out "run/saves/<save>/tolkienmobs/cuts/bree" --name bree
+
+`<save>` is the world being played - `Progress Check 1` on the 22nd. No restart is needed: `/bree raise` reads the cut
+when it is asked.
 
 Its table needs no `deck` line: the pass passes its own. `tools/grab_build.py` cuts at 48 to a piece, which is the size
 **What to walk once it is in:** `docs/bree.md` - the hill at the build's edge, the stream at the southern foot and the
 drape's ring, each with what good looks like and the line to change under each thing that comes back wrong.
 
-`CutCommands` reads without a size column, so the table it writes is the one the pass expects. A world that already holds
-the town is left alone; one whose cut is replaced raises it again, because the note records the table's fingerprint.
+`CutCommands` reads without a size column, so the table it writes is the one the pass expects. A world that already
+holds the town is left alone; one whose cut is replaced raises it again, because the note records the table's
+fingerprint.
 
 ## The list
 

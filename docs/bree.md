@@ -31,7 +31,7 @@ the rock is told never to stand on a drawn water column.
 
 A world with the cut in it raises Bree on its own, either at a start after 200 ticks or as soon as a player comes within
 192 blocks of the footprint. The log says so at every stage: the pieces and chunks to wait for, then `the town stands at
-1024,117,-256 in N ticks (M s), dressed to its own outline`. That line, and `run/tolkienmobs/cuts/bree/_stands.txt`
+1024,117,-256 in N ticks (M s), dressed to its own outline`. That line, and `<save>/tolkienmobs/cuts/bree/_stands.txt`
 beside it, is the pass finishing. Anything short of that line means it stopped part way - `/bree raise` starts it again,
 and a town that was interrupted re-lays from the beginning, because the note is only written at the end.
 
@@ -112,7 +112,7 @@ side. What good looks like:
 | A shelf where the ring meets the country, 32 out | the ring is too short for the drop it has to carry | `CityCommands.DRAPE_REACH` 32 to 48 - shared with the city and Hobbiton, so both are dressed again to it |
 | Leaf mats, or stone under each crown | the cut's trees were read as its shape | `Bree` passes `trees` true to `Dressing.begin`; if that is what you see, the flag did not reach |
 | No ring at all - the drawn hill still raw against the perimeter | the pass stopped before its last stage, which is the dress, or the note says the town is finished when it is not | `/bree raise` again; the note is only written when the whole pass is done |
-| The whole town rises again on each start, or on `/bree raise` | a probe column moved more than `PROBE_SLACK` (6) - a road, a ditch, a tree felled at one of the seven | move that probe in `PROBE`/`PROBES`, or delete `run/tolkienmobs/cuts/bree/_stands.txt` and raise once |
+| The whole town rises again on each start, or on `/bree raise` | a probe column moved more than `PROBE_SLACK` (6) - a road, a ditch, a tree felled at one of the seven | move that probe in `PROBE`/`PROBES`, or delete `<save>/tolkienmobs/cuts/bree/_stands.txt` and raise once |
 | The ring's rules changed but a world keeps the old ring | the note records `DRESS_VERSION` | 1 to 2, which makes a world that holds the town dress it again |
 | A town waterway reaches the perimeter and the ring opens it | the drape's outflow rule, the city's own: the mouth is taken out and the water laid back over the bed | nothing - unless the town's water is not supposed to leave it, in which case the channel is at the outline's top and the answer is the cut, not the drape |
 
