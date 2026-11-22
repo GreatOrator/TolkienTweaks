@@ -12,7 +12,10 @@ than putting a doorway down in a footprint the village's own pass is about to cl
 column a body can stand in** and only once the camp's blocks are there, instead of being left in the hill when the
 marker pin is a few blocks under the floor; **the towns' milestones are asked for again on a clock** until the ground
 takes them, the Shire's only once its note says the village is complete; and **every laid road is posted near both of
-its ends**, so a player leaving a town meets a fingerpost before the road takes them out of sight of the walls.
+its ends**, so a player leaving a town meets a fingerpost before the road takes them out of sight of the walls. And
+**Bree's mustering hall now has its ground**, marked in `Progress Check 3`: two blocks of ammolite set into the grass
+at 1031 and 1032, 122, -32, the middle two blocks of the hall's 16-block front (the side the job board is on), written
+into `Pins.SOURCE` as `hall:bree` and stood after the town's own pass rather than before it.
 Before that, 21 November - the owner walked a fresh world, `Work Verification`, and signed off the Shire,
 the road network and the Carrock, then started it again with the passage clear and found the hold's door open at the
 end of it. The mustering hall is turned half round (its board faced away from the path), the

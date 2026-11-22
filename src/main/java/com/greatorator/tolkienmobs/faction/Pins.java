@@ -76,6 +76,14 @@ public final class Pins extends SavedData {
             // once the hall was up and called perfect. The key comes from TownHalls rather than being written here, so
             // the table and the command cannot disagree about how a town's hall is named.
             Map.entry(TownHalls.key("hobbiton"), new BlockPos(-529, 101, -74)),
+            // Bree's mustering hall, marked in the owner's Progress Check 3 world: two blocks of ammolite at 1031 and
+            // 1032, 122, -32, set into the grass on the town's west side and pointed at the middle two blocks of the
+            // hall's own front - the 16-block side the job board is on. The hall is laid turned half round from the
+            // pin's corner (TownHalls.TURNED), which puts its board on the box's low-z face, so the line the markers
+            // stand on is that face: the box runs 1024..1039 by -32..-17, its west wall on the cut's own west edge, and
+            // its floor course goes into the block the markers stand in, level with the ground round it. The pin is the
+            // block a builder stands in, which is the course above the floor.
+            Map.entry(TownHalls.key("bree"), new BlockPos(1024, 123, -32)),
             // The Carrock, pinned where the owner stood it: the cut's own low north-west corner at 8307, 187, -4165, the
             // block /tmcut place carrock is given so the box lands where the owner already had it. The rock is cut rather
             // than templated, so Carrock.autospawn reads this pin on the first start of a world and lays the cut from it:

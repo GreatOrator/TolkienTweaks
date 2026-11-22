@@ -282,6 +282,11 @@ public final class Bree {
     public static void onServerStarted(ServerStartedEvent event) {
         standing = null;
         autospawn(event.getServer());
+        // A world that already holds the town gets its hall on the next start. This is asked of every world and not
+        // only the ones raising a town: raise refuses while the note says the town is unfinished, and a town that is
+        // finished has already been through the pass that would have laid over the pin.
+        ServerLevel arda = event.getServer().getLevel(TolkienDimensions.ARDA);
+        if (arda != null) TownHalls.raise(arda, "bree");
     }
 
     @SubscribeEvent
@@ -315,6 +320,10 @@ public final class Bree {
                 if (!work.dressOnly) work.release(level);
                 standing = null;
                 note(level, work.planted);
+                // The town's hall goes up with the town and after it: this pass has just laid the cut, cleared the
+                // footprint and dressed the ring, and a hall stood in that ground first would have been cleared with
+                // the country. After the note, so the raise finds the town finished rather than still coming up.
+                if (!work.dressOnly) TownHalls.raise(level, "bree");
                 if (work.dressOnly) {
                     LOGGER.info("Bree: the ground round the town is dressed in {} ticks ({} s)", work.ticks,
                             String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D));
