@@ -209,8 +209,22 @@ neither filled nor cut, so no fill can begin in the air and no cut can take the 
 fill's top block is the skin itself and never stone. `DRESS_VERSION` stays at 1 on purpose: a re-dress reads a plate as
 ground and leaves it, so asking every held world to dress again would buy nothing.
 
-**What the fix does not reach.** Ground already dressed keeps its plates, and so does `Progress Check 1`. Seeing the
-fix means chunks generated since it, or one of the two things below.
+**The test world's ring has been taken out, so the fix can be seen in it.** **308 chunks** - every chunk of
+x 992..1551, z -288..447 that lies wholly outside the footprint, which is the drape's own reach and holds no part of
+the build - were taken out of `Progress Check 1`'s Arda region, entity and poi files by the new
+`tools/trim_ring.py`, which reuses `chunk_trim`'s reader, backup and read-back check:
+
+    python tools/trim_ring.py --world "run/saves/Progress Check 1" --apply
+
+The town's own chunks are untouched - the grass at 1060, 140 is still 122, the courtyard at 1272, 80 is still dirt to
+127 under cobble at 128, 1512, 200 still carries the hill's trees to 207 - and the ring now reads as unmade. The two
+notes beside the cut, `_stands.txt` and `_dressed.txt`, were removed with it, so **the next start, or `/bree raise`,
+raises the town again**: the ground comes back as the drawing and the hill make it, and the ring is dressed fresh by
+the fixed pass - 935 ticks took the last raise. The rewritten files are under `run/chunk-trim-backup/20261122-060456`.
+**Nothing has been re-seen: the ring is unmade until the world is opened.**
+
+**What the fix does not reach.** Ground already dressed keeps its plates. Seeing the fix in any other world means
+chunks generated since it, or one of the two things below.
 
 1. **A repair pass** - the only way to mend country already dressed. Walk the ring, take out stone that has air within
    three blocks under it and the ground further down, then dress the column again from that ground. It needs a rule
