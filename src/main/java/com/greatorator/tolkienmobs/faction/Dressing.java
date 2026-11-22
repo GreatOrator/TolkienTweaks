@@ -176,7 +176,8 @@ public final class Dressing {
         while (whole.piece < parts.size()) whole.takePieces();
         whole.grow();
         while (whole.chunk < whole.ring.size()) whole.dressChunks(level);
-        return new CityCommands.Drape(whole.cut, whole.filled, whole.open, whole.skipped, whole.orphaned);
+        return new CityCommands.Drape(whole.cut, whole.filled, whole.open, whole.skipped, whole.orphaned,
+                whole.inside);
     }
 
     /**
@@ -287,6 +288,8 @@ public final class Dressing {
         private int skipped;
         /** Of those, the ones whose ground is gone and whose tree was taken off instead of being walked past. */
         private int orphaned;
+        /** Columns inside the walls where the country was standing over the cut and was taken off it. */
+        private int inside;
 
         private Job(String key, Path folder, Pieces pieces, List<CityCommands.Part> parts, BlockPos origin,
                     CityCommands.Box box, boolean dressed, boolean road, boolean trees, int deck) {
@@ -331,8 +334,9 @@ public final class Dressing {
                 }
                 dressed = true;
                 LOGGER.info("Rivendell: the ground is dressed - {} columns cut down, {} filled up, {} left for the "
-                        + "water, {} left alone, {} cleared of a tree standing on nothing",
-                        cut, filled, open, skipped, orphaned);
+                        + "water, {} left alone, {} cleared of a tree standing on nothing, {} inside the walls cut "
+                        + "down to the cut",
+                        cut, filled, open, skipped, orphaned, inside);
                 write(level, true, road);
             }
             if (!road) {
@@ -465,7 +469,10 @@ public final class Dressing {
          * held up in the build, and cut with the ground it lies on everywhere else.
          */
         private void dressColumn(ServerLevel level, int x, int z) {
-            if (x >= box.lowX() && x <= box.highX() && z >= box.lowZ() && z <= box.highZ()) return;
+            if (x >= box.lowX() && x <= box.highX() && z >= box.lowZ() && z <= box.highZ()) {
+                dressInside(level, x, z);
+                return;
+            }
             int gx = Mth.clamp(x, box.lowX(), box.highX()) - box.lowX();
             int gz = Mth.clamp(z, box.lowZ(), box.highZ()) - box.lowZ();
             int at = gx + gz * wide;
@@ -592,6 +599,36 @@ public final class Dressing {
                 level.setBlock(new BlockPos(x, cap, z), skin, 2);
                 filled++;
             }
+        }
+
+        /**
+         * One column inside the walls, where the country is still standing over the cut's own ground.
+         * <p>
+         * The ring is the ring, and the ground inside the footprint is the build's: the pieces were laid, so what
+         * stands in a column is the city. That holds for every column the cut fills to its own top. It does not hold
+         * for a cut that carves a valley, whose floors are left under the hill that was never taken off them - which
+         * is a mountain standing raw inside the city beside a ring dressed down to the skyline. So a column inside
+         * the walls whose country stands {@link #BANK_BLOCKS} or more over the top of the cut in it has the country
+         * taken off down to that top: the cut's own top course is the city's and stays, nothing below it is touched,
+         * so no wall, floor or roof of the build can be cut - and what stood over the city was never part of it. The
+         * ring's shallow grooves are left as grooves here too, and the water is left where it is.
+         */
+        private void dressInside(ServerLevel level, int x, int z) {
+            int at = (x - box.lowX()) + (z - box.lowZ()) * wide;
+            int roof = outline[at];
+            if (roof == Integer.MIN_VALUE) {
+                // A column the cut leaves empty is a hole in the city, not ground the country is standing over.
+                skipped++;
+                return;
+            }
+            int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
+                    level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
+            if (surface <= level.getMinY() || surface - roof < BANK_BLOCKS) return;
+            if (!level.getBlockState(new BlockPos(x, surface, z)).getFluidState().isEmpty()) return;
+            for (int y = surface; y > roof; y--) {
+                level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+            }
+            inside++;
         }
 
         /**

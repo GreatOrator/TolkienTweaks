@@ -169,7 +169,7 @@ public final class CityCommands {
     static final int MOUTH_DEPTH = 3;
 
     /** What a drape did: columns cut down, columns built up, and columns left for the water. */
-    record Drape(int cut, int filled, int open, int skipped, int orphaned) {
+    record Drape(int cut, int filled, int open, int skipped, int orphaned, int inside) {
     }
     /** Templates already read this session, so the ten megabytes are parsed once. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
@@ -1366,7 +1366,8 @@ public final class CityCommands {
             source.sendSuccess(() -> Component.literal("Ground dressed to the city's own outline: "
                     + done.cut() + " columns cut down, " + done.filled() + " built up, " + done.open()
                     + " left for the water, " + done.skipped() + " left alone, " + done.orphaned()
-                    + " cleared of a tree standing on nothing."), true);
+                    + " cleared of a tree standing on nothing, " + done.inside()
+                    + " inside the walls cut down to the cut."), true);
             return done.cut() + done.filled();
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));

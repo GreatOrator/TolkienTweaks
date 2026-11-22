@@ -18,6 +18,15 @@ at 1031 and 1032, 122, -32, the middle two blocks of the hall's 16-block front (
 into `Pins.SOURCE` as `hall:bree` and stood after the town's own pass rather than before it. **The drape is now one
 pass with declarations** (`Drape`): an outline read from either a cut folder or a structure template, and a build's
 ring written as one line - box, reach, deck, trees, fill, version - with a camp's sweep already moved onto it unchanged.
+**The country standing inside the walls is taken off too**: the ring is only the ring, and inside the footprint the
+ground was the build's alone - which is right for a cut that fills its columns to its own top and wrong for a cut that
+carves a valley, whose floors are left under the hill above them. A column inside the walls whose country stands
+`BANK_BLOCKS` (3) or more over the top of the cut in that column has the country cut off down to that top: the cut's
+own top course stays and nothing below it is touched, so no wall, floor or roof can be cut, and shallow grooves are
+left as grooves. Counted with the rest - the log and `/tmcity drape` now end `N inside the walls cut down to the cut`.
+Measured against the cut's own pieces, Rivendell's inner columns already stand within a block or two of the cut's top
+at the edges sampled, so this changes little there: the raw face at the city's rim is the city's own terraced edge.
+
 **A column with no ground under it is cleared, not walked past**: the city drape's ground search stops forty blocks
 under a column's top, and a column that found nothing in that depth was left exactly as it stood - right for a cave,
 wrong for a build's own carve. Rivendell's cut took the hill out from under its oaks and their crowns hung ninety-four
