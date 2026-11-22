@@ -18,10 +18,15 @@ at 1031 and 1032, 122, -32, the middle two blocks of the hall's 16-block front (
 into `Pins.SOURCE` as `hall:bree` and stood after the town's own pass rather than before it. **The drape is now one
 pass with declarations** (`Drape`): an outline read from either a cut folder or a structure template, and a build's
 ring written as one line - box, reach, deck, trees, fill, version - with a camp's sweep already moved onto it unchanged.
-**Bree's road to the Shire is in the network**: the leg the owner walked in `Progress Check 3` (Bree's hall front at
-1032, -34 out to the village's east edge at -150, 114, five wide) is a `Named` entry now, read back out of that
-world's own `road_plans.dat`, where it was saved with its bends and its plan, and `roads.dat`, where it is recorded
-laid. Both the plan and the progress are the world's; the two ends in `Roads` are what a fresh world plans from.
+**Bree's road to the Shire is in the network**: the leg the owner walked in `Progress Check 3` (five wide, from
+Bree's hall front at 1032, -34) is a `Named` entry now, read back out of that world's own `road_plans.dat`, where it
+was saved with its bends and its plan, and `roads.dat`, where it is recorded laid. Its first walk ended at -150, 114
+- the village's east edge line but a hundred and fifty blocks south of the footprint, out in open wood - so the leg
+is re-ended at the Shire's gate, -463, -124. An id is a road's two ends, so that renamed the road to
+`..._1032_-34_-463_-124`; in `Progress Check 3` the old id is still planned and finished, and is a different road to
+the pass until `/tmroad forget` is run on it (its northern bulge at 242, 227 is three hundred blocks from anything
+the new line uses). Named roads are begun by the ground that crosses them, so the re-ended leg needs no command - it
+lays as its chunks load - and the gravel the first attempt laid stays standing, because nothing lifts a laid road.
 Before that, 21 November - the owner walked a fresh world, `Work Verification`, and signed off the Shire,
 the road network and the Carrock, then started it again with the passage clear and found the hold's door open at the
 end of it. The mustering hall is turned half round (its board faced away from the path), the

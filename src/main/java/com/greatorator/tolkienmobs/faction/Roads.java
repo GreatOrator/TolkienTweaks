@@ -131,14 +131,17 @@ public final class Roads {
             new Named("tolkienmobs:roads/planned_5606_-3622_8229_-3654", Kind.WILD, false, at(5606, -3622), at(8229, -3654)),
             new Named("tolkienmobs:roads/planned_5200_-3033_4647_-3315", Kind.WILD, false, at(5200, -3033), at(4647, -3315)),
             new Named("tolkienmobs:roads/planned_5111_-3399_5072_-3221", Kind.WILD, false, at(5111, -3399), at(5072, -3221)),
-            // The road between Bree and the Shire, walked by the owner in Progress Check 3 on 22 November: the leg from
-            // Bree's hall front at 1032, -34 out to the village's own east edge at -150, 114, five wide, of the
-            // country's gravel. Its plan in that world is the whole of the survey - the bends are searched from these two
-            // ends, exactly as they were when it was walked - and it was laid to its far end there (1323 stations, the
-            // record says done), so the two blocks are all this table needs for every world after it to lay the same
-            // road. The id is the one that world's pin gave it, so the world that walked it and a world made tomorrow
-            // hold one road under one name.
-            new Named("tolkienmobs:roads/planned_1032_-34_-150_114", Kind.WILD_WIDE, false, at(1032, -34), at(-150, 114)));
+            // The road between Bree and the Shire, walked by the owner in Progress Check 3 on 22 November: five wide, of
+            // the country's gravel, from Bree's hall front at 1032, -34 to the Shire's gate at -463, -124 - the block
+            // the village's own /tmtp point stands on, seven east and one over the block its cut leaves from.
+            //
+            // The first walk of this leg ended at -150, 114: the line of the village's east edge, but a hundred and
+            // fifty blocks south of the footprint's own south side, in open wood. From a map it read as the Shire end;
+            // on the ground it was the wrong block, and the road stopped in the trees short of the village. An id is a
+            // road's two ends, so re-ending it renames it, and the world that walked the first attempt still holds that
+            // plan under ..._1032_-34_-150_114: to the pass those are two different roads, so that one has to be
+            // forgotten there before the leg that arrives is the only one left.
+            new Named("tolkienmobs:roads/planned_1032_-34_-463_-124", Kind.WILD_WIDE, false, at(1032, -34), at(-463, -124)));
 
     /**
      * Every road the world knows about, which is nothing until one is named.
