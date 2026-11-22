@@ -164,23 +164,33 @@ columns at a time, and hands the rest to `Dressing.begin` with the town's own de
 `/bree raise` asks for it at any time; a world otherwise begins at a start, or when somebody is within 192 blocks.
 `Bree.complete` answers from the note alone. `Pins.SOURCE` carries the town at `ArdaMap.breeCentre()`, 1272, 122, 80.
 
-**Nothing has been raised yet.** There is no `bree` cut in the jar or the save, so `autospawn` warns that it has none
-and stands nothing. The cut is taken out of the Bree-Town save and left in the *played* world's own
-`tolkienmobs/cuts/bree/` - `CutCommands.folder` reads the save, never `run/`:
+**The cut ships in the jar, as of 22 November.** The 462 pieces and their table are in
+`src/main/resources/data/tolkienmobs/structure/bree/` - 91 MB, in the size of the other cuts - so every world raises
+the town with nothing dropped into its save first. `CutCommands` asks the jar before the save, so a copy left in a save
+folder cannot quietly win over it; `Bree` still writes `_stands.txt` into the played world's own
+`tolkienmobs/cuts/bree/`, which is the note and not the cut.
+
+That shipping answers a fault the owner found on the 22nd: the cut had only ever been left in `Progress Check 1`'s
+save, that world was deleted, and the new `Progress Check 2` started with no cut at all - `autospawn` said so in the
+log (`no bree cut to raise - nothing in ...\cuts\bree, and nothing in the jar beside it`) and stood nothing, which is
+the warning the pass was given for exactly this. The cut is taken out of the `Bree-Town` save, which still holds the
+build:
 
     python tools/grab_build.py --world "run/saves/Bree-Town" --from 11504,14,7856 --to 11999,121,8527 \
-        --out "run/saves/<save>/tolkienmobs/cuts/bree" --name bree
+        --out src/main/resources/data/tolkienmobs/structure/bree --name bree
 
-`<save>` is the world being played - `Progress Check 1` on the 22nd. No restart is needed: `/bree raise` reads the cut
-when it is asked.
+A rebuild of the jar is what puts it in a world; no restart of the save is needed, because `/bree raise` reads the cut
+when it is asked. A cut regenerated into `run/` is read by nothing - `CutCommands.folder` is the save's own folder.
 
-Its table needs no `deck` line: the pass passes its own. `tools/grab_build.py` cuts at 48 to a piece, which is the size
+Its table needs no `deck` line: the pass passes its own. `tools/grab_build.py` cuts at 48 to a piece, and the table
+carries each edge piece's own size - Bree ends in a 16-wide column and a 12-tall course - which is what the box the
+ring and the clearing band are worked from is read as.
+
 **What to walk once it is in:** `docs/bree.md` - the hill at the build's edge, the stream at the southern foot and the
 drape's ring, each with what good looks like and the line to change under each thing that comes back wrong.
 
-`CutCommands` reads without a size column, so the table it writes is the one the pass expects. A world that already
-holds the town is left alone; one whose cut is replaced raises it again, because the note records the table's
-fingerprint.
+A world that already holds the town is left alone; one whose cut is replaced raises it again, because the note records
+the table's fingerprint.
 
 ### Raised in a world, and the ring's plates - 22 November
 

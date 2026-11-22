@@ -1,8 +1,9 @@
 # Bree - what to look at in game
 
-Bree is sited, its hillside is generated, and the pass that raises the town is written. **None of it has been seen in a
-world yet:** there is no `bree` cut, nothing has been raised, and everything below is what to look at once there is.
-Read it as a walk with a verdict at each stop, and with the line to change under each verdict that comes back wrong.
+Bree is sited, its hillside is generated, the pass that raises the town is written, and the town's cut ships in the
+jar (`data/tolkienmobs/structure/bree`), so a new world raises it with nothing dropped into its save first. It has been
+raised and walked once, in `Progress Check 1` on 22 November; what came back is at the end. Read the rest as a walk with
+a verdict at each stop, and with the line to change under each verdict that comes back wrong.
 
 ## Where it stands
 
@@ -24,14 +25,15 @@ the rock is told never to stand on a drawn water column.
 ## Raising it
 
 ```
-/tmcut list                      what this world is holding - "bree" once the cut is in
-/tmcut table bree                its size, and whether its table reads aright
+/tmcut list                      the cuts this world's save is holding - copies, not the jar's
+/tmcut table bree                its size, read from the jar, and whether its table reads aright
 /bree raise                      raise, clear and dress the town now
 /bree drape                      dress the ring again, and lay nothing of the town
 ```
 
-A world with the cut in it raises Bree on its own, either at a start after 200 ticks or as soon as a player comes within
-192 blocks of the footprint. The log says so at every stage: the pieces and chunks to wait for, then `the town stands at
+A world raises Bree on its own, either at a start after 200 ticks or as soon as a player comes within 192 blocks of
+the footprint - the cut is in the jar, so there is nothing to put in the save first. A world that already holds the
+town does nothing. The log says so at every stage: the pieces and chunks to wait for, then `the town stands at
 1024,117,-256 in N ticks (M s), dressed to its own outline`. That line, and `<save>/tolkienmobs/cuts/bree/_stands.txt`
 beside it, is the pass finishing. Anything short of that line means it stopped part way - `/bree raise` starts it again,
 and a town that was interrupted re-lays from the beginning, because the note is only written at the end.
