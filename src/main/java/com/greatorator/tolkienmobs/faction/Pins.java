@@ -63,14 +63,16 @@ public final class Pins extends SavedData {
             // low corner goes on, at the surface the scout stood on. /tmcity plants the corner here, so
             // the city covers x 5200..5753 by z -3370..-2859, with the crown at 318.
             Map.entry("rivendell", new BlockPos(5200, 75, -3370)),
-            // The Shire's village, at the middle of the footprint its cut was taken in: a board pointing at Hobbiton
-            // points at the village rather than at the corner its low blocks were cut from. The build is raised by
-            // Hobbiton.autospawn at another corner of its own - the pin is where the name stands, not where the cut
-            // starts.
-            Map.entry("hobbiton", ArdaMap.hobbitonCentre()),
-            // Bree, at the middle of the footprint its cut was taken in: the town is raised by Bree.autospawn at the low
-            // corner, and a board pointing at Bree points at the town rather than at that corner.
-            Map.entry("bree", ArdaMap.breeCentre()),
+            // The Shire's village, walked in Progress Check 3 on 22 November: the gate a traveller arrives at, seven
+            // east and one over the block its cut leaves from. It used to be the middle of the footprint, and the middle
+            // of a 551 by 468 village is a field a long walk from its own door, which is no answer for a name whose
+            // whole job is to put somebody in the village. The build is still raised by Hobbiton.autospawn at its own
+            // corner - the pin is where the name stands, not where the cut starts.
+            Map.entry("hobbiton", new BlockPos(-463, 98, -124)),
+            // Bree, walked in the same world: the town's own arrival point at the head of the hall's front line, one
+            // over the ground the hall's markers were set in. It was the middle of the cut's footprint - 1272, 122, 80 -
+            // which is a fifth of the way across a 496 by 672 town from its west gate.
+            Map.entry("bree", new BlockPos(1059, 123, -31)),
             // Hobbiton's mustering hall, on the ground it was raised on and has stood on since: pinned at -529, 101,
             // -74 by /tmpin hall add in the owner's Progress Check 1 world, and read back out of that world's own pins
             // once the hall was up and called perfect. The key comes from TownHalls rather than being written here, so

@@ -192,7 +192,8 @@ stream everywhere.
 the cut piece by piece at `ArdaMap.breePlan()` (1024, 117, -256), clears the country out of the footprint a band of
 columns at a time, and hands the rest to `Dressing.begin` with the town's own deck and its trees left out of its shape.
 `/bree raise` asks for it at any time; a world otherwise begins at a start, or when somebody is within 192 blocks.
-`Bree.complete` answers from the note alone. `Pins.SOURCE` carries the town at `ArdaMap.breeCentre()`, 1272, 122, 80.
+`Bree.complete` answers from the note alone. `Pins.SOURCE` carries the town at its walked arrival point, 1059, 123, -31
+(it was `ArdaMap.breeCentre()`, 1272, 122, 80, which is a fifth of the way across the footprint from the west gate).
 
 **The cut ships in the jar, as of 22 November.** The 462 pieces and their table are in
 `src/main/resources/data/tolkienmobs/structure/bree/` - 91 MB, in the size of the other cuts - so every world raises
