@@ -162,7 +162,7 @@ stream everywhere.
 the cut piece by piece at `ArdaMap.breePlan()` (1024, 117, -256), clears the country out of the footprint a band of
 columns at a time, and hands the rest to `Dressing.begin` with the town's own deck and its trees left out of its shape.
 `/bree raise` asks for it at any time; a world otherwise begins at a start, or when somebody is within 192 blocks.
-`Bree.complete` answers from the note alone. `Pins.SOURCE` carries the town at `ArdaMap.breeCentre()`, 1272, 122, 79.
+`Bree.complete` answers from the note alone. `Pins.SOURCE` carries the town at `ArdaMap.breeCentre()`, 1272, 122, 80.
 
 **Nothing has been raised yet.** There is no `bree` cut in the jar or the save, so `autospawn` logs that it has none and
 stands nothing. The cut is taken out of the Bree-Town save and left in `run/tolkienmobs/cuts/bree/`:
