@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+- **A cut's parts table now carries each piece's own size, so a build's box is the build and not its tile grid.** The
+cutter clipped its edge pieces - Bree's 496-wide build ends in a 16-wide tile - but the table said nothing, and a
+reader takes 48 for a piece that does not say, so the box came out 528 wide and 144 tall: `Dressing`'s ring and the
+clearing band were worked from country the town does not stand on, and on Bree's east side the ring found the cut's
+own emptiness past its last column and did nothing where the hill meets it. The last three numbers are written now; a
+four-number table still reads as it did. **Not seen in a world.**
+
 - **Bree's pass now says which folder it read when there is no cut, and the notes name the save's folder instead of
 `run/`.** A world asked to raise the town with no `bree` cut got an empty list back and stood nothing in silence -
 ten minutes over the site read exactly like a pass nobody had asked for. `Bree.autospawn` warns with the folder it

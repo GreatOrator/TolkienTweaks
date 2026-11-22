@@ -15,8 +15,12 @@ The output is one .nbt per 48-cube - vanilla's own limit for a structure block, 
 Sites judges a footprint by - plus a `.parts` table of the offset each piece stands at from the
 build's own north-west bottom corner:
 
-    gundabad_0.nbt 0 0 0
-    gundabad_1.nbt 48 0 0
+    gundabad_0.nbt 0 0 0 48 48 48
+    gundabad_1.nbt 48 0 0 48 48 48
+
+The last three are the piece's own size, 48 a side except where the build ends inside a tile: a
+496-wide build ends in a 16-wide piece, and a reader told 48 for it would take the build's box to be 32
+blocks wider than it is - the box a drape's ring and a clearing pass are run from.
 
 `Sites` places a template with its corner at the chosen spot, so a parts table is all a multi-piece
 build needs: the offsets are the same kind the valley's own eleven pieces are laid by.
@@ -383,9 +387,9 @@ def cut(name, blocks, size, low, out, keep_air):
                 tile_name = "%s_%d_%d_%d" % (name, tile_x // TILE, tile_y // TILE, tile_z // TILE)
                 origin = (low[0] + tile_x, low[1] + tile_y, low[2] + tile_z)
                 if write_tile(blocks, origin, tile, out / (tile_name + ".nbt"), keep_air):
-                    parts.append((tile_name + ".nbt", tile_x, tile_y, tile_z))
+                    parts.append((tile_name + ".nbt", tile_x, tile_y, tile_z) + tile)
     table = out / (name + ".parts")
-    table.write_text("".join("%s %d %d %d\n" % part for part in parts), encoding="utf-8")
+    table.write_text("".join("%s %d %d %d %d %d %d\n" % part for part in parts), encoding="utf-8")
     return parts
 
 
