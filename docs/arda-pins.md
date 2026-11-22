@@ -18,7 +18,7 @@ before they read the drawing:
 
 | what was scouted | key | asked by |
 | --- | --- | --- |
-| a **name** - a circle of ground announced on arrival, with folk standing in it | the place id: `rivendell`, `thorenhad`, `barachen`, `ford`, `keystone`, `carndum` | `Places.ensure` |
+| a **name** - a circle of ground announced on arrival, with folk standing in it | the place id: `rivendell`, `hobbiton`, `bree`, `thorenhad`, `barachen`, `ford`, `keystone`, `carndum` | `Places.ensure` |
 | a **building** - a template raised for the player who was sent to it | the template id: `tolkienmobs:key_structures/barachans_camp`, `tolkienmobs:key_structures/ttmruin_large_2` | `Sites.survey` |
 
 ## The table

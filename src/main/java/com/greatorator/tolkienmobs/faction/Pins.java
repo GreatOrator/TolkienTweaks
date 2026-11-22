@@ -68,6 +68,9 @@ public final class Pins extends SavedData {
             // Hobbiton.autospawn at another corner of its own - the pin is where the name stands, not where the cut
             // starts.
             Map.entry("hobbiton", ArdaMap.hobbitonCentre()),
+            // Bree, at the middle of the footprint its cut was taken in: the town is raised by Bree.autospawn at the low
+            // corner, and a board pointing at Bree points at the town rather than at that corner.
+            Map.entry("bree", ArdaMap.breeCentre()),
             // Hobbiton's mustering hall, on the ground it was raised on and has stood on since: pinned at -529, 101,
             // -74 by /tmpin hall add in the owner's Progress Check 1 world, and read back out of that world's own pins
             // once the hall was up and called perfect. The key comes from TownHalls rather than being written here, so

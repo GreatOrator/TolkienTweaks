@@ -131,6 +131,49 @@ re-runs the pass.
 and the joins right - this is the walk that paragraph used to owe. A world that sets `raiseShireOnStart = false` keeps the older rule, the pass beginning when
 somebody comes within `REACH` 192, and `/hobbiton raise` still asks for it at any time. The commit is `0e2c70f2`.
 
+## 22 November 2026 - Bree is sited, and its hill is the world's
+
+The owner's cut of Bree-town, converted into a save and marked at its four corners with ammolite, measures **496 by 672
+by 108**: markers at y 14, highest block 121, about 7.5 million blocks above the marker course. The town's own ground
+lies at 19 to 35 and its roofs top out at 63; the eastern 166 blocks - a third of the box - are Bree-hill, a treed slope
+climbing to 121 that is cut off square where the markers stop.
+
+**The site is pin (1024, -256).** Box x 1024..1519 by z -256..415, standing in cells 12/19 and 12/20 only, on ground
+101 to 130 - a drop of 28, which is the Shire village's own - with no water inside it and the stream 58 east at its
+southern end. The middle of the drawn cell 12/20, 1280, 256, where the East-West Road and the Greenway are drawn to
+meet, falls inside the box in its south half. The one arrangement that put the town's own road junction on that middle
+(1135, 31) was measured and refused: 44 blocks of fall, mean 110, 367 wet samples.
+
+**The seat is the town's grass line.** `ArdaMap.BREE_DECK_LIFT` is 5 - the markers are at 14 and the plain's grass and
+paving at 19 - so the pin's y 117 puts the grass line on 122, the mean of the ground surveyed. The drape is given the
+same number, so a column whose top is the paving is a floor the country meets rather than a roofline it is cut down to.
+
+**Bree-hill is laid by the world, not dressed to it.** `ArdaMap.breeHill` carries the build's own east edge out into
+Eriador. At the foot - four blocks inside the footprint, over which the cut's columns are cleared and laid again - the
+rock stands at the build's own top for that depth, read along its edge from the save (`BREE_EDGE_ZS`, `BREE_EDGE_TOPS`:
+68 at the north corner, 118 where the hill is highest, 33 at the south end). East of the foot the flank falls a block
+for a block until it meets the drawn country, and there it stops; the crest is eased to the country over 32 blocks past
+either end, so the hill turns its corners; the flank carries the map's own folded noise, faded in off the foot; and a
+column the drawing paints as river or lake is never raised, so the stream at the town's southern foot is left where it
+is. The rock's highest block is 220 at (1515, 30), and it meets the drawn country between x 1545 and 1607 - west of the
+stream everywhere.
+
+**The raise is Hobbiton's pass with the village taken out.** `Bree.autospawn` asks for the ground a chunk a tick, lays
+the cut piece by piece at `ArdaMap.breePlan()` (1024, 117, -256), clears the country out of the footprint a band of
+columns at a time, and hands the rest to `Dressing.begin` with the town's own deck and its trees left out of its shape.
+`/bree raise` asks for it at any time; a world otherwise begins at a start, or when somebody is within 192 blocks.
+`Bree.complete` answers from the note alone. `Pins.SOURCE` carries the town at `ArdaMap.breeCentre()`, 1272, 122, 79.
+
+**Nothing has been raised yet.** There is no `bree` cut in the jar or the save, so `autospawn` logs that it has none and
+stands nothing. The cut is taken out of the Bree-Town save and left in `run/tolkienmobs/cuts/bree/`:
+
+    python tools/grab_build.py --world "run/saves/Bree-Town" --from 11504,14,7856 --to 11999,121,8527 \r
+        --out run/tolkienmobs/cuts/bree --name bree
+
+Its table needs no `deck` line: the pass passes its own. `tools/grab_build.py` cuts at 48 to a piece, which is the size
+`CutCommands` reads without a size column, so the table it writes is the one the pass expects. A world that already holds
+the town is left alone; one whose cut is replaced raises it again, because the note records the table's fingerprint.
+
 ## The list
 
 | # | Item | Status | Where the detail is |
@@ -144,7 +187,7 @@ somebody comes within `REACH` 192, and `/hobbiton raise` still asks for it at an
 | 7 | **Chinese** | on hold | whole, until a full public release |
 | 8 | Chapter four onward, the finale, the job boards (quest 37) | not started | `FINALE_OPEN = false`, closed by design |
 | 9 | **The Shire map** - Hobbiton | placed, cleared, draped; river rerouted; **raised at every world's start since 20 November**, and **seen whole on 21 November** - ready when the owner came through the portal, joins and south edge with it. Nothing is owed | `run/hobbiton_art`, `/tmcut`, `rivers.png`; see below |
-| 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands, was called perfect, and is **turned half round since 21 November** so its board faces the path; the way it was laid is recorded per pin, so one changed block no longer sweeps and re-lays it; its pin is in `Pins.SOURCE`; Bree has no town yet | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
+| 10 | **Town halls** - one pinned per town, raised once the town is finished | Hobbiton's stands, was called perfect, and is **turned half round since 21 November** so its board faces the path; the way it was laid is recorded per pin, so one changed block no longer sweeps and re-lays it; its pin is in `Pins.SOURCE`; **Bree is sited at 1024, -256 and raises itself from its cut (22 November)**, and its hall is still to come | `TownHalls`, `PinCommands`, `/tmpin hall`; see 17 November below |
 | 11 | **The Carrock** - the shaped rock in the Anduin | cut, base plate trimmed, pinned at 8307, 187, -4165, **stood by the world on the first start**, bedded into the river with stone, and **seen standing on 21 November** - the owner signed it off | `Carrock`, `Pins.SOURCE`, `data/tolkienmobs/structure/carrock/`; see 17 November below |
 
 ## The fingerposts - built 21 November
@@ -1028,7 +1071,8 @@ all unverified.
 
 - **The Shire to Bree, and Bree on to Rivendell.** The two town roads nothing carries yet. Gundabad's road is in
   `Roads.NETWORK` now, running from the gate at 5578, -6769 to the old forest road at 8583, -3617, so the hold no
-  longer waits on one. Bree has a catalogue entry and no ground, so its end waits on a build and a pin first.
+  longer waits on one. Bree is sited at 1024, -256 and raises itself from a cut of the owner's save (22 November),
+  so both ends can be surveyed: the Shire's village at -700, -512 to Bree, and Bree on to Weathertop's cell.
 - **Chapter three.** Eleven pages (3-1 to 3-11) written, nothing in `Campaign`. Before code it needs ground, bodies and
   objects: Mitheithel, Stoneyford, **the Watchers**, the dead stones, Dol Guldur and the Moria camp; five bodies
   (Aragorn, Guthwine, Manwyn, Narmos, Rurain) and the wight as the Ancient Spirit; two props and one charm. Its first

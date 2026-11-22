@@ -491,6 +491,71 @@ public final class ArdaMap {
     private static final int[] HOBBITON_XS = {-206, -230, -270, -320, -380, -450, -520, -590, -652, -712, -770};
     private static final int[] HOBBITON_ZS = {-45, -6, 40, 80, 112, 140, 165, 190, 212, 232, 246};
 
+    /**
+     * Bree's pin: the marker course of its low north-west corner, which is the corner its cut is planted on.
+     * <p>
+     * Chosen on the ground rather than out of the drawing. The town is 496 by 672, so it does not fit a cell, and the
+     * middle of the drawn cell 12/20 - where the East-West Road and the Greenway are drawn to meet - puts its south end
+     * into the stream and its ground across 44 blocks of fall. At 1024, -256 the whole box stands in cells 12/19 and
+     * 12/20, the ground under it is 101 to 130 - a drop of 28, which is the Shire village's own - nothing inside it is
+     * water, and the stream is 58 blocks east at its southern end. The cell's middle, 1280, 256, still falls inside
+     * the box, in its south half, so both drawn roads meet the town.
+     */
+    public static final int BREE_X = 1024;
+    /**
+     * The y the cut's marker course is planted at: 117 puts the town's own grass line - five over that course - on
+     * 122, which is the mean of the ground the site was surveyed at (101 to 130).
+     */
+    public static final int BREE_Y = 117;
+    public static final int BREE_Z = -256;
+    /** How wide and how deep the town's footprint is, from its four corner markers: 496 by 672. */
+    public static final int BREE_WIDE = 496;
+    public static final int BREE_DEEP = 672;
+    /**
+     * How high the town's own grass line stands over its marker course: five, read off the cut - the markers are at
+     * y 14 and the plain's grass and paving lie at 19.
+     * <p>
+     * It is the drape's deck line. A column whose top is this low is a floor the country meets, not a roofline it is
+     * cut down to, which is what keeps the town's open faces out of a trench.
+     */
+    public static final int BREE_DECK_LIFT = 5;
+    /** The course the markers stood on in the cut: the build's own heights are read off it. */
+    private static final int BREE_BASE = 14;
+    /**
+     * How far into the footprint the new rock's foot reaches, in blocks.
+     * <p>
+     * The hill in the cut is whole on its west side and cut off square on its east. Rock that stopped at that edge
+     * would leave the face showing; four blocks in, the rock's foot stands under the build's own hillside, and the
+     * cut's last columns are cleared and laid over it, so the join is inside the build rather than on its face.
+     */
+    private static final int BREE_FOOT = 4;
+    /**
+     * How many blocks of run the rock's flank loses a block of height over, going east.
+     * <p>
+     * One: a hillside at forty-five degrees, which is what the build's own hill stands at where it meets the edge, and
+     * the steepest fall that still meets the drawn country before the stream. The ground east of the box falls from
+     * 120 to 101 while the build's edge stands at 171 to 148, so the rock meets the drawing 40 to 110 blocks out,
+     * where the stream is 58 to 174.
+     */
+    private static final int BREE_FALL = 1;
+    /** How far past the footprint's north and south ends the rock carries on before it is only country. */
+    private static final int BREE_WRAP = 32;
+    /** The flank broken by the map's own folded noise: blocks of height, and the size of the noise that breaks it. */
+    private static final int BREE_CRAG = 8;
+    private static final int BREE_CRAG_SCALE = 64;
+    /**
+     * The build's own top along its east edge, in the cut's own height, every 32 blocks of its depth and at its last
+     * row: 68 at the north corner, 118 where the hill is highest, 33 where it runs out into the south.
+     * <p>
+     * Read out of the save with a column scan. The rock follows this edge rather than one crest height, because a
+     * constant crest would bury the southern half of the town under sixty blocks of stone: what the build's edge is,
+     * the mountain's foot is.
+     */
+    private static final int[] BREE_EDGE_ZS = {0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448,
+            480, 512, 544, 576, 608, 640, 671};
+    private static final int[] BREE_EDGE_TOPS = {68, 76, 76, 94, 96, 91, 94, 88, 98, 118, 96, 88, 91, 95, 96, 76, 69,
+            70, 77, 61, 52, 33};
+
     /** The corner the village's cut is laid on: the low corner of the footprint it was cut in. */
     public static BlockPos hobbitonPlan() {
         return new BlockPos(HOBBITON_X, HOBBITON_Y, HOBBITON_Z);
@@ -516,6 +581,71 @@ public final class ArdaMap {
     public static BlockPos hobbitonCentre() {
         return new BlockPos(HOBBITON_X + HOBBITON_WIDE / 2, HOBBITON_Y + HOBBITON_DECK_LIFT,
                 HOBBITON_Z + HOBBITON_DEEP / 2);
+    }
+
+    /** The corner Bree's cut is planted on: the marker course of its low north-west corner. */
+    public static BlockPos breePlan() {
+        return new BlockPos(BREE_X, BREE_Y, BREE_Z);
+    }
+
+    /** The middle of the town's footprint at its own ground: where a name for it is written. */
+    public static BlockPos breeCentre() {
+        return new BlockPos(BREE_X + BREE_WIDE / 2, BREE_Y + BREE_DECK_LIFT, BREE_Z + BREE_DEEP / 2);
+    }
+
+    /**
+     * The rock that carries Bree's own hillside out into Eriador.
+     * <p>
+     * The cut's hill is cut off square at its east edge, and laid on the ground that edge would stand as a hundred
+     * blocks of cliff along the town's flank. So the rock is continued out of the build rather than dressed to it -
+     * the answer Rivendell's massif is, for the same reason, but read off the build's own edge instead of a crown,
+     * because Bree's hill is a slope rather than a wall of rock.
+     * <p>
+     * At the foot - four blocks inside the footprint, over which the cut's own columns are cleared and laid again - the
+     * rock stands at the build's own top for that depth, so nothing is buried and no face shows. East of the foot the
+     * flank falls a block for a block until it meets the drawn country, and there it stops: the mountain never stands
+     * over ground the drawing already has higher, so the stream and the marsh beyond it are the drawing's own. Past the
+     * footprint's north and south ends the crest is eased to nothing over {@link #BREE_WRAP}, so the hill turns its
+     * corners instead of ending in two faces. The flank carries the map's folded noise, faded in off the foot, so it
+     * reads as a hillside and not as a cone.
+     */
+    private static int breeHill(int blockX, int blockZ, int height) {
+        int east = BREE_X + BREE_WIDE - 1;
+        int north = BREE_Z;
+        int south = BREE_Z + BREE_DEEP - 1;
+        if (blockX < east - BREE_FOOT) return height;
+        if (blockZ < north - BREE_WRAP || blockZ > south + BREE_WRAP) return height;
+        // The drawing's own water is not the hill's to bury: the stream runs at the town's southern foot, and rock
+        // laid over a channel fills it and leaves the water a slot through stone. The river's own bank pass is what
+        // meets the hill there.
+        if (ArdaMasks.river(blockX, blockZ) || ArdaMasks.lake(blockX, blockZ)) return height;
+        double top = BREE_Y + breeEdgeTop(blockZ) - BREE_BASE;
+        // The crest is eased to the country past either end, so the hill turns its corners rather than ending in a face.
+        double past = blockZ < north ? north - blockZ : blockZ > south ? blockZ - south : 0.0D;
+        double turn = past <= 0.0D ? 1.0D : 1.0D - smooth(Mth.clamp(past / BREE_WRAP, 0.0D, 1.0D));
+        double crest = height + (top - height) * turn;
+        double out = blockX - (east - BREE_FOOT);
+        double shaped = crest - out / BREE_FALL;
+        if (shaped <= height) return height;
+        // Broken by the map's own folded noise, faded in over the first twelve blocks of run so the join at the build
+        // is the build's own shape and the noise belongs to the mountain.
+        double bite = smooth(Mth.clamp((out - 2.0D) / 12.0D, 0.0D, 1.0D));
+        double crag = 1.0D - Math.abs(fractal(blockX, blockZ, BREE_CRAG_SCALE, 53));
+        crag += 0.5D * (1.0D - Math.abs(fractal(blockX, blockZ, 24, 59)));
+        shaped += (crag / 1.5D - 0.5D) * 2.0D * BREE_CRAG * bite;
+        return (int) Math.round(Math.max(height, shaped));
+    }
+
+    /** The build's own top along its east edge at a block of the cut's depth, read between the samples. */
+    private static int breeEdgeTop(int blockZ) {
+        int local = Mth.clamp(blockZ - BREE_Z, 0, BREE_DEEP - 1);
+        int at = 0;
+        while (at + 1 < BREE_EDGE_ZS.length && BREE_EDGE_ZS[at + 1] <= local) at++;
+        if (at + 1 >= BREE_EDGE_ZS.length) return BREE_EDGE_TOPS[at];
+        int from = BREE_EDGE_ZS[at];
+        int to = BREE_EDGE_ZS[at + 1];
+        double share = (local - from) / (double) (to - from);
+        return (int) Math.round(BREE_EDGE_TOPS[at] + (BREE_EDGE_TOPS[at + 1] - BREE_EDGE_TOPS[at]) * share);
     }
 
     /**
@@ -2669,7 +2799,7 @@ public final class ArdaMap {
                             MOUNTAIN_CEILING), VALLEY_CROWN));
         }
         // Gundabad last, so the valley cuts the drawn rock, its crags and its lean-to all at once.
-        return gundabadPass(blockX, blockZ, height);
+        return breeHill(blockX, blockZ, gundabadPass(blockX, blockZ, height));
     }
 
     /**

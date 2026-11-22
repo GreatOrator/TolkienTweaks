@@ -4566,3 +4566,17 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   rather than between two sheer walls. Measured against the drawn ground, the sections at (-270, 40), (-450, 140) and
   (-650, 210) come down from 105, 112 and 97 to the water's edge and climb back to the country's 108, 109 and 94. The
   bank grading is world generation and needs chunks made after it; neither change has been seen in a world.
+- **Bree is sited, and its hill is the world's.** The owner's cut of the town measures 496 by 672 by 108 - markers at
+  y 14, highest block 121, the town's ground at 19 to 35 and its roofs at 63, with Bree-hill filling the eastern 166
+  blocks and cut off square at the markers. It is pinned at **(1024, -256)**: box x 1024..1519 by z -256..415, in cells
+  12/19 and 12/20 only, on ground 101 to 130 (a drop of 28, the Shire village's own), dry, the stream 58 east at its
+  southern end, and the drawn cell middle 1280, 256 - where the East-West Road and the Greenway meet - inside it. The
+  town is seated on its own grass line, five over the marker course (`BREE_DECK_LIFT`), so the pin's 117 puts it on 122.
+  `ArdaMap.breeHill` lays the rock that carries the build's east edge into Eriador: its foot four blocks inside the
+  footprint at the build's own top for that depth (read along the edge from the save, 68 to 118), the flank falling a
+  block for a block to the drawn country and no further, its corners eased over 32 blocks, the map's folded noise faded
+  in off the foot, and drawn river and lake columns left unraised so the stream at the town's foot survives. Highest
+  rock 220 at 1515, 30; it meets the country between x 1545 and 1607. `Bree` raises the cut with Hobbiton's pass -
+  ground a chunk a tick, pieces at `breePlan()`, the footprint cleared in bands, then `Dressing` with the town's deck and
+  its trees left out of its shape - on `/bree raise`, at a start, or when a player is within 192 blocks. Nothing is
+  raised yet: there is no `bree` cut, and the note says which tool makes one.
