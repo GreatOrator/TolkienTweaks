@@ -197,7 +197,7 @@ limits are worth knowing: a road is posted only once it is down, no post stands 
 side are joined across it), and a third town down one arm's road is left off, since an arm carries two boards and
 no more.
 
-## The switchbacks - surveyed 21 November, nowhere to fire yet
+## The switchbacks - surveyed 21 November, closed unexercised 22 November
 
 **No leg of the network climbs more than half its own run.** `RoadPlan` breaks a leg into switchbacks when its
 two marks stand more than `LAYABLE_GRADE` 0.5 apart per block - 160 blocks over the 320 between marks - and the
@@ -251,6 +251,12 @@ a hairpin 182 blocks apart for 64 of advance, which is a stranger road than the 
 The bend count is what to check rather than the width - the width moves out in half again (47 to 70) if a traverse
 comes out steeper, and five traverses is what the arithmetic gives for any climb between 107 and 152 blocks over 96.
 **Not seen in a game:** no leg has been planned across that wall yet, so the branch is unexercised by a walk.
+
+**Closed 22 November, on the owner's call.** No leg of the eleven roads reaches the trigger, so the only leg that
+would put the branch through its paces is this test one across the pass wall, and the owner has taken the survey
+and the arithmetic for it and left the branch unexercised rather than walk it. That is a limit worth carrying:
+`switchbacks` and `marks` have never run against real ground, and the log line above - four bends on that leg -
+is the signature to compare against the first time a road does climb more than half its run.
 
 ## The keep's doorway - answered in a world, 20-21 November
 
@@ -991,6 +997,10 @@ all unverified.
 - **The captain of the Dourhands is down once, and stays down.** `DUGORIM_DOWN_TAG` on the hand that fells him; seen in
   game, felled again, did not come back.
 - **The wraith was never broken.** Its mark was always in place and it behaved - killed once, gone.
+- **The switchbacks are closed unexercised, 22 November.** The survey of all 47 legs of the eleven roads found the
+  steepest at 0.23, so the traverse branch fires nowhere in the drawing, and the owner has called it closed rather
+  than walk the pass-wall test. The test leg itself is written above (5610, -6790 to 5706, -6790: five traverses 47
+  wide, four bends) if the branch ever needs signing off. Nothing is owed.
 - **The inner keep's stair is final and open.** No door goes over it; the hold is a place to explore, page 29 stays
   dialogue.
 - **The chapter-one seam is final.** The courtyard scene between pages 25 and 26 ran smoothly as staged;
