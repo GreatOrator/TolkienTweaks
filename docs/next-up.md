@@ -182,6 +182,47 @@ drape's ring, each with what good looks like and the line to change under each t
 holds the town is left alone; one whose cut is replaced raises it again, because the note records the table's
 fingerprint.
 
+### Raised in a world, and the ring's plates - 22 November
+
+**The town stood.** In `Progress Check 1` it was laid at 1024, 117, -256 in **935 ticks (46.8 s)**, 462 pieces over
+1,610 chunks, and the drape reported **23,316 columns cut, 37,942 filled, none left for the water**. The owner walked it
+and reported the build in. What came back wrong was one edge piece: **plates of bare stone standing in the air above
+the ring's trees**, with the leaves still under them, on many of the town's edges - and the same pass dresses the city
+and Hobbiton, so both wear it.
+
+**The save named the drape, not the hill.** Read straight out of `Progress Check 1`, the south band of the ring
+(x 1000..1200, z 416..447) held **1,609 columns topping in stone, 483 of them with air under the stone** - thirty per
+cent - and a slice of the box's own interior, which the drape never touches (x 1024..1080, z 340..419), held **none**. Every one of the plates is that: a
+column whose top is stone with air between it and its ground, and grass at the ground under it.
+
+**The cause is how the ring read a tree.** `dressColumn` took its column height from `MOTION_BLOCKING`, whose answer
+over a wood is the top of the leaves, and then walked down while the block was a leaf or a log. A big crown hangs over
+air, so the walk stopped in that air: the column's `skin` was `cave_air` at five or ten blocks over its own ground, the
+fill loop then started at `top + 1` - above the ground - and the cap's block, `skin.isSolid() ? skin : STONE`, had no
+soil to be, so it was laid as `STONE`. A plate of rock in the air, one per crown, placed by the drape at the height the
+crown used to be. The leaves left under it are the same reading: the removal loop only ever cleared down to `top`.
+
+**Fixed the same day in the shared pass.** `Dressing.dressColumn` and `Dressing.openMouth` take the column's height
+from `MOTION_BLOCKING_NO_LEAVES` - the ground under a crown - and walk down only a trunk from there; the removal loop
+clears the whole crown to that ground; and a column with nothing solid under it is **left exactly as it stands**,
+neither filled nor cut, so no fill can begin in the air and no cut can take the ground out from under a plate. The
+fill's top block is the skin itself and never stone. `DRESS_VERSION` stays at 1 on purpose: a re-dress reads a plate as
+ground and leaves it, so asking every held world to dress again would buy nothing.
+
+**What the fix does not reach.** Ground already dressed keeps its plates, and so does `Progress Check 1`. Seeing the
+fix means chunks generated since it, or one of the two things below.
+
+1. **A repair pass** - the only way to mend country already dressed. Walk the ring, take out stone that has air within
+   three blocks under it and the ground further down, then dress the column again from that ground. It needs a rule
+   that tells the drape's own fill from Bree-hill's rock (the hill is drawn ground and stands on itself; the fill was
+   laid over air) and a command to ask for it, since `/bree` has only `raise`. Moderate work, small risk, and it mends
+   the city's and the Shire's rings with the same pass.
+2. **Cap the fill** - the largest change, and the one to agree before making. The ring fills every column whose ground
+   stands under `wall`, the build's own edge at the nearest box column, easing to the ground over 32 blocks: on the
+   town's edges that is what makes the stone skirt up to the roofs, and 37,942 filled columns in this raise. Stopping
+   the fill above a couple of blocks - cutting instead, or leaving the ground - would change the silhouette of every
+   dressed build, so it is the owner's call and wants a fresh world to judge it in.
+
 ## The list
 
 | # | Item | Status | Where the detail is |

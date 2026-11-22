@@ -471,13 +471,18 @@ public final class Dressing {
                 spring = true;
                 banked = true;
             }
-            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+            int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+            if (surface <= level.getMinY()) return;
+            // A tree is not ground, and the top of its crown is not where its ground is. The height that counts
+            // leaves out answers where the column really stands; read from the leaves' own top, a column under a
+            // crown that hung over air - which every big crown does - stepped down into that air and took it for its
+            // skin, so the fill began five or ten blocks over the ground and laid its rock in the empty space the
+            // crown had been in. That is the plate of bare stone standing in the air above a dressed tree, one per
+            // crown, all round the ring.
+            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
             if (top <= level.getMinY()) return;
-            int surface = top;
             BlockState skin = level.getBlockState(new BlockPos(x, top, z));
-            // A tree is not ground. The motion-blocking top of a wooded column is its leaves, and a cap laid from that
-            // block is a mat of leaves where the ring's floor belongs - so the skin comes from under the crown, and
-            // what the tree stood on the ground is taken with it.
+            // A trunk is not ground either: a column of a tree's own wood is read down to what it stands on.
             while (top > level.getMinY() && (skin.is(BlockTags.LEAVES) || skin.is(BlockTags.LOGS))) {
                 skin = level.getBlockState(new BlockPos(x, --top, z));
             }
@@ -494,6 +499,10 @@ public final class Dressing {
                 skin = level.getBlockState(new BlockPos(x, top, z));
                 if (!skin.getFluidState().isEmpty()) return;
             }
+            // A column with nothing solid under it is not one the drape can carry to a cap: a fill built there is
+            // rock with air beneath it, and a cut would take the ground out from under whatever does stand. It is
+            // left exactly as it is - the same answer the ring gives a column the build leaves open.
+            if (!skin.isSolid()) return;
             int outX = Math.max(0, Math.max(box.lowX() - x, x - box.highX()));
             int outZ = Math.max(0, Math.max(box.lowZ() - z, z - box.highZ()));
             double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) CityCommands.DRAPE_REACH);
@@ -523,8 +532,7 @@ public final class Dressing {
                 for (int y = top + 1; y < cap; y++) {
                     level.setBlock(new BlockPos(x, y, z), Blocks.STONE.defaultBlockState(), 2);
                 }
-                level.setBlock(new BlockPos(x, cap, z),
-                        skin.isSolid() ? skin : Blocks.STONE.defaultBlockState(), 2);
+                level.setBlock(new BlockPos(x, cap, z), skin, 2);
                 filled++;
             }
         }
@@ -542,13 +550,13 @@ public final class Dressing {
          * @return whether anything was taken out
          */
         private boolean openMouth(ServerLevel level, int x, int z, int water) {
-            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
             if (top <= level.getMinY()) return false;
             BlockState skin = level.getBlockState(new BlockPos(x, top, z));
             while (top > level.getMinY() && (skin.is(BlockTags.LEAVES) || skin.is(BlockTags.LOGS))) {
                 skin = level.getBlockState(new BlockPos(x, --top, z));
             }
-            if (top <= level.getMinY() || !skin.getFluidState().isEmpty()) return false;
+            if (top <= level.getMinY() || !skin.getFluidState().isEmpty() || !skin.isSolid()) return false;
             int bed = water - CityCommands.MOUTH_DEPTH;
             if (top <= bed) return false;
             for (int y = top; y > bed; y--) {

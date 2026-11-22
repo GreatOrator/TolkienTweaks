@@ -63,6 +63,7 @@ and a town that was interrupted re-lays from the beginning, because the note is 
 | The hill runs on into the drawn ground past where it meets it | it cannot: the rock stops the moment the country stands as high as it | nothing - the stop is x 1545 to 1607, measured |
 | A bench or step 4 to 14 blocks proud, hugging the box's east edge for its first 30 blocks | the drape's fill over the rock. Measured: the ring stands up to 14 over the hill (worst at z -168), 9 to 13 over most of the east side, and nothing at 32 out | Look before touching it: it is a shoulder on a hundred-block flank. If it reads as a shelf, it is a change in `Dressing` - a ring column already standing at or over its cap should be left alone - and that is the drape the city and Hobbiton share, so both need looking at again |
 | A stone wedge climbing to a roofline somewhere on the perimeter | a building stands on the cut's perimeter, and the ring fills up to its roof - the city's rule, wrong for a town on a plain | the same change, or tell `Dressing` the town's roofs are not its walls the way `trees` says a village's leaves are not |
+| **Plates of bare stone standing in the air over the ring's trees**, air under the stone and the leaves still under that | the drape read the crown as ground: it stepped down from the leaves' top into the air a big crown hangs over, took that air for the column's skin, and filled from there, so its stone began above the ground and its top block had no ground to be. Found in `Progress Check 1`: the south band (x 1000..1200, z 416..447) held 1,609 stone-topped columns, **483 of them with air under the stone**, and a slice of the box's interior, which the drape never touches (x 1024..1080, z 340..419), held none | fixed on 22 November in `Dressing.dressColumn` and `openMouth`: the ground under a crown is read with `MOTION_BLOCKING_NO_LEAVES`, only a trunk is walked down from there, and a column with nothing solid under it is left exactly as it stands. **Ground already dressed keeps its plates** - a re-dress reads the plate as ground - so the fix is seen only in chunks generated since, or after a repair |
 
 ## 2. Is the stream untouched?
 
@@ -132,9 +133,16 @@ side. What good looks like:
 | `DRESS_VERSION` | 1 | what the drape's rules were when it was written | whether a held world dresses again |
 | `CityCommands.DRAPE_REACH` | 32 | how far out the ring dresses | the ring, city and Shire both |
 
-## What has not been seen
+## What has been seen, and what has not
 
-Nothing here has been walked: no cut, no raise, no hill, no ring. The rock's numbers were checked against the drawing
-by arithmetic - the foot heights, where it meets the country, the peak at 220, and that no drawn water column is raised
-- and the drape's effect on the hill was measured the same way: up to 14 blocks of stone over it along the box's east
-edge, nothing at 32 out, and no drawn water inside the ring's band. None of that is a look at the ground.
+**Raised and walked on 22 November.** The cut went into `Progress Check 1`, the town stood at 1024, 117, -256 in 935
+ticks (46.8 s) - 462 pieces over 1,610 chunks - and the owner walked it and reported the build in. What came back was
+the ring and not the hill: the plates of stone in the air above the trees, in the table above, which the save measured
+at 483 columns with air under their stone in the south band alone and which are fixed in the pass as of the same day.
+Nothing has been said yet about the hill's join, the crest, the stream's banks or the ring's joins, so section 1's and
+section 2's verdicts are still owed a look.
+
+The rock's numbers were checked against the drawing by arithmetic before any of it was raised - the foot heights,
+where it meets the country, the peak at 220, and that no drawn water column is raised - and the drape's effect on the
+hill the same way: up to 14 blocks of stone over it along the box's east edge, nothing at 32 out, and no drawn water
+inside the ring's band. That is not a look at the ground.
