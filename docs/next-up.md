@@ -18,6 +18,14 @@ at 1031 and 1032, 122, -32, the middle two blocks of the hall's 16-block front (
 into `Pins.SOURCE` as `hall:bree` and stood after the town's own pass rather than before it. **The drape is now one
 pass with declarations** (`Drape`): an outline read from either a cut folder or a structure template, and a build's
 ring written as one line - box, reach, deck, trees, fill, version - with a camp's sweep already moved onto it unchanged.
+**A column with no ground under it is cleared, not walked past**: the city drape's ground search stops forty blocks
+under a column's top, and a column that found nothing in that depth was left exactly as it stood - right for a cave,
+wrong for a build's own carve. Rivendell's cut took the hill out from under its oaks and their crowns hung ninety-four
+blocks over the city floor, which is the shelf and the raw face in that screenshot. The tree in such a column now
+comes off (nothing is filled and nothing is joined: rock in the air is rock over a hole), and the pass counts both
+what it leaves alone and what it clears that way, so the log and `/tmcity drape` say it without anybody reading
+blocks: `18902 cut, 35078 filled, 320 water, N left alone, M cleared of a tree standing on nothing`.
+
 **Bree's road to the Shire is in the network**: the leg the owner walked in `Progress Check 3` (five wide, from
 Bree's hall front at 1032, -34) is a `Named` entry now, read back out of that world's own `road_plans.dat`, where it
 was saved with its bends and its plan, and `roads.dat`, where it is recorded laid. Its first walk ended at -150, 114

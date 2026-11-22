@@ -176,7 +176,7 @@ public final class Dressing {
         while (whole.piece < parts.size()) whole.takePieces();
         whole.grow();
         while (whole.chunk < whole.ring.size()) whole.dressChunks(level);
-        return new CityCommands.Drape(whole.cut, whole.filled, whole.open);
+        return new CityCommands.Drape(whole.cut, whole.filled, whole.open, whole.skipped, whole.orphaned);
     }
 
     /**
@@ -283,6 +283,10 @@ public final class Dressing {
         private int cut;
         private int filled;
         private int open;
+        /** Columns looked at outside the walls and left exactly as they stand, so a dressed ring can be counted. */
+        private int skipped;
+        /** Of those, the ones whose ground is gone and whose tree was taken off instead of being walked past. */
+        private int orphaned;
 
         private Job(String key, Path folder, Pieces pieces, List<CityCommands.Part> parts, BlockPos origin,
                     CityCommands.Box box, boolean dressed, boolean road, boolean trees, int deck) {
@@ -326,8 +330,9 @@ public final class Dressing {
                     return true;
                 }
                 dressed = true;
-                LOGGER.info("Rivendell: the ground is dressed - {} columns cut down, {} filled up, {} left for the water",
-                        cut, filled, open);
+                LOGGER.info("Rivendell: the ground is dressed - {} columns cut down, {} filled up, {} left for the "
+                        + "water, {} left alone, {} cleared of a tree standing on nothing",
+                        cut, filled, open, skipped, orphaned);
                 write(level, true, road);
             }
             if (!road) {
@@ -465,7 +470,11 @@ public final class Dressing {
             int gz = Mth.clamp(z, box.lowZ(), box.highZ()) - box.lowZ();
             int at = gx + gz * wide;
             int wall = outline[at];
-            if (wall == Integer.MIN_VALUE) return;
+            if (wall == Integer.MIN_VALUE) {
+                // No piece of the cut at this column of the wall: there is no shape to join to, so it is left.
+                skipped++;
+                return;
+            }
             // The deck line is the build's own floor, read from the corner the city was planted at: its deck
             // tiles lie on the two blocks over it, whatever height the world has room for.
             boolean banked = wall <= origin.getY() + deck;
@@ -494,7 +503,10 @@ public final class Dressing {
             }
             int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
                     level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
-            if (surface <= level.getMinY()) return;
+            if (surface <= level.getMinY()) {
+                skipped++;
+                return;
+            }
             // A tree is not ground, and the top of its crown is not where its ground is. The height that counts
             // leaves out answers where the column really stands; read from the leaves' own top, a column under a
             // crown that hung over air - which every big crown does - stepped down into that air and took it for its
@@ -515,7 +527,16 @@ public final class Dressing {
             while (top > floor && !ground(skin)) {
                 skin = level.getBlockState(new BlockPos(x, --top, z));
             }
-            if (!ground(skin)) return;
+            if (!ground(skin)) {
+                // The ground this column stood on is not merely under a bough any more: it is gone, and further under
+                // the column than the search is allowed. That is a build's own carve - Rivendell's cut took the hill
+                // out from under its oaks, and their crowns hung ninety-four blocks over the floor while the pass
+                // walked past them for ever. There is no ground to join to, so nothing is filled and nothing is
+                // joined; the tree standing in the column comes off, which is all that is left of it.
+                if (orphan(level, x, z, surface, floor) > 0) orphaned++;
+                else skipped++;
+                return;
+            }
             for (int y = surface; y > top; y--) {
                 level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
             }
@@ -527,12 +548,18 @@ public final class Dressing {
                     top--;
                 }
                 skin = level.getBlockState(new BlockPos(x, top, z));
-                if (!skin.getFluidState().isEmpty()) return;
+                if (!skin.getFluidState().isEmpty()) {
+                    skipped++;
+                    return;
+                }
             }
             // A column with nothing solid under it is not one the drape can carry to a cap: a fill built there is
             // rock with air beneath it, and a cut would take the ground out from under whatever does stand. It is
             // left exactly as it is - the same answer the ring gives a column the build leaves open.
-            if (!skin.isSolid()) return;
+            if (!skin.isSolid()) {
+                skipped++;
+                return;
+            }
             int outX = Math.max(0, Math.max(box.lowX() - x, x - box.highX()));
             int outZ = Math.max(0, Math.max(box.lowZ() - z, z - box.highZ()));
             double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) CityCommands.DRAPE_REACH);
@@ -565,6 +592,35 @@ public final class Dressing {
                 level.setBlock(new BlockPos(x, cap, z), skin, 2);
                 filled++;
             }
+        }
+
+        /**
+         * A column whose ground is gone: the tree standing in it comes off, and nothing is put in its place.
+         * <p>
+         * The ground search stops {@link #COLUMN_DEPTH} blocks under the top of a column - deeper than any canopy and
+         * shallower than the air over a cave - and a column that found nothing in that depth was left exactly as it
+         * stood, on the reading that a column with a hole in it has no join to make. The reading holds for a cave and
+         * fails for a build's own carve: a crown over ground a cut took out is not a hole in the country, it is a
+         * tree with nothing under it, and leaving it is a shoulder dressed to the skyline with a garden hanging over
+         * it. Nothing is filled and nothing is joined here - rock built in the air is rock over a hole - so the
+         * column is left as the carve left it, less the tree.
+         *
+         * @return how many blocks of tree came off, which is nought when the column was not standing in a tree
+         */
+        private int orphan(ServerLevel level, int x, int z, int surface, int floor) {
+            int taken = 0;
+            for (int y = surface; y >= floor; y--) {
+                BlockState state = level.getBlockState(new BlockPos(x, y, z));
+                if (state.isAir()) continue;
+                if (!state.is(BlockTags.LEAVES) && !state.is(BlockTags.LOGS)
+                        && !tree(BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString())) {
+                    // Something that is not a tree: not this pass's to take from a column it cannot join.
+                    break;
+                }
+                level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+                taken++;
+            }
+            return taken;
         }
 
         /**
