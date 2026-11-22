@@ -218,10 +218,19 @@ the build - were taken out of `Progress Check 1`'s Arda region, entity and poi f
 
 The town's own chunks are untouched - the grass at 1060, 140 is still 122, the courtyard at 1272, 80 is still dirt to
 127 under cobble at 128, 1512, 200 still carries the hill's trees to 207 - and the ring now reads as unmade. The two
-notes beside the cut, `_stands.txt` and `_dressed.txt`, were removed with it, so **the next start, or `/bree raise`,
-raises the town again**: the ground comes back as the drawing and the hill make it, and the ring is dressed fresh by
-the fixed pass - 935 ticks took the last raise. The rewritten files are under `run/chunk-trim-backup/20261122-060456`.
+notes beside the cut, `_stands.txt` and `_dressed.txt`, were removed with it, so the town is raised again next - by
+the world's own pass, by `/bree raise`, or, if it is typed in the ten seconds the world waits before beginning, by
+`/bree drape`, which dresses the fresh ring and lays nothing. Either way the ground comes back as the drawing and the
+hill make it and the ring is dressed by the fixed pass; 935 ticks took the last raise. The rewritten files are under `run/chunk-trim-backup/20261122-060456`.
 **Nothing has been re-seen: the ring is unmade until the world is opened.**
+
+**The drape can be asked for on its own now.** `/bree drape` is the raise's last stage without the rest: it reads the
+cut's outline and dresses the ring at the town's own deck and with its trees out of its shape, at the same 5 ms a tick,
+and writes `_stands.txt` when it finishes, so the world neither raises the town again nor dresses it twice. No piece of
+the town is laid and no country is cleared out of it, which is what makes it the pass for the ring whose ground has
+been taken out and made again. It also replaces a raise the world has not begun - that one waits 200 ticks and a player
+within 192 blocks - so it can be typed at a start. `/tmcut drape bree` is not this pass: a cut's table with no `deck`
+line is dressed to the city's deck of 2, and Bree's floor stands 5 over its marker course.
 
 **What the fix does not reach.** Ground already dressed keeps its plates. Seeing the fix in any other world means
 chunks generated since it, or one of the two things below.

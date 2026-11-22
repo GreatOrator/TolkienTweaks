@@ -27,6 +27,7 @@ the rock is told never to stand on a drawn water column.
 /tmcut list                      what this world is holding - "bree" once the cut is in
 /tmcut table bree                its size, and whether its table reads aright
 /bree raise                      raise, clear and dress the town now
+/bree drape                      dress the ring again, and lay nothing of the town
 ```
 
 A world with the cut in it raises Bree on its own, either at a start after 200 ticks or as soon as a player comes within
@@ -34,6 +35,14 @@ A world with the cut in it raises Bree on its own, either at a start after 200 t
 1024,117,-256 in N ticks (M s), dressed to its own outline`. That line, and `<save>/tolkienmobs/cuts/bree/_stands.txt`
 beside it, is the pass finishing. Anything short of that line means it stopped part way - `/bree raise` starts it again,
 and a town that was interrupted re-lays from the beginning, because the note is only written at the end.
+
+**`/bree drape` is the last stage on its own.** It reads the cut's outline and dresses the ring at the town's own deck
+and with its trees out of its shape - the same numbers the raise uses - then writes the note, and lays no piece of the
+town and clears no country out of it. It is the pass for ground taken out and made again, or for a changed drape rule,
+on a town that stands and whose insides a hand has touched since. It also replaces a raise the world has not begun yet
+(the world's own waits 200 ticks and a player within 192 blocks), so it can be typed at a start. `/tmcut drape bree`
+is *not* that pass: a cut's table with no `deck` line dresses to the city's deck of 2, and the town's floor stands 5
+over its marker course, so its own paving would be read as a roofline and cut.
 
 ## 1. Does the hill melt into the build?
 

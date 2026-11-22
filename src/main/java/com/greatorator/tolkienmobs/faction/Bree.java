@@ -211,7 +211,57 @@ public final class Bree {
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("bree")
                 .requires(source -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source))
-                .then(Commands.literal("raise").executes(Bree::raiseNow)));
+                .then(Commands.literal("raise").executes(Bree::raiseNow))
+                .then(Commands.literal("drape").executes(Bree::drapeNow)));
+    }
+
+    /**
+     * Dresses the ground round the town again, and lays nothing of the town.
+     * <p>
+     * The raise is the only pass that writes the note, so a town whose ring wants dressing again - the ground taken
+     * out and made anew, a rule changed, a shelf it left - had no way back to its dressing but to lay the whole cut
+     * again, which puts every block of the town back over whatever a hand has done inside since. This is the last
+     * stage of the raise on its own: the cut's outline, then the ring at the same budget and with the town's own deck
+     * and trees, and the note written when it finishes, so the world knows the ground is dressed and does not raise
+     * the town over it. No piece of the town is laid and no country is cleared out of it.
+     */
+    private static int drapeNow(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (standing != null) {
+            // A raise that has not begun is only waiting for somebody to be near: this is what that somebody wants
+            // instead, so it takes the raise's place. One already under way is not interrupted.
+            if (standing.began >= 0) {
+                source.sendFailure(Component.literal("Bree is already being raised - wait for it to finish."));
+                return 0;
+            }
+            standing = null;
+        }
+        ServerLevel level = source.getServer().getLevel(TolkienDimensions.ARDA);
+        if (level == null) {
+            source.sendFailure(Component.literal("There is no Arda on this server."));
+            return 0;
+        }
+        List<CutCommands.Part> parts;
+        try {
+            parts = CutCommands.parts(level, CUT);
+        } catch (IOException unreadable) {
+            source.sendFailure(Component.literal("The town's cut could not be read: " + unreadable.getMessage()));
+            return 0;
+        }
+        if (parts.isEmpty()) {
+            source.sendFailure(Component.literal("No bree cut to dress - nothing in "
+                    + CutCommands.folder(level).resolve(CUT)));
+            return 0;
+        }
+        BlockPos corner = ArdaMap.breePlan();
+        Standing work = new Standing(parts, corner, CutCommands.Box.of(parts, corner));
+        work.dressOnly = true;
+        work.stage = 3;
+        work.found = true;
+        standing = work;
+        source.sendSuccess(() -> Component.literal("Dressing Bree: the ring round the town from " + parts.size()
+                + " pieces of its outline, nothing of the town laid - at most " + BUDGET_MS + " ms a tick."), true);
+        return parts.size();
     }
 
     /** Lays, clears and dresses the town now, wherever the players are, at the same budget a tick. */
@@ -245,8 +295,13 @@ public final class Bree {
             if (!work.found && event.getServer().getTickCount() < GRACE_TICKS) return;
             if (!work.found && !watched(level, work.box)) return;
             work.began = event.getServer().getTickCount();
-            LOGGER.info("Bree: raising the town - {} chunks of ground to wait for, then {} pieces and the ring, at"
-                    + " {} ms a tick", work.groundChunks(), work.parts.size(), BUDGET_MS);
+            if (work.dressOnly) {
+                LOGGER.info("Bree: dressing the ground round the town again - {} pieces of its outline, then the"
+                        + " ring, at {} ms a tick", work.parts.size(), BUDGET_MS);
+            } else {
+                LOGGER.info("Bree: raising the town - {} chunks of ground to wait for, then {} pieces and the ring, at"
+                        + " {} ms a tick", work.groundChunks(), work.parts.size(), BUDGET_MS);
+            }
         }
         long started = System.nanoTime();
         try {
@@ -257,16 +312,22 @@ public final class Bree {
             }
             work.ticks++;
             if (done) {
-                work.release(level);
+                if (!work.dressOnly) work.release(level);
                 standing = null;
                 note(level, work.planted);
-                LOGGER.info("Bree: the town stands at {} in {} ticks ({} s), dressed to its own outline",
-                        work.planted.toShortString(), work.ticks,
-                        String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D));
+                if (work.dressOnly) {
+                    LOGGER.info("Bree: the ground round the town is dressed in {} ticks ({} s)", work.ticks,
+                            String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D));
+                } else {
+                    LOGGER.info("Bree: the town stands at {} in {} ticks ({} s), dressed to its own outline",
+                            work.planted.toShortString(), work.ticks,
+                            String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D));
+                }
             }
         } catch (IOException unreadable) {
-            LOGGER.warn("Bree: the town could not be raised: {}", unreadable.getMessage());
-            work.release(level);
+            LOGGER.warn("Bree: {} could not be done: {}", work.dressOnly ? "the dressing" : "the raising",
+                    unreadable.getMessage());
+            if (!work.dressOnly) work.release(level);
             standing = null;
         }
     }
@@ -307,6 +368,11 @@ public final class Bree {
         private int ticks;
         /** Whether a hand asked for it, rather than a player being near. */
         private boolean found;
+        /**
+         * Whether this is the drape alone: the ring dressed round a town that already stands, with no ground asked
+         * for, no piece laid and no country cleared out of it.
+         */
+        private boolean dressOnly;
         /** 0 asking for ground, 1 laying, 2 clearing, 3 dressing. */
         private int stage;
         private int piece;
