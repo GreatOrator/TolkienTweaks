@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -1541,7 +1540,7 @@ public final class Sites extends SavedData {
 
     /** The highest block a crag's file draws, or -1 when the file cannot be read. */
     private static int crownOf(ServerLevel level, String structure, Vec3i size) {
-        Lines lines = lines(level, structure, size);
+        Drape.Outline lines = Drape.outline(level, structure, size, false);
         if (lines == null) return -1;
         int crown = -1;
         for (int top : lines.roof()) {
@@ -1732,211 +1731,34 @@ public final class Sites extends SavedData {
         }
     }
 
-    /** How far out from a build's walls the ground is carried to its own roofline, in blocks. */
-    private static final int SWEEP_REACH = 12;
-    /** A build with more footprint than this is swept only at its walls, so one placement stays one placement. */
-    private static final int SWEEP_WIDE = 2048;
+    /**
+     * The drape's own rules as a camp declares them: the version a build that keeps a note would record, so a changed
+     * ring reaches a world that already holds the build. A camp keeps no note yet - its ground is swept afresh each
+     * session - so this is the declaration's own record of which rules it was written under.
+     */
+    private static final int SWEEP_VERSION = 1;
     /** Which builds this session has already had their ground swept, so a standing one is swept once a visit. */
     private static final Set<String> SWEPT = new HashSet<>();
 
     /**
-     * Carries the ground around a build to the build's own roofline, and takes what grows over it.
+     * Carries the ground around a build to the build's own shape, and takes what grows over it.
      * <p>
-     * The city has been dressed this way since it was first laid - column by column to the cut's own outline, easing
-     * back to the country at the edge of the ring - and a building laid from a template had nothing of the kind. So a
-     * camp the world seated in a hillside arrived with the hill leaning over its roof, a tower with a wood's crown
-     * through its hall, and a footprint cut out of a bank with a wall of ground still standing against two of its
-     * sides. The ground was never asked what it was covering. This is the same pass for one build: every column
-     * inside the footprint is cleared above the build's own top, and the ring outside it is cut down to that top,
-     * easing back to the ground at {@link #SWEEP_REACH} so the join out in the country is the country's own.
+     * A camp's drape is a declaration and nothing else: the pass is {@link Drape#dress}, the same one a country's
+     * ground gets, and what a camp says about itself is the whole of the difference - a ring twelve blocks out, no
+     * deck over its corner, no filling, and its own template's columns as its outline. This used to be a second copy
+     * of that pass with its own numbers; a build that wants a longer ring, a floor lifted over its corner, or ground
+     * built up as well as taken down now declares it rather than needing a pass written for it.
      * <p>
      * Water keeps its channel - a bank is not filled to a roofline - and a crag is left exactly as it is, a crag's
      * whole shape being the ground over it.
      */
     public static void sweep(ServerLevel level, BlockPos corner, Vec3i size, String structure) {
         if (isCave(structure)) return;
-        int wide = size.getX();
-        int deep = size.getZ();
-        if (wide <= 0 || deep <= 0) return;
-        Lines lines = lines(level, structure, size);
-        if (lines == null) return;
-        int[] top = lines.roof();
-        int[] floor = lines.floor();
-        open(top, wide, deep);
-        open(floor, wide, deep);
-        int ring = wide * deep > SWEEP_WIDE ? 4 : SWEEP_REACH;
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        for (int dx = -ring; dx < wide + ring; dx++) {
-            for (int dz = -ring; dz < deep + ring; dz++) {
-                int out = Math.max(0, Math.max(Math.max(-dx, dx - wide + 1), Math.max(-dz, dz - deep + 1)));
-                if (out > ring) continue;
-                int nearX = Math.max(0, Math.min(wide - 1, dx));
-                int nearZ = Math.max(0, Math.min(deep - 1, dz));
-                int roof = top[nearX + nearZ * wide];
-                if (roof == Integer.MIN_VALUE) continue;
-                int x = corner.getX() + dx;
-                int z = corner.getZ() + dz;
-                int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
-                if (surface <= level.getMinY()) continue;
-                if (wet(level, x, surface + 1, z)) continue;
-                if (out == 0) {
-                    // Inside the walls the ground comes down to the build's own floor rather than to its roof. A ruin
-                    // seated on the highest column of a bank has a hill's worth of ground standing inside its own walls,
-                    // and a cut at the roofline leaves it exactly there: a keep's height is the cap, so the ground
-                    // fills the ruin to the top of it and the whole thing reads as a mound of dirt and grass. The cut
-                    // takes only what the template does not stand - the walls are the build, the ground is what is not.
-                    int bottom = floor[nearX + nearZ * wide];
-                    if (bottom == Integer.MIN_VALUE) continue;
-                    sweepInside(level, cursor, corner.getY(), nearX, nearZ, x, z, surface,
-                            corner.getY() + bottom, lines.own());
-                    continue;
-                }
-                double share = Math.min(1.0D, out / (double) ring);
-                double ease = share * share * (3.0D - 2.0D * share);
-                int cap = (int) Math.round(corner.getY() + roof + (surface - corner.getY() - roof) * ease);
-                sweepColumn(level, cursor, x, z, surface, cap);
-            }
-        }
-    }
-
-    /**
-     * A build's own shape as its file draws it: the highest and lowest block in every column of its footprint, from
-     * its corner, and the blocks themselves - the last so that the cut inside the walls can tell the build from the
-     * ground it stands in.
-     */
-    private record Lines(int[] roof, int[] floor, Set<Long> own) {
-    }
-
-    /** The key of one of a template's own blocks, for the sweep's test of what it must not cut. */
-    private static long offset(int x, int y, int z) {
-        return ((long) (x + 512) << 42) | ((long) (z + 512) << 21) | (long) (y + 4096);
-    }
-
-    /**
-     * The build's own top and bottom in every column of its footprint, from its corner; {@code Integer.MIN_VALUE}
-     * where the template stands nothing at all in that column.
-     * <p>
-     * Read from the template's file rather than from the world, and read after no placement at all: the ground is
-     * what the build has to be carried to, so the numbers wanted are the ones the template drew, not what happens to
-     * be standing now. A hill left over a roof inside the footprint would otherwise be its own answer.
-     */
-    @Nullable
-    private static Lines lines(ServerLevel level, String structure, Vec3i size) {
-        Identifier id = Identifier.tryParse(structure);
-        if (id == null) return null;
-        Identifier file = Identifier.fromNamespaceAndPath(id.getNamespace(), "structure/" + id.getPath() + ".nbt");
-        CompoundTag tag;
-        try (InputStream stream = level.getServer().getResourceManager().getResourceOrThrow(file).open()) {
-            tag = NbtIo.readCompressed(stream, NbtAccounter.unlimitedHeap());
-        } catch (IOException | RuntimeException unreadable) {
-            LOGGER.warn("Could not read {} to sweep the ground over it", file, unreadable);
-            return null;
-        }
-        ListTag palette = tag.getList("palette").orElseGet(ListTag::new);
-        if (palette.isEmpty()) return null;
-        String[] names = new String[palette.size()];
-        for (int index = 0; index < palette.size(); index++) {
-            names[index] = palette.getCompoundOrEmpty(index).getStringOr("Name", "");
-        }
-        int wide = size.getX();
-        int deep = size.getZ();
-        int[] top = new int[wide * deep];
-        int[] floor = new int[wide * deep];
-        Arrays.fill(top, Integer.MIN_VALUE);
-        Arrays.fill(floor, Integer.MIN_VALUE);
-        Set<Long> own = new HashSet<>();
-        ListTag blocks = tag.getList("blocks").orElseGet(ListTag::new);
-        for (int index = 0; index < blocks.size(); index++) {
-            CompoundTag block = blocks.getCompoundOrEmpty(index);
-            int state = block.getIntOr("state", -1);
-            if (state < 0 || state >= names.length) continue;
-            String name = names[state];
-            if (name.endsWith(":air") || name.endsWith("cave_air") || name.endsWith("void_air")) continue;
-            ListTag pos = block.getList("pos").orElseGet(ListTag::new);
-            if (pos.size() < 3) continue;
-            int x = pos.getIntOr(0, 0);
-            int y = pos.getIntOr(1, 0);
-            int z = pos.getIntOr(2, 0);
-            if (x < 0 || x >= wide || z < 0 || z >= deep) continue;
-            int at = x + z * wide;
-            top[at] = Math.max(top[at], y);
-            floor[at] = floor[at] == Integer.MIN_VALUE ? y : Math.min(floor[at], y);
-            own.add(offset(x, y, z));
-        }
-        return new Lines(top, floor, own);
-    }
-
-    /**
-     * One column of the sweep inside a build: the ground comes down to the build's own floor and no further, and the
-     * build itself is never what is cut - the walls, the keep, the part of the craft the ground is standing in.
-     * <p>
-     * Water is left where it is, the same rule the ring follows: a chamber the ground has filled with a spring is not
-     * a chamber to bail out on the way past.
-     */
-    private static void sweepInside(ServerLevel level, BlockPos.MutableBlockPos cursor, int base,
-                                    int relX, int relZ, int x, int z, int surface, int floor, Set<Long> own) {
-        for (int y = surface; y > floor; y--) {
-            if (own.contains(offset(relX, y - base, relZ))) continue;
-            cursor.set(x, y, z);
-            BlockState state = level.getBlockState(cursor);
-            if (state.isAir() || !state.getFluidState().isEmpty()) continue;
-            level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-        }
-    }
-
-    /** Fills the build's own holes from the columns beside them, so a doorway is still a wall for the ground's sake. */
-    private static void open(int[] top, int wide, int deep) {
-        for (int pass = 0; pass < 2; pass++) {
-            int[] next = top.clone();
-            for (int z = 0; z < deep; z++) {
-                for (int x = 0; x < wide; x++) {
-                    int at = x + z * wide;
-                    if (top[at] != Integer.MIN_VALUE) continue;
-                    int best = Integer.MIN_VALUE;
-                    for (int dx = -1; dx <= 1; dx++) {
-                        for (int dz = -1; dz <= 1; dz++) {
-                            int nx = x + dx;
-                            int nz = z + dz;
-                            if (nx < 0 || nx >= wide || nz < 0 || nz >= deep) continue;
-                            best = Math.max(best, top[nx + nz * wide]);
-                        }
-                    }
-                    next[at] = best;
-                }
-            }
-            System.arraycopy(next, 0, top, 0, top.length);
-        }
-    }
-
-    /**
-     * One column of the sweep: everything standing above the cap goes, and the ring gets the ground back.
-     * <p>
-     * Inside the footprint nothing is put back, because what was cut there stood over the build and the build is
-     * what belongs at the cap. Out on the ring the column is capped with the ground it had, or with grass where a
-     * hill had grass - a crown of leaves laid flat at a roofline is not a shoulder, it is a lid.
-     */
-    private static void sweepColumn(ServerLevel level, BlockPos.MutableBlockPos cursor,
-                                    int x, int z, int surface, int cap) {
-        if (surface <= cap) return;
-        BlockState skin = level.getBlockState(cursor.set(x, surface, z));
-        boolean keep = skin.isSolid() && !skin.is(BlockTags.LOGS) && !skin.is(BlockTags.LEAVES)
-                && skin.getFluidState().isEmpty();
-        for (int y = surface; y > cap; y--) {
-            cursor.set(x, y, z);
-            if (level.getBlockState(cursor).isAir()) continue;
-            level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-        }
-        if (keep) {
-            level.setBlock(cursor.set(x, cap, z), skin, Block.UPDATE_CLIENTS);
-            return;
-        }
-        cursor.set(x, cap - 1, z);
-        BlockState below = level.getBlockState(cursor);
-        if (!below.isSolid()) return;
-        boolean grassy = below.is(Blocks.GRASS_BLOCK) || below.is(Blocks.DIRT) || below.is(Blocks.PODZOL)
-                || below.is(Blocks.MYCELIUM) || below.is(Blocks.COARSE_DIRT);
-        level.setBlock(cursor.set(x, cap, z),
-                grassy ? Blocks.GRASS_BLOCK.defaultBlockState() : below, Block.UPDATE_CLIENTS);
+        if (size.getX() <= 0 || size.getZ() <= 0) return;
+        Drape.Outline outline = Drape.outline(level, structure, size, false);
+        if (outline == null) return;
+        Drape.dress(level, new Drape.Declaration("camp", structure, Drape.Box.of(corner, size),
+                Drape.CAMP_REACH, 0, false, false, SWEEP_VERSION, outline));
     }
 
     /**
