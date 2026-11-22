@@ -705,7 +705,8 @@ been written and read back.
   laid one of these roads, so what the pass makes of a section that begins on a bank rather than at the pin is
   unverified. **The instrument:** `tools/roadprobe` plans a leg against `ArdaMap` alone - no chunk, no world, no client -
   with `./gradlew -I tools/roadprobe.gradle roadProbe -PprobeArgs="leg WILD <x1> <z1> <x2> <z2>"`, and `sample`/`along`
-  print what the drawing gives a column or a line of them.
+  print what the drawing gives a column or a line of them. `marks` plans the same leg and prints the block of every
+  bend it recorded, which is what a laid road's own `approach` in `roads.dat` is compared against.
 - **`plan` is a look, not a plan.** Nothing is written to `road_plans` by it, so a road surveyed before a restart has to be
   surveyed again.
 - **Untimed.** The planner reads one sample per lane per step and now every block of the chosen line; nothing has measured

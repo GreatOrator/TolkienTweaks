@@ -15,6 +15,7 @@ import java.util.List;
  * usage:
  * <pre>
  *   RoadProbe leg &lt;kind&gt; &lt;x1&gt; &lt;z1&gt; &lt;x2&gt; &lt;z2&gt; [&lt;x1&gt; &lt;z1&gt; &lt;x2&gt; &lt;z2&gt; ...]
+ *   RoadProbe marks &lt;kind&gt; &lt;x1&gt; &lt;z1&gt; &lt;x2&gt; &lt;z2&gt;   (the same, with every recorded bend's block)
  *   RoadProbe sample &lt;x&gt; &lt;z&gt;
  *   RoadProbe along &lt;x&gt; &lt;z&gt; &lt;dx&gt; &lt;dz&gt; &lt;steps&gt;   (a column every dx,dz from x,z)
  * </pre>
@@ -27,7 +28,8 @@ public final class RoadProbe {
             return;
         }
         switch (args[0]) {
-            case "leg" -> legs(args);
+            case "leg" -> legs(args, false);
+            case "marks" -> legs(args, true);
             case "sample" -> {
                 for (int at = 1; at + 1 < args.length; at += 2) print(Integer.parseInt(args[at]), Integer.parseInt(args[at + 1]));
             }
@@ -43,7 +45,7 @@ public final class RoadProbe {
         }
     }
 
-    private static void legs(String[] args) {
+    private static void legs(String[] args, boolean bendBlocks) {
         Roads.Kind kind = Roads.Kind.valueOf(args[1]);
         for (int at = 2; at + 3 < args.length; at += 4) {
             int x1 = Integer.parseInt(args[at]);
@@ -64,7 +66,8 @@ public final class RoadProbe {
             List<Route> sections = plan.sections();
             System.out.println("   " + sections.size() + " section" + (sections.size() == 1 ? "" : "s"));
             for (Route section : sections) {
-                int marks = RoadPlan.bends(section.id()).size();
+                List<BlockPos> bends = RoadPlan.bends(section.id());
+                int marks = bends.size();
                 if (section instanceof Route.Crossing span) {
                     System.out.println("   span  " + shortName(section.id()) + "  " + (span.alongX() ? "along x" : "along z")
                             + "  bank " + span.bankX() + ", " + span.bankZ() + " -> far " + span.farX() + ", " + span.farZ()
@@ -73,6 +76,11 @@ public final class RoadProbe {
                 } else if (section instanceof Route.Riverless road) {
                     System.out.println("   road  " + shortName(section.id()) + "  " + road.pathX() + ", " + road.pathZ()
                             + " -> " + road.farX() + ", " + road.farZ() + "  marks " + marks);
+                }
+                if (bendBlocks) {
+                    StringBuilder line = new StringBuilder("      marks");
+                    for (BlockPos bend : bends) line.append(' ').append(bend.getX()).append(',').append(bend.getZ());
+                    System.out.println(line);
                 }
             }
         }
