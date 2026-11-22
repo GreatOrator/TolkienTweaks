@@ -130,7 +130,15 @@ public final class Roads {
             new Named("tolkienmobs:roads/planned_5105_-3413_5605_-3622", Kind.WILD, false, at(5105, -3413), at(5605, -3622)),
             new Named("tolkienmobs:roads/planned_5606_-3622_8229_-3654", Kind.WILD, false, at(5606, -3622), at(8229, -3654)),
             new Named("tolkienmobs:roads/planned_5200_-3033_4647_-3315", Kind.WILD, false, at(5200, -3033), at(4647, -3315)),
-            new Named("tolkienmobs:roads/planned_5111_-3399_5072_-3221", Kind.WILD, false, at(5111, -3399), at(5072, -3221)));
+            new Named("tolkienmobs:roads/planned_5111_-3399_5072_-3221", Kind.WILD, false, at(5111, -3399), at(5072, -3221)),
+            // The road between Bree and the Shire, walked by the owner in Progress Check 3 on 22 November: the leg from
+            // Bree's hall front at 1032, -34 out to the village's own east edge at -150, 114, five wide, of the
+            // country's gravel. Its plan in that world is the whole of the survey - the bends are searched from these two
+            // ends, exactly as they were when it was walked - and it was laid to its far end there (1323 stations, the
+            // record says done), so the two blocks are all this table needs for every world after it to lay the same
+            // road. The id is the one that world's pin gave it, so the world that walked it and a world made tomorrow
+            // hold one road under one name.
+            new Named("tolkienmobs:roads/planned_1032_-34_-150_114", Kind.WILD_WIDE, false, at(1032, -34), at(-150, 114)));
 
     /**
      * Every road the world knows about, which is nothing until one is named.

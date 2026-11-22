@@ -18,6 +18,10 @@ at 1031 and 1032, 122, -32, the middle two blocks of the hall's 16-block front (
 into `Pins.SOURCE` as `hall:bree` and stood after the town's own pass rather than before it. **The drape is now one
 pass with declarations** (`Drape`): an outline read from either a cut folder or a structure template, and a build's
 ring written as one line - box, reach, deck, trees, fill, version - with a camp's sweep already moved onto it unchanged.
+**Bree's road to the Shire is in the network**: the leg the owner walked in `Progress Check 3` (Bree's hall front at
+1032, -34 out to the village's east edge at -150, 114, five wide) is a `Named` entry now, read back out of that
+world's own `road_plans.dat`, where it was saved with its bends and its plan, and `roads.dat`, where it is recorded
+laid. Both the plan and the progress are the world's; the two ends in `Roads` are what a fresh world plans from.
 Before that, 21 November - the owner walked a fresh world, `Work Verification`, and signed off the Shire,
 the road network and the Carrock, then started it again with the passage clear and found the hold's door open at the
 end of it. The mustering hall is turned half round (its board faced away from the path), the
