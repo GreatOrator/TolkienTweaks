@@ -44,6 +44,18 @@ is re-ended at the Shire's gate, -463, -124. An id is a road's two ends, so that
 the pass until `/tmroad forget` is run on it (its northern bulge at 242, 227 is three hundred blocks from anything
 the new line uses). Named roads are begun by the ground that crosses them, so the re-ended leg needs no command - it
 lays as its chunks load - and the gravel the first attempt laid stays standing, because nothing lifts a laid road.
+
+**Rivendell's road to Bree is in the network too**: marked by the owner in `Progress Check 4` on 22 November, five
+wide, from the vale's road junction at 4648, -3316 - the block beside the join the three vale roads make at 4647,
+-3315 - to Bree's own hall front at 1031, -36. The pin was first given with the whole far end wrong, the town's x
+negated and the hall's height of 123 taken for its z (`..._4648_-3316_-1031_123`), which sent it two thousand
+blocks out into Eriador; both numbers are corrected, and since an id is a road's two ends the corrected leg is
+`..._4648_-3316_1031_-36` - a different road to the pass, not the old one moved. `Progress Check 4` has already laid
+the last stretch of the first line (-803, 143 to -1031, 123) and holds the rest at `SEARCH`: `/tmroad forget` there
+drops its plan and progress so it is not re-laid beside the corrected road, and the ground it laid stays, because
+nothing in the mod lifts a road. The named leg needs no command - a named road is begun by the ground that crosses
+it - and it has not been walked since the correction.
+
 Before that, 21 November - the owner walked a fresh world, `Work Verification`, and signed off the Shire,
 the road network and the Carrock, then started it again with the passage clear and found the hold's door open at the
 end of it. The mustering hall is turned half round (its board faced away from the path), the

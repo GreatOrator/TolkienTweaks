@@ -141,7 +141,16 @@ public final class Roads {
             // road's two ends, so re-ending it renames it, and the world that walked the first attempt still holds that
             // plan under ..._1032_-34_-150_114: to the pass those are two different roads, so that one has to be
             // forgotten there before the leg that arrives is the only one left.
-            new Named("tolkienmobs:roads/planned_1032_-34_-463_-124", Kind.WILD_WIDE, false, at(1032, -34), at(-463, -124)));
+            new Named("tolkienmobs:roads/planned_1032_-34_-463_-124", Kind.WILD_WIDE, false, at(1032, -34), at(-463, -124)),
+            // The road between Rivendell and Bree, marked by the owner in Progress Check 4 on 22 November: five wide, of
+            // the country's own surface, from the vale's road junction at 4648, -3316 - the block beside the join the
+            // three vale roads make at 4647, -3315 - to Bree's own hall front at 1031, -36. The pin was first given with
+            // the whole far end wrong - the town's x negated, and the hall's height of 123 read as its z - which sent
+            // the search two thousand blocks out into Eriador and had it find seven sections and three spans there; an
+            // id is a road's two ends, so correcting them names a different road, and that world still holds the first
+            // line under ..._4648_-3316_-1031_123: /tmroad forget there is what leaves the leg that arrives as the only
+            // one of the two, and the stretch of it already laid stays standing, because nothing in the mod lifts a road.
+            new Named("tolkienmobs:roads/planned_4648_-3316_1031_-36", Kind.WILD_WIDE, false, at(4648, -3316), at(1031, -36)));
 
     /**
      * Every road the world knows about, which is nothing until one is named.
