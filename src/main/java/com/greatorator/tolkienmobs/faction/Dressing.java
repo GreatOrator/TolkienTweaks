@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -82,6 +83,14 @@ public final class Dressing {
      * block or two round a city's open faces is left alone, and a bank the height of a storey is dressed.
      */
     private static final int BANK_BLOCKS = 3;
+    /**
+     * How far under the top of a column the drape will look for the ground it stands on.
+     * <p>
+     * A crown is ten or twelve blocks deep at most, so forty is more than any tree needs and still short of the air
+     * over a cave: a column whose ground is further under its top than this has a hole in it rather than a join, and
+     * is left exactly as it stands.
+     */
+    private static final int COLUMN_DEPTH = 40;
     /** What has been dressed in this world, beside the cut's folder: dimension, corner, drape, road. */
     private static final String MARKER = "_dressed.txt";
 
@@ -370,8 +379,20 @@ public final class Dressing {
 
         /** Whether a block is part of a tree rather than part of the ground: leaves, a trunk, a fungus stem. */
         private static boolean tree(String name) {
-            return name.endsWith("_leaves") || name.contains("_log") || name.contains("_wood")
+            return name.endsWith("_leaves") || name.contains("leaves_") || name.endsWith("_log")
+                    || name.contains("log_") || name.contains("_wood") || name.contains("wood_")
                     || name.contains("_stem") || name.contains("_hyphae");
+        }
+
+        /**
+         * Whether a block is the ground a column stands on, rather than the tree standing on it.
+         * <p>
+         * The leaves of this mod are in {@code #minecraft:leaves}, but its logs and wood are in no tag, so the tag is
+         * not enough: a trunk of the mod's own wood would read as ground and be cut only to the top of the trunk.
+         */
+        private static boolean ground(BlockState state) {
+            if (!state.isSolid() || state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)) return false;
+            return !tree(BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString());
         }
 
         /**
@@ -471,7 +492,8 @@ public final class Dressing {
                 spring = true;
                 banked = true;
             }
-            int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+            int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
+                    level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
             if (surface <= level.getMinY()) return;
             // A tree is not ground, and the top of its crown is not where its ground is. The height that counts
             // leaves out answers where the column really stands; read from the leaves' own top, a column under a
@@ -479,13 +501,21 @@ public final class Dressing {
             // skin, so the fill began five or ten blocks over the ground and laid its rock in the empty space the
             // crown had been in. That is the plate of bare stone standing in the air above a dressed tree, one per
             // crown, all round the ring.
-            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
-            if (top <= level.getMinY()) return;
+            //
+            // A height still answers for less than the whole column. A height that counts leaves out answers with the
+            // highest thing that is not a leaf, which under a bough reaching out over air is the bough itself, one
+            // block over nothing: read there, a column had its crown taken off - the leaves over the bough stand
+            // above it and are cleared first - then found air under the bough, was taken for a column with no ground,
+            // and was left exactly as it stood. That is the glade where the drape took the trees out and left the
+            // ground empty, one per crown along a join. So the heights only say where to start looking, and the column
+            // is read down from the top of whatever stands, through air, leaves and wood, to the first ground.
+            int floor = Math.max(level.getMinY(), surface - COLUMN_DEPTH);
+            int top = surface;
             BlockState skin = level.getBlockState(new BlockPos(x, top, z));
-            // A trunk is not ground either: a column of a tree's own wood is read down to what it stands on.
-            while (top > level.getMinY() && (skin.is(BlockTags.LEAVES) || skin.is(BlockTags.LOGS))) {
+            while (top > floor && !ground(skin)) {
                 skin = level.getBlockState(new BlockPos(x, --top, z));
             }
+            if (!ground(skin)) return;
             for (int y = surface; y > top; y--) {
                 level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
             }

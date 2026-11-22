@@ -4,7 +4,10 @@ The working state of the campaign, written so a session picking this up cold doe
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
-**Last touched:** 21 November 2026 - the owner walked a fresh world, `Work Verification`, and signed off the Shire,
+**Last touched:** 22 November 2026 - the owner's fresh `Progress Check 2` showed **holes at Bree's join**: where the
+ring smooths the town into the country there are bare blocks of ground with no canopy over them, looking for all the
+world like trees the drape took out and never filled. The cause was found in the draw and fixed - read *22 November*
+first. Before that, 21 November - the owner walked a fresh world, `Work Verification`, and signed off the Shire,
 the road network and the Carrock, then started it again with the passage clear and found the hold's door open at the
 end of it. The mustering hall is turned half round (its board faced away from the path), the
 Shire's banner is drawn round the portal crossing so it is seen on stepping through, and the keep is moved twelve east
@@ -12,6 +15,18 @@ so its own doorway stands in the gate's chamber instead of ending at a wall; a r
 player is set down on, because Gundabad's own mark is sixty-four blocks from its road's end. **The roads now post
 themselves** - a fingerpost every thousand blocks and one at each junction, **signed off in a world on 21 November** -
 and a leg too steep to climb is planned as the switchbacks it needs. Read *21 November* below.
+
+**22 November - the holes at Bree's join.** The drape read every ring column's top from
+`MOTION_BLOCKING_NO_LEAVES`, which answers with the highest block that is not a leaf; under a bough reaching out over
+air that is the bough, one block over nothing. Read there, a column had its crown cleared - the leaves over the bough
+stand above it - then found air, was taken for a column with nothing solid under it, and was returned from untouched:
+the canopy gone and the ground left at the country's level, one per crown along the join. Measured by dressing a copy
+of `Progress Check 2` headless with counters in the pass: **32,799 of the ring's 44,090 columns ended in that return**,
+and the columns sampled at the south join read `surface 128 top 126 skin Air` - air two blocks under a crown. The
+columns are now read from their blocks, down through air, leaves and wood to the first ground (`Dressing.ground`, up to
+`COLUMN_DEPTH` 40), and `Dressing.tree` knows this mod's own `leaves_*`, `log_*` and `wood_*` names as well as
+vanilla's, since its logs and wood are in no tag. `DRESS_VERSION` stays 1: `/bree drape` dresses an existing ring
+again. **The fix is compiled and the cause is measured; the re-dressed ring has not been walked in game.**
 **Before that, 20 November** - the Shire is raised on every world's start now (`raiseShireOnStart` defaults
 `true`), because the arrival portal opens on the village's own crossing, -470, 97, -123, and the clearing pass took
 the doorway with it; a dedicated server's `pause-when-empty-seconds` is lifted for the length of that pass, measured

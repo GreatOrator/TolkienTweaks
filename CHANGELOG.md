@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+- **The drape fills the ground under a crown instead of leaving a bare hole at the join.** The ring read each column's top
+from `MOTION_BLOCKING_NO_LEAVES`, and a height that counts leaves out answers with the highest block that is not a leaf -
+which under a bough reaching out over air is the bough itself, one block over nothing. Read there, a column had its
+crown cleared (the leaves over the bough stand above the top that was read), then found air under the bough, was taken
+for a column with nothing solid under it, and was returned from untouched: the canopy gone and its ground left at the
+country's level while every column round it was carried up to the join, which is the hole that looks like a tree the
+drape removed and never filled. `Dressing.dressColumn` now reads the column from its blocks - from the top of whatever
+stands, down through air, leaves and wood to the first ground (`Dressing.ground`, up to `COLUMN_DEPTH` 40 under the
+top) - and leaves the column alone only when no ground is found in that depth, which is a cave mouth rather than a
+crown; `Dressing.tree` also knows this mod's own `leaves_*`, `hardened_leaves_*`, `log_*` and `wood_*` names, because
+its logs and wood are in no tag, so a trunk of its wood would otherwise read as ground. Measured by dressing a copy of
+`Progress Check 2` headless with counters in the pass: 32,799 of the ring's 44,090 columns ended in that return, and the
+columns at the south join read `surface 128 top 126 skin Air`. `DRESS_VERSION` stays 1, so `/bree drape` dresses an
+existing world's ring again. **Cause measured; not re-seen in a world.**
+
 - **Bree's cut now ships in the jar, so a new world raises the town with nothing dropped into its save first.** The 462 pieces had only ever been left in `Progress Check 1`'s `tolkienmobs/cuts/bree/`, and deleting that world took the town with it: the owner's new `Progress Check 2` answered `no bree cut to raise - nothing in ...\cuts\bree, and nothing in the jar beside it` and stood nothing, which is the warning the pass was given for exactly this. The cut is regenerated from the `Bree-Town` save it was taken from - 496 by 108 by 672 blocks, 462 pieces, 91 MB - and now lives in `src/main/resources/data/tolkienmobs/structure/bree/`, where `CutCommands` already looks before the save, so a copy in a save folder cannot win over it. No code changes: a world reads it on its next start, or on `/bree raise`. **Not seen in a world.**
 
 - **`/bree drape` dresses the ground round the town again, and lays nothing of the town.** The raise was the only pass that wrote `_stands.txt`, so a town whose ring wanted dressing again - ground taken out and made anew, a rule changed, a shelf it left - had no way back but `/bree raise`, which lays all 462 pieces over whatever a hand has done inside since. `/bree drape` is the raise's last stage on its own: the cut's outline, then the ring at the town's own deck (`BREE_DECK_LIFT` 5) and with its trees out of its shape, at the same 5 ms a tick, and the note written when it finishes, so the world does not raise the town over it afterwards. No piece is laid and no country is cleared out of the footprint, and a raise the world has not begun yet - it waits 200 ticks and a player within 192 blocks - is replaced by it, so it can be typed at a start. `/tmcut drape bree` is not the same pass: a cut's table with no `deck` line is dressed to the city's 2, which reads the town's own paving as a roofline. **Not seen in a world.**
