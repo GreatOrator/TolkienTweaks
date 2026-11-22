@@ -236,6 +236,18 @@ public final class Hobbiton {
         return stands(level, ArdaMap.hobbitonPlan());
     }
 
+    /**
+     * Whether a pass over the village is in hand: planned and waiting for somebody to be near it, or at work now.
+     * <p>
+     * The village is cleared out of its footprint in the middle of the pass, and the crossing the Arda portal arrives
+     * at stands in that footprint. This is the question the portal asks before it lets a traveller through: while a
+     * pass is in hand the crossing is held shut, so a doorway put down at the arrival is not swept away under the
+     * traveller a moment later. The pass ends by writing its note, and it is a note this reads only as a fallback.
+     */
+    public static boolean atWork() {
+        return standing != null;
+    }
+
     private static boolean stands(ServerLevel level, BlockPos corner) {
         Path marker = marker(level);
         if (!Files.isRegularFile(marker)) return false;

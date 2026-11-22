@@ -27,9 +27,11 @@ import com.greatorator.tolkienmobs.faction.OrcPieces;
 import com.greatorator.tolkienmobs.faction.Stones;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.faction.Places;
+import com.greatorator.tolkienmobs.faction.Hobbiton;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
@@ -43,6 +45,11 @@ public class MilestoneHandler extends SavedData {
     private static final MilestoneHandler CLIENT_INSTANCE = new MilestoneHandler();
 
     private static final Map<UUID, MilestoneData> dataMap = new HashMap<>();
+
+    /** How often, in ticks, a town's stone that could not be stood yet is asked for again. Ten seconds. */
+    private static final int STONE_RETRY = 200;
+    /** Whether both towns' stones are standing, so the clock stops asking for them. */
+    private static boolean stonesDone;
 
     /**
      * The entries are the whole of this saved data, so the codec is a list of them and nothing else.
@@ -62,6 +69,7 @@ public class MilestoneHandler extends SavedData {
     public static void init() {
         NeoForge.EVENT_BUS.addListener(MilestoneHandler::onPlayerLogin);
         NeoForge.EVENT_BUS.addListener(MilestoneHandler::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(MilestoneHandler::onServerTick);
     }
 
     /**
@@ -99,32 +107,78 @@ public class MilestoneHandler extends SavedData {
             // The hold's travel stone, on the mark the owner set into the gate's facade. Laid on every start rather
             // than with the gate, because a world whose gate has stood for weeks still wants its stone; a stone of the
             // same name already standing a short walk away is left alone.
-            BlockPos stone = ArdaMap.gundabadStone();
-            arda.getChunk(stone.getX() >> 4, stone.getZ() >> 4);
-            Stones.stone(arda, stone, "Gundabad", null);
-            // The Shire's stone, at the paving the owner marked in the village. Laid on every start for the same reason
-            // the hold's is: a world older than the stone still gets it, and a stone already standing is left alone. The
-            // mark here is gravel rather than one of our ammolite blocks, so the stone is tried in the spot and then on
-            // top of it - which is the same stone either way, and the paving is not dug up for it.
-            BlockPos shireStone = ArdaMap.hobbitonMilestone();
-            arda.getChunk(shireStone.getX() >> 4, shireStone.getZ() >> 4);
-            Stones.stone(arda, shireStone, "Hobbiton", null);
-            if (!arda.getBlockState(shireStone).is(TolkienBlocks.MILESTONE_BLOCK.get())) {
-                Stones.stone(arda, shireStone.above(), "Hobbiton", null);
-            }
-            BlockPos stood = arda.getBlockState(shireStone).is(TolkienBlocks.MILESTONE_BLOCK.get())
-                    ? shireStone : shireStone.above();
-            if (arda.getBlockState(stood).is(TolkienBlocks.MILESTONE_BLOCK.get())) {
-                LOGGER.info("The Shire: the Hobbiton milestone stands at {}", stood.toShortString());
-            } else {
-                LOGGER.warn("The Shire: no milestone could be stood at {}; the ground there is {}",
-                        stood.toShortString(), arda.getBlockState(stood));
-            }
+            stonesDone = plantTownStones(arda, true);
             OrcPieces.raise(arda);
             // The towns this world is given rather than surveys: a board points at a town, so the ones that stand have
             // a name from the first start, whether or not a player has walked into any of them.
             Places.standTowns(arda);
         }
+    }
+
+    /**
+     * Stands the stones the two towns are given, and says whether both are up.
+     * <p>
+     * Both are laid by the world rather than by a page, so both are asked for again on a clock until they stand: a stone
+     * that is owed the moment the world starts is owed before the town it names has been raised - the Shire is raised by
+     * its own pass minutes into a new world, and the hold's gate with it - and a stone planted over ground the town has
+     * not laid yet is a stone buried under the town's own paving, or one that could not be stood at all. What the ground
+     * will take is {@link Stones#stone}'s question; the Shire's stone also waits for the village's own note, so it is
+     * only asked for once the village is complete.
+     * <p>
+     * {@code open} loads the two chunks the stones are in, which the start does and the clock does not: posting a stone
+     * is not a reason to generate country every ten seconds. A stone already standing is answered and not stacked.
+     */
+    private static boolean plantTownStones(ServerLevel arda, boolean open) {
+        BlockPos stone = ArdaMap.gundabadStone();
+        BlockPos shireStone = ArdaMap.hobbitonMilestone();
+        if (open) {
+            arda.getChunk(stone.getX() >> 4, stone.getZ() >> 4);
+            arda.getChunk(shireStone.getX() >> 4, shireStone.getZ() >> 4);
+        } else if (!arda.hasChunkAt(stone) || !arda.hasChunkAt(shireStone)) {
+            return false;
+        }
+        // Both standing: there is nothing left to ask for, and the village's note is not read again on the clock.
+        if (stood(arda, stone) && stood(arda, shireStone)) return true;
+        // The hold's stone, on the mark the owner set into the gate's facade.
+        Stones.stone(arda, stone, "Gundabad", null);
+        // The Shire's stone, at the paving the owner marked in the village. The mark here is gravel rather than one of
+        // our ammolite blocks, so the stone is tried in the spot and then on top of it - which is the same stone either
+        // way, and the paving is not dug up for it. The village's note comes first: the paving the stone is stood on is
+        // part of what the village's pass lays, and a stone stood before that pass is a stone it buried.
+        boolean shire = stood(arda, shireStone);
+        if (!shire && Hobbiton.complete(arda)) {
+            Stones.stone(arda, shireStone, "Hobbiton", null);
+            if (!stood(arda, shireStone)) {
+                Stones.stone(arda, shireStone.above(), "Hobbiton", null);
+            }
+            shire = stood(arda, shireStone);
+            if (shire) {
+                LOGGER.info("The Shire: the Hobbiton milestone stands at {}", shireStone.toShortString());
+            } else if (open) {
+                LOGGER.warn("The Shire: no milestone could be stood at {}; the ground there is {}",
+                        shireStone.toShortString(), arda.getBlockState(shireStone));
+            }
+        }
+        return shire && stood(arda, stone);
+    }
+
+    /** Whether a town's stone is standing in a spot or on top of it. */
+    private static boolean stood(ServerLevel level, BlockPos spot) {
+        return level.getBlockState(spot).is(TolkienBlocks.MILESTONE_BLOCK.get())
+                || level.getBlockState(spot.above()).is(TolkienBlocks.MILESTONE_BLOCK.get());
+    }
+
+    /**
+     * The clock that stands what a world is owed and could not stand at its start.
+     * <p>
+     * A town's stone is owed whether or not the town is up yet, and a stone refused by ground the town has not laid is
+     * not refused for good. This asks again every ten seconds until both towns' stones are standing, and then stops.
+     */
+    public static void onServerTick(ServerTickEvent.Post event) {
+        if (stonesDone || event.getServer().getTickCount() % STONE_RETRY != 0) return;
+        ServerLevel arda = event.getServer().getLevel(TolkienDimensions.ARDA);
+        if (arda == null) return;
+        stonesDone = plantTownStones(arda, false);
     }
 
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {

@@ -2273,9 +2273,26 @@ public final class Sites extends SavedData {
         // The building's own door decides where the man stands: two blocks outside it, on the ground the
         // road arrives on, rather than on the far side of the walls - which was the answer for a fair-weather
         // tent and put the keeper of Elladan's camp behind it.
+        // The camp's own blocks first: a man stood at a camp that is not laid yet is a man standing in a hillside,
+        // and the approach that finds the camp placed asks for him again. Then the marker, and then the ground the
+        // camp's door opens onto - each one read for a column a body can actually stand in.
+        if (!standsAt(level, structure, corner)) {
+            LOGGER.info("Sites: no keeper at {} yet - its own blocks are not all standing at {}",
+                    structure, corner.toShortString());
+            return;
+        }
         BlockPos marked = marker(level, structure + KEEPER_PIN);
-        BlockPos stand = marked != null ? room(level, marked)
-                : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, outside(corner, size, seat));
+        BlockPos stand = marked != null ? room(level, marked) : null;
+        if (stand == null) {
+            stand = room(level, level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    outside(corner, size, seat)));
+        }
+        if (stand == null) {
+            // No column near the door will take a body: a camp cut into a bank, or one whose ground has not been
+            // swept yet. The next approach asks again rather than leaving a man inside the rock.
+            LOGGER.info("Sites: no room for a keeper at {} beside {}", structure, corner.toShortString());
+            return;
+        }
         // A third marker in a row is an NPC's spot, so the ammolite it was written with is not left at the man's
         // feet: the body is what belongs there.
         if (level.getBlockState(stand).is(TolkienBlocks.BLOCK_AMMOLITE.get())) level.removeBlock(stand, false);
@@ -2328,17 +2345,29 @@ public final class Sites extends SavedData {
      * walked upward instead: inside the door that is the camp's floor, and on open ground it is where the marker
      * already was.
      */
+    @Nullable
     private static BlockPos room(ServerLevel level, BlockPos at) {
+        if (!level.hasChunkAt(at)) return null;
         for (int up = 0; up <= BODY_LIFT; up++) {
             BlockPos feet = at.above(up);
-            if (!level.hasChunkAt(feet)) return at;
+            if (!level.hasChunkAt(feet)) return null;
             BlockState floor = level.getBlockState(feet.below());
             if (floor.isAir() || !floor.getFluidState().isEmpty()) continue;
             if (!level.getBlockState(feet).canBeReplaced()) continue;
             if (!level.getBlockState(feet.above()).canBeReplaced()) continue;
             return feet;
         }
-        return at;
+        // Nothing standable within a storey of the marker. The pin is a block or two under the build's own floor in
+        // the camps that were written down from a scout's feet - Elladan's and Barachen's both - so the answer is the
+        // ground the column has now that the build is laid, and a column with no room on it has no answer at all. That
+        // is what put a keeper inside the hill: the walk gave up and the marker itself was where the man was stood,
+        // which is a body in the rock rather than a body at a camp. A null is left for the next approach to ask again.
+        BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at);
+        if (top.getY() < at.getY()) return null;
+        BlockPos below = top.below();
+        if (!level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)) return null;
+        if (!level.getBlockState(top).canBeReplaced() || !level.getBlockState(top.above()).canBeReplaced()) return null;
+        return top;
     }
 
     /**
@@ -2412,6 +2441,10 @@ public final class Sites extends SavedData {
         if (spot == null) {
             spot = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, outside(corner, size, seat));
         }
+        // An animal is stood in a column with room for it, on the ground before the way in - the heightmap alone put
+        // it in the crown of whatever grows there, and a marker under the ruin's floor put it in the floor.
+        spot = room(level, spot);
+        if (spot == null) return;
         if (!level.getEntitiesOfClass(Mob.class, new AABB(spot).inflate(KEEPER_REACH),
                 found -> found.entityTags().contains(BODY_TAG)).isEmpty()) {
             return;

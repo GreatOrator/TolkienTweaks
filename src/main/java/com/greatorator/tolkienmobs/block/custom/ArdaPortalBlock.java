@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.block.custom;
 import com.greatorator.tolkienmobs.block.TolkienBlock;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
+import com.greatorator.tolkienmobs.faction.Hobbiton;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -358,6 +359,14 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
                 : TolkienDimensions.ARDA;
         ServerLevel destination = serverLevel.getServer().getLevel(target);
         if (destination == null) {
+            return null;
+        }
+        // The arrival point has to be there before a traveller is: the Shire is raised by this same world, and the
+        // clearing pass takes the ground of the crossing with it, so a doorway put down at the arrival while the
+        // village is going up is a doorway the pass sweeps away under the player's feet. The crossing is held shut
+        // while a pass over the village is in hand - the traveller stays in the doorway they lit, which asks again
+        // every tick - and opens on the passing that writes the village's note. Nothing is put down before then.
+        if (target == TolkienDimensions.ARDA && Hobbiton.atWork()) {
             return null;
         }
 

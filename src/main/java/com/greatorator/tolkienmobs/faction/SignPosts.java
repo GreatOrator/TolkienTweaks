@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import javax.annotation.Nullable;
+
 /**
  * The fingerposts on the roads.
  * <p>
@@ -82,6 +84,15 @@ public final class SignPosts {
 
     /** How far apart the posts on one road stand, measured along the road, in blocks. */
     private static final int SPACING = 1000;
+    /**
+     * How far along a road its first post stands, in blocks.
+     * <p>
+     * The marks a thousand blocks apart are for a traveller already on the road; the one who has just walked out of a
+     * town does not yet know which way the road runs or where it goes. So every laid road is posted once near each of
+     * its own ends as well - far enough out to be outside the town's own ground and in sight of the road, close enough
+     * that a player leaving the gate meets it before the road has carried them out of sight of the walls.
+     */
+    private static final int START = 96;
     /**
      * How near two roads have to come before they are one junction, in blocks.
      * <p>
@@ -283,6 +294,15 @@ public final class SignPosts {
      */
     private static List<int[]> spaced(Line line) {
         List<int[]> marks = new ArrayList<>();
+        // The ends first, before the marks along the road: whoever leaves a town with no idea what lies up the road is
+        // the traveller a fingerpost is for, and a mile is too far to walk to find out.
+        int[] leaving = along(line, START);
+        if (leaving != null) marks.add(leaving);
+        double span = length(line);
+        if (span > START * 2) {
+            int[] arriving = along(line, span - START);
+            if (arriving != null) marks.add(arriving);
+        }
         double walked = 0.0D;
         double next = SPACING;
         List<int[]> points = line.points();
@@ -302,6 +322,45 @@ public final class SignPosts {
             walked += length;
         }
         return marks;
+    }
+
+    /** How long a road's line is, in blocks. */
+    private static double length(Line line) {
+        double length = 0.0D;
+        List<int[]> points = line.points();
+        for (int at = 1; at < points.size(); at++) {
+            length += Math.hypot(points.get(at)[0] - points.get(at - 1)[0], points.get(at)[1] - points.get(at - 1)[1]);
+        }
+        return length;
+    }
+
+    /**
+     * The point a distance along a road from its first end, and the way the road runs there.
+     * <p>
+     * Measured along the line rather than across the ground, the same way the thousand-block marks are, so a road that
+     * switchbacks is posted beside the stretch it leaves the town on rather than in a field a bend away. The point keeps
+     * the direction of the stretch it fell on, which is what the arms are turned on.
+     *
+     * @return x, z and the line's direction there, or null when the road is shorter than the distance
+     */
+    @Nullable
+    private static int[] along(Line line, double distance) {
+        double walked = 0.0D;
+        List<int[]> points = line.points();
+        for (int at = 1; at < points.size(); at++) {
+            int[] from = points.get(at - 1);
+            int[] to = points.get(at);
+            int dx = to[0] - from[0];
+            int dz = to[1] - from[1];
+            double length = Math.hypot(dx, dz);
+            if (length < 0.5D) continue;
+            if (walked + length >= distance) {
+                double part = (distance - walked) / length;
+                return new int[]{(int) Math.round(from[0] + dx * part), (int) Math.round(from[1] + dz * part), dx, dz};
+            }
+            walked += length;
+        }
+        return null;
     }
 
     /**

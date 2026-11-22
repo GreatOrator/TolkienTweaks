@@ -7,7 +7,13 @@ then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-
 **Last touched:** 22 November 2026 - the owner's fresh `Progress Check 2` showed **holes at Bree's join**: where the
 ring smooths the town into the country there are bare blocks of ground with no canopy over them, looking for all the
 world like trees the drape took out and never filled. The cause was found in the draw and fixed - read *22 November*
-first. Before that, 21 November - the owner walked a fresh world, `Work Verification`, and signed off the Shire,
+first. The same day's housekeeping, while that new world was starting: **the Arda crossing waits for the Shire** rather
+than putting a doorway down in a footprint the village's own pass is about to clear; **a camp's keeper is stood in a
+column a body can stand in** and only once the camp's blocks are there, instead of being left in the hill when the
+marker pin is a few blocks under the floor; **the towns' milestones are asked for again on a clock** until the ground
+takes them, the Shire's only once its note says the village is complete; and **every laid road is posted near both of
+its ends**, so a player leaving a town meets a fingerpost before the road takes them out of sight of the walls.
+Before that, 21 November - the owner walked a fresh world, `Work Verification`, and signed off the Shire,
 the road network and the Carrock, then started it again with the passage clear and found the hold's door open at the
 end of it. The mustering hall is turned half round (its board faced away from the path), the
 Shire's banner is drawn round the portal crossing so it is seen on stepping through, and the keep is moved twelve east
