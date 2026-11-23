@@ -1119,6 +1119,35 @@ camp end is still how a leg is re-laid. A span is planned as a `Route.Crossing` 
 to it within `CROSSING_ACROSS` (12 blocks) of the span's line. `docs/arda-roads.md`, section *Water a road was told
 about*, has the design.
 
+## The named bridges - named 23 November, art still to build
+
+A span is the standard bridge's - nine wide, `bridge_end` and `bridge_middle` from the jar, oak-log piers drawn to the
+bed - unless a block on its water is named in `Roads.BRIDGES`. That table is the whole of how a crossing gets a bridge of
+its own: a name for the log, a block on the water, the two piece names and the block the pieces' own piers are made of.
+`Roads.bridge(span)` answers which span covers a named bridge, the way `Roads.water` answers for a column - between the
+banks on the span's own axis and within half the deck plus `BRIDGE_LEEWAY` 8 of its line - and it is asked by the ground
+rather than by the span's section number, because `_bridge_<n>` counts from the end the plan walked from and moves the
+moment the plan meets another river before it. `RoadCommands.pieces` asks it once when the pass reaches the span, so the
+plan, the stand and `pillarsColumns` all take the same pair and the same material; the sweep before the pieces are stood
+still clears only the five standard woods, because clearing stone out of the box the abutments stand in would take the
+bank, and a stone bridge laid twice stands its pieces over the ones already there.
+
+- **Bucklebury** - the Shire leg, `planned_1032_-34_-463_-124`, whose `bridge_1` runs from bank 471, 90 to far 418, 90,
+  fifty-four columns of the Brandywine at deck 116. Named at 445, 90, the middle of the channel. Pieces
+  `bucklebury_end` and `bucklebury_middle`, piers oak log: a bridge at Bucklebury is the hobbits' timber.
+- **The Last Bridge** - the East-West Road's crossing of the Mitheithel. It is **not in the table**, because the leg to
+  Bree has no water under it yet: `planned_4648_-3316_1031_-36` plans as one dry section against the drawing, and the
+  world said the same when it laid it - *"Nothing on the way is water, so nothing is bridged"*, 11:39 on 22 November.
+  Its pieces are reserved as `last_bridge_end` and `last_bridge_middle` with stone-brick piers, and the table line goes
+  in with a block on the water the day that road has a river there to cross.
+
+Neither bridge is built: neither pair of pieces is in the jar, so `pieces` falls back to the standard pair and the log
+says `the Bucklebury bridge is not in the jar (bucklebury_end and bucklebury_middle), so its crossing is stood with the
+standard bridge` once for the pass. A piece is nine columns across - the plan's `HALF`, four either side of the line -
+and any length along the span: `bridgePlan` reads each piece's own length and repeats the middle as far as the water
+needs. The support has to be a block only the piers are made of, the standard bridge's being oak log under a plank deck,
+because a support the deck itself is built from would carry every column of the span to the bed.
+
 ## Quests - chapter two
 
 Eleven pages, 26 to 36, written and wired; **played through page 32** and working. The page table is in

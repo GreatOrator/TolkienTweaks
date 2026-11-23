@@ -2,6 +2,8 @@ package com.greatorator.tolkienmobs.faction;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -467,6 +469,87 @@ public final class Roads {
             if (Math.abs(lateral) > across) continue;
             return new Water(span.bankX(), span.bankZ(), span.farX(), span.farZ(), span.deckY() - 2, span.deckY(),
                     Wet.SPAN);
+        }
+        return null;
+    }
+
+    /**
+     * A bridge a crossing is stood with, where the standard one will not do: the crossing at Bucklebury, the Last
+     * Bridge, and whatever else the country deserves.
+     * <p>
+     * A span is a {@link Route.Crossing} and carries its own pieces, so a bridge of its own is two names and a block:
+     * the abutment and the span between them, read out of the jar's structure folder the way the standard pair are, and
+     * the material the pieces' own piers are made of. The pieces are nine columns across, which is the width a span is
+     * planned at, and the plan works the rest out from them - how long a piece is, how many of them the water takes - so
+     * a pair of another length is a bridge of another length rather than a second plan.
+     * <p>
+     * {@code support} is not decoration. The pass finds the lowest such block in a column of the span and carries that
+     * column down to the bed, so the water runs open underneath rather than through a wall; it has to be a block only
+     * the piers are made of - the standard bridge's is oak log under a plank deck - because a support the deck itself is
+     * built from would carry every column of the span to the bed.
+     *
+     * @param name        what the span is called, for the log rather than for a lookup
+     * @param at          a block on the water the span crosses, which is the whole of how the span is found
+     * @param endPiece    the abutment piece, in the jar's structure folder
+     * @param middlePiece the span piece between the abutments
+     * @param support     the block the pieces' piers are made of, and the block a pier is drawn to the bed in
+     */
+    public record Bridge(String name, BlockPos at, String endPiece, String middlePiece, Block support) {
+    }
+
+    /**
+     * How far off a span's own line a bridge's block may stand and still be that span's, in blocks.
+     * <p>
+     * The block is a place somebody chose on the water rather than a number the plan carries, so it is not held to the
+     * plan's line to the block: a bridge named at the middle of a channel reads the same a few blocks either way.
+     */
+    private static final int BRIDGE_LEEWAY = 8;
+
+    /**
+     * The bridges the world is built to, by the water each of them crosses.
+     * <p>
+     * A crossing is the standard bridge's - nine wide, oak-log piers, {@code bridge_end} and {@code bridge_middle} in
+     * the jar - unless a block on its water is named here. A crossing the books give a name to is listed here, and it is
+     * stood instead of the standard pair wherever a span covers it. A bridge whose pieces are not in the jar yet is not
+     * stood: the pass falls back to the standard pair and says so in the log, so a bridge can be
+     * named here before it is built without leaving the road that crosses it unbridged.
+     * <p>
+     * A span is found by the ground rather than by its section's name. A road over water is cut into sections whose
+     * names carry {@code _bridge_<n>}, and n counts from the end the plan walked from: a leg that crosses two rivers
+     * has its first span at whichever river its own end met first, so a bridge named for the third crossing of a road
+     * would move the moment the plan met another river before it. The water does not move.
+     * <p>
+     * <b>Bucklebury</b> is the crossing on the Shire's own leg, {@code planned_1032_-34_-463_-124}: its span runs from
+     * bank 471, 90 to far 418, 90 across fifty-four columns of the Brandywine at deck 116, and the bridge is named at
+     * 445, 90, the middle of the channel the plan crosses.
+     * <p>
+     * <b>The Last Bridge</b> is not here yet, and that is not an omission. It stands where the East-West Road crosses the
+     * Mitheithel, and the leg the network holds to Bree - {@code planned_4648_-3316_1031_-36} - crosses no drawn water
+     * at all: read against the drawing it plans as one dry section, and the world said the same in as many words when it
+     * laid it, "Nothing on the way is water, so nothing is bridged". A bridge is named by a block on its water, so its
+     * line goes in when the river that road crosses is there to name it: the pieces are {@code last_bridge_end} and
+     * {@code last_bridge_middle}, and the piers under them are stone brick.
+     */
+    private static final List<Bridge> BRIDGES = List.of(
+            new Bridge("Bucklebury", at(445, 90), "bucklebury_end", "bucklebury_middle", Blocks.OAK_LOG));
+
+    /**
+     * The bridge a span is stood with, or null where it is the standard one.
+     * <p>
+     * A span covers a bridge's block when the block lies between its banks on the span's own axis and no further from
+     * the line its pieces are stood on than half the deck plus {@link #BRIDGE_LEEWAY}: the same reading {@link #water}
+     * does for a column, asked once for a bridge rather than a block at a time.
+     */
+    public static Bridge bridge(Route.Crossing span) {
+        boolean alongX = span.alongX();
+        int near = Math.min(span.bank(), span.far());
+        int far = Math.max(span.bank(), span.far());
+        for (Bridge bridge : BRIDGES) {
+            int along = alongX ? bridge.at().getX() : bridge.at().getZ();
+            if (along < near - 1 || along > far + 1) continue;
+            int lateral = (alongX ? bridge.at().getZ() : bridge.at().getX()) - span.line();
+            if (Math.abs(lateral) > span.half() + BRIDGE_LEEWAY) continue;
+            return bridge;
         }
         return null;
     }

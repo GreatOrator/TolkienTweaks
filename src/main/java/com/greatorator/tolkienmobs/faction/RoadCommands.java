@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -813,6 +814,8 @@ public final class RoadCommands {
         private int pillarAt;
         /** The bridge's pieces, east end first; built on the stage's first step and stood one a step after it. */
         private List<int[]> bridge;
+        /** The templates this span's bridge is stood from, resolved once when the pass reaches the bridge. */
+        private Pieces spanPieces;
         private Descent descent;
         private List<int[]> approach;
         private List<int[]> exit;
@@ -1002,6 +1005,10 @@ public final class RoadCommands {
 
         /** One step of whichever stage the pass is in; false once the road is down. */
         private boolean stage(ServerLevel level) throws IOException {
+            // Which bridge this span is stood with is the crossing's own answer, resolved once rather than asked
+            // at every piece: a named bridge is a pair of names and a pier's material, and the pass has to read
+            // the jar to know whether that pair is there at all.
+            if (span != null && spanPieces == null) spanPieces = pieces(span);
             switch (stage) {
                 case SWEEP -> {
                     int upto = Math.min(sweepHigh(span), swept + COLUMNS_PER_STEP - 1);
@@ -1010,13 +1017,13 @@ public final class RoadCommands {
                     if (swept > sweepHigh(span)) stage = Stage.BRIDGE;
                 }
                 case BRIDGE -> {
-                    if (bridge == null) bridge = bridgePlan(level, span);
-                    if (pieces < bridge.size()) stand(level, span, bridge.get(pieces++));
+                    if (bridge == null) bridge = bridgePlan(level, span, spanPieces);
+                    if (pieces < bridge.size()) stand(level, spanPieces, bridge.get(pieces++));
                     else stage = Stage.PILLARS;
                 }
                 case PILLARS -> {
                     int upto = Math.min(spanHigh(span), pillarAt + COLUMNS_PER_STEP - 1);
-                    pillarsDrawn += pillarsColumns(level, span, pillarAt, upto);
+                    pillarsDrawn += pillarsColumns(level, span, spanPieces.support(), pillarAt, upto);
                     pillarAt = upto + 1;
                     if (pillarAt > spanHigh(span)) stage = Stage.SEARCH;
                 }
@@ -1464,6 +1471,10 @@ public final class RoadCommands {
      * and a mislaid end could occupy, from deep enough to catch the pillars under the water to the top of the
      * railings. Nothing but timber is touched, so the banks, the bed and the river are left exactly as they
      * are.
+     * <p>
+     * A bridge of its own that is not built of those five woods is not cleared by this: a re-run stands its pieces
+     * over the ones already there rather than taking them out, because clearing stone out of the box the abutments
+     * stand in would take the bank the span rests on.
      */
     private static int sweepColumns(ServerLevel level, Route.Crossing route, int from, int to) {
         int cleared = 0;
@@ -1493,6 +1504,44 @@ public final class RoadCommands {
                 || state.is(Blocks.JUNGLE_SLAB) || state.is(Blocks.OAK_FENCE) || state.is(Blocks.OAK_STAIRS);
     }
 
+    /** The templates a span is stood from, and the block its piers are drawn to the bed in. */
+    private record Pieces(String end, String middle, Block support) {
+    }
+
+    /**
+     * The templates a span is stood from: the bridge its crossing names, or the span's own pieces where none does.
+     * <p>
+     * A named bridge is the owner's own build and it is in the jar or it is not, so this is asked of the classpath
+     * rather than of the world. A bridge named before it is built would otherwise refuse the whole span, which is a road
+     * with a river it cannot cross; instead the span is stood with the standard pair and the log says so once for the
+     * pass, and the named bridge takes over the day its two pieces are dropped into the jar.
+     * <p>
+     * The support goes with the pieces rather than with the span: a bridge of stone is drawn down in stone and a timber
+     * one in oak log, so the block a pier is carried to the bed in is the bridge's answer and never the standard's.
+     */
+    private static Pieces pieces(Route.Crossing span) {
+        Roads.Bridge named = Roads.bridge(span);
+        if (named == null) return new Pieces(span.endPiece(), span.middlePiece(), Blocks.OAK_LOG);
+        if (shipped(named.endPiece()) && shipped(named.middlePiece())) {
+            LOGGER.info("Road {}: the crossing at {}, {} is stood as the {} bridge", span.id(), span.bankX(),
+                    span.bankZ(), named.name());
+            return new Pieces(named.endPiece(), named.middlePiece(), named.support());
+        }
+        LOGGER.info("Road {}: the {} bridge is not in the jar ({} and {}), so its crossing is stood with the standard"
+                + " bridge", span.id(), named.name(), named.endPiece(), named.middlePiece());
+        return new Pieces(span.endPiece(), span.middlePiece(), Blocks.OAK_LOG);
+    }
+
+    /** Whether a piece of that name is in the jar, asked without reading it. */
+    private static boolean shipped(String name) {
+        try (InputStream in = RoadCommands.class.getResourceAsStream(
+                "/data/tolkienmobs/structure/" + name + ".nbt")) {
+            return in != null;
+        } catch (IOException unreadable) {
+            return false;
+        }
+    }
+
     /**
      * The bridge's pieces in the order they are stood, the near abutment first and the far one last, each as x, y, z,
      * rotation and the kind of piece it is.
@@ -1512,9 +1561,10 @@ public final class RoadCommands {
      * two ends and fifty columns of open water between them (the mountains, 18 November). Both directions are laid now,
      * and a middle that crosses the far abutment is closed over by it, since the far end is always stood last.
      */
-    private static List<int[]> bridgePlan(ServerLevel level, Route.Crossing route) throws IOException {
-        StructureTemplate end = template(level, route.endPiece());
-        StructureTemplate middle = template(level, route.middlePiece());
+    private static List<int[]> bridgePlan(ServerLevel level, Route.Crossing route, Pieces pieces)
+            throws IOException {
+        StructureTemplate end = template(level, pieces.end());
+        StructureTemplate middle = template(level, pieces.middle());
         int endWide = end.getSize().getX();
         int pieceLong = middle.getSize().getX();
         int step = route.step();
@@ -1572,8 +1622,8 @@ public final class RoadCommands {
      * A piece is a whole template - nine by nine by a few blocks of timber, every one of them placed, lit and
      * updated - so the bridge is stood a piece a step rather than as many pieces as the span takes in one tick.
      */
-    private static void stand(ServerLevel level, Route.Crossing route, int[] piece) throws IOException {
-        StructureTemplate template = template(level, piece[4] == END_PIECE ? route.endPiece() : route.middlePiece());
+    private static void stand(ServerLevel level, Pieces pieces, int[] piece) throws IOException {
+        StructureTemplate template = template(level, piece[4] == END_PIECE ? pieces.end() : pieces.middle());
         lay(level, template, new BlockPos(piece[0], piece[1], piece[2]), Rotation.values()[piece[3]]);
     }
 
@@ -1594,11 +1644,12 @@ public final class RoadCommands {
      * Draws every pillar the pieces brought down to the bed under it.
      * <p>
      * The pieces carry six blocks of support and the water here is four or five deep over its bed, so on its
-     * own the span stands on stilts that stop in mid-air. What is looked for is the lowest oak log in each
-     * column of the span; below it the column is filled with oak log while it is air or water, and the fill
-     * stops at the first block that is neither - the bed, or the bank under an abutment.
+     * own the span stands on stilts that stop in mid-air. What is looked for is the lowest block of the pier's own
+     * material - the named bridge's support, or oak log for the standard one - in each column of the span; below it
+     * the column is filled with that block while it is air or water, and the fill stops at the first block that is
+     * neither - the bed, or the bank under an abutment.
      */
-    private static int pillarsColumns(ServerLevel level, Route.Crossing route, int from, int to) {
+    private static int pillarsColumns(ServerLevel level, Route.Crossing route, Block support, int from, int to) {
         int drawn = 0;
         for (int along = from; along <= to; along++) {
             for (int across = -route.half(); across <= route.half(); across++) {
@@ -1606,14 +1657,14 @@ public final class RoadCommands {
                 int z = route.z(along, across);
                 int base = Integer.MIN_VALUE;
                 for (int y = route.bridgeBase() + 6; y >= route.bridgeBase() - 2; y--) {
-                    if (level.getBlockState(new BlockPos(x, y, z)).is(Blocks.OAK_LOG)) base = y;
+                    if (level.getBlockState(new BlockPos(x, y, z)).is(support)) base = y;
                 }
                 if (base == Integer.MIN_VALUE) continue;
                 for (int y = base - 1; y > base - PILLAR_FLOOR; y--) {
                     BlockPos at = new BlockPos(x, y, z);
                     BlockState under = level.getBlockState(at);
                     if (!under.isAir() && under.getFluidState().isEmpty()) break;
-                    level.setBlock(at, Blocks.OAK_LOG.defaultBlockState(), 2);
+                    level.setBlock(at, support.defaultBlockState(), 2);
                     drawn++;
                 }
             }
