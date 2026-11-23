@@ -1154,37 +1154,36 @@ and any length along the span: `bridgePlan` reads each piece's own length and re
 needs. The support has to be a block only the piers are made of, the standard bridge's being oak log under a plank deck,
 because a support the deck itself is built from would carry every column of the span to the bed.
 
-**Bucklebury's two pieces, as cut** (23 November). Both came out of a structure block as a twenty by twenty by
-eleven box with the river and the bank still in the bottom of it, and the ground is gone: no air, water, dirt,
-grass, stone, sand, gravel or clay is listed in either, so what a span stands is the bridge and nothing else (the
-end came out of the cleaning at 455 cells of its 4400-cell box, the middle at 220). The end carries a pair of stone
-towers across its bank end over a deck on rows 3 to 5, with its piers' cobblestone walls running down to the box's
-bottom row; the middle is the same deck and nothing else, seventeen rows of nothing above it. Three things still
-keep them from being the piece a span wants, read off the pieces against `bridgePlan` and `RoadPlan.span`:
+**Bucklebury's two pieces, as drawn** (23 November). The owner's cut of the crossing was the right bridge in the
+wrong box, so the pair `Roads.BRIDGES` stands is drawn from it to the four numbers `bridgePlan` holds a piece to.
+`tools/bridge_build.py` writes both files and reads each one back cell for cell; nothing in either is ground, so a
+span stands the bridge and nothing else. The cut itself is in this repository's history (`71e6270d`, `a6a7b30a`)
+if the drawn pair is not wanted.
 
-- **The deck is seven columns across and the box eleven.** A span is `HALF` 4 either side of its line, nine
-  columns, and the plan stands each end with one corner on a bank line and the other on the far one - and the near
-  end is turned half round, which mirrors its z. A deck at z 2 to 8 therefore covers `low` to `low + 6` at the near
-  bank and `low + 2` to `low + 8` at the far one: the two ends sit two columns off each other, and one column of
-  water is left under each edge of the nine-wide road. **The recut needs nine columns across, with the deck filling
-  the box edge to edge** and the railings on the outermost columns.
-- **The end's box runs three columns past its deck.** The deck is x 0 to 16 in a box of 20, and the plan starts the
-  first middle at `near - endWidth` - twenty columns from the bank - so the middles would begin at 451 while the
-  near deck ends at 455, leaving 454 to 452 as open water between them. **The recut needs the end's box cut to its
-  deck, seventeen long, with the deck's bank edge on local x 0.** The middle's twenty is already its own length, so
-  the Shire crossing's 471 to 418 lands as 17 + 20 + 17 with nothing open.
-- **The deck's walking course stands two rows high.** The cut's water was the box's bottom row - the surface row -
-  and the deck course that follows it is row 4, four rows over the water. `RoadPlan.span` seats a piece's bottom
-  row at `bridgeBase`, the water's own surface (`deck - 2`), and the road arrives at `deck`, so the course that is
-  walked on belongs two rows above that bottom row: row 2, which is where the standard pair's deck sits. **The
-  recut needs either the box's bottom two rows cut away - which takes the two rows of cobblestone-wall piers with
-  them - or a `deckRow` on the bridge's table line, so the pieces stand two lower and their deck meets the road.**
-  That one is the owner's call, since the piers are the owner's.
+- **Nine columns across.** `HALF` 4 either side of the span's line, and the box is the deck edge to edge - the
+  cut's seven columns inside an eleven-wide box would have covered `low` to `low + 6` at one bank and `low + 2` to
+  `low + 8` at the other, because the near end is stood turned half round and its z is mirrored.
+- **The end is seventeen long, the middle twenty.** The end's deck's bank edge sits on local x 0, so the plan's
+  first middle begins where the end's deck does. The Shire crossing's fifty-four columns (471 to 418) lay as
+  17 + 20 + 17 with nothing open and nothing doubled; the cut's twenty-long end left 454 to 452 as open water.
+- **The deck is on the row the road arrives at.** The ends stand at `endBase`, one over the middles'
+  `bridgeBase`, so the walked course is row 1 of the end and row 2 of the middle, and both are at `deck`. The
+  cut's deck was three courses thick and four rows over the water, which would have stood the bridge two blocks
+  proud of the road at both bridgeheads.
+- **Only the piers are cobblestone wall.** The parapet is `stone_brick_wall`, because `pillarsColumns` takes the
+  lowest support block it finds in each column and draws down from it: a cobblestone parapet running the length of
+  the deck would have been found in every column it crossed and drawn to the bed as a curtain of pier under the
+  edge of the deck.
+- **The piers are on both the end and the middle.** The end's at x 4-5 and 12-13 of its length, the middle's at
+  9-10, all on z 0 and 8 under the parapet, so a span of one end, one middle and one end is drawn to the bed at
+  five places and a run of middles is propped every twenty columns. The cut's middle carried none, which would
+  have left its twenty columns hanging.
+- **The bridgehead.** Two stone-brick towers to row 9, spruce plank caps, spruce slab seats and a torch each, with
+  the parapet starting clear of them at x 3, so the gate between the towers is five of the nine columns; column
+  x 0 is open deck so the road walks straight on.
 
-One consequence of the support being the end's cobblestone walls and nothing else: `pillarsColumns` finds no support
-block in a middle's columns and draws nothing there, so the twenty columns the middle covers would be a deck with
-nothing under it. If the middle is meant to stand over water rather than over a bank or a shallow, it needs a
-column of its own support material within the rows that search reads (`bridgeBase + 6` down to `bridgeBase - 2`).
+Not seen in a world: no span has been stood from either piece. The two things the first laying has to answer are
+whether the towers read right at the bank and whether the deck meets the road flush at both abutments.
 
 
 ## Quests - chapter two
