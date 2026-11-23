@@ -105,6 +105,16 @@ public final class RoadCommands {
     private static final int MIDDLE_PIECE = 1;
 
     /**
+     * The jar folder every bridge's pieces stand in, under {@code data/tolkienmobs/structure/}.
+     * <p>
+     * A bridge is a pair of templates a span is stood from, and the standard pair and the pieces of every bridge
+     * named in {@code Roads.BRIDGES} are one kind of thing. They are kept together rather than among the cuts, and
+     * a name - in {@code RoadPlan}, in that table, or in a world's saved plan - is the leaf name only, so a piece
+     * is the same string wherever it is written down and this is the one place its path is spelled.
+     */
+    private static final String BRIDGE_PIECES = "bridges/";
+
+    /**
      * How far out from a build its road stops being the town's own street, and then stops being a road at all.
      * <p>
      * Three bands, and a width and a surface for each: the town's own paving seven wide within {@link #URBAN_BAND}, the
@@ -1532,10 +1542,10 @@ public final class RoadCommands {
         return new Pieces(span.endPiece(), span.middlePiece(), Blocks.OAK_LOG);
     }
 
-    /** Whether a piece of that name is in the jar, asked without reading it. */
+    /** Whether a piece of that name is in the jar's bridges folder, asked without reading it. */
     private static boolean shipped(String name) {
         try (InputStream in = RoadCommands.class.getResourceAsStream(
-                "/data/tolkienmobs/structure/" + name + ".nbt")) {
+                "/data/tolkienmobs/structure/" + BRIDGE_PIECES + name + ".nbt")) {
             return in != null;
         } catch (IOException unreadable) {
             return false;
@@ -2954,13 +2964,13 @@ public final class RoadCommands {
         return Math.floorMod(x * 73856093 ^ z * 19349663, 1000);
     }
 
-    /** One of the bridge's own pieces, read from the jar the first time it is asked for. */
+    /** One of the bridge's own pieces, read from the jar's bridges folder the first time it is asked for. */
     private static StructureTemplate template(ServerLevel level, String name) throws IOException {
         StructureTemplate cached = LOADED.get(name);
         if (cached != null) return cached;
         CompoundTag tag;
         try (InputStream in = RoadCommands.class.getResourceAsStream(
-                "/data/tolkienmobs/structure/" + name + ".nbt")) {
+                "/data/tolkienmobs/structure/" + BRIDGE_PIECES + name + ".nbt")) {
             if (in == null) throw new IOException("no " + name + ".nbt in the jar");
             tag = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
         }

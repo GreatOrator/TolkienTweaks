@@ -1121,9 +1121,10 @@ about*, has the design.
 
 ## The named bridges - named 23 November, art still to build
 
-A span is the standard bridge's - nine wide, `bridge_end` and `bridge_middle` from the jar, oak-log piers drawn to the
-bed - unless a block on its water is named in `Roads.BRIDGES`. That table is the whole of how a crossing gets a bridge of
-its own: a name for the log, a block on the water, the two piece names and the block the pieces' own piers are made of.
+A span is the standard bridge's - nine wide, `bridge_end` and `bridge_middle` from the jar's `bridges` folder, oak-log
+piers drawn to the bed - unless a block on its water is named in `Roads.BRIDGES`. That table is the whole of how a
+crossing gets a bridge of its own: a name for the log, a block on the water, the two piece names and the block the
+pieces' own piers are made of.
 `Roads.bridge(span)` answers which span covers a named bridge, the way `Roads.water` answers for a column - between the
 banks on the span's own axis and within half the deck plus `BRIDGE_LEEWAY` 8 of its line - and it is asked by the ground
 rather than by the span's section number, because `_bridge_<n>` counts from the end the plan walked from and moves the
@@ -1143,7 +1144,10 @@ bank, and a stone bridge laid twice stands its pieces over the ones already ther
 
 Neither bridge is built: neither pair of pieces is in the jar, so `pieces` falls back to the standard pair and the log
 says `the Bucklebury bridge is not in the jar (bucklebury_end and bucklebury_middle), so its crossing is stood with the
-standard bridge` once for the pass. A piece is nine columns across - the plan's `HALF`, four either side of the line -
+standard bridge` once for the pass. The files go in `src/main/resources/data/tolkienmobs/structure/bridges/`, beside
+the standard pair, and a piece is named by its leaf name alone wherever it is written down - `RoadPlan`'s
+`END_PIECE`, a `Roads.BRIDGES` line, a world's `road_plans.dat` - so `RoadCommands.BRIDGE_PIECES` is the one place a
+bridge's path is spelled. A piece is nine columns across - the plan's `HALF`, four either side of the line -
 and any length along the span: `bridgePlan` reads each piece's own length and repeats the middle as far as the water
 needs. The support has to be a block only the piers are made of, the standard bridge's being oak log under a plank deck,
 because a support the deck itself is built from would carry every column of the span to the bed.
