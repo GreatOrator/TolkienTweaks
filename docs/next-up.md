@@ -1135,22 +1135,43 @@ bank, and a stone bridge laid twice stands its pieces over the ones already ther
 
 - **Bucklebury** - the Shire leg, `planned_1032_-34_-463_-124`, whose `bridge_1` runs from bank 471, 90 to far 418, 90,
   fifty-four columns of the Brandywine at deck 116. Named at 445, 90, the middle of the channel. Pieces
-  `bucklebury_end` and `bucklebury_middle`, piers oak log: a bridge at Bucklebury is the hobbits' timber.
+  `bucklebury_end` and `bucklebury_middle` are in the jar, cut from the owner's own build of it with the ground
+  taken out (see below); its piers are the end's cobblestone walls, drawn down to the bed in cobble, and the
+  middle carries none - a middle's columns with no wall in them are left as they are.
 - **The Last Bridge** - the East-West Road's crossing of the Mitheithel. It is **not in the table**, because the leg to
   Bree has no water under it yet: `planned_4648_-3316_1031_-36` plans as one dry section against the drawing, and the
   world said the same when it laid it - *"Nothing on the way is water, so nothing is bridged"*, 11:39 on 22 November.
   Its pieces are reserved as `last_bridge_end` and `last_bridge_middle` with stone-brick piers, and the table line goes
   in with a block on the water the day that road has a river there to cross.
 
-Neither bridge is built: neither pair of pieces is in the jar, so `pieces` falls back to the standard pair and the log
-says `the Bucklebury bridge is not in the jar (bucklebury_end and bucklebury_middle), so its crossing is stood with the
-standard bridge` once for the pass. The files go in `src/main/resources/data/tolkienmobs/structure/bridges/`, beside
+The **Last Bridge** is not built: its pair is not in the jar, so if its table line goes in before its art does,
+`pieces` falls back to the standard pair and the log says `the Last Bridge bridge is not in the jar (last_bridge_end
+and last_bridge_middle), so its crossing is stood with the standard bridge` once for the pass. The files go in `src/main/resources/data/tolkienmobs/structure/bridges/`, beside
 the standard pair, and a piece is named by its leaf name alone wherever it is written down - `RoadPlan`'s
 `END_PIECE`, a `Roads.BRIDGES` line, a world's `road_plans.dat` - so `RoadCommands.BRIDGE_PIECES` is the one place a
 bridge's path is spelled. A piece is nine columns across - the plan's `HALF`, four either side of the line -
 and any length along the span: `bridgePlan` reads each piece's own length and repeats the middle as far as the water
 needs. The support has to be a block only the piers are made of, the standard bridge's being oak log under a plank deck,
 because a support the deck itself is built from would carry every column of the span to the bed.
+
+**Bucklebury's two pieces, as cut** (23 November). Both came out of a structure block as a twenty by twenty by
+eleven box with the river and the bank still in the bottom of it, and the ground is gone: no air, water, dirt,
+grass or stone is listed in either, so what a span stands is the bridge and nothing else. The end carries a pair
+of stone towers across its near end, rising to row 19 over a deck on rows 3 to 5, with its piers' cobblestone
+walls going down through the water; the middle is a deck on the same three rows, fourteen rows of nothing above
+it. Both still want recutting to the shape a piece is meant to be, and that is the next move on them:
+
+- **The box is the bridge plus a margin.** The end's deck is fifteen columns long inside a twenty-long box, and
+  the plan reads the end's own length to know how far it reaches past its anchor - so as it is, six columns of
+  open water would open between the end and the first middle. A piece should be the bridge exactly, corner to
+  corner, with no air around it to shift the anchor off the deck.
+- **The deck is seven columns across.** The towers make the end nine across (z 1 to 9 of the eleven-wide box),
+  but the deck between them spans z 2 to 8, where the span a road lays is nine wide (`HALF` 4): one column of
+  water would be left at each edge of the road under a seven-wide deck.
+- **The deck sits low in its box.** The standard pair has its deck on the top row of a six-high piece and its
+  piers below, so a piece stood at `endBase` puts its deck at the base plus five. These put it at base plus
+  three, with fourteen rows of tower above - which only reads right if the towers are meant to stand on the
+  abutment rather than be cut off at it.
 
 ## Quests - chapter two
 

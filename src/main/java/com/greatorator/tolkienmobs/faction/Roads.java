@@ -531,7 +531,12 @@ public final class Roads {
      * {@code last_bridge_middle}, and the piers under them are stone brick.
      */
     private static final List<Bridge> BRIDGES = List.of(
-            new Bridge("Bucklebury", at(445, 90), "bucklebury_end", "bucklebury_middle", Blocks.OAK_LOG));
+            // The piers are the cobblestone walls the end carries down through the water, and the middle
+            // carries none - a column of a middle with no wall in it is left alone. The support is asked for as
+            // the block only a pier is made of, and the walls above the deck are outside the range
+            // `pillarsColumns` reads, so the parapet is not mistaken for one.
+            new Bridge("Bucklebury", at(445, 90), "bucklebury_end", "bucklebury_middle",
+                    Blocks.COBBLESTONE_WALL));
 
     /**
      * The bridge a span is stood with, or null where it is the standard one.
