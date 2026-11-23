@@ -8,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -16,8 +17,10 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -272,7 +275,8 @@ public final class CutCommands {
      * country's trees, a drawn channel standing in the air over a yard. Then, between the cut's top and its bottom,
      * every position the cut leaves empty has the country taken out of it: the cut's own blocks stay exactly as they
      * were cut, and anything that is not one of them is air. What is below the cut is left alone, because below the
-     * cut is the country's own ground and the build stands on it.
+     * cut is the country's own ground and the build stands on it. A tree standing on that ground is the build's
+     * own and not the country's, and is left whole: see {@link #standsOnOwnGround}.
      */
     private static int clear(CommandContext<CommandSourceStack> context, BlockPos corner) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
@@ -291,7 +295,8 @@ public final class CutCommands {
             Cleared done = clearColumns(level, planted, box, shape, 0, shape.wide() * shape.deep());
             source.sendSuccess(() -> Component.literal("Cleared " + name + ": " + done.columns()
                     + " columns cut back to the build, " + done.blocks() + " blocks of the country removed, "
-                    + done.deepest() + " deep at the worst."), true);
+                    + done.deepest() + " deep at the worst, " + done.kept() + " trees left standing on its own"
+                    + " ground."), true);
             return done.columns();
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -338,8 +343,11 @@ public final class CutCommands {
         }
     }
 
-    /** What one sweep of a cut's columns took out: how many columns, how many blocks, and the deepest cut. */
-    record Cleared(int columns, long blocks, int deepest) {
+    /**
+     * What one sweep of a cut's columns took out: how many columns, how many blocks, the deepest cut, and how many
+     * trees it left standing on the build's own ground.
+     */
+    record Cleared(int columns, long blocks, int deepest, int kept) {
     }
 
     /**
@@ -349,10 +357,14 @@ public final class CutCommands {
      * of a world is cleared a band of columns a tick. What it does per column is the whole of the rule - above the
      * cut's top everything comes off, and between that top and the cut's bottom every position the cut leaves empty is
      * the country's and goes - so a band of it is a band of the same job and not a second idea about clearing.
+     * <p>
+     * A column whose top is a tree standing on the build's own ground is the build's own and is left whole, which is
+     * what keeps a village's party tree: see {@link #standsOnOwnGround}.
      */
     static Cleared clearColumns(ServerLevel level, BlockPos planted, Box box, Shape shape, int first, int upto) {
         int wide = shape.wide();
         int columns = 0;
+        int kept = 0;
         int deepest = 0;
         long removed = 0L;
         int last = Math.min(upto, wide * shape.deep());
@@ -367,6 +379,10 @@ public final class CutCommands {
             level.getChunk(x >> 4, z >> 4);
             int ceiling = planted.getY() + top;
             int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+            if (standsOnOwnGround(level, at, x, z, surface, ceiling)) {
+                kept++;
+                continue;
+            }
             int taken = 0;
             for (int y = surface; y > ceiling; y--) {
                 at.set(x, y, z);
@@ -387,7 +403,48 @@ public final class CutCommands {
                 deepest = Math.max(deepest, taken);
             }
         }
-        return new Cleared(columns, removed, deepest);
+        return new Cleared(columns, removed, deepest, kept);
+    }
+
+    /**
+     * Whether a column's top is a tree standing on the build's own ground, which the clear leaves whole.
+     * <p>
+     * The clear takes everything over a cut's own top, which is right for the country and wrong for a tree the
+     * build was drawn round: a village's party tree grows in a garden whose cut is a course of grass, so its crown
+     * stands over that course with its trunk on it, and read by the country's rule the tree comes off at the grass
+     * and the village loses the thing it was built around. So a column is asked what its top actually is - read
+     * down from the surface through leaves and wood to the first block that is neither, which is the block the tree
+     * stands on. A tree standing at or under the cut's own top in that column stands on the build's ground and is
+     * the build's; one whose ground is above that top stands on the country over the build - a hill the clear is
+     * taking off - and goes with it, and a crown hanging over air has no ground of its own and goes, so nothing is
+     * left standing on nothing.
+     */
+    private static boolean standsOnOwnGround(ServerLevel level, BlockPos.MutableBlockPos at, int x, int z,
+                                             int surface, int ceiling) {
+        int y = surface - 1;
+        boolean tree = false;
+        while (y > level.getMinY()) {
+            BlockState state = level.getBlockState(at.set(x, y, z));
+            if (!tree(state)) break;
+            tree = true;
+            y--;
+        }
+        if (!tree) return false;
+        return !level.getBlockState(at.set(x, y, z)).isAir() && y <= ceiling;
+    }
+
+    /**
+     * Whether a block is part of a tree rather than part of the ground: leaves, a trunk, a fungus stem.
+     * <p>
+     * The same reading the drape uses, and for the same reason: this mod's leaves are in {@code #minecraft:leaves},
+     * but its logs and wood are in no tag, so the tags alone would read a trunk of the mod's own wood as ground.
+     */
+    private static boolean tree(BlockState state) {
+        if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)) return true;
+        String name = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
+        return name.endsWith("_leaves") || name.contains("leaves_") || name.endsWith("_log")
+                || name.contains("log_") || name.contains("_wood") || name.contains("wood_")
+                || name.contains("_stem") || name.contains("_hyphae");
     }
 
     /** A cut's pieces as the shared drape reads them: the same table, in the city's own shape. */

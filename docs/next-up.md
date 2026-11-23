@@ -4,7 +4,16 @@ The working state of the campaign, written so a session picking this up cold doe
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
-**Last touched:** 22 November 2026 - the owner's fresh `Progress Check 2` showed **holes at Bree's join**: where the
+**Last touched:** 23 November 2026 - the party tree inside Hobbiton is no longer taken with the country over
+it. The clear that strips a cut's columns ran one rule over the whole footprint: everything over the cut's own
+top in a column came off, and a village's own tree has its crown over that top with its trunk on the ground the
+cut puts down, so the party tree went with the country. A column whose top is a tree is now read down through
+its leaves and wood to the block it stands on, and a tree standing at or under the cut's own top is the build's
+and is left whole (leaves, trunk, and the country's blocks in that column); one standing on a hill over the
+build still goes with the hill, and a crown hanging over air still goes, so nothing is left standing on
+nothing. `/tmcut clear` now ends `N trees left standing on its own ground`; the village's and the town's
+passes report no counts, as before - a village already cleared keeps what it lost, since nothing plants a tree
+back. Before that, 22 November 2026 - the owner's fresh `Progress Check 2` showed **holes at Bree's join**: where the
 ring smooths the town into the country there are bare blocks of ground with no canopy over them, looking for all the
 world like trees the drape took out and never filled. The cause was found in the draw and fixed - read *22 November*
 first. The same day's housekeeping, while that new world was starting: **the Arda crossing waits for the Shire** rather
