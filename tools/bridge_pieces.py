@@ -16,11 +16,14 @@ The pieces are read and written through `grab_build`, so a file that came out of
 one: gzip, root compound, `palette` and `blocks`. `DataVersion` and `size` are left exactly as they were, and each
 rewritten file is read back and compared cell for cell before the next one is touched.
 
-**What counts as ground** is the set below - air in all three of its names, water, the dirt and grass family, and
-plain stone with the stones that come out of a terrain pass beside it. A block a bridge may be made of is never in
-it: `stone_bricks` is not `stone`, `cobblestone` is a deck somebody chose, and `gravel` is a river bed a span may
-rest on rather than the water it crosses. Anything the tool does not expect is printed as it stands, so a piece
-holding something odd says so instead of quietly losing it.
+**What counts as ground** is the set below - air in all three of its names, water, the dirt and grass family, plain
+stone with the stones that come out of a terrain pass beside it, and the sand, gravel and clay of a river's bed and
+bars. A block a bridge may be made of is never in it: `stone_bricks` is not `stone`, and `cobblestone` is a deck
+somebody chose. The bed is ground even where a span's own piers come down onto it, because the piers are what the
+piece carries: `RoadCommands.pillarsColumns` draws each one on down to the first block that is neither air nor water,
+so a piece that shipped its bed would lay a shelf of gravel under every bridge stood from it, and pull the piers up
+short of the bed besides. Anything the tool does not expect is printed as it stands, so a piece holding something odd
+says so instead of quietly losing it.
 """
 import argparse
 import collections
@@ -40,6 +43,7 @@ GROUND = {
     'minecraft:grass_block', 'minecraft:short_grass', 'minecraft:tall_grass', 'minecraft:fern',
     'minecraft:stone', 'minecraft:andesite', 'minecraft:granite', 'minecraft:diorite',
     'minecraft:tuff', 'minecraft:deepslate', 'minecraft:calcite', 'minecraft:dripstone_block',
+    'minecraft:sand', 'minecraft:red_sand', 'minecraft:gravel', 'minecraft:clay',
 }
 
 

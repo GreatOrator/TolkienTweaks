@@ -1156,22 +1156,36 @@ because a support the deck itself is built from would carry every column of the 
 
 **Bucklebury's two pieces, as cut** (23 November). Both came out of a structure block as a twenty by twenty by
 eleven box with the river and the bank still in the bottom of it, and the ground is gone: no air, water, dirt,
-grass or stone is listed in either, so what a span stands is the bridge and nothing else. The end carries a pair
-of stone towers across its near end, rising to row 19 over a deck on rows 3 to 5, with its piers' cobblestone
-walls going down through the water; the middle is a deck on the same three rows, fourteen rows of nothing above
-it. Both still want recutting to the shape a piece is meant to be, and that is the next move on them:
+grass, stone, sand, gravel or clay is listed in either, so what a span stands is the bridge and nothing else (the
+end came out of the cleaning at 455 cells of its 4400-cell box, the middle at 220). The end carries a pair of stone
+towers across its bank end over a deck on rows 3 to 5, with its piers' cobblestone walls running down to the box's
+bottom row; the middle is the same deck and nothing else, seventeen rows of nothing above it. Three things still
+keep them from being the piece a span wants, read off the pieces against `bridgePlan` and `RoadPlan.span`:
 
-- **The box is the bridge plus a margin.** The end's deck is fifteen columns long inside a twenty-long box, and
-  the plan reads the end's own length to know how far it reaches past its anchor - so as it is, six columns of
-  open water would open between the end and the first middle. A piece should be the bridge exactly, corner to
-  corner, with no air around it to shift the anchor off the deck.
-- **The deck is seven columns across.** The towers make the end nine across (z 1 to 9 of the eleven-wide box),
-  but the deck between them spans z 2 to 8, where the span a road lays is nine wide (`HALF` 4): one column of
-  water would be left at each edge of the road under a seven-wide deck.
-- **The deck sits low in its box.** The standard pair has its deck on the top row of a six-high piece and its
-  piers below, so a piece stood at `endBase` puts its deck at the base plus five. These put it at base plus
-  three, with fourteen rows of tower above - which only reads right if the towers are meant to stand on the
-  abutment rather than be cut off at it.
+- **The deck is seven columns across and the box eleven.** A span is `HALF` 4 either side of its line, nine
+  columns, and the plan stands each end with one corner on a bank line and the other on the far one - and the near
+  end is turned half round, which mirrors its z. A deck at z 2 to 8 therefore covers `low` to `low + 6` at the near
+  bank and `low + 2` to `low + 8` at the far one: the two ends sit two columns off each other, and one column of
+  water is left under each edge of the nine-wide road. **The recut needs nine columns across, with the deck filling
+  the box edge to edge** and the railings on the outermost columns.
+- **The end's box runs three columns past its deck.** The deck is x 0 to 16 in a box of 20, and the plan starts the
+  first middle at `near - endWidth` - twenty columns from the bank - so the middles would begin at 451 while the
+  near deck ends at 455, leaving 454 to 452 as open water between them. **The recut needs the end's box cut to its
+  deck, seventeen long, with the deck's bank edge on local x 0.** The middle's twenty is already its own length, so
+  the Shire crossing's 471 to 418 lands as 17 + 20 + 17 with nothing open.
+- **The deck's walking course stands two rows high.** The cut's water was the box's bottom row - the surface row -
+  and the deck course that follows it is row 4, four rows over the water. `RoadPlan.span` seats a piece's bottom
+  row at `bridgeBase`, the water's own surface (`deck - 2`), and the road arrives at `deck`, so the course that is
+  walked on belongs two rows above that bottom row: row 2, which is where the standard pair's deck sits. **The
+  recut needs either the box's bottom two rows cut away - which takes the two rows of cobblestone-wall piers with
+  them - or a `deckRow` on the bridge's table line, so the pieces stand two lower and their deck meets the road.**
+  That one is the owner's call, since the piers are the owner's.
+
+One consequence of the support being the end's cobblestone walls and nothing else: `pillarsColumns` finds no support
+block in a middle's columns and draws nothing there, so the twenty columns the middle covers would be a deck with
+nothing under it. If the middle is meant to stand over water rather than over a bank or a shallow, it needs a
+column of its own support material within the rows that search reads (`bridgeBase + 6` down to `bridgeBase - 2`).
+
 
 ## Quests - chapter two
 
