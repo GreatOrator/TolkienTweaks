@@ -363,6 +363,14 @@ with it, so a post whose ring reached over a border answered the same nothing ev
 the road had been walked. The unread column is skipped now and the nearest loaded one is planted; only a target
 whose whole ring is in unmade country is left for a later pass. **Not seen in a world.**
 
+**A post no longer stands beside itself.** The plinth is the marker, and the standing check read a couple of blocks
+either way from one column's height - but a column holding a post answers with the top of that post, five courses above
+its own plinth, and the ring a post is stood in reaches up to `CLEAR` 12 blocks from the mark. Read that way the post
+just planted was invisible from the next sweep on, and the clock stood another beside it every twenty seconds at the
+next free verge: `Progress Check 4` grew three posts at 4771, 4776 and 4781, -3068, on a shoulder with no crossing on
+it. The check now walks the whole ring the post would be given, reading every column from its own height and a whole
+post down to its foot. **Not seen in a world.**
+
 **Five faults came back from the world on 21 November**, and all five were the placer's rather than the boards'.
 The Gundabad crossing stood **two posts ten blocks apart** - a thousand-block mark that fell beside the junction
 - so a mark within 32 blocks of a junction is that junction's post now, and a join found twice is folded into one.
@@ -1027,10 +1035,15 @@ client session**: whether the deck, the mouths and the ring look right is still 
 clock on a warm build, not a bound on a cold one. The pass keeps its own tick count, because the measurement is the line
 that says it stands.
 
-**Where the roads go next, and it is not built.** The Shire to Bree, and Bree on to Rivendell - two routes for
-towns that have no road between them, now that Gundabad's road joins the old forest road at 8583, -3617. Nothing of
-either is laid; the Shire's own ring is dressed with no road, because `Roads.forGround` answers for the valley and a
-route to a village that had no ground until this week is a route planned against a map that did not have it in.
+**The two town roads are in the network, and they wait for their towns.** The Shire to Bree and Bree on to Rivendell
+are both in `Roads.NETWORK` - the Shire's leg re-ended at the village gate, the Bree leg at the vale's junction - and
+`Progress Check 4` is why they could not simply be laid: the Shire's stretch arriving at the village (`..._2`) was begun
+at 11:23 on 22 November while the village was still rising and never reported laid, and the Bree leg's own arrival was
+taken out with Bree's ring nineteen seconds after the whole 4049-block road reported laid, so the pass planned it again
+from 1031, -36. A road that starts from one build's door was already held by that build (`Roads.BUILDS`); these two
+start from a town's door and arrive at another's, so `Roads.TOWNS` names both towns of each and `Roads.waits` holds the
+leg while either is still going up. **Not seen in a world: neither leg has been walked end to end with the hold in
+place.**
 
 **What has not been checked.** None of the river work has been seen in a world: the bypass's new bend and its fall, the
 branch's valley and its mouth at the wall, the fork, and the merged channel's run to the bay are all unbuilt territory.
@@ -1217,10 +1230,10 @@ all unverified.
 
 ## Not started
 
-- **The Shire to Bree, and Bree on to Rivendell.** The two town roads nothing carries yet. Gundabad's road is in
-  `Roads.NETWORK` now, running from the gate at 5578, -6769 to the old forest road at 8583, -3617, so the hold no
-  longer waits on one. Bree is sited at 1024, -256 and raises itself from a cut of the owner's save (22 November),
-  so both ends can be surveyed: the Shire's village at -700, -512 to Bree, and Bree on to Weathertop's cell.
+- **The two town roads walked end to end.** Both are in `Roads.NETWORK` and both are held for their towns now, so what
+  is left is the walk: the Shire's gate at -463, -124 to Bree's hall front at 1032, -34, and Bree on to the vale's
+  junction at 4648, -3316 - checking that each arrival is the ground its town dressed rather than the ground the town
+  was later built over.
 - **Chapter three.** Eleven pages (3-1 to 3-11) written, nothing in `Campaign`. Before code it needs ground, bodies and
   objects: Mitheithel, Stoneyford, **the Watchers**, the dead stones, Dol Guldur and the Moria camp; five bodies
   (Aragorn, Guthwine, Manwyn, Narmos, Rurain) and the wight as the Ancient Spirit; two props and one charm. Its first

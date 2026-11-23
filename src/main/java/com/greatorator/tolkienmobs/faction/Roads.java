@@ -501,6 +501,21 @@ public final class Roads {
             "tolkienmobs:roads/planned_5111_-3399_5072_-3221", "rivendell",
             "tolkienmobs:roads/planned_5105_-3413_5605_-3622", "rivendell");
 
+    /**
+     * The towns a road runs between, whose own builds it waits for, by the road it is a section of.
+     * <p>
+     * A road that starts from a build's door is that build's road and is held by {@link #BUILDS}; a road between two
+     * towns is neither town's, and both ends of it arrive on ground that is still being made. The Shire's leg leaves
+     * Bree's hall front and arrives at the village's gate, and the Bree leg leaves the vale's junction and arrives at the
+     * same hall front. Both towns raise themselves out of a cut and dress the ring round it, which is the ground those
+     * ends are graded on - so a leg begun while either is going up has its arrival taken out with the ring, and the
+     * pass believes the road is down and never grades that stretch again. The measured case is the Shire leg's own
+     * arrival (`..._2`), begun at 11:23 on 22 November while the village was still rising and never reported laid.
+     */
+    private static final Map<String, List<String>> TOWNS = Map.of(
+            "tolkienmobs:roads/planned_1032_-34_-463_-124", List.of("hobbiton", "bree"),
+            "tolkienmobs:roads/planned_4648_-3316_1031_-36", List.of("bree"));
+
     /** The build a road leaves from: its own name where it is that build's road, the build it serves otherwise. */
     public static String build(Route route) {
         String own = buildOf(route.id());
@@ -527,11 +542,24 @@ public final class Roads {
      * road believed it was down. So a road of a build's own waits for that build, the way a town's hall does
      * ({@link TownHalls#waits}), and begins from the same ground the moment the build is finished.
      * <p>
-     * Only a road that names its build is held: every other road is the country's and has nothing to wait for.
+     * Only a road that names a build or a town is held: every other road is the country's and has nothing to wait for,
+     * and a road between two towns waits for both of them ({@link #TOWNS}).
      */
     public static boolean waits(ServerLevel level, Route route) {
-        String town = buildOf(route.id());
-        return town != null && TownHalls.waits(level, town);
+        String own = buildOf(route.id());
+        if (own != null && TownHalls.waits(level, own)) return true;
+        for (String town : townsOf(route.id())) {
+            if (TownHalls.waits(level, town)) return true;
+        }
+        return false;
+    }
+
+    /** The towns a route's id runs between, by the road it is a section of: none for a road with no town on it. */
+    private static List<String> townsOf(String id) {
+        for (Map.Entry<String, List<String>> row : TOWNS.entrySet()) {
+            if (id.equals(row.getKey()) || id.startsWith(row.getKey() + "_")) return row.getValue();
+        }
+        return List.of();
     }
 
     /**

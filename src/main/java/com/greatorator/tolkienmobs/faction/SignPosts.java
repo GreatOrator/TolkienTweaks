@@ -140,6 +140,13 @@ public final class SignPosts {
     private static final int BOARDS = 2;
     /** The courses of shaft between the plinth and the cap: a post is five blocks tall. */
     private static final int SHAFTS = 3;
+    /**
+     * How far below a column's own height its plinth can stand, in blocks.
+     * <p>
+     * A column holding a post reads back the cap's height, and the plinth is the four courses under it; the extra two
+     * are the slack a heightmap takes for the ground it counted over the cap.
+     */
+    private static final int FOOT = SHAFTS + 2;
     /** How often a world looks for roads that are owed posts, in ticks. Twenty seconds. */
     private static final int EVERY = 400;
     /** The eight columns around a point one block further out, the four square ones before the four diagonal ones. */
@@ -562,11 +569,13 @@ public final class SignPosts {
         if (!level.hasChunk(x >> 4, z >> 4)) return -1;
         List<Direction> arms = compass(ways);
         if (arms.isEmpty()) return 0;
-        if (standing(level, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), x, z)) return 0;
+        // A post already standing anywhere in the ring this target's post would be given answers the target. The ring
+        // rather than the target's own column: the nearest clear verge is where the post goes, and that is up to
+        // {@link #CLEAR} blocks from the mark.
+        if (standing(level, verge(half) + CLEAR, x, z)) return 0;
         List<BlockPos> posts = verges(level, lines, x, z, half);
         if (posts == null) return -1;
         for (BlockPos post : posts) {
-            if (standing(level, post.getY(), post.getX(), post.getZ())) return 0;
             BlockPos below = post.below();
             if (!level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)) continue;
             Map<Direction, List<String>> boards = named(level, post, arms);
@@ -577,6 +586,11 @@ public final class SignPosts {
             return 1;
         }
         return 0;
+    }
+
+    /** How far from a target its post's first ring stands: past its own band's edge, by a verge. */
+    private static int verge(int half) {
+        return Math.max(1, half) + ASIDE + 1;
     }
 
     /**
@@ -596,7 +610,7 @@ public final class SignPosts {
      * whole ring in country nobody has made - is left for a later pass.
      */
     private static List<BlockPos> verges(ServerLevel level, List<Line> lines, int x, int z, int half) {
-        int from = Math.max(1, half) + ASIDE + 1;
+        int from = verge(half);
         List<BlockPos> posts = new ArrayList<>();
         boolean read = false;
         for (int out = from; out <= from + CLEAR; out++) {
@@ -619,17 +633,25 @@ public final class SignPosts {
     }
 
     /**
-     * Whether a post already stands at or beside this column, read from the plinth that is the post's own marker.
+     * Whether a post already stands in the ring round this target, read from the plinth that is the post's own marker.
      * <p>
-     * Read over a column's height rather than at one block, because the plinth stands on whatever ground the verge
-     * had: the check is asked of the target, whose own height is the road's, and of every verge, whose height is a
-     * heightmap read - and the two do not have to agree by a block either way.
+     * The ring rather than the target's own column, because the nearest clear verge is where the post goes and that is
+     * up to {@link #CLEAR} blocks from the mark; and every column is read from its own height rather than from one
+     * height for the whole ring, because a verge is a shoulder and a shoulder can be a bank. A post fills five courses,
+     * so the height a column holding one answers with is the top of the post and its plinth is four below that: the read
+     * walks a whole post down, not a couple of blocks either way. Read a course or two short and a standing post was
+     * invisible from the next sweep on, which is how the clock came to plant one post beside another every twenty
+     * seconds.
      */
-    private static boolean standing(ServerLevel level, int top, int x, int z) {
-        for (int dx = -3; dx <= 3; dx++) {
-            for (int dz = -3; dz <= 3; dz++) {
-                for (int dy = -2; dy <= 2; dy++) {
-                    BlockState state = level.getBlockState(new BlockPos(x + dx, top + dy, z + dz));
+    private static boolean standing(ServerLevel level, int reach, int x, int z) {
+        for (int dx = -reach; dx <= reach; dx++) {
+            for (int dz = -reach; dz <= reach; dz++) {
+                int px = x + dx;
+                int pz = z + dz;
+                if (!level.hasChunk(px >> 4, pz >> 4)) continue;
+                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, px, pz);
+                for (int down = 0; down <= FOOT; down++) {
+                    BlockState state = level.getBlockState(new BlockPos(px, top - down, pz));
                     if (state.is(TolkienBlocks.SIGN_POST_PLINTH.get())) return true;
                 }
             }
