@@ -1035,15 +1035,19 @@ client session**: whether the deck, the mouths and the ring look right is still 
 clock on a warm build, not a bound on a cold one. The pass keeps its own tick count, because the measurement is the line
 that says it stands.
 
-**The two town roads are in the network, and they wait for their towns.** The Shire to Bree and Bree on to Rivendell
-are both in `Roads.NETWORK` - the Shire's leg re-ended at the village gate, the Bree leg at the vale's junction - and
-`Progress Check 4` is why they could not simply be laid: the Shire's stretch arriving at the village (`..._2`) was begun
-at 11:23 on 22 November while the village was still rising and never reported laid, and the Bree leg's own arrival was
-taken out with Bree's ring nineteen seconds after the whole 4049-block road reported laid, so the pass planned it again
-from 1031, -36. A road that starts from one build's door was already held by that build (`Roads.BUILDS`); these two
-start from a town's door and arrive at another's, so `Roads.TOWNS` names both towns of each and `Roads.waits` holds the
-leg while either is still going up. **Not seen in a world: neither leg has been walked end to end with the hold in
-place.**
+**The two town roads are in the network, and a leg lays up to the town that is still going up.** The Shire to Bree
+and Bree on to Rivendell are both in `Roads.NETWORK`, and `Progress Check 4` is why they could not simply be laid:
+the Shire's stretch arriving at the village (`..._2`) was begun at 11:23 on 22 November while the village was still
+rising and never reported laid, and the Bree leg's arrival was taken out with Bree's ring nineteen seconds after the
+whole 4049-block road reported laid. Holding the whole leg until both towns had written their notes was the first
+answer, and it is safe and slow: four thousand blocks of open country none of which the town would ever touch.
+`Roads.TOWNS` now names the ground each town is met on, `Roads.hold` answers which end of a *section* arrives there
+- a leg over water is a section per span and per dry stretch, and only the arriving one is graded on the town's
+ground - and a pass that finds one end held lays from the other, stops `SHORT_OF_TOWN` 40 blocks clear of the town,
+and waits at that edge for the town's note. The held stations are kept in the pass's own note, so a restart in the
+middle of the wait resumes where it stopped, and the arrival is graded as a second profile from the height the road
+stopped at to the town's finished ground. **Not seen in a world: neither leg has been walked with the partial hold,
+in this world or a fresh one.**
 
 **What has not been checked.** None of the river work has been seen in a world: the bypass's new bend and its fall, the
 branch's valley and its mouth at the wall, the fork, and the merged channel's run to the bay are all unbuilt territory.
@@ -1230,10 +1234,10 @@ all unverified.
 
 ## Not started
 
-- **The two town roads walked end to end.** Both are in `Roads.NETWORK` and both are held for their towns now, so what
-  is left is the walk: the Shire's gate at -463, -124 to Bree's hall front at 1032, -34, and Bree on to the vale's
-  junction at 4648, -3316 - checking that each arrival is the ground its town dressed rather than the ground the town
-  was later built over.
+- **The two town roads walked end to end.** Both are in `Roads.NETWORK`, and both now stop at a town that is still
+  being raised and lay the arrival when it stands, so what is left is the walk: the Shire's gate at -463, -124 to
+  Bree's hall front at 1032, -34, and Bree on to the vale's junction at 4648, -3316 - checking that each arrival is
+  the ground its town dressed rather than the ground the town was later built over.
 - **Chapter three.** Eleven pages (3-1 to 3-11) written, nothing in `Campaign`. Before code it needs ground, bodies and
   objects: Mitheithel, Stoneyford, **the Watchers**, the dead stones, Dol Guldur and the Moria camp; five bodies
   (Aragorn, Guthwine, Manwyn, Narmos, Rurain) and the wight as the Ancient Spirit; two props and one charm. Its first

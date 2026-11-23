@@ -545,10 +545,13 @@ public final class RoadCommands {
     /** The road itself, without a sender to answer: the pass the hand runs and the world runs for it. */
     static Road road(ServerLevel level, Route route) throws IOException {
         RoadJob job = plan(route);
-        while (job.step(level)) {
+        // A hand is answered in one call, and a road that stops at a town's edge is only finished by the town's note:
+        // stepping that wait here would hold the server's own thread until the town was raised. What the pass has laid
+        // is the answer, and the rest is left to the world's pass, which asks again from the ground.
+        while (job.step(level) && !job.waiting()) {
             // The hand asked for the road, not for the schedule of it.
         }
-        return job.summary();
+        return job.summary() != null ? job.summary() : job.stopped();
     }
 
     /**
@@ -815,6 +818,22 @@ public final class RoadCommands {
         private List<int[]> exit;
         private Graded graded;
         private Graded far;
+        /**
+         * The stations at a town's end of this road that are held until the town stands, in the order they are walked,
+         * beginning with the station the laid road stops on; null when the road arrives on no town that is going up.
+         */
+        private List<int[]> held;
+        /** The town those stations arrive on, so the pass can ask the world when it is standing. */
+        private String heldBy;
+        /** The grade of the held stretch, once the town stands: null until the world says it does. */
+        private Graded tail;
+        /** The tick the town was last asked about, so a pass waiting at the town's edge is not a note read a tick. */
+        private long askTown;
+        /** Whether the pass is stopped at that edge now, for a caller that steps the road rather than the world. */
+        private boolean waiting;
+        /** The road as the note should carry it and its grade, once the held stretch has been laid. */
+        private List<int[]> whole;
+        private double[] heights;
         private boolean searched;
         /** Whether this pass has already looked for its own progress, which it does once rather than every step. */
         private boolean looked;
@@ -845,8 +864,13 @@ public final class RoadCommands {
             return route;
         }
 
-        /** Whether this pass lays from the far end towards the build rather than from the build outwards. */
-        private final boolean outward;
+        /**
+         * Whether this pass lays from the far end towards the build rather than from the build outwards.
+         * <p>
+         * A road that arrives on a town still being raised is always laid from the other end, whichever end the ask
+         * came from, so this is settled where the alignment is rather than where the pass is made.
+         */
+        private boolean outward;
 
         private RoadJob(Route route) {
             this(route, route.pathX(), route.pathZ());
@@ -1010,14 +1034,41 @@ public final class RoadCommands {
                     int budget = PAVING_PER_STEP;
                     if (graded != null) budget = graded.pave(level, budget);
                     if (far != null) budget = far.pave(level, budget);
-                    if ((graded == null || graded.laid()) && (far == null || far.laid())) stage = Stage.STEPS;
+                    if (tail != null) budget = tail.pave(level, budget);
+                    if ((graded == null || graded.laid()) && (far == null || far.laid())
+                            && (tail == null || tail.laid())) stage = Stage.STEPS;
                 }
                 case STEPS -> {
+                    // A road that arrives on a town still being raised stops at its edge and leaves the arrival alone:
+                    // the town's ring is about to change that ground, and a grade laid over it now is the stretch the
+                    // ring takes out from under the road. The pass waits here - its ground is the town's, so the wait
+                    // costs a note a second - and lays the held stations the moment the town writes its note.
+                    if (held != null && !held.isEmpty()) {
+                        if (!stood(level)) {
+                            waiting = true;
+                            return true;
+                        }
+                        waiting = false;
+                        if (tail == null) {
+                            int[] stop = held.get(held.size() - 1);
+                            tail = new Graded(level, route, held, joint(level),
+                                    endGround(level, stop[0], stop[1]));
+                            LOGGER.info("Road {}: {} is standing, so the last {} stations of the road are laid",
+                                    route.id(), heldBy, held.size() - 1);
+                        }
+                        if (!tail.laid()) {
+                            stage = Stage.GRADE;
+                            return true;
+                        }
+                        join();
+                    }
                     // There is no lip pass left to run. A road graded on halves lays a slab wherever its height falls
                     // between two blocks, so every step is already half a block and every half step is already laid; the
                     // stage stays only so a pass saved by a version that had one still finishes rather than stalling.
-                    done = new Road(cleared, pieces, pillarsDrawn, approach.size(), searched,
-                            graded.summary(), far == null ? new int[6] : far.summary(), null);
+                    done = new Road(cleared, pieces, pillarsDrawn,
+                            whole != null ? whole.size() : approach.size(), searched,
+                            graded == null ? new int[6] : graded.summary(),
+                            far == null ? new int[6] : far.summary(), null);
                     return false;
                 }
             }
@@ -1047,6 +1098,58 @@ public final class RoadCommands {
 
         /** How near a player has to be to the road that refused it to be told in the chat rather than only in the log. */
     private static final int SAY_WITHIN = 128;
+
+    /** How often a pass waiting at a town's edge asks the save whether the town has written its note, in ticks. */
+    private static final int ASK_TOWN_EVERY = 20;
+
+        /**
+         * Whether the town the held stretch arrives on has written its note, asked once a second.
+         * <p>
+         * The answer is a note in the save rather than anything in the world, and a waiting pass is stepped as often
+         * as its own ground is loaded, so asking every step would be a file read a tick for a town that takes minutes
+         * to raise. A second is the clock the world already asks the same question on for the roads it begins.
+         */
+        private boolean stood(ServerLevel level) {
+            long now = level.getGameTime();
+            if (now < askTown) return false;
+            askTown = now + ASK_TOWN_EVERY;
+            return heldBy != null && !TownHalls.waits(level, heldBy);
+        }
+
+        /** The height the held stretch starts from: where the road stopped, or the ground it would have left. */
+        private int joint(ServerLevel level) {
+            if (graded != null) return Mth.floor(graded.end());
+            int[] at = held.get(0);
+            return endGround(level, at[0], at[1]);
+        }
+
+        /**
+         * The road as the note should carry it: the stretch laid while the town was going up and the arrival laid
+         * after it, as one line and one grade.
+         * <p>
+         * Without this the note a finished road leaves would describe a road that stops at the town's edge, and the
+         * check that asks the ground for the road would never look at the arrival - which is the one stretch a town
+         * raised a second time cuts again.
+         */
+        private void join() {
+            if (tail == null) return;
+            if (graded == null) {
+                // The whole road stood inside the town's ground: there is no first stretch, so the held line is the
+                // road and the grade it was laid to is the note's.
+                whole = held;
+                heights = tail.heights();
+                return;
+            }
+            List<int[]> line = new ArrayList<>(approach);
+            for (int at = 1; at < held.size(); at++) line.add(held.get(at));
+            double[] before = graded.heights();
+            double[] after = tail.heights();
+            double[] all = new double[before.length + after.length - 1];
+            System.arraycopy(before, 0, all, 0, before.length);
+            System.arraycopy(after, 1, all, before.length, after.length - 1);
+            whole = line;
+            heights = all;
+        }
 
     /** How many of a stage's counts were taken, added up. */
         private static int count(int[] counts) {
@@ -1091,6 +1194,10 @@ public final class RoadCommands {
             tag.putBoolean("searched", searched);
             if (approach != null) tag.putIntArray("approach", flatten(approach));
             if (exit != null) tag.putIntArray("exit", flatten(exit));
+            if (held != null) {
+                tag.putIntArray("held", flatten(held));
+                tag.putString("heldBy", heldBy == null ? "" : heldBy);
+            }
             if (graded != null) tag.put("graded", graded.save());
             if (far != null) tag.put("far", far.save());
             return tag;
@@ -1130,7 +1237,10 @@ public final class RoadCommands {
             }
             approach = carried;
             exit = unflatten(tag.getIntArray("exit").orElse(new int[0]));
-            graded = Graded.restore(route, approach, tag.getCompoundOrEmpty("graded"));
+            List<int[]> carriedHold = unflatten(tag.getIntArray("held").orElse(new int[0]));
+            held = carriedHold.isEmpty() ? null : carriedHold;
+            heldBy = tag.getStringOr("heldBy", "");
+            graded = tag.contains("graded") ? Graded.restore(route, approach, tag.getCompoundOrEmpty("graded")) : null;
             far = exit.isEmpty() ? null : Graded.restore(route, exit, tag.getCompoundOrEmpty("far"));
             stage = saved;
             // What was just read is what the file already holds, so the first step after a restart owes it nothing.
@@ -1141,6 +1251,17 @@ public final class RoadCommands {
         /** What the pass came to, once {@link #step} has said it is done. */
         Road summary() {
             return done;
+        }
+
+        /** Whether this pass is stopped at a town's edge, waiting for the town's note before it lays the arrival. */
+        boolean waiting() {
+            return waiting;
+        }
+
+        /** The road as it stands when a pass stops at a town's edge, for a hand that cannot stay to see the town. */
+        private Road stopped() {
+            return new Road(cleared, pieces, pillarsDrawn, approach.size(), searched,
+                    graded == null ? new int[6] : graded.summary(), new int[3], null);
         }
 
         /**
@@ -1284,18 +1405,51 @@ public final class RoadCommands {
             }
             approach = hairpins(level, route, simplify(found));
             exit = List.of();
+            List<int[]> walk = new ArrayList<>(approach);
             int startY = endGround(level, route.pathX(), route.pathZ());
             int endY = endGround(level, dry.farX(), dry.farZ());
-            if (outward) {
+            // Which end of the road arrives on a town still being raised, if either does. A road with one town standing
+            // is laid from that town towards the other, whichever end the ask came from, so the whole of it is laid
+            // except the stretch the other town is about to change.
+            Roads.Hold farTown = Roads.hold(level, route, true);
+            Roads.Hold nearTown = Roads.hold(level, route, false);
+            Roads.Hold town = farTown != null ? farTown : nearTown;
+            boolean back = outward;
+            if (farTown != null) back = false;
+            else if (nearTown != null) back = true;
+            if (back) {
                 // The same road, walked the other way: the stations are turned round and the two ends' ground goes
                 // with them, so the grade is the one it always was and the laying begins where the player stands.
-                Collections.reverse(approach);
-                graded = new Graded(level, route, approach, endY, startY);
+                Collections.reverse(walk);
+                int swap = startY;
+                startY = endY;
+                endY = swap;
+            }
+            outward = back;
+            if (town != null) {
+                int cut = walk.size();
+                while (cut > 1 && Math.hypot(walk.get(cut - 1)[0] - town.at().getX(),
+                        walk.get(cut - 1)[1] - town.at().getZ()) <= Roads.SHORT_OF_TOWN) cut--;
+                if (cut < 2) {
+                    // The whole road stands inside the town's own ground: there is nothing ahead of the town to lay,
+                    // so all of it waits for the note.
+                    held = new ArrayList<>(walk);
+                    walk = new ArrayList<>(walk.subList(0, 1));
+                } else {
+                    held = new ArrayList<>(walk.subList(cut - 1, walk.size()));
+                    walk = new ArrayList<>(walk.subList(0, cut));
+                }
+                heldBy = town.town();
+                int[] stop = walk.get(walk.size() - 1);
+                endY = endGround(level, stop[0], stop[1]);
+                LOGGER.info("Road {}: {} is still being raised, so the road stops short of it and the last {}"
+                                + " stations wait for its note", route.id(), town.town(), held.size() - 1);
+            } else if (back) {
                 LOGGER.info("Road {}: met at its far end, so it is laid from {}, {} back to its build",
                         route.id(), dry.farX(), dry.farZ());
-            } else {
-                graded = new Graded(level, route, approach, startY, endY);
             }
+            approach = walk;
+            graded = walk.size() < 2 ? null : new Graded(level, route, approach, startY, endY);
             far = null;
             stage = Stage.GRADE;
         }
@@ -2182,6 +2336,16 @@ public final class RoadCommands {
             return new int[]{laid, cut, filled, open, steepest, cleared};
         }
 
+        /** The height this stretch settled at its last station: where the next stretch of the road has to start. */
+        private double end() {
+            return n == 0 ? 0.0D : height[n - 1];
+        }
+
+        /** The grade as it lies, for a note that has to carry more than one stretch of the same road. */
+        private double[] heights() {
+            return height;
+        }
+
         /**
          * Puts this station on ground the plan did not know, and eases the stations after it back onto the grade the
          * plan had, a step at a time: meeting the country ahead is a climb, not a cliff and not a road that stops.
@@ -2877,8 +3041,10 @@ public final class RoadCommands {
                 // road nobody could read: no station count, no way to say where it doubled back or how high it had
                 // climbed. The record is a few kilobytes against a road of hundreds of blocks, and it is the only
                 // account a finished road leaves.
-                tag.putIntArray("approach", flatten(job.approach));
-                if (job.graded != null) tag.putLongArray("height", bits(job.graded.height));
+                tag.putIntArray("approach", flatten(job.whole != null ? job.whole : job.approach));
+                double[] heights = job.heights != null ? job.heights
+                        : job.graded == null ? null : job.graded.heights();
+                if (heights != null) tag.putLongArray("height", bits(heights));
                 if (job.done != null) tag.putInt("stations", job.done.along());
             }
             ROADS.put(job.route.id(), tag);

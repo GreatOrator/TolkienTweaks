@@ -502,7 +502,37 @@ public final class Roads {
             "tolkienmobs:roads/planned_5105_-3413_5605_-3622", "rivendell");
 
     /**
-     * The towns a road runs between, whose own builds it waits for, by the road it is a section of.
+     * A town a road arrives on, and the block of that town's own ground the road meets: the gate a leg ends at, or the
+     * hall front it begins at.
+     * <p>
+     * The block is what says which end of a road is a town's. A leg over water is cut into a section for every span and
+     * every dry stretch between them, and every one of those sections carries the leg's name, so which end of which
+     * section actually arrives at a town cannot be read off the id. It can be read off the ground.
+     */
+    private record Gate(String town, BlockPos at) {
+    }
+
+    /** How near a town's own ground a road's end has to stand to be that town's arrival, in blocks. */
+    private static final int GATE_REACH = 16;
+
+    /**
+     * How far short of a town a road stops while that town is still being raised, in blocks.
+     * <p>
+     * The ground from there in is the town's: it is laid out of the cut and dressed by the ring round it, and that ring
+     * reaches {@link CityCommands#DRAPE_REACH} - thirty-two blocks - past the footprint. A road graded over it while
+     * the town is going up is graded against ground that is about to change under it, and the arrival is then taken out
+     * with the ring; the pass believes the road is down and never grades that stretch again. Waiting for the town to
+     * finish holds the whole road instead, hundreds of blocks of open country the town will never touch. So the road
+     * stops a margin past the ring, in country the town leaves as it found it, and the arrival is laid when it stands.
+     * <p>
+     * The distance is measured from the block the road meets the town on, and both of the legs in {@link #TOWNS} end at
+     * a gate or a hall front on the footprint's own edge - which is what makes forty blocks back outside the ring. A
+     * road that ended deep inside a town would have to have its hold measured from the footprint instead.
+     */
+    static final int SHORT_OF_TOWN = 40;
+
+    /**
+     * The towns a road runs between, and the ground each of them is met on, by the road it is a section of.
      * <p>
      * A road that starts from a build's door is that build's road and is held by {@link #BUILDS}; a road between two
      * towns is neither town's, and both ends of it arrive on ground that is still being made. The Shire's leg leaves
@@ -511,10 +541,16 @@ public final class Roads {
      * ends are graded on - so a leg begun while either is going up has its arrival taken out with the ring, and the
      * pass believes the road is down and never grades that stretch again. The measured case is the Shire leg's own
      * arrival (`..._2`), begun at 11:23 on 22 November while the village was still rising and never reported laid.
+     * <p>
+     * The Bree leg names only bree because its other end, the vale's junction at 4648, -3316, is no town's ground: the
+     * road leaves ground that stands and arrives on ground that does not. That is the case {@link #hold} is for, and
+     * the reason the table names the ground of an end rather than the ends of the leg.
      */
-    private static final Map<String, List<String>> TOWNS = Map.of(
-            "tolkienmobs:roads/planned_1032_-34_-463_-124", List.of("hobbiton", "bree"),
-            "tolkienmobs:roads/planned_4648_-3316_1031_-36", List.of("bree"));
+    private static final Map<String, List<Gate>> TOWNS = Map.of(
+            "tolkienmobs:roads/planned_1032_-34_-463_-124",
+            List.of(new Gate("bree", at(1032, -34)), new Gate("hobbiton", at(-463, -124))),
+            "tolkienmobs:roads/planned_4648_-3316_1031_-36",
+            List.of(new Gate("bree", at(1031, -36))));
 
     /** The build a road leaves from: its own name where it is that build's road, the build it serves otherwise. */
     public static String build(Route route) {
@@ -542,21 +578,45 @@ public final class Roads {
      * road believed it was down. So a road of a build's own waits for that build, the way a town's hall does
      * ({@link TownHalls#waits}), and begins from the same ground the moment the build is finished.
      * <p>
-     * Only a road that names a build or a town is held: every other road is the country's and has nothing to wait for,
-     * and a road between two towns waits for both of them ({@link #TOWNS}).
+     * Only a road that names a build or a town is held: every other road is the country's and has nothing to wait for.
+     * A road with a town still going up at one of its ends is not held whole - the pass lays it from the end that
+     * stands and stops at the other one's ground ({@link #hold}) - so only a road whose two ends are both still being
+     * made has nowhere to work from, and that road waits for both of them.
      */
     public static boolean waits(ServerLevel level, Route route) {
         String own = buildOf(route.id());
         if (own != null && TownHalls.waits(level, own)) return true;
-        for (String town : townsOf(route.id())) {
-            if (TownHalls.waits(level, town)) return true;
+        return hold(level, route, false) != null && hold(level, route, true) != null;
+    }
+
+    /**
+     * The town at one end of a road that is still being raised, or null when that end has nothing to wait for.
+     * <p>
+     * Asked of a section's own two ends rather than of the leg it belongs to, because a leg over water is cut into a
+     * section for every span and every dry stretch, and only the section that reaches a town is graded on the town's
+     * ground. A crossing's ends are banks, so a span is never held: its walls and its abutments are the pass that
+     * stands it up, and that pass is the city's own business.
+     *
+     * @param towardFar which of the section's two ends to ask about
+     */
+    static Hold hold(ServerLevel level, Route route, boolean towardFar) {
+        if (!(route instanceof Route.Riverless dry)) return null;
+        int x = towardFar ? dry.farX() : route.pathX();
+        int z = towardFar ? dry.farZ() : route.pathZ();
+        for (Gate gate : gatesOf(route.id())) {
+            if (Math.hypot(x - gate.at().getX(), z - gate.at().getZ()) > GATE_REACH) continue;
+            if (TownHalls.waits(level, gate.town())) return new Hold(gate.town(), gate.at());
         }
-        return false;
+        return null;
+    }
+
+    /** A town at one end of a road that is still being raised, and the ground that road arrives on. */
+    record Hold(String town, BlockPos at) {
     }
 
     /** The towns a route's id runs between, by the road it is a section of: none for a road with no town on it. */
-    private static List<String> townsOf(String id) {
-        for (Map.Entry<String, List<String>> row : TOWNS.entrySet()) {
+    private static List<Gate> gatesOf(String id) {
+        for (Map.Entry<String, List<Gate>> row : TOWNS.entrySet()) {
             if (id.equals(row.getKey()) || id.startsWith(row.getKey() + "_")) return row.getValue();
         }
         return List.of();
