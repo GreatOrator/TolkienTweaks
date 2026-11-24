@@ -59,10 +59,10 @@ public final class Pins extends SavedData {
      * Lines added here are printed by {@code /tmpin}, which is the intended way to get them.
      */
     private static final Map<String, BlockPos> SOURCE = new LinkedHashMap<>(Map.ofEntries(
-            // Rivendell, scouted on the ground the city was cut for and since raised there: the block its
-            // low corner goes on, at the surface the scout stood on. /tmcity plants the corner here, so
-            // the city covers x 5200..5753 by z -3370..-2859, with the crown at 318.
-            Map.entry("rivendell", new BlockPos(5200, 75, -3370)),
+            // Rivendell has no pin while its site is re-scouted: the old one, 5200, 75, -3370, was the block the
+            // cut's low corner went on, and both it and the stone inside the city were removed on 24 November 2026.
+            // The new pin goes on the block the replaced cut's lowest band stands on, and the city occupies that y
+            // to y + 243. It is not in this table until the site is walked.
             // The Shire's village, walked in Progress Check 3 on 22 November: the gate a traveller arrives at, seven
             // east and one over the block its cut leaves from. It used to be the middle of the footprint, and the middle
             // of a 551 by 468 village is a field a long walk from its own door, which is no answer for a name whose
@@ -136,9 +136,6 @@ public final class Pins extends SavedData {
             // a command asking for it was told nothing was called that, and the page's own survey fell back on the
             // middle of the Trollshaws.
             Map.entry(Sites.TROLL_CAVE_4, new BlockPos(4633, 94, -3081)),
-            // The valley's stone, marked inside the city once it was standing: the block the milestone should stand
-            // on, walked at 5499, 150, -3080. It has no build of ours under it, so Sites.STANDING holds it.
-            Map.entry("rivendell.stone", new BlockPos(5499, 150, -3080)),
             // Where the ruin's animal lies and where Barachen's keeper stands, marked after both builds had already
             // been raised: a building is dressed every visit now, so these are read rather than only laid once.
             Map.entry(Sites.WOOD_RUIN + ".body", new BlockPos(4787, 79, -3052)),

@@ -1,11 +1,12 @@
 # Rivendell - the build, the mountain and the water
 
-> **The city's own ground is laid aside (`PLANTED = true` in `ArdaMap`), and the valley is pinned.** The
-> dimension is the drawn height, rivers, lakes and mountains and nothing else, so the city stands on drawn
-> ground: `Pins.SOURCE` puts `rivendell` at **5200, 75, -3370**, the cut's own low corner, so the city covers
-> x 5200..5753 by z -3370..-2859 with its crown at 318. The valley floor at 74, the 318 rim, the shoulder
-> and the branch described below are the shape the city would be laid into - still in the source, behind one
-> switch, and no longer generated.
+> **Rivendell is off while its site is re-scouted.** From 24 November 2026 the city's own ground - floor,
+> massif, shoulder and branch - is not laid (`PLANTED = false` in `ArdaMap`), the assembly that generated the
+> city at 5200, 75, -3370 is out of `TolkienStructureProvider.ASSEMBLIES`, and both pins (`rivendell` and
+> `rivendell.stone`) are gone, so no new world raises it there. The cut itself - 584 pieces, 554 by 512, 244
+> bands from y 75 to a crown of 318 - stays in the jar for the site that replaces it: the new pin goes on the
+> block the lowest band stands on, and the city occupies that y to y + 243. A world that already holds the city
+> keeps it; nothing in the mod lifts what is built.
 >
 > The campaign no longer lays the old square kit. A visit near the valley reads where `/tmcity` planted the
 > city, stands the build's own marks in it, and leaves the Elves on the pinned ground until a city is there.
@@ -57,7 +58,7 @@ what is still open, so the next session does not have to rebuild that from the c
 
 - Floor **74**, and it is **544 by 502** centred on 4628, -3577: x 4356..4900, z -3828..-3326, which is
   four to five blocks *inside* the 554 by 512 footprint. Those columns are the pre-pin planting's and are
-  kept as the shape that was measured, not as ground: no floor is generated any more (`PLANTED = true`),
+  kept as the shape that was measured, not as ground: no floor is generated any more (`PLANTED = false` since 24 November 2026),
   and with the city on the pin this profile sits 848 east and 463 south of where the city now stands. This is the shape the valley had at `82abe999`,
   and the one that reads as a straight wall: the rock stands at the **crown, 318**, from the floor's own
   edge outward, so the city is embedded in the mountain rather than set down beside it and there is no

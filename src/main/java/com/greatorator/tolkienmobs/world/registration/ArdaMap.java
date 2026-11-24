@@ -79,8 +79,11 @@ public final class ArdaMap {
      * a build can stand where the terrain suits it and the terrain cannot be bent round every build. The
      * city's own ground is kept rather than deleted: it is what will be laid at whatever site is chosen for
      * it, and the numbers below are its shape.
+     * <p>
+     * Off from 24 November 2026 while the city's site is re-scouted: the drawing alone is the world, and the massif
+     * goes back on - at whatever pin is chosen - when the new site is walked.
      */
-    private static final boolean PLANTED = true;
+    private static final boolean PLANTED = false;
 
     /**
      * Whether the river the city carries is cut out of that ground.

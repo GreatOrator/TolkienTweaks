@@ -121,6 +121,16 @@ public final class Roads {
      * Declared above {@link #ROUTES} on purpose, as the hold's two marks are: the list is built once when this class
      * loads, and a road written below it would not be in the list at all.
      */
+    /**
+     * Whether the surveyed network is laid at all.
+     * <p>
+     * Off from 24 November 2026 while Rivendell's site is re-scouted: every leg here was surveyed around the city
+     * as it stood, and a road whose end moves is a different road. The table below is kept entire, so opening this
+     * lays the old lines again; a road re-surveyed from the new city is a new entry under the id its two ends give
+     * it.
+     */
+    private static final boolean NETWORK_OPEN = false;
+
     private static final List<Named> NETWORK = List.of(
             new Named(GUNDABAD_ROAD, Kind.WILD, false, GUNDABAD_GATE, GUNDABAD_JOIN),
             new Named("tolkienmobs:roads/planned_11813_-3901_8229_-3654", Kind.WILD, false, at(11813, -3901), at(8229, -3654)),
@@ -265,6 +275,7 @@ public final class Roads {
      */
     private static List<Route> network(List<Route> walked) {
         List<Route> all = new ArrayList<>(walked);
+        if (!NETWORK_OPEN) return all;
         for (Named road : NETWORK) {
             all.addAll(RoadPlan.of(road.id(), road.kind(), road.town(), road.from(), road.to()).sections());
         }

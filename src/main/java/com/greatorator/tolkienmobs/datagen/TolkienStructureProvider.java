@@ -156,10 +156,9 @@ public final class TolkienStructureProvider {
      * every world; a cut taken against a scouted hillside would need the shoulder dressed afterwards, which is what
      * the drape does.
      */
-    public static final List<Assembly> ASSEMBLIES = List.of(
-            new Assembly(TolkienStructures.RIVENDELL, new BlockPos(5200, 75, -3370), "rivendell",
-                    List.of(TolkienBiomes.IMLADRIS, TolkienBiomes.TROLLSHAWS))
-    );
+    // Empty from 24 November 2026 while Rivendell's site is re-scouted: no world generates a city at 5200, 75,
+    // -3370. The cut still ships, and the assembly goes back in at whatever base the new pin is walked at.
+    public static final List<Assembly> ASSEMBLIES = List.of();
 
     private TolkienStructureProvider() {}
 
