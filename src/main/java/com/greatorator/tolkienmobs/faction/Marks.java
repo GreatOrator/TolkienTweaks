@@ -29,8 +29,12 @@ public final class Marks {
     /**
      * The block the owner stood on at each build, keyed as the command asks.
      * <p>
-     * The y is a player's own feet, which is what a jump uses as given. Nothing here is measured or surveyed: every
-     * number is a block somebody walked to, so the only way one is moved is by walking the new one.
+     * The y is a player's own feet, which is what a jump uses as given. Every number was a block somebody walked to,
+     * so the only way one is moved by hand is by walking the new one - except that the drawing under them was re-based
+     * on 24 November 2026 (black at y 0, white at 318, water at 25), where a block is no longer where it was: each one
+     * was re-read as the drawn ground of its own column, one over it, and the columns are the ones that were walked.
+     * Rivendell's is untouched because the city is off, and Gundabad's is the gate's own ground rather than the
+     * country's, which did not move.
      */
     private static final Map<String, BlockPos> VISITED = new LinkedHashMap<>(Map.ofEntries(
             // The valley, at the last block of the city's own path out of the south gate: the road end /tmtp rivendell
@@ -38,28 +42,28 @@ public final class Marks {
             Map.entry("rivendell", new BlockPos(5200, 135, -3034)),
             // The Shire's village, on the ground inside it rather than at the middle of the footprint its cut was taken
             // in: a board's distance and a jump are both measured from where a player can stand.
-            Map.entry("hobbiton", new BlockPos(-150, 114, -382)),
+            Map.entry("hobbiton", new BlockPos(-150, 67, -382)),
             // Thorenhad, which is Elladan's camp: the place's name and the build's name are the same ground, and the
             // walk the chapter makes is to the camp's own door.
-            Map.entry("thorenhad", new BlockPos(4647, 158, -3315)),
-            Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4647, 158, -3315)),
+            Map.entry("thorenhad", new BlockPos(4647, 117, -3315)),
+            Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4647, 117, -3315)),
             // Barachen's fire: the camp's doorway, which the place's name is announced at as well.
-            Map.entry("barachen", new BlockPos(4819, 159, -2887)),
-            Map.entry(Sites.BARACHENS_CAMP, new BlockPos(4819, 159, -2887)),
+            Map.entry("barachen", new BlockPos(4819, 120, -2887)),
+            Map.entry(Sites.BARACHENS_CAMP, new BlockPos(4819, 120, -2887)),
             // The ruin the black horse lies in, at the wall a page sends a player to.
-            Map.entry(Sites.WOOD_RUIN, new BlockPos(4787, 160, -3059)),
+            Map.entry(Sites.WOOD_RUIN, new BlockPos(4787, 121, -3059)),
             // The stone's three crags and Matuna's lair, each at the point the chapter's roads arrive on rather than at
             // the corner of the hill's box: an arrow to a crag is an arrow to its way in.
-            Map.entry(Sites.TROLL_CAVE, new BlockPos(4515, 155, -2446)),
-            Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4624, 157, -2480)),
-            Map.entry(Sites.TROLL_CAVE_3, new BlockPos(4562, 157, -2398)),
-            Map.entry(Sites.TROLL_CAVE_4, new BlockPos(4684, 161, -3050)),
+            Map.entry(Sites.TROLL_CAVE, new BlockPos(4515, 115, -2446)),
+            Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4624, 117, -2480)),
+            Map.entry(Sites.TROLL_CAVE_3, new BlockPos(4562, 116, -2398)),
+            Map.entry(Sites.TROLL_CAVE_4, new BlockPos(4684, 122, -3050)),
             // Glóin's camp at the east mouth of the pass: its doorway, which the catalogue's name for the camp and the
             // camp's own template both answer with.
-            Map.entry("gloin", new BlockPos(8229, 224, -3654)),
-            Map.entry(Sites.GLOIN_CAMP, new BlockPos(8229, 224, -3654)),
+            Map.entry("gloin", new BlockPos(8229, 180, -3654)),
+            Map.entry(Sites.GLOIN_CAMP, new BlockPos(8229, 180, -3654)),
             // The goblin fires of the Pinnath Fenui: the way in, which the page's name for them is read at.
-            Map.entry("goblins", new BlockPos(5605, 196, -3622)),
+            Map.entry("goblins", new BlockPos(5605, 145, -3622)),
             // Gundabad: the hold's own gate ground rather than the corner of its 122 by 183 plan, so a jump arrives at
             // the way in and a board measures to the door.
             Map.entry("gundabad", new BlockPos(5578, 190, -6833)),

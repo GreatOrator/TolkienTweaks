@@ -85,7 +85,7 @@ public final class TeleportCommands {
             // Thorenhad, where chapter one's cluster is spoken on: the block the scout stood on, so a
             // jump lands in the camp rather than two hundred blocks west of it. A locked point is used
             // as given - no clearance is added - so its y has to be a place a caller can be put down.
-            id(ArdaMap.Country.TROLLSHAWS), new BlockPos(4691, 87, -3273)
+            id(ArdaMap.Country.TROLLSHAWS), new BlockPos(4691, 119, -3273)
     );
 
     @SubscribeEvent
