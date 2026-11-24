@@ -1528,6 +1528,17 @@ public final class ArdaMap {
         if (river != Integer.MAX_VALUE) {
             height = Math.min(height, river);
         }
+        // A land country's ground is dry, and the waterline is what makes it dry. The reference is a painting,
+        // and its sea is painted black: the soft edge of that black reaches inland under cells the country grid
+        // still calls land, and read through the drawing's ends those columns stand at nought to six blocks -
+        // under the world's own water, so the map laid twenty-five of sea over a country it had just called
+        // Shire. The same fall comes off the valley's own flank where it is cut beside a channel near the coast.
+        // Held at the shore here, and after all the grading, because the grading is what cuts under it: a land
+        // column carries the mask's rivers and lakes and nothing else, so a column under the waterline with no
+        // channel drawn on it is a lake nobody drew, and it is held dry instead.
+        if (ground.country().land()) {
+            height = Math.max(height, SEA_LEVEL);
+        }
         return new Sample(ground.country(), height, false, ground.shore(), ground.upland());
     }
 

@@ -1,0 +1,31 @@
+// Prints what ArdaMap answers for columns of the drawing, with no world and no client:
+//
+//   ./gradlew -I tools/sampleprobe.gradle ardaSample -PprobeArgs="box -900 -500 -700 -300 16" -x createMinecraftArtifacts
+//
+// "box x0 z0 x1 z1 step" walks a rectangle; "at x z" prints one column. Each line is
+// x z height water river shore country land.
+gradle.projectsEvaluated {
+    def root = gradle.rootProject
+    def out = root.layout.buildDirectory.dir('sampleprobe-tools')
+    def java25 = { spec -> spec.languageVersion.set(JavaLanguageVersion.of(25)) }
+    def toolchains = root.extensions.getByType(org.gradle.jvm.toolchain.JavaToolchainService)
+
+    root.tasks.register('compileSampleProbe', JavaCompile) {
+        dependsOn root.tasks.named('compileJava'), root.tasks.named('processResources')
+        source = root.fileTree('tools/sampleprobe') { include '**/*.java' }
+        classpath = root.sourceSets.main.runtimeClasspath
+        destinationDirectory.set(out)
+        options.encoding = 'UTF-8'
+        javaCompiler.set(toolchains.compilerFor(java25))
+    }
+
+    root.tasks.register('ardaSample', JavaExec) {
+        dependsOn root.tasks.named('compileSampleProbe')
+        classpath = root.files(out, root.sourceSets.main.runtimeClasspath)
+        mainClass.set('com.greatorator.tolkienmobs.world.registration.SampleProbe')
+        workingDir = root.projectDir
+        systemProperty 'java.awt.headless', 'true'
+        javaLauncher.set(toolchains.launcherFor(java25))
+        args = ((root.findProperty('probeArgs') ?: 'at -700 -512') as String).trim().split('\s+') as List
+    }
+}
