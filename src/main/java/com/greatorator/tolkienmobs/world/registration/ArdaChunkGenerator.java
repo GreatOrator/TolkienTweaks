@@ -445,14 +445,13 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 // afterwards, from this column (see getBaseColumn), so the caves a player walks into
                 // are cut into the drawn ground and the only voids left under it are the ones they
                 // made.
-                // Above the drawn top there is air, and under it there is rock - including under the water
-                // the noise's aquifer left there. The aquifer is read from the overworld's own sea level, which
-                // is sixty-three, so every void the noise had under that level came out filled, and a column
-                // whose drawn top was one of those was water: water is not air, so the fill walked past it and
-                // the surface rules had nothing to dress. That is the sheet the Shire stood in - ground at forty
-                // odd with the aquifer's water for a top block, a level surface cut off at sixty-two wherever
-                // the drawing stood lower. Every fluid under the drawn top is rock, and the map's own water is
-                // laid over it below.
+                // Above the drawn top there is air, and under it there is rock. The noise's own water is no
+                // exception: the settings' sea level is the drawing's waterline now (see
+                // TolkienDimensions.ARDA_SETTINGS), so the aquifer stops at 25 and no drawn land is flooded by it,
+                // but a column whose drawn ground is under that line - a sea's bed, a channel's - is still the
+                // aquifer's water wherever the noise had a void, and water is not air: a fill that took air alone
+                // would walk past it and leave it as the column's top. Every fluid under the drawn top is rock,
+                // and the map's own water is laid over it below.
                 for (int y = minY; y <= target; y++) {
                     BlockState state = chunk.getBlockState(position.set(blockX, y, blockZ));
                     if (state.isAir() || !state.getFluidState().isEmpty()) {
@@ -511,11 +510,11 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 // it: a road cut into a hillside is not given a lid here.
                 int top = Math.min(maxY, Math.max(chunk.getMinY(),
                         topAt(sample, blockX, blockZ, (gx, gz) -> groundAt(gx, gz, randomState))));
-                // The carvers cut after the ground was drawn and the aquifer fills what they take out with the
-                // overworld's own water again, so a cave can open through the drawn top and stand there as water
-                // where the drawing has ground. The top is laid back down to the first rock under it: a hole in
-                // the surface is not something the drawing has, and the water left under the plug is a cave's,
-                // which is where it belongs.
+                // The carvers cut after the ground was drawn and what they take out is filled with the aquifer's
+                // own water, so a cave can open through the drawn top and stand there where the drawing has
+                // ground. The top is laid back down to the first rock under it: a hole in the surface is not
+                // something the drawing has, and the water left under the plug is a cave's, which is where it
+                // belongs.
                 for (int y = top; y >= Math.max(chunk.getMinY(), top - SEAL_DEPTH); y--) {
                     BlockState state = chunk.getBlockState(position.set(blockX, y, blockZ));
                     if (state.isAir() || !state.getFluidState().isEmpty()) {

@@ -39,6 +39,9 @@ public class TolkienDataRegistryProvider extends DatapackBuiltinEntriesProvider 
             .add(Registries.ENCHANTMENT, TolkienEnchantments::bootstrap)
             .add(Registries.JUKEBOX_SONG, TolkienJukebox::bootstrap)
 
+            // Arda's own noise settings first of the three, since the level stem is built on them: the overworld's
+            // record with the sea level read as the drawing's waterline (see TolkienDimensions.ARDA_SETTINGS).
+            .add(Registries.NOISE_SETTINGS, TolkienDimensions::bootstrapNoise)
             // Arda goes last: its climate table is written against the biomes above it, and its
             // level stem needs both those biomes and the dimension type built beside it.
             .add(Registries.DIMENSION_TYPE, TolkienDimensions::bootstrapType)

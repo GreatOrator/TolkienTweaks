@@ -39,8 +39,12 @@ import java.util.Optional;
  * Mountains to the Bay of Belfalas.
  *
  * <p>Terrain and surface come from {@code minecraft:overworld} itself: this dimension reuses its
- * noise settings rather than copying them, which keeps the sea level, the water, the aquifers and
- * the ground under every biome identical to the overworld's. That is also how the mod's own rock,
+ * noise settings, which keeps the water, the aquifers and the ground under every biome identical to
+ * the overworld's - with one number changed. The overworld's sea level is sixty-three, and the
+ * drawing's waterline is {@link ArdaMap#SEA_LEVEL} twenty-five, so the copy Arda generates
+ * ({@link #ARDA_SETTINGS}) has that sea level and nothing else altered: the aquifer stops filling
+ * above the drawing's water and the carvers stop cutting into water the drawing has as land. That is
+ * also how the mod's own rock,
  * grass and sand reach Arda. TerraBlender wraps a dimension's surface rules when its dimension
  * type is tagged {@code terrablender:overworld_regions} - that tag is what tells it the dimension
  * is an overworld it should paint - and the wrapped rules pick themselves by the namespace of the
@@ -56,6 +60,25 @@ public final class TolkienDimensions {
     /** The same dimension as the datapack registry keys it. */
     public static final ResourceKey<LevelStem> ARDA_STEM = TolkienMobsMain.key(Registries.LEVEL_STEM, "arda");
     public static final ResourceKey<DimensionType> ARDA_TYPE = TolkienMobsMain.key(Registries.DIMENSION_TYPE, "arda_type");
+    /**
+     * Arda's own noise settings: the overworld's, with the sea level read as the drawing's waterline.
+     * <p>
+     * The overworld's settings are read from a sea level of sixty-three, which is where its own sea stands; the
+     * drawing's water stands at {@link ArdaMap#SEA_LEVEL} twenty-five, and everything the settings' sea level feeds
+     * reads that number: the aquifer fills the noise's voids up to it, and the carvers fill what they cut up to it.
+     * Held at sixty-three, the Shire's ground - forty to sixty-two under the drawing - came out of the noise with the
+     * aquifer's water for its top block wherever the noise had a void there, and the surface rules cannot dress water:
+     * the drawing's fields arrived as a sheet terraced at their own contours. Cut to twenty-five, nothing the aquifer
+     * fills is above the drawing's waterline, and a cave in the drawing's land is air.
+     * <p>
+     * The copy is generated rather than patched at run time: {@link #bootstrapNoise} reads the overworld's record at
+     * data generation, where the vanilla registries are bound, and writes it out under this mod's own key, so the
+     * shipped entry is a complete noise setting - its router, its surface rule, its fluid - and no code reads
+     * {@code minecraft:overworld} while the registries are still being built. Everything but the sea level is the
+     * overworld's own, so the noise, the caves, the ores and the water are the same terrain they always were.
+     */
+    public static final ResourceKey<NoiseGeneratorSettings> ARDA_SETTINGS =
+            TolkienMobsMain.key(Registries.NOISE_SETTINGS, "arda");
 
     /**
      * Arda's properties. Every value is the overworld's own, read from 26.1's
@@ -104,6 +127,33 @@ public final class TolkienDimensions {
                 Optional.of(clocks.getOrThrow(WorldClocks.OVERWORLD))));
     }
 
+    /**
+     * Arda's noise settings: the overworld's own record, with the sea level read as the drawing's waterline.
+     * <p>
+     * Nothing but one number is Arda's. The router, the noise, the default block and fluid, the surface rule the
+     * dimension never uses (it lays {@link TolkienSurfaceRules#ardaSurface()}), the spawn target and the switches for
+     * aquifers, ore veins and the legacy random source are all copied from {@code minecraft:overworld}, so the rock,
+     * the caves and the veins are the terrain they were; the sea level is {@link ArdaMap#SEA_LEVEL} because that is
+     * where the drawing's water stands. Read here rather than at run time on purpose: this runs at data generation,
+     * where the vanilla registry is bound and its records can be read, and the result is written out as this mod's own
+     * {@code worldgen/noise_settings/arda.json} for the game to load.
+     */
+    public static void bootstrapNoise(BootstrapContext<NoiseGeneratorSettings> context) {
+        NoiseGeneratorSettings overworld = NoiseGeneratorSettings.overworld(context, false, false);
+        context.register(ARDA_SETTINGS, new NoiseGeneratorSettings(
+                overworld.noiseSettings(),
+                overworld.defaultBlock(),
+                overworld.defaultFluid(),
+                overworld.noiseRouter(),
+                overworld.surfaceRule(),
+                overworld.spawnTarget(),
+                ArdaMap.SEA_LEVEL,
+                overworld.disableMobGeneration(),
+                overworld.aquifersEnabled(),
+                overworld.oreVeinsEnabled(),
+                overworld.useLegacyRandomSource()));
+    }
+
     /** The world itself: the overworld's terrain, generated with Arda's biomes. */
     public static void bootstrapStem(BootstrapContext<LevelStem> context) {
         HolderGetter<DimensionType> types = context.lookup(Registries.DIMENSION_TYPE);
@@ -114,6 +164,6 @@ public final class TolkienDimensions {
                 types.getOrThrow(ARDA_TYPE),
                 new ArdaChunkGenerator(
                         ArdaBiomeSource.of(biomes),
-                        settings.getOrThrow(NoiseGeneratorSettings.OVERWORLD))));
+                        settings.getOrThrow(ARDA_SETTINGS))));
     }
 }
