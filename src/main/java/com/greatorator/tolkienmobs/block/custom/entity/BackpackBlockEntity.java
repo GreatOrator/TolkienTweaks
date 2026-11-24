@@ -28,6 +28,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -118,9 +119,20 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         backpackFluidData = new BackpackFluidData(this);
     }
 
-    /** A backpack that is not in the world, backed by the backpack item in the player's hand. */
+    /**
+     * A backpack that is not in the world, backed by the backpack item in the player's hand.
+     * <p>
+     * Its position is a placeholder - nothing is read from or written to the block there - but Neoforge still
+     * writes an attachment read on a block entity down as a block change on that chunk, and the write indexes the
+     * chunk's sections by y. A player standing in the block above the world's last one (y 320 in an overworld whose
+     * sections stop at 319) therefore asked the chunk for section 24 of 24, and that exception came out of the
+     * player tick on 23 November. The bag is only ever read from and saved back to its stack, so it is put in the
+     * highest block the level has under the player rather than the block they are floating in.
+     */
     public static BackpackBlockEntity createHeld(Player player, ItemStack stack, @Nullable InteractionHand hand) {
-        BackpackBlockEntity backpack = new BackpackBlockEntity(player.blockPosition(), TolkienBlocks.BACKPACK.get().defaultBlockState());
+        BlockPos at = player.blockPosition();
+        at = new BlockPos(at.getX(), Mth.clamp(at.getY(), player.level().getMinY(), player.level().getMaxY() - 1), at.getZ());
+        BackpackBlockEntity backpack = new BackpackBlockEntity(at, TolkienBlocks.BACKPACK.get().defaultBlockState());
         backpack.setLevel(player.level());
         backpack.heldStack = stack;
         backpack.heldHand = hand;
