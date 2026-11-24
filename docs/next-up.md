@@ -19,6 +19,8 @@ back.
 
 **Bucklebury's drawn bridge is held for Bucklebury.** The pair (`bucklebury_end`/`bucklebury_middle`, cobblestone-wall piers) is not stood on the Shire leg's crossing on the owner's call: the road from the Shire to Bree keeps the standard `bridge_end`/`bridge_middle`, and the drawn bridge waits in the jar for the Hobbiton to Bucklebury road. `Roads.BRIDGES` is empty again, so `pieces` falls back to the standard pair at every span; nothing in `Progress Check 6` was stood from either piece (its `_bridge_1` began and never reached the bridge stage), so no world holds a bridge that has to be lifted.
 
+**The Shire leg now arrives on the village's east side.** The owner moved its Hobbiton end from the `/tmtp` point at -463, -124 to -150, -382 in `Progress Check 6` on 23 November, after the leg laid, so it is `planned_1032_-34_-150_-382` now and `Roads.TOWNS` measures the village hold from that east-edge block. `Pins.SOURCE`'s `hobbiton` point is unchanged - a pin is where the town's name stands, not where a road meets it, so `/tmtp` still puts a traveller at -463, 98, -124. A world that walked the old line keeps it under `..._1032_-34_-463_-124` as a different road, and the ground it laid stays; the re-ended leg has not been planned or laid yet.
+
 Before that, 22 November 2026 - the owner's fresh `Progress Check 2` showed **holes at Bree's join**: where the
 ring smooths the town into the country there are bare blocks of ground with no canopy over them, looking for all the
 world like trees the drape took out and never filled. The cause was found in the draw and fixed - read *22 November*
@@ -1148,8 +1150,9 @@ plan, the stand and `pillarsColumns` all take the same pair and the same materia
 still clears only the five standard woods, because clearing stone out of the box the abutments stand in would take the
 bank, and a stone bridge laid twice stands its pieces over the ones already there.
 
-- **Bucklebury** - the crossing from the Shire to Bree, `planned_1032_-34_-463_-124`, whose `bridge_1` runs from bank
-  471, 90 to far 418, 90, fifty-four columns of the Brandywine at deck 116. **Not in the table on the owner's call:**
+- **Bucklebury** - the crossing from the Shire to Bree, `planned_1032_-34_-150_-382` since the leg's Hobbiton end
+  moved on 23 November; its span was 471, 90 to far 418, 90, fifty-four columns of the Brandywine at deck 116, on the
+  old line to -463, -124, and the re-ended leg walks its own crossing. **Not in the table on the owner's call:**
   the leg from the Shire to Bree keeps the standard pair, and the drawn `bucklebury_end` and `bucklebury_middle` are
   reserved for the Hobbiton to Bucklebury road when that leg is walked. The drawn pair is in the jar, cut from the
   owner's own build of the crossing with the ground taken out (see below); its piers are the end's cobblestone
@@ -1320,7 +1323,7 @@ all unverified.
 ## Not started
 
 - **The two town roads walked end to end.** Both are in `Roads.NETWORK`, and both now stop at a town that is still
-  being raised and lay the arrival when it stands, so what is left is the walk: the Shire's gate at -463, -124 to
+  being raised and lay the arrival when it stands, so what is left is the walk: the Shire's east side at -150, -382 to
   Bree's hall front at 1032, -34, and Bree on to the vale's junction at 4648, -3316 - checking that each arrival is
   the ground its town dressed rather than the ground the town was later built over.
 - **Chapter three.** Eleven pages (3-1 to 3-11) written, nothing in `Campaign`. Before code it needs ground, bodies and

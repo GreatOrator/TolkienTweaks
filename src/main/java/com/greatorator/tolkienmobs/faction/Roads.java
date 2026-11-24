@@ -134,16 +134,14 @@ public final class Roads {
             new Named("tolkienmobs:roads/planned_5200_-3033_4647_-3315", Kind.WILD, false, at(5200, -3033), at(4647, -3315)),
             new Named("tolkienmobs:roads/planned_5111_-3399_5072_-3221", Kind.WILD, false, at(5111, -3399), at(5072, -3221)),
             // The road between Bree and the Shire, walked by the owner in Progress Check 3 on 22 November: five wide, of
-            // the country's gravel, from Bree's hall front at 1032, -34 to the Shire's gate at -463, -124 - the block
-            // the village's own /tmtp point stands on, seven east and one over the block its cut leaves from.
-            //
-            // The first walk of this leg ended at -150, 114: the line of the village's east edge, but a hundred and
-            // fifty blocks south of the footprint's own south side, in open wood. From a map it read as the Shire end;
-            // on the ground it was the wrong block, and the road stopped in the trees short of the village. An id is a
-            // road's two ends, so re-ending it renames it, and the world that walked the first attempt still holds that
-            // plan under ..._1032_-34_-150_114: to the pass those are two different roads, so that one has to be
-            // forgotten there before the leg that arrives is the only one left.
-            new Named("tolkienmobs:roads/planned_1032_-34_-463_-124", Kind.WILD_WIDE, false, at(1032, -34), at(-463, -124)),
+            // the country's gravel, from Bree's hall front at 1032, -34 to the village's east side at -150, -382 - the
+            // gate the owner marked in Progress Check 6 on 23 November, on the footprint's own edge. Its first walk ended
+            // at -150, 114, the village's east edge line but a hundred and fifty blocks south of the footprint in open
+            // wood, and it was then re-ended at the village's /tmtp point at -463, -124; the owner moved it back to the
+            // east side after seeing the leg laid. An id is a road's two ends, so each re-ending names a different
+            // road: a world that walked an earlier line keeps that plan under its own id, and the ground it laid stays,
+            // because nothing in the mod lifts a road.
+            new Named("tolkienmobs:roads/planned_1032_-34_-150_-382", Kind.WILD_WIDE, false, at(1032, -34), at(-150, -382)),
             // The road between Rivendell and Bree, marked by the owner in Progress Check 4 on 22 November: five wide, of
             // the country's own surface, from the vale's road junction at 4648, -3316 - the block beside the join the
             // three vale roads make at 4647, -3315 - to Bree's own hall front at 1031, -36. The pin was first given with
@@ -522,9 +520,9 @@ public final class Roads {
      * <b>Bucklebury's bridge is drawn but not named.</b> {@code bucklebury_end} and {@code bucklebury_middle}, with
      * cobblestone-wall piers, are in the jar's bridges folder for the road from the Shire to Bucklebury when that leg
      * is walked, and the table is empty again: the owner's call is that the crossing from the Shire to Bree keeps the
-     * standard pair, so its span - bank 471, 90 to far 418, 90, fifty-four columns of the Brandywine at deck 116 - is
-     * stood from {@code bridge_end} and {@code bridge_middle} like every other crossing. Naming the drawn bridge is
-     * one line here, at a block on the Bucklebury road's own water.
+     * standard pair, so the leg's crossing of the Brandywine is stood from {@code bridge_end} and
+     * {@code bridge_middle} like every other crossing. Naming the drawn bridge is one line here, at a block on the
+     * Bucklebury road's own water.
      * <p>
      * <b>The Last Bridge</b> is not here yet, and that is not an omission. It stands where the East-West Road crosses the
      * Mitheithel, and the leg the network holds to Bree - {@code planned_4648_-3316_1031_-36} - crosses no drawn water
@@ -632,8 +630,8 @@ public final class Roads {
      * the reason the table names the ground of an end rather than the ends of the leg.
      */
     private static final Map<String, List<Gate>> TOWNS = Map.of(
-            "tolkienmobs:roads/planned_1032_-34_-463_-124",
-            List.of(new Gate("bree", at(1032, -34)), new Gate("hobbiton", at(-463, -124))),
+            "tolkienmobs:roads/planned_1032_-34_-150_-382",
+            List.of(new Gate("bree", at(1032, -34)), new Gate("hobbiton", at(-150, -382))),
             "tolkienmobs:roads/planned_4648_-3316_1031_-36",
             List.of(new Gate("bree", at(1031, -36))));
 
