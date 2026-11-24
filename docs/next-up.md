@@ -13,7 +13,11 @@ and is left whole (leaves, trunk, and the country's blocks in that column); one 
 build still goes with the hill, and a crown hanging over air still goes, so nothing is left standing on
 nothing. `/tmcut clear` now ends `N trees left standing on its own ground`; the village's and the town's
 passes report no counts, as before - a village already cleared keeps what it lost, since nothing plants a tree
-back. Before that, 22 November 2026 - the owner's fresh `Progress Check 2` showed **holes at Bree's join**: where the
+back.
+
+**The road out of the Shire now lays from the end the hand is at.** `Progress Check 6` on 23 November: the Shire leg's second dry stretch (`..._2`) began at the village gate at 16:11, searched to Hobbiton, stopped 40 blocks short with 31 stations held for the village's note - and never finished its grade or laid the arrival, before or after the village stood at 16:12:41. The hold had turned it to grade from the far bank of the Brandywine, about nine hundred blocks east of the player, and the tick only steps a pass while the chunk under its head is loaded. `alignDry` now grades from the end the pass was asked from and cuts the town's margin wherever it falls on that walk; `heldFirst` carries the direction in the note, `joint`/`join` take the grade's start height and put the arrival in front of the line, and a pass waiting at a town's edge is stepped on the arrival's ground. The Bree leg shows the other half: built by the hand at 16:28 and stopped 38 stations short, it never laid that arrival when Bree stood at 16:32:53 because the player had left for the Shire. The Shire leg was forgotten at 16:25 (`/tmroad forget`, three sections), so `Progress Check 6` only finds it again at a new start, and nothing lifts the ground the forgotten pass laid. The road still fills in as it is walked - standing at the gate lays what the loaded chunks cover and the rest follows the walk.
+
+Before that, 22 November 2026 - the owner's fresh `Progress Check 2` showed **holes at Bree's join**: where the
 ring smooths the town into the country there are bare blocks of ground with no canopy over them, looking for all the
 world like trees the drape took out and never filled. The cause was found in the draw and fixed - read *22 November*
 first. The same day's housekeeping, while that new world was starting: **the Arda crossing waits for the Shire** rather
