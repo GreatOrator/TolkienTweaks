@@ -268,6 +268,19 @@ public final class Dressing {
         private final int deep;
         /** The build's own height in every column of its footprint, and where its water stands on top of that. */
         private final int[] outline;
+        /**
+         * The build's own height in every column of its footprint with its trees counted, which {@link #outline} leaves
+         * out.
+         * <p>
+         * The ring reads a column without its canopy, because a ring filled up to the leaves stands a wall of stone
+         * beside every tree. The ground inside the walls asks the other question: there, what the build draws is the
+         * build, and a village's party tree is in its file as its walls are. Read against the tree-less outline, a drawn
+         * tree stood five blocks over the course of grass it grows in and read as the country standing over the village,
+         * so the inside cut took it off at the grass - the party tree came up as sawn-off poles with its lanterns hanging
+         * in the air where the crown had been. This is the same outline with the trees left in, and it is what the
+         * inside cut is asked about.
+         */
+        private final int[] whole;
         private final int[] watered;
         private boolean[] channel;
         /** The chunks of the ring, worked out once so the pass is a cursor rather than a nested loop. */
@@ -307,6 +320,8 @@ public final class Dressing {
             this.deep = box.highZ() - box.lowZ() + 1;
             this.outline = new int[wide * deep];
             Arrays.fill(this.outline, Integer.MIN_VALUE);
+            this.whole = new int[wide * deep];
+            Arrays.fill(this.whole, Integer.MIN_VALUE);
             this.watered = new int[wide * deep];
             Arrays.fill(this.watered, Integer.MIN_VALUE);
             int reach = CityCommands.DRAPE_REACH;
@@ -372,7 +387,7 @@ public final class Dressing {
                     if (state < 0 || state >= names.length) continue;
                     String name = names[state];
                     if (name.endsWith(":air") || name.endsWith("cave_air") || name.endsWith("void_air")) continue;
-                    if (trees && tree(name)) continue;
+                    boolean drawn = trees && tree(name);
                     ListTag pos = block.getList("pos").orElseGet(ListTag::new);
                     if (pos.size() < 3) continue;
                     int gx = origin.getX() + part.dx() + pos.getIntOr(0, 0) - box.lowX();
@@ -380,6 +395,10 @@ public final class Dressing {
                     if (gx < 0 || gx >= wide || gz < 0 || gz >= deep) continue;
                     int at = gx + gz * wide;
                     int y = origin.getY() + part.dy() + pos.getIntOr(1, 0);
+                    // Read before the trees are skipped: a drawn tree is the build's own height inside its walls, and
+                    // the inside cut has to know it stands there or it takes the canopy for the country over the village.
+                    if (y > whole[at]) whole[at] = y;
+                    if (drawn) continue;
                     if (y > outline[at]) outline[at] = y;
                     if (name.contains("water")) watered[at] = Math.max(watered[at], y);
                 }
@@ -414,7 +433,23 @@ public final class Dressing {
          */
         private void grow() {
             grown = true;
-            int[] top = outline;
+            holes(outline);
+            holes(whole);
+            channel = new boolean[wide * deep];
+            for (int i = 0; i < channel.length; i++) {
+                channel[i] = outline[i] != Integer.MIN_VALUE && watered[i] == outline[i];
+            }
+        }
+
+        /**
+         * Fills a column's own holes from the columns beside them: a wall with a doorway in it is still a wall, and a
+         * ring capped at the gap has a pit at every gate.
+         * <p>
+         * Two passes, because a hole two columns wide is filled from the ring the first pass makes around it. Both
+         * outlines are filled - the ring's, which leaves trees out, and the whole one - so each answers for a doorway
+         * and neither invents a height for a column the build never reaches.
+         */
+        private void holes(int[] top) {
             for (int pass = 0; pass < 2; pass++) {
                 int[] next = top.clone();
                 for (int gz = 0; gz < deep; gz++) {
@@ -433,11 +468,7 @@ public final class Dressing {
                         next[at] = best;
                     }
                 }
-                top = next;
-            }
-            channel = new boolean[wide * deep];
-            for (int i = 0; i < channel.length; i++) {
-                channel[i] = top[i] != Integer.MIN_VALUE && watered[i] == top[i];
+                System.arraycopy(next, 0, top, 0, top.length);
             }
         }
 
@@ -466,7 +497,7 @@ public final class Dressing {
          * Capped at the nearest outline column where the wall is, easing to what the ground already stands at
          * {@code DRAPE_REACH} out, so the join at the wall is the build's shape and the join in the country is the
          * country's. Water at the build's own edge is left alone where it is the outflow, banked where it is a spring
-         * held up in the build, and cut with the ground it lies on everywhere else.
+         * held up in the build, and a column standing in the drawing's own water is not dressed at all.
          */
         private void dressColumn(ServerLevel level, int x, int z) {
             if (x >= box.lowX() && x <= box.highX() && z >= box.lowZ() && z <= box.highZ()) {
@@ -511,6 +542,18 @@ public final class Dressing {
             int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
                     level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
             if (surface <= level.getMinY()) {
+                skipped++;
+                return;
+            }
+            // A column standing in the drawing's water is the drawing's, and dressing it carves the river. A height that
+            // counts fluids answers with the water's own surface, so the ground search below walked under the sheet to
+            // the bed, and the column was then cut and filled against the build's outline like any land: where the ring
+            // crossed a river the water came out down to the cap, the bed was laid back over the hole and the bank was
+            // filled with stone - a trench walled with stone running through the river, three blocks deep. So a column
+            // with water as its top, or in the block over its top, is left exactly as it stands; `Drape` has always kept
+            // one so (`wet`), and the join at a river is the river. A spring the build itself holds up is the build's
+            // water and is not this case: that column is dressed, and the mountain over its pool comes off above it.
+            if (!spring && water(level, x, surface, z)) {
                 skipped++;
                 return;
             }
@@ -602,6 +645,17 @@ public final class Dressing {
         }
 
         /**
+         * Whether a column's top, or the block over it, is a fluid: the drawing's water, which the drape never dresses.
+         * <p>
+         * Both blocks, because the answer must not depend on whether the height map counted the fluid: a column under a
+         * sheet has water for its top when it does, and water in the block over its ground when it does not.
+         */
+        private static boolean water(ServerLevel level, int x, int surface, int z) {
+            return !level.getBlockState(new BlockPos(x, surface, z)).getFluidState().isEmpty()
+                    || !level.getBlockState(new BlockPos(x, surface + 1, z)).getFluidState().isEmpty();
+        }
+
+        /**
          * One column inside the walls, where the country is still standing over the cut's own ground.
          * <p>
          * The ring is the ring, and the ground inside the footprint is the build's: the pieces were laid, so what
@@ -615,7 +669,10 @@ public final class Dressing {
          */
         private void dressInside(ServerLevel level, int x, int z) {
             int at = (x - box.lowX()) + (z - box.lowZ()) * wide;
-            int roof = outline[at];
+            // The build's own top here with its trees counted: inside the walls a drawn tree is the village, and the
+            // ring's outline - which leaves canopies out so the ring does not stand a wall beside every tree - would
+            // read a party tree's crown as the country standing five blocks over the village.
+            int roof = whole[at];
             if (roof == Integer.MIN_VALUE) {
                 // A column the cut leaves empty is a hole in the city, not ground the country is standing over.
                 skipped++;
