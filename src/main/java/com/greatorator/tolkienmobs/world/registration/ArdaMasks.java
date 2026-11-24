@@ -102,9 +102,92 @@ final class ArdaMasks {
             return false;
         }
         int cut = cut(blockX, blockZ);
-        return cut == 0
-                || (drawn(blockX + cut, blockZ) && drawn(blockX - cut, blockZ)
-                && drawn(blockX, blockZ + cut) && drawn(blockX, blockZ - cut));
+        if (cut == 0) {
+            return true;
+        }
+        // The two banks are narrowed on their own and each may give some of that back, so the channel is not a
+        // rectangle cut down its middle: a river crossing flat country wanders out and back by a few blocks a bend,
+        // and the same river in a gorge keeps the straight walls the drawing gives it. The wander is read off the
+        // ground's own fall, which is the map's own answer to how steep the country there is.
+        double steep = steepness(blockX, blockZ);
+        return drawn(blockX + inset(blockX, blockZ, cut, 1, 0, steep), blockZ)
+                && drawn(blockX - inset(blockX, blockZ, cut, -1, 0, steep), blockZ)
+                && drawn(blockX, blockZ + inset(blockX, blockZ, cut, 0, 1, steep))
+                && drawn(blockX, blockZ - inset(blockX, blockZ, cut, 0, -1, steep));
+    }
+
+    /**
+     * How far in from the drawn bank one side of the channel is cut, in blocks: the drawing's own sixth, plus the
+     * gorge where the country falls, less the wander where it does not.
+     * <p>
+     * The inset is what the channel is narrowed by, so more of it is a narrower river. Steep ground takes six more
+     * blocks a side, which is a stream in the hills where the drawing has a river forty across; flat ground gives up
+     * to {@link #MEANDER} of the drawing's own sixth again, and the banks bulge and draw in as the noise turns.
+     */
+    private static int inset(int blockX, int blockZ, int cut, int stepX, int stepZ, double steep) {
+        int gorge = (int) Math.round(steep * STEEP_CUT);
+        int wander = (int) Math.round((noise(blockX, blockZ, MEANDER_SCALE, stepX * 3 + stepZ * 11 + 17) - 0.5D)
+                * 2.0D * MEANDER * (1.0D - steep));
+        return Math.max(1, cut + gorge - wander);
+    }
+
+    /**
+     * How steeply the drawn ground falls at a column, from nothing to one, read over {@link #SLOPE_RUN} blocks in
+     * each of the two directions a bank is measured along.
+     * <p>
+     * The height raster is sixteen bits with the drawing's white at three hundred and eighteen blocks, so a fall of
+     * one block in one block of run is that many raw units. Held at nothing to one, the number is the share of the
+     * cut the gorge takes and the share of the wander that is given back.
+     */
+    private static double steepness(int blockX, int blockZ) {
+        int here = ground(blockX, blockZ);
+        if (here == NO_GROUND) {
+            return 1.0D;
+        }
+        int east = ground(blockX + SLOPE_RUN, blockZ);
+        int south = ground(blockX, blockZ + SLOPE_RUN);
+        if (east == NO_GROUND || south == NO_GROUND) {
+            return 1.0D;
+        }
+        double drop = Math.max(Math.abs(east - here), Math.abs(south - here));
+        return Math.min(1.0D, drop / (RAW_PER_BLOCK * SLOPE_RUN * SLOPE_STEEP));
+    }
+
+    /** How many raw units of the height raster stand for one block of ground: the drawing's white is 318. */
+    private static final double RAW_PER_BLOCK = 65535.0D / 318.0D;
+    /** How far the ground is read in each direction for its fall, in blocks. */
+    private static final int SLOPE_RUN = 8;
+    /** The fall, in blocks a block, at which the country is called steep enough to take the whole gorge. */
+    private static final double SLOPE_STEEP = 0.3D;
+    /** How many blocks a side the channel is narrowed further where the country is steep. */
+    private static final int STEEP_CUT = 10;
+    /** How many blocks a bank may wander out of its drawn line where the country is flat, and the noise's size. */
+    private static final int MEANDER = 9;
+    private static final int MEANDER_SCALE = 128;
+
+    /** A smooth noise over the block plane, from the mask's own integer hash: the banks' wander is read from it. */
+    private static double noise(int blockX, int blockZ, int scale, int seed) {
+        double across = blockX / (double) scale;
+        double along = blockZ / (double) scale;
+        int west = (int) Math.floor(across);
+        int north = (int) Math.floor(along);
+        double shareX = smooth(across - west);
+        double shareZ = smooth(along - north);
+        double north1 = hash(west, north, seed) + (hash(west + 1, north, seed) - hash(west, north, seed)) * shareX;
+        double south1 = hash(west, north + 1, seed) + (hash(west + 1, north + 1, seed) - hash(west, north + 1, seed)) * shareX;
+        return north1 + (south1 - north1) * shareZ;
+    }
+
+    private static double smooth(double share) {
+        return share * share * (3.0D - 2.0D * share);
+    }
+
+    private static double hash(int west, int north, int seed) {
+        int mixed = west * 0x27D4EB2D ^ north * 0x165667B1 ^ seed * 0x9E3779B1;
+        mixed ^= mixed >>> 15;
+        mixed *= 0x2545F491;
+        mixed ^= mixed >>> 13;
+        return (mixed >>> 8) / (double) (1 << 24);
     }
 
     /** Whether the drawing marks a column as water, before any narrowing. */

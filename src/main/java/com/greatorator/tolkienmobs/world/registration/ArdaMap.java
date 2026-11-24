@@ -1669,7 +1669,11 @@ public final class ArdaMap {
                 if (mapped == ArdaMasks.NO_GROUND) {
                     continue;
                 }
-                deepest = Math.max(deepest, ArdaMasks.raise(px, pz, mapped, MASK_GAIN) - water);
+                // The raster read as a height, not as itself: a raw sixteen-bit value stood in for the ground and
+                // made every valley's depth enormous, which pinned every river's bank to the steepest climb the rule
+                // allows. Read through the drawing's ends, the depth is the country's own and the climb varies.
+                int drawn = BLACK_Y + (int) Math.round(mapped / 65535.0D * (WHITE_Y - BLACK_Y));
+                deepest = Math.max(deepest, ArdaMasks.raise(px, pz, drawn, MASK_GAIN) - water);
             }
         }
         return deepest;
