@@ -135,6 +135,7 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> PLACED_SEA_PICKLE = registerKey("sea_pickle");
     public static final ResourceKey<PlacedFeature> PLACED_WATERLILY = registerKey("waterlily");
     public static final ResourceKey<PlacedFeature> PLACED_SHORE_REEDS = registerKey("shore_reeds");
+    public static final ResourceKey<PlacedFeature> PLACED_RIVER_REEDS = registerKey("river_reeds");
     public static final ResourceKey<PlacedFeature> PLACED_SWAMP_TREES = registerKey("swamp_trees");
     public static final ResourceKey<PlacedFeature> PLACED_MARSH_GRASS = registerKey("marsh_grass");
     public static final ResourceKey<PlacedFeature> PLACED_MARSH_FLOWERS = registerKey("marsh_flowers");
@@ -452,6 +453,15 @@ public class TolkienPlacedFeatures {
                 List.of(CountPlacement.of(12), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         BlockPredicateFilter.forPredicate(BlockPredicate.not(BlockPredicate.matchesBlocks(Blocks.WATER))),
                         BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(Blocks.SUGAR_CANE.defaultBlockState(),
+                                BlockPos.ZERO)),
+                        BiomeFilter.biome())));
+        // And the mod's own reeds stand among that cane at the same edges: the same refusal of a water column and the
+        // same wouldSurvive at the bank, at the mod's reed rather than vanilla's cane. The Gladden's beds are the
+        // dense ones (forty a chunk, in clumps); these are the loose stands a river carries along its course.
+        context.register(PLACED_RIVER_REEDS, new PlacedFeature(features.getOrThrow(REEDS_KEY),
+                List.of(CountPlacement.of(8), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                        BlockPredicateFilter.forPredicate(BlockPredicate.not(BlockPredicate.matchesBlocks(Blocks.WATER))),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(TolkienBlocks.REED.get().defaultBlockState(),
                                 BlockPos.ZERO)),
                         BiomeFilter.biome())));
     }

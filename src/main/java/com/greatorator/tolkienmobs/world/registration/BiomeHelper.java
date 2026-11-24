@@ -1168,9 +1168,11 @@ public abstract class BiomeHelper {
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_KELP);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_SEA_PICKLE);
 
-		// And the edge: pads on the still sheets, reeds where the bank meets the water.
+		// And the edge: pads on the still sheets, and both plants of a bank - the vanilla cane and the mod's own
+		// reeds, each placed on the soil a person would stand on with water beside it.
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_WATERLILY);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_SHORE_REEDS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RIVER_REEDS);
 		return biome;
 	}
 

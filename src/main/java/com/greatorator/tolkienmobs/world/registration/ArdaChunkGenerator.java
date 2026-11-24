@@ -143,6 +143,9 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 chunk,
                 noiseChunk,
                 TolkienSurfaceRules.ardaSurface());
+        // The water's own ground is mixed after the rules have dressed it and before the roads, so a road along a
+        // bank keeps its own surface.
+        dressWater(chunk, randomState);
         // The roads last, over ground the rules have just dressed: a road that stands in every world is a pure
         // function of the column, so it needs no search and no height of its own - it paints the top the map drew.
         paintRoads(chunk, randomState);
@@ -223,6 +226,128 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 chunk.setBlockState(at, surface);
             }
         }
+    }
+
+    /**
+     * The mix a drawn river's or lake's bed is laid in, and the mix of its bank: the owner's own two palettes.
+     * <p>
+     * The bed is mostly coarse dirt, with cobble and mossy cobble under a seventh of it and a little gravel, podzol
+     * and stone; the bank is coarse dirt and grass with pods of gravel, stone and andesite, and the odd block of
+     * dead coral. The counts are the owner's, read as shares so a palette can be extended without re-adding the
+     * others up.
+     */
+    private static final BlockState[] RIVER_BED = {
+            Blocks.COARSE_DIRT.defaultBlockState(), Blocks.STONE.defaultBlockState(),
+            Blocks.ANDESITE.defaultBlockState(), Blocks.GRAVEL.defaultBlockState(),
+            Blocks.PODZOL.defaultBlockState(), Blocks.MOSSY_COBBLESTONE.defaultBlockState(),
+            Blocks.DIRT.defaultBlockState(), Blocks.COBBLESTONE.defaultBlockState()};
+    /** The bed's weights in the owner's counts: 90, 5, 5, 5, 10, 21, 1, 3 of 140. */
+    private static final int[] RIVER_BED_WEIGHT = {90, 5, 5, 5, 10, 21, 1, 3};
+
+    private static final BlockState[] RIVER_BANK = {
+            Blocks.COARSE_DIRT.defaultBlockState(), Blocks.PODZOL.defaultBlockState(),
+            Blocks.GRASS_BLOCK.defaultBlockState(), Blocks.GRAVEL.defaultBlockState(),
+            Blocks.STONE.defaultBlockState(), Blocks.ANDESITE.defaultBlockState(),
+            Blocks.DEAD_FIRE_CORAL_BLOCK.defaultBlockState(), Blocks.DEAD_BUBBLE_CORAL_BLOCK.defaultBlockState(),
+            Blocks.COBBLESTONE.defaultBlockState(), Blocks.MOSSY_COBBLESTONE.defaultBlockState()};
+    /** The bank's weights in the owner's counts: 30, 4, 15, 3, 1, 1, 1, 1, 1, 1 of 58. */
+    private static final int[] RIVER_BANK_WEIGHT = {30, 4, 15, 3, 1, 1, 1, 1, 1, 1};
+
+    /** How far over the water a bank's own ground may stand and still be dressed as a bank, in blocks. */
+    private static final int BANK_RISE = 3;
+
+    /**
+     * Dresses the ground the drawing's water lies on: the bed under a river, a lake or a sea, and the bank beside a
+     * river or a lake.
+     * <p>
+     * The surface rules answer by biome, so every channel in the world came out in the same sand and every bank in
+     * the grass of its country - and a channel is read by its edges, so one material along the whole of it is what
+     * made a drawn river look painted on. The block is drawn per column from a hash of the two coordinates, so the
+     * pattern belongs to the place rather than to the chunk that made it and no seam runs down a chunk border, and
+     * the block under the top takes a second draw half the time: two blocks of texture where the bed is deep
+     * enough for it.
+     * <p>
+     * A sea's bed is dressed and its shore is not: the beach is the drawing's own, and the palette's podzol and dead
+     * coral belong to a freshwater bank. A bank here is a dry column of a land country with water in one of its
+     * four neighbours - a river's own column reads as the country it runs through, so what marks the water is the
+     * neighbour's.
+     */
+    private void dressWater(ChunkAccess chunk, RandomState randomState) {
+        int minX = chunk.getPos().getMinBlockX();
+        int minZ = chunk.getPos().getMinBlockZ();
+        int minY = chunk.getMinY();
+        int maxY = chunk.getMaxY() - 1;
+        // A column of ring as well, so a column at the chunk's edge sees the water across that edge and no shore
+        // steps at every sixteenth block.
+        ArdaMap.Sample[][] ring = new ArdaMap.Sample[18][18];
+        for (int x = -1; x <= 16; x++) {
+            for (int z = -1; z <= 16; z++) {
+                ring[x + 1][z + 1] = ArdaMap.sample(minX + x, minZ + z,
+                        randomState.sampler().weirdness(), randomState.sampler().erosion());
+            }
+        }
+        BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                int blockX = minX + x;
+                int blockZ = minZ + z;
+                ArdaMap.Sample sample = ring[x + 1][z + 1];
+                int top = Math.min(maxY, sample.height());
+                if (top <= minY) {
+                    continue;
+                }
+                if (sample.height() < sample.water()) {
+                    chunk.setBlockState(at.set(blockX, top, blockZ),
+                            pick(RIVER_BED, RIVER_BED_WEIGHT, roll(blockX, blockZ, 0x5EABEDL)));
+                    if ((roll(blockX, blockZ, 0x5EA6EDL) & 1) == 0 && top - 1 > minY) {
+                        chunk.setBlockState(at.set(blockX, top - 1, blockZ),
+                                pick(RIVER_BED, RIVER_BED_WEIGHT, roll(blockX, blockZ, 0xBEDDEE5L)));
+                    }
+                    continue;
+                }
+                if (!sample.country().land()) {
+                    continue;
+                }
+                int water = Integer.MIN_VALUE;
+                for (int dir = 0; dir < 4; dir++) {
+                    ArdaMap.Sample near = ring[x + 1 + (dir == 0 ? 1 : dir == 1 ? -1 : 0)]
+                            [z + 1 + (dir == 2 ? 1 : dir == 3 ? -1 : 0)];
+                    if (near.height() < near.water() && near.country().land()) {
+                        water = Math.max(water, near.water());
+                    }
+                }
+                if (water == Integer.MIN_VALUE || sample.height() - water > BANK_RISE) {
+                    continue;
+                }
+                chunk.setBlockState(at.set(blockX, top, blockZ),
+                        pick(RIVER_BANK, RIVER_BANK_WEIGHT, roll(blockX, blockZ, 0xBA2C5L)));
+            }
+        }
+    }
+
+    /** A column's own draw: a hash of the two coordinates and a salt, so it is the same in every chunk. */
+    private static int roll(int blockX, int blockZ, long salt) {
+        long hash = blockX * 0x9E3779B97F4A7C15L ^ blockZ * 0xC2B2AE3D27D4EB4FL ^ salt;
+        hash ^= hash >>> 29;
+        hash *= 0xBF58476D1CE4E5B9L;
+        hash ^= hash >>> 32;
+        return Math.floorMod(hash, 1 << 20);
+    }
+
+    /** One block of a weighted palette: the draw walked through the palette's shares. */
+    private static BlockState pick(BlockState[] states, int[] weights, int draw) {
+        int total = 0;
+        for (int weight : weights) {
+            total += weight;
+        }
+        int at = draw % total;
+        for (int index = 0; index < weights.length; index++) {
+            at -= weights[index];
+            if (at < 0) {
+                return states[index];
+            }
+        }
+        return states[states.length - 1];
     }
 
     /** The water and lava a column is made of, built the way the vanilla generator builds it. */

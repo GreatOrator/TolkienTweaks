@@ -873,6 +873,43 @@ public final class ArdaMap {
     private static final int MOUNTAIN_CEILING = 420;
 
     /**
+     * How much a drawn sea's bed rolls, in blocks, and the sizes of the two noises that roll it.
+     * <p>
+     * A sea's floor was one height and its own country's relief - five blocks either way over a hundred - so the
+     * water over a whole bay was the same depth from shore to shore: a sheet laid on a plate. Two octaves of the
+     * map's own noise, a bay's and a shoal's, give the floor sandbars and hollows, and the water's depth reads them
+     * as its own colour. The floor never rises to the waterline: a bed that breaks the surface is an island the
+     * drawing did not draw, so the roll is held under it.
+     */
+    private static final int SEABED_ROLL = 6;
+    private static final int SEABED_SCALE = 96;
+    private static final int SEABED_FINE = 27;
+
+    /** A drawn sea's floor under its water, in blocks. */
+    private static int seabed(int blockX, int blockZ) {
+        double roll = (fractal(blockX, blockZ, SEABED_SCALE, 61) - 0.5D) * 2.0D
+                + 0.5D * (fractal(blockX, blockZ, SEABED_FINE, 62) - 0.5D) * 2.0D;
+        return (int) Math.round(roll * SEABED_ROLL);
+    }
+
+    /**
+     * How much a drawn lake's bed rolls, in blocks, and the sizes of the two noises that roll it.
+     * <p>
+     * A sheet's bed is cut to its depth by how much of the column the mask covers, which is a smooth dome - the same
+     * dome in every lake, because it is the same coverage. A few blocks of the map's own noise give it shoals and
+     * hollows, and the rim is left to that coverage's own ramp so the water still meets the shore as a slope.
+     */
+    private static final int LAKEBED_ROLL = 4;
+    private static final int LAKEBED_SCALE = 48;
+    private static final int LAKEBED_FINE = 17;
+
+    private static int lakebed(int blockX, int blockZ) {
+        double roll = (fractal(blockX, blockZ, LAKEBED_SCALE, 63) - 0.5D) * 2.0D
+                + 0.5D * (fractal(blockX, blockZ, LAKEBED_FINE, 64) - 0.5D) * 2.0D;
+        return (int) Math.round(roll * LAKEBED_ROLL);
+    }
+
+    /**
      * How far a ridge's crests and gullies stand either side of the mask's own climb, in blocks.
      * <p>
      * The mask's brightness is blurred, and a blurred brightness read linearly is a cone: every drawn
@@ -1540,7 +1577,9 @@ public final class ArdaMap {
             // middle - is what showed through the water as terraces.
             double cover = Math.max(0.0D, Math.min(1.0D, ArdaMasks.lakeCoverage(blockX, blockZ)));
             int depth = 1 + (int) Math.round(cover * (LAKE_DEPTH - 1));
-            int bed = Math.min(ground.height(), surface - depth);
+            // The bed rolls with the map's own noise, so a sheet is not one depth from shore to shore: shoals and
+            // hollows show through the water as the colour of the floor, and the rim keeps the coverage's own ramp.
+            int bed = Math.min(surface - 1, Math.min(ground.height(), surface - depth) + lakebed(blockX, blockZ));
             return new Sample(ground.country(), bed, true, false, ground.upland(), surface);
         }
         if (ArdaMasks.river(blockX, blockZ)) {
@@ -2842,9 +2881,13 @@ public final class ArdaMap {
                     BLACK_Y + (int) Math.round(mapped / 65535.0D * (WHITE_Y - BLACK_Y))),
                     MASK_GAIN));
         } else {
-            height = ragged(blockX, blockZ, ArdaMasks.raise(blockX, blockZ,
-                    Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
-                            MOUNTAIN_CEILING), MASK_GAIN));
+            int bed = Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
+                    MOUNTAIN_CEILING);
+            // A drawn sea is a bed rather than a plate: its floor rolls, and the water over it deepens and shallows.
+            if (bed < SEA_LEVEL) {
+                bed = Math.min(SEA_LEVEL - 2, bed + seabed(blockX, blockZ));
+            }
+            height = ragged(blockX, blockZ, ArdaMasks.raise(blockX, blockZ, bed, MASK_GAIN));
         }
         // Gundabad last, so the valley cuts the drawn rock, its crags and its lean-to all at once.
         return breeHill(blockX, blockZ, gundabadPass(blockX, blockZ, height));
