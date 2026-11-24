@@ -680,3 +680,56 @@ mistaken for the present.
   neither have the Shire's joins.
 - **Chapter two is played through page 32 and paused at 33.** Pages 33-36 are Carn Dûm ground, and Carn Dûm is what
   quests go to next.
+
+
+## Where we stopped - 23 November 2026
+
+The running state is `docs/next-up.md`; this is what changed since 20 November, so the dated sections above are not
+mistaken for the present. All five commits are on `main` and none is pushed. Each was compiled and whitespace-checked
+(`./gradlew compileJava -x createMinecraftArtifacts -q --no-build-cache` exit 0, `git -c core.whitespace=cr-at-eol
+diff --check` exit 0); nothing here was seen in a world.
+
+- **A held backpack no longer crashes the tick at the top of the world (`8899c615`).** `Progress Check 6` died at
+  17:40:51 on 23 November with `ArrayIndexOutOfBoundsException: Index 24 out of bounds for length 24` in
+  `crash-2026-11-23_17.40.51-server.txt`. The player stood at 5785, 320, -3001 - the block above the overworld's last
+  one, whose 24 sections stop at 319 - carrying a magnet bag with drops on the ground. `BackpackMagnet.tick` (every
+  five ticks) read the carried bag by building a detached copy in `BackpackBlockEntity.createHeld` at
+  `player.blockPosition()`; Neoforge writes an attachment read on a block entity down as a block change on its chunk,
+  and that write indexes sections by y, so `getMachineHandler()` asked for section 24 of 24 and the exception came out
+  of the player tick. `createHeld` now keeps the player's x/z and clamps y into `getMinY()`..`getMaxY() - 1`. The copy
+  is only read and saved back to its stack, so nothing else changes. The other two reports are unrelated: 22 November
+  09:56 was a missing `Sites$Lines` class, 08:17 the watchdog after a sixty-second tick.
+- **The Shire leg re-ends on the village's east side (`a0f54fc3`).** The owner moved its Hobbiton end from the `/tmtp`
+  point at -463, -124 to -150, -382 in `Progress Check 6`, so the leg is `planned_1032_-34_-150_-382` in
+  `Roads.NETWORK`, and `Roads.TOWNS` measures the 40-block village hold from that east-edge block. `Pins.SOURCE`'s
+  `hobbiton` point is untouched (a pin is where the town's name stands); a world that walked the old line keeps it as
+  `..._1032_-34_-463_-124` and keeps the ground it laid.
+- **The Shire leg's crossing keeps the standard bridge (`3fa5d8f9`).** The drawn `bucklebury_end`/`bucklebury_middle`
+  pair is reserved for the future Hobbiton-to-Bucklebury road, so `Roads.BRIDGES` is empty and `pieces` falls back to
+  `bridge_end`/`bridge_middle`; the files and `tools/bridge_build.py` stay in the jar/repo. The span is `_bridge_1`,
+  471, 90 to 418, 90 - fifty-four columns of the Brandywine at deck 116 - and nothing has been stood from either pair.
+- **A road held at a town's edge grades from the end the hand is on (`3d8603bb`).** The hold used to grade from the
+  far end, whose chunk was never loaded, so the tick never stepped it. `alignDry` now grades from the end the pass was
+  asked from and cuts the town's margin wherever it falls; `heldFirst` carries the direction in the note, `joint`
+  takes the grade's start height, `join` puts the arrival in front, and a waiting pass steps on the arrival's own
+  ground.
+- **A tree standing on a build's own ground is the build's (`bc79aab7`).** The clear reads a column top down through
+  leaves and wood before deciding: a tree at or under the cut's own top is left whole (party tree), one on a hill over
+  the build still goes with the hill, a crown over air still goes. `/tmcut clear` ends `N trees left standing on its
+  own ground`.
+- **How far a road end must be from a river bank.** The plan reads the line between the two pins block by block and
+  trims water at either end (the road begins/ends on the bank, no span there), so the channel must lie **inside** the
+  leg with dry ground beyond both banks. Keep at least `EXIT_REACH` 16 blocks between a pin and the water: the span's
+  section reaches 16 back from each bank (8 of it `RUN_IN` forced straight onto the bridge line), and the near dry road
+  is only written when it is at least one `LANE` 16 long. 32+ each side is comfortable. `BANK_SEARCH` 96 bounds the
+  hunt for the first dry column; water over `MAX_SPAN` 96 columns is refused rather than bridged; `pick` takes the
+  narrower of the two readings; a dry lane within `BANK_MARGIN` 3 lanes (48 blocks, `BANK_OFFSET`) of water is priced
+  as bank so the road steps inland. The deck stands `DECK_OVER_WATER` 2 over the highest water and the pieces are 9
+  wide (`HALF` 4).
+- **What `Progress Check 6` holds.** The Shire leg's `..._2` began 16:11:13 from -488, -120, reached SEARCH with 31
+  stations held and no GRADE (`_2` stopped short 16:12:05); Hobbiton stood 16:12:41; `/tmroad forget` at 16:25:29
+  answered "3 sections and 0 planned". The Bree leg was built by hand 16:25:44-16:28:41 (103401 columns, stopped 38
+  stations short), Bree stood 16:32:53 with no arrival line, and the 16:46:11 relog said "24 sections in hand". The
+  saved record has it `stage=GRADE`, `approach=4056` from 1031, -36 to 4648, -3316, `graded at=2288/57172`, no held.
+  The 16:46 milestone log warned "The Shire: no milestone could be stood at -503, 101, -314; the ground there is
+  Block{minecraft:gravel}" - the village raise took that spot, and nothing was changed for it.
