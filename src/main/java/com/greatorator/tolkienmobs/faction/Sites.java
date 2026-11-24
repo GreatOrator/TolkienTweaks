@@ -516,8 +516,10 @@ public final class Sites extends SavedData {
     private record Stand(String pin, String name) {
     }
 
-    private static final List<Stand> STANDING = List.of(
-            new Stand("rivendell.stone", "Rivendell"));
+    // Empty while Rivendell's site is re-scouted: the city's stone was pinned at 5499, 150, -3080, and a world that
+    // still holds that pin would stand a milestone in the vale the drawing now makes. The stand goes back in with
+    // the new pin, under the same key, and every world then gets the stone at the new city.
+    private static final List<Stand> STANDING = List.of();
     /** Which of the standing stones this world has already set, so the clock does not walk their ground again. */
     private static final Set<String> STOOD = new HashSet<>();
 

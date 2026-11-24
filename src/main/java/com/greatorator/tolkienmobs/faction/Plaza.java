@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -21,6 +22,10 @@ import java.util.function.IntBinaryOperator;
  * rim that level is eased back into the country's own, so the disc meets the hillside instead of standing on it as a
  * ring of cliff. The floor is the wild mix the roads are laid of, earthier in the middle where a crowd would stand and
  * grass wearing through at the edges, chosen per block from a hash so the scatter does not clot.
+ * <p>
+ * It is drawn only while the city's own ground is laid ({@link ArdaMap#planted()}): the disc is the staging ground
+ * the Company gathers on before the walk out, cut to the city's floor, and with the city off the vale is the
+ * drawing's alone - no column there is levelled, surfaced or cleared by this.
  */
 public final class Plaza {
     /** The block the scout marked: the middle of the disc, on the vale's floor north of the road's last pin. */
@@ -47,7 +52,7 @@ public final class Plaza {
 
     /** Whether the disc reaches a column, which is the test every other part of this asks first. */
     public static boolean reaches(int x, int z) {
-        return away(x, z) <= RADIUS;
+        return ArdaMap.planted() && away(x, z) <= RADIUS;
     }
 
     private static double away(int x, int z) {
@@ -62,6 +67,7 @@ public final class Plaza {
      * the rim it is the country's ground again, blended on a smoothstep so the join has no lip at either end.
      */
     public static Integer heightAt(int x, int z, IntBinaryOperator ground) {
+        if (!ArdaMap.planted()) return null;
         double away = away(x, z);
         if (away > RADIUS) return null;
         int level = ground.applyAsInt(CENTRE_X, CENTRE_Z);
@@ -79,6 +85,7 @@ public final class Plaza {
      * the edge of the disc reads as the edge of a clearing rather than as the edge of a paved thing.
      */
     public static BlockState surface(int x, int z) {
+        if (!ArdaMap.planted()) return null;
         double away = away(x, z);
         if (away > RADIUS) return null;
         int roll = Math.floorMod(hash(x, z), 100);
@@ -106,6 +113,7 @@ public final class Plaza {
      * @return how many blocks were taken out
      */
     public static int clear(LevelAccessor level, ChunkAccess chunk) {
+        if (!ArdaMap.planted()) return 0;
         int cleared = 0;
         BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
         int minX = chunk.getPos().getMinBlockX();

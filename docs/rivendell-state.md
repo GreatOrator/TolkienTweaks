@@ -3,7 +3,7 @@
 > **Rivendell is off while its site is re-scouted.** From 24 November 2026 the city's own ground - floor,
 > massif, shoulder and branch - is not laid (`PLANTED = false` in `ArdaMap`), the assembly that generated the
 > city at 5200, 75, -3370 is out of `TolkienStructureProvider.ASSEMBLIES`, and both pins (`rivendell` and
-> `rivendell.stone`) are gone, so no new world raises it there. The cut itself - 584 pieces, 554 by 512, 244
+> `rivendell.stone`) are gone, so no new world raises it there. The passes that belong to the city read the same switch: the staging plaza is drawn only while `ArdaMap.planted()` is true, `CityCommands.rouse` refuses a pin a world still holds, and the city's standing stone is out of `Sites.STANDING`. The cut itself - 584 pieces, 554 by 512, 244
 > bands from y 75 to a crown of 318 - stays in the jar for the site that replaces it: the new pin goes on the
 > block the lowest band stands on, and the city occupies that y to y + 243. A world that already holds the city
 > keeps it; nothing in the mod lifts what is built.

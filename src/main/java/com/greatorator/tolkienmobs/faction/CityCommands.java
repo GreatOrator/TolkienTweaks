@@ -416,6 +416,13 @@ public final class CityCommands {
      */
     static void rouse(ServerLevel level) {
         if (!TolkienDimensions.ARDA.equals(level.dimension())) return;
+        // The city's ground is not laid while its site is re-scouted. A world that still holds the old pin - or the
+        // marker a raise left - must not put the cut back into ground the drawing now makes: the pin is a saved file
+        // in that world and would outlive the source table it came from.
+        if (!ArdaMap.planted()) {
+            forgetRaise();
+            return;
+        }
         pace = paceFor(level);
         if (level.getGameTime() % pace != 0) return;
         BlockPos pin = Pins.at(level, Campaign.SUMMON_PLACE);

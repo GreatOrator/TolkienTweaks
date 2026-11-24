@@ -2299,6 +2299,18 @@ public final class ArdaMap {
     }
 
     /**
+     * Whether the city's own ground is laid: the floor, the massif, the shoulder, the valley and the branch out
+     * of it.
+     * <p>
+     * Read by the passes that belong to the city rather than to the drawing - the staging plaza, the raise from a
+     * pin and the stone that stands in the city - so that one switch turns the whole of it off and the ground there
+     * is the drawing's alone. It is false while the site is re-scouted and true again when the new pin is walked.
+     */
+    public static boolean planted() {
+        return PLANTED;
+    }
+
+    /**
      * The height the valley's floor stands at: where a city in it is planted from, whatever the climb
      * beside its walls has done.
      */
