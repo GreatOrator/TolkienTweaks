@@ -553,7 +553,16 @@ public final class Dressing {
             // with water as its top, or in the block over its top, is left exactly as it stands; `Drape` has always kept
             // one so (`wet`), and the join at a river is the river. A spring the build itself holds up is the build's
             // water and is not this case: that column is dressed, and the mountain over its pool comes off above it.
-            if (!spring && water(level, x, surface, z)) {
+            //
+            // The spring's exemption is gone, because a spring is not always the build's water. The ring reads its
+            // shape from the nearest wall column, and where the drawing's river runs along the footprint's edge that
+            // column's water is the river's own: every ring column beside it answered `channel`, with the wall's water
+            // ten blocks over the village floor - past `OUTLET_LIFT` - so it read as a spring and was dressed anyway,
+            // cut down to the pool's level and capped with the ground beneath it. That is the water taken out of the
+            // river and a bank laid over the hole, which is the trench, surviving the guard the trench was meant to
+            // meet. The build's pool needs no exemption: it is inside the walls, and this pass never cuts inside as
+            // ring. A column outside that is itself water is the drawing's water whoever holds it up.
+            if (water(level, x, surface, z)) {
                 skipped++;
                 return;
             }
