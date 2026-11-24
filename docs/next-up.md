@@ -17,6 +17,8 @@ back.
 
 **The road out of the Shire now lays from the end the hand is at.** `Progress Check 6` on 23 November: the Shire leg's second dry stretch (`..._2`) began at the village gate at 16:11, searched to Hobbiton, stopped 40 blocks short with 31 stations held for the village's note - and never finished its grade or laid the arrival, before or after the village stood at 16:12:41. The hold had turned it to grade from the far bank of the Brandywine, about nine hundred blocks east of the player, and the tick only steps a pass while the chunk under its head is loaded. `alignDry` now grades from the end the pass was asked from and cuts the town's margin wherever it falls on that walk; `heldFirst` carries the direction in the note, `joint`/`join` take the grade's start height and put the arrival in front of the line, and a pass waiting at a town's edge is stepped on the arrival's ground. The Bree leg shows the other half: built by the hand at 16:28 and stopped 38 stations short, it never laid that arrival when Bree stood at 16:32:53 because the player had left for the Shire. The Shire leg was forgotten at 16:25 (`/tmroad forget`, three sections), so `Progress Check 6` only finds it again at a new start, and nothing lifts the ground the forgotten pass laid. The road still fills in as it is walked - standing at the gate lays what the loaded chunks cover and the rest follows the walk.
 
+**Bucklebury's drawn bridge is held for Bucklebury.** The pair (`bucklebury_end`/`bucklebury_middle`, cobblestone-wall piers) is not stood on the Shire leg's crossing on the owner's call: the road from the Shire to Bree keeps the standard `bridge_end`/`bridge_middle`, and the drawn bridge waits in the jar for the Hobbiton to Bucklebury road. `Roads.BRIDGES` is empty again, so `pieces` falls back to the standard pair at every span; nothing in `Progress Check 6` was stood from either piece (its `_bridge_1` began and never reached the bridge stage), so no world holds a bridge that has to be lifted.
+
 Before that, 22 November 2026 - the owner's fresh `Progress Check 2` showed **holes at Bree's join**: where the
 ring smooths the town into the country there are bare blocks of ground with no canopy over them, looking for all the
 world like trees the drape took out and never filled. The cause was found in the draw and fixed - read *22 November*
@@ -1146,11 +1148,13 @@ plan, the stand and `pillarsColumns` all take the same pair and the same materia
 still clears only the five standard woods, because clearing stone out of the box the abutments stand in would take the
 bank, and a stone bridge laid twice stands its pieces over the ones already there.
 
-- **Bucklebury** - the Shire leg, `planned_1032_-34_-463_-124`, whose `bridge_1` runs from bank 471, 90 to far 418, 90,
-  fifty-four columns of the Brandywine at deck 116. Named at 445, 90, the middle of the channel. Pieces
-  `bucklebury_end` and `bucklebury_middle` are in the jar, cut from the owner's own build of it with the ground
-  taken out (see below); its piers are the end's cobblestone walls, drawn down to the bed in cobble, and the
-  middle carries none - a middle's columns with no wall in them are left as they are.
+- **Bucklebury** - the crossing from the Shire to Bree, `planned_1032_-34_-463_-124`, whose `bridge_1` runs from bank
+  471, 90 to far 418, 90, fifty-four columns of the Brandywine at deck 116. **Not in the table on the owner's call:**
+  the leg from the Shire to Bree keeps the standard pair, and the drawn `bucklebury_end` and `bucklebury_middle` are
+  reserved for the Hobbiton to Bucklebury road when that leg is walked. The drawn pair is in the jar, cut from the
+  owner's own build of the crossing with the ground taken out (see below); its piers are the end's cobblestone
+  walls, drawn down to the bed in cobble, and the middle carries none - a middle's columns with no wall in them are
+  left as they are.
 - **The Last Bridge** - the East-West Road's crossing of the Mitheithel. It is **not in the table**, because the leg to
   Bree has no water under it yet: `planned_4648_-3316_1031_-36` plans as one dry section against the drawing, and the
   world said the same when it laid it - *"Nothing on the way is water, so nothing is bridged"*, 11:39 on 22 November.
@@ -1168,7 +1172,8 @@ needs. The support has to be a block only the piers are made of, the standard br
 because a support the deck itself is built from would carry every column of the span to the bed.
 
 **Bucklebury's two pieces, as drawn** (23 November). The owner's cut of the crossing was the right bridge in the
-wrong box, so the pair `Roads.BRIDGES` stands is drawn from it to the four numbers `bridgePlan` holds a piece to.
+wrong box, so the pair kept for the Shire to Bucklebury road is drawn from it to the four numbers `bridgePlan` holds a
+piece to.
 `tools/bridge_build.py` writes both files and reads each one back cell for cell; nothing in either is ground, so a
 span stands the bridge and nothing else. The cut itself is in this repository's history (`71e6270d`, `a6a7b30a`)
 if the drawn pair is not wanted.

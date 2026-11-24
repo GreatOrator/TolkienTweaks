@@ -474,8 +474,8 @@ public final class Roads {
     }
 
     /**
-     * A bridge a crossing is stood with, where the standard one will not do: the crossing at Bucklebury, the Last
-     * Bridge, and whatever else the country deserves.
+     * A bridge a crossing is stood with, where the standard one will not do: the Last Bridge, and whatever else the
+     * country deserves.
      * <p>
      * A span is a {@link Route.Crossing} and carries its own pieces, so a bridge of its own is two names and a block:
      * the abutment and the span between them, read out of the jar's structure folder the way the standard pair are, and
@@ -519,9 +519,12 @@ public final class Roads {
      * has its first span at whichever river its own end met first, so a bridge named for the third crossing of a road
      * would move the moment the plan met another river before it. The water does not move.
      * <p>
-     * <b>Bucklebury</b> is the crossing on the Shire's own leg, {@code planned_1032_-34_-463_-124}: its span runs from
-     * bank 471, 90 to far 418, 90 across fifty-four columns of the Brandywine at deck 116, and the bridge is named at
-     * 445, 90, the middle of the channel the plan crosses.
+     * <b>Bucklebury's bridge is drawn but not named.</b> {@code bucklebury_end} and {@code bucklebury_middle}, with
+     * cobblestone-wall piers, are in the jar's bridges folder for the road from the Shire to Bucklebury when that leg
+     * is walked, and the table is empty again: the owner's call is that the crossing from the Shire to Bree keeps the
+     * standard pair, so its span - bank 471, 90 to far 418, 90, fifty-four columns of the Brandywine at deck 116 - is
+     * stood from {@code bridge_end} and {@code bridge_middle} like every other crossing. Naming the drawn bridge is
+     * one line here, at a block on the Bucklebury road's own water.
      * <p>
      * <b>The Last Bridge</b> is not here yet, and that is not an omission. It stands where the East-West Road crosses the
      * Mitheithel, and the leg the network holds to Bree - {@code planned_4648_-3316_1031_-36} - crosses no drawn water
@@ -530,13 +533,7 @@ public final class Roads {
      * line goes in when the river that road crosses is there to name it: the pieces are {@code last_bridge_end} and
      * {@code last_bridge_middle}, and the piers under them are stone brick.
      */
-    private static final List<Bridge> BRIDGES = List.of(
-            // The piers are the cobblestone walls the end carries down through the water, and the middle
-            // carries none - a column of a middle with no wall in it is left alone. The support is asked for as
-            // the block only a pier is made of, and the walls above the deck are outside the range
-            // `pillarsColumns` reads, so the parapet is not mistaken for one.
-            new Bridge("Bucklebury", at(445, 90), "bucklebury_end", "bucklebury_middle",
-                    Blocks.COBBLESTONE_WALL));
+    private static final List<Bridge> BRIDGES = List.of();
 
     /**
      * The bridge a span is stood with, or null where it is the standard one.
