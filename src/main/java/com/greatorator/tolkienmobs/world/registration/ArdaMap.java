@@ -45,8 +45,36 @@ import java.util.List;
 public final class ArdaMap {
     /** Blocks per map cell: the world is 48 cells wide and 36 deep, so 24,576 by 18,432 blocks. */
     public static final int CELL = 512;
-    /** The height the world's water stands at, from the overworld's own noise settings. */
-    public static final int SEA_LEVEL = 63;
+    /**
+     * The height the world's water stands at.
+     * <p>
+     * Twenty-five rather than the overworld's sixty-three, because the drawing is read with its black at
+     * {@link #BLACK_Y} and its white at {@link #WHITE_Y} and its own water sits low in that span: the waterline is
+     * where the terrain editor that proofed the map put it, about a thirteenth of the way up from black. Held at
+     * sixty-three the sea floods ground the drawing puts above it and leaves the ranges short of the sky.
+     */
+    public static final int SEA_LEVEL = 25;
+
+    /**
+     * The drawing's two ends: black stands at y0 and white at y318.
+     * <p>
+     * The height raster is sixteen bits with no scale of its own, so these two numbers are what the drawing means -
+     * the black and white a terrain editor was given when the map was proofed. Everything between them is read as a
+     * share of the span, and the waterline is {@link #SEA_LEVEL} inside it: the ocean lies twenty-five blocks over
+     * its own bed, and the world's own floor (y -64) leaves sixty-four blocks of rock under that bed.
+     */
+    private static final int BLACK_Y = 0;
+    private static final int WHITE_Y = 318;
+
+    /**
+     * How far the mountain mask raises the ground under its brightest pixel, in blocks.
+     * <p>
+     * Read off the drawing rather than picked: the heightmap's own top stands at y254 once it is read between black
+     * and white, so sixty-four blocks is the climb that lets the tallest drawn ground under the brightest mask reach
+     * the sky at {@link #WHITE_Y}. Added rather than blended toward a fixed crown, because a blend multiplies the
+     * drawing's relief out as the mask reaches white and leaves a summit as one plane.
+     */
+    private static final int MASK_GAIN = 64;
     /** How far either side of the waterline a column's ground may stand and still be the shore. */
     private static final int BEACH_HEIGHT = 3;
 
@@ -1219,9 +1247,9 @@ public final class ArdaMap {
      */
     public enum Country {
         // The seas. Which of the three a column is depends on its latitude, not on the drawing.
-        FROZEN_SEA(Biomes.DEEP_FROZEN_OCEAN, 36, 5, false),
-        TEMPERATE_SEA(Biomes.DEEP_OCEAN, 38, 5, false),
-        WARM_SEA(Biomes.WARM_OCEAN, 40, 5, false),
+        FROZEN_SEA(Biomes.DEEP_FROZEN_OCEAN, SEA_LEVEL - 27, 5, false),
+        TEMPERATE_SEA(Biomes.DEEP_OCEAN, SEA_LEVEL - 25, 5, false),
+        WARM_SEA(Biomes.WARM_OCEAN, SEA_LEVEL - 23, 5, false),
 
         // The north and the western seaboard.
         FORODWAITH(Biomes.FROZEN_OCEAN, 70, 8, true),
@@ -1553,7 +1581,7 @@ public final class ArdaMap {
             return Integer.MIN_VALUE;
         }
         return vale(blockX, blockZ,
-                SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL)));
+                BLACK_Y + (int) Math.round(mapped / 65535.0D * (WHITE_Y - BLACK_Y)));
     }
 
     /**
@@ -1602,7 +1630,7 @@ public final class ArdaMap {
                 if (mapped == ArdaMasks.NO_GROUND) {
                     continue;
                 }
-                deepest = Math.max(deepest, ArdaMasks.lift(px, pz, mapped, VALLEY_CROWN) - water);
+                deepest = Math.max(deepest, ArdaMasks.raise(px, pz, mapped, MASK_GAIN) - water);
             }
         }
         return deepest;
@@ -2810,13 +2838,13 @@ public final class ArdaMap {
         int mapped = ArdaMasks.ground(blockX, blockZ);
         int height;
         if (mapped != ArdaMasks.NO_GROUND) {
-            height = ragged(blockX, blockZ, ArdaMasks.lift(blockX, blockZ, vale(blockX, blockZ,
-                    SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL))),
-                    VALLEY_CROWN));
+            height = ragged(blockX, blockZ, ArdaMasks.raise(blockX, blockZ, vale(blockX, blockZ,
+                    BLACK_Y + (int) Math.round(mapped / 65535.0D * (WHITE_Y - BLACK_Y))),
+                    MASK_GAIN));
         } else {
-            height = ragged(blockX, blockZ, ArdaMasks.lift(blockX, blockZ,
+            height = ragged(blockX, blockZ, ArdaMasks.raise(blockX, blockZ,
                     Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
-                            MOUNTAIN_CEILING), VALLEY_CROWN));
+                            MOUNTAIN_CEILING), MASK_GAIN));
         }
         // Gundabad last, so the valley cuts the drawn rock, its crags and its lean-to all at once.
         return breeHill(blockX, blockZ, gundabadPass(blockX, blockZ, height));

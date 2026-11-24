@@ -184,18 +184,22 @@ final class ArdaMasks {
     }
 
     /**
-     * The ground at a column, raised toward the crown by how bright the mountain mask is over it.
+     * The ground at a column, raised by how bright the mountain mask is over it.
      * <p>
-     * The whitest pixels are pinned: a full-brightness column stands at {@code crown}, the height the
-     * city's massif tops out at, so the drawn ranges and the build reach the same sky. Black leaves the
-     * ground exactly as it was drawn, and everything between takes its share of the climb.
+     * A climb, not a blend toward one height. The blend read as a way to make the drawn ranges and the build reach
+     * the same sky, and it is what made the flat tops: every bright column was pulled toward the crown in proportion
+     * to the brightness, so the height the drawing gave a peak was multiplied out as the mask reached white and a
+     * whole summit came out as one plane at the crown, however much relief the drawing had in it. Added instead, the
+     * mask lifts a column by its own share of {@code gain} and the drawing's relief survives the climb: the tallest
+     * drawn ground under the brightest mask reaches the sky, and a shoulder a dozen blocks under it stays a dozen
+     * blocks under it. Black leaves the ground exactly as it was drawn.
      */
-    static int lift(int blockX, int blockZ, int height, int crown) {
+    static int raise(int blockX, int blockZ, int height, int gain) {
         double rock = rock(blockX, blockZ);
-        if (rock <= 0.0D || crown <= height) {
+        if (rock <= 0.0D || gain <= 0) {
             return height;
         }
-        return height + (int) Math.round(rock * (crown - height));
+        return height + (int) Math.round(rock * gain);
     }
 
     /**

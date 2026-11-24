@@ -129,7 +129,7 @@ public class TolkienSurfaceRules {
 	 * so everything here stands at most a few blocks above water: the low shores and islands of the
 	 * flooded lowland. A lake above that height lays its own grassland around itself instead.
 	 */
-	private static final int NURN_SHORE_HEIGHT = 68;
+	private static final int NURN_SHORE_HEIGHT = ArdaMap.SEA_LEVEL + 5;
 
 	/**
 	 * The surface noise value above which Nurn's floor is cobbled dark stone instead of plain dark
@@ -312,7 +312,7 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 	 * Sandstone lies under the sand the way it does under the Haradwaith's dunes. The mod's ground cover is
 	 * short grass, which sand refuses, so the low coast stays bare and only the hills come up green.
 	 */
-	private static final int UMBAR_SHORE_HEIGHT = 68;
+	private static final int UMBAR_SHORE_HEIGHT = ArdaMap.SEA_LEVEL + 5;
 
 	private static SurfaceRules.RuleSource umbarSurface() {
 		return SurfaceRules.sequence(
