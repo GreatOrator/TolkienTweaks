@@ -507,13 +507,16 @@ public final class ArdaMap {
     /**
      * Hobbiton's pin: the low corner of the cut, which is the corner `/tmcut place hobbiton` is given.
      * <p>
-     * The floor is 40 since the drawing was re-based on 24 November 2026 - black at y 0, white at 318, water at 25.
-     * The site the village was cut into now reads 36 to 71 over its footprint, a median of 56 in 1,050 sampled
-     * columns, so the village's own grass line, sixteen over the floor, stands on 56 and the country meets the
-     * village where it was drawn. It was 87 while the drawing's floor was 63 and its peaks reached 350.
+     * The floor is 33 since the village was walked in a world made after the drawing was re-based - black at y 0,
+     * white at 318, water at 25. The drawing's own site reads 36 to 71 over the footprint, a median of 56 in 1,050
+     * sampled columns, and the cut was planted on that median; the world's ground under the map's own warp stands
+     * nearer 47 to 50, so the village stood seven over the country it was cut into and came down those seven. Its
+     * grass line, sixteen over the floor, stands on 49 now and its own water, nine over the floor, on 42: under the
+     * fields round the village instead of two over them, which is what had the village's water running out over
+     * them. It was 87 while the drawing's floor was 63 and its peaks reached 350.
      */
     public static final int HOBBITON_X = -700;
-    public static final int HOBBITON_Y = 40;
+    public static final int HOBBITON_Y = 33;
     public static final int HOBBITON_Z = -512;
     /** How wide and how deep the village's footprint is, from the player's own map: 551 by 468. */
     public static final int HOBBITON_WIDE = 551;
@@ -522,8 +525,15 @@ public final class ArdaMap {
     public static final int HOBBITON_WATER_LIFT = 9;
     /** How high the village's ground stands over the pin: its grass line, sixteen over the floor. */
     public static final int HOBBITON_DECK_LIFT = 16;
-    /** How many blocks of run the village's branch loses a block of height over. */
-    private static final int HOBBITON_GRADE = 40;
+    /**
+     * How many blocks of run the village's branch loses a block of height over.
+     * <p>
+     * Ninety since the village came down seven, not the forty it was. The branch leaves the village's water at 42
+     * and the drawn channel it runs out to reads about 25 where the two meet, 650 blocks along the course, so the
+     * fall a slow channel needs is seven blocks over that run rather than sixteen: at forty the arm arrived at 26
+     * under the drawing's own water at the fork, which is a waterfall where the drawing has a confluence.
+     */
+    private static final int HOBBITON_GRADE = 90;
     /**
      * How far from a carried course a column still belongs to it, in blocks: the channel's own half width of
      * twenty-eight at its widest, the mask's edge, and enough margin to cover the columns the narrowing leaves at the
@@ -612,23 +622,24 @@ public final class ArdaMap {
      * The Shire's milestone: the paving the owner marked at (-503, 101, -314), in the village's north-east where the
      * paths meet. A travel stone stands here rather than at the pin, because the pin is the corner of the cut.
      * <p>
-     * The mark is a column inside the village rather than a place on the country, so it was carried down with the
-     * cut when the drawing was re-based: 101 to 54 is the village's own 47 blocks, and the paving it stood in went
-     * down with it.
+     * The mark is a column inside the village rather than a place on the country, so it carries down with the cut
+     * rather than being measured against the drawing: 101 to 54 was the village's own 47 blocks, and the seven the
+     * village came down on 24 November 2026 took it to 47, with the paving it stood in.
      */
     public static BlockPos hobbitonMilestone() {
-        return new BlockPos(-503, 54, -314);
+        return new BlockPos(-503, 47, -314);
     }
 
     /**
      * Where a traveller out of the overworld steps into Arda: the gravel of the village's own crossing at
      * (-470, 97, -123), which the owner walked to and gave as the Shire's arrival.
      * <p>
-     * Down with the village by the cut's own 47, to 50: the crossing is a column of the village and not a height on
-     * the country, so it moves with the cut rather than being measured against the drawing.
+     * Down with the village, to 43: the crossing is a column of the village and not a height on the country, so it
+     * moves with the cut rather than being measured against the drawing - 47 with the re-based drawing and seven
+     * more with the village's own seven on 24 November 2026.
      */
     public static BlockPos hobbitonGate() {
-        return new BlockPos(-470, 50, -123);
+        return new BlockPos(-470, 43, -123);
     }
 
     /** The middle of the village's footprint at its own ground: where a name for it is written. */
@@ -706,17 +717,17 @@ public final class ArdaMap {
      * A drawn channel whose level is a placed build's rather than the drawing's.
      * <p>
      * A drawn river normally stands at the height of the ground it is drawn on, and needs nothing: its water is the
-     * country's. A channel that is leaving a build is the other case. Hobbiton's village stands at (-700, 87, -512)
-     * with its water nine over that base, so the river in it runs at 96. Its west arm comes out level with the drawn
-     * channel - 96 against the channel's 95 - and needs nothing. Its south arm comes out into country the drawing
-     * stands at a hundred and five to a hundred and thirteen, so water the mask draws there would be laid at the
-     * ground and would stand thirteen blocks over the village's own: the arm would end against its own wall, under a
-     * river running past it.
+     * country's. A channel that is leaving a build is the other case. Hobbiton's village stands at (-700, 33, -512)
+     * with its water nine over that base, so the river in it runs at 42, and the drawn channel the branch runs out
+     * to is painted higher than that where the two meet and falls to the sea along its own course. A level taken
+     * from the drawing alone would therefore run the arm up over the wall it leaves by; the build's level is what
+     * holds it down, and the grade is what lets it fall to the drawn channel's own water at the fork rather than
+     * arriving under it.
      * <p>
      * So a carried channel's level is read from the build and not from the ground: it leaves the build at
      * {@code water} and falls one block in every {@link #grade} of run, arriving at the Y the mask draws at
-     * (-770, 246) at 80 - a block under the drawn river's own 81, which the level's own reach turns into a step at
-     * the confluence rather than a wall. Everything else the drawn-water path already does follows from that one
+     * (-770, 246) at the drawn river's own water, which the level's own reach turns into a step at the confluence
+     * rather than a wall. Everything else the drawn-water path already does follows from that one
      * number: the bed is cut under the surface, so the branch is a channel thirteen deep at the wall that opens out to
      * two at the fork, and the ground beside it is graded against the water that is really there rather than against
      * the hillside above it.

@@ -74,8 +74,10 @@ public final class Pins extends SavedData {
             // east and one over the block its cut leaves from. It used to be the middle of the footprint, and the middle
             // of a 551 by 468 village is a field a long walk from its own door, which is no answer for a name whose
             // whole job is to put somebody in the village. The build is still raised by Hobbiton.autospawn at its own
-            // corner - the pin is where the name stands, not where the cut starts.
-            Map.entry("hobbiton", new BlockPos(-463, 51, -124)),
+            // corner - the pin is where the name stands, not where the cut starts. It is 44 rather than 51 because the
+            // village came down seven on 24 November 2026, when it was walked in a world made from the re-based
+            // drawing: this is a column of the village, so it moves with the cut.
+            Map.entry("hobbiton", new BlockPos(-463, 44, -124)),
             // Bree, walked in the same world: the town's own arrival point at the head of the hall's front line, one
             // over the ground the hall's markers were set in. It was the middle of the cut's footprint - 1272, 122, 80 -
             // which is a fifth of the way across a 496 by 672 town from its west gate.
@@ -83,8 +85,9 @@ public final class Pins extends SavedData {
             // Hobbiton's mustering hall, on the ground it was raised on and has stood on since: pinned at -529, 101,
             // -74 by /tmpin hall add in the owner's Progress Check 1 world, and read back out of that world's own pins
             // once the hall was up and called perfect. The key comes from TownHalls rather than being written here, so
-            // the table and the command cannot disagree about how a town's hall is named.
-            Map.entry(TownHalls.key("hobbiton"), new BlockPos(-529, 54, -74)),
+            // the table and the command cannot disagree about how a town's hall is named. The hall is laid at the pin's
+            // own column, so it came down with the village's seven: 54 to 47.
+            Map.entry(TownHalls.key("hobbiton"), new BlockPos(-529, 47, -74)),
             // Bree's mustering hall, marked in the owner's Progress Check 3 world: two blocks of ammolite at 1031 and
             // 1032, 122, -32, set into the grass on the town's west side and pointed at the middle two blocks of the
             // hall's own front - the 16-block side the job board is on. The hall is laid turned half round from the
