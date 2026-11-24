@@ -413,7 +413,12 @@ public final class ArdaMap {
     private static final int DALE_ROLL = 4;
     private static final int DALE_ROLL_SCALE = 48;
     static {
-        ArdaMasks.buildDale(BRUINEN_FORD_X, BRUINEN_FORD_Z, DALE_REACH);
+        // The dale is the vale's own water carried out along the drawn Bruinen, so it is built only while the
+        // city's ground is laid. With the city off there is no vale to hold the river at, and the run is left empty:
+        // every channel in the circle it would have covered keeps the level the drawing gives it.
+        if (PLANTED) {
+            ArdaMasks.buildDale(BRUINEN_FORD_X, BRUINEN_FORD_Z, DALE_REACH);
+        }
     }
     /**
      * How far the crown's own surface rolls below the crown, in blocks.
@@ -2848,6 +2853,10 @@ public final class ArdaMap {
      * country rises to meet it, so a world of either height has a valley that belongs to it.
      */
     private static int vale(double blockX, double blockZ, int height) {
+        // No city, no vale: with its ground off, the country is the drawing's and so is every channel in it. This is
+        // the one place the vale reaches the water - the drawn channel's own level is read through it - so a river
+        // within the vale's reach was still pulled down to the city's floor and climbed back out either side.
+        if (!PLANTED) return height;
         double beyond = beyond(blockX, blockZ);
         // Measured from the massif's own foot rather than from the end of its fall. The fall blends the
         // crest away to whatever the ground answers, and the apron stood past it, so the ground the fall
