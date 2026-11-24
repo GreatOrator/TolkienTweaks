@@ -504,9 +504,16 @@ public final class ArdaMap {
         COURSE_LENGTH = total;
     }
 
-    /** Hobbiton's pin: the low corner of the cut, which is the corner `/tmcut place hobbiton` is given. */
+    /**
+     * Hobbiton's pin: the low corner of the cut, which is the corner `/tmcut place hobbiton` is given.
+     * <p>
+     * The floor is 40 since the drawing was re-based on 24 November 2026 - black at y 0, white at 318, water at 25.
+     * The site the village was cut into now reads 36 to 71 over its footprint, a median of 56 in 1,050 sampled
+     * columns, so the village's own grass line, sixteen over the floor, stands on 56 and the country meets the
+     * village where it was drawn. It was 87 while the drawing's floor was 63 and its peaks reached 350.
+     */
     public static final int HOBBITON_X = -700;
-    public static final int HOBBITON_Y = 87;
+    public static final int HOBBITON_Y = 40;
     public static final int HOBBITON_Z = -512;
     /** How wide and how deep the village's footprint is, from the player's own map: 551 by 468. */
     public static final int HOBBITON_WIDE = 551;
@@ -539,10 +546,14 @@ public final class ArdaMap {
      */
     public static final int BREE_X = 1024;
     /**
-     * The y the cut's marker course is planted at: 117 puts the town's own grass line - five over that course - on
-     * 122, which is the mean of the ground the site was surveyed at (101 to 130).
+     * The y the cut's marker course is planted at: 71 puts the town's own grass line - five over that course - on 76.
+     * <p>
+     * The town's site reads 48 to 140 over its footprint since the drawing was re-based on 24 November 2026, a median
+     * of 76 with the tenth to ninetieth centiles at 62 to 82, so the grass line stands on the ground the town was
+     * surveyed at rather than on the hill its own cut carries. It was 117 while the drawing's floor was 63 and its
+     * peaks reached 350.
      */
-    public static final int BREE_Y = 117;
+    public static final int BREE_Y = 71;
     public static final int BREE_Z = -256;
     /** How wide and how deep the town's footprint is, from its four corner markers: 496 by 672. */
     public static final int BREE_WIDE = 496;
@@ -600,17 +611,24 @@ public final class ArdaMap {
     /**
      * The Shire's milestone: the paving the owner marked at (-503, 101, -314), in the village's north-east where the
      * paths meet. A travel stone stands here rather than at the pin, because the pin is the corner of the cut.
+     * <p>
+     * The mark is a column inside the village rather than a place on the country, so it was carried down with the
+     * cut when the drawing was re-based: 101 to 54 is the village's own 47 blocks, and the paving it stood in went
+     * down with it.
      */
     public static BlockPos hobbitonMilestone() {
-        return new BlockPos(-503, 101, -314);
+        return new BlockPos(-503, 54, -314);
     }
 
     /**
      * Where a traveller out of the overworld steps into Arda: the gravel of the village's own crossing at
      * (-470, 97, -123), which the owner walked to and gave as the Shire's arrival.
+     * <p>
+     * Down with the village by the cut's own 47, to 50: the crossing is a column of the village and not a height on
+     * the country, so it moves with the cut rather than being measured against the drawing.
      */
     public static BlockPos hobbitonGate() {
-        return new BlockPos(-470, 97, -123);
+        return new BlockPos(-470, 50, -123);
     }
 
     /** The middle of the village's footprint at its own ground: where a name for it is written. */

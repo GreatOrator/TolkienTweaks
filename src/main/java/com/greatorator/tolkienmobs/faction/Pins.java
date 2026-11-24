@@ -57,6 +57,13 @@ public final class Pins extends SavedData {
      * Empty is the normal state and a working one: a location with no pin is surveyed from the drawing
      * exactly as it was before any of this existed, so the campaign can be walked with an empty table.
      * Lines added here are printed by {@code /tmpin}, which is the intended way to get them.
+     * <p>
+     * A pin that stands on the country was re-read against the drawing on 24 November 2026, when black moved to y 0,
+     * white to 318 and water to 25: its y is the ground of its own column, one over it where a body or a name stands
+     * there, so a {@code /tmtp} arrives on the surface rather than inside it. That took the Shire's camp pins up by a
+     * stone's throw, forty-two at Barachen's fire, and the High Pass's camp down by forty-four. A pin inside a build
+     * - the village's own marks, the halls laid on their pins - keeps its offset from that build instead, and a pin
+     * underground keeps the y it was cut at.
      */
     private static final Map<String, BlockPos> SOURCE = new LinkedHashMap<>(Map.ofEntries(
             // Rivendell has no pin while its site is re-scouted: the old one, 5200, 75, -3370, was the block the
@@ -68,16 +75,16 @@ public final class Pins extends SavedData {
             // of a 551 by 468 village is a field a long walk from its own door, which is no answer for a name whose
             // whole job is to put somebody in the village. The build is still raised by Hobbiton.autospawn at its own
             // corner - the pin is where the name stands, not where the cut starts.
-            Map.entry("hobbiton", new BlockPos(-463, 98, -124)),
+            Map.entry("hobbiton", new BlockPos(-463, 51, -124)),
             // Bree, walked in the same world: the town's own arrival point at the head of the hall's front line, one
             // over the ground the hall's markers were set in. It was the middle of the cut's footprint - 1272, 122, 80 -
             // which is a fifth of the way across a 496 by 672 town from its west gate.
-            Map.entry("bree", new BlockPos(1059, 123, -31)),
+            Map.entry("bree", new BlockPos(1059, 77, -31)),
             // Hobbiton's mustering hall, on the ground it was raised on and has stood on since: pinned at -529, 101,
             // -74 by /tmpin hall add in the owner's Progress Check 1 world, and read back out of that world's own pins
             // once the hall was up and called perfect. The key comes from TownHalls rather than being written here, so
             // the table and the command cannot disagree about how a town's hall is named.
-            Map.entry(TownHalls.key("hobbiton"), new BlockPos(-529, 101, -74)),
+            Map.entry(TownHalls.key("hobbiton"), new BlockPos(-529, 54, -74)),
             // Bree's mustering hall, marked in the owner's Progress Check 3 world: two blocks of ammolite at 1031 and
             // 1032, 122, -32, set into the grass on the town's west side and pointed at the middle two blocks of the
             // hall's own front - the 16-block side the job board is on. The hall is laid turned half round from the
@@ -85,19 +92,19 @@ public final class Pins extends SavedData {
             // stand on is that face: the box runs 1024..1039 by -32..-17, its west wall on the cut's own west edge, and
             // its floor course goes into the block the markers stand in, level with the ground round it. The pin is the
             // block a builder stands in, which is the course above the floor.
-            Map.entry(TownHalls.key("bree"), new BlockPos(1024, 123, -32)),
+            Map.entry(TownHalls.key("bree"), new BlockPos(1024, 77, -32)),
             // The Carrock, pinned where the owner stood it: the cut's own low north-west corner at 8307, 187, -4165, the
             // block /tmcut place carrock is given so the box lands where the owner already had it. The rock is cut rather
             // than templated, so Carrock.autospawn reads this pin on the first start of a world and lays the cut from it:
             // the pin is the corner the pieces are planted on, and /tmpin is still how it is moved.
-            Map.entry(Carrock.NAME, new BlockPos(8307, 187, -4165)),
+            Map.entry(Carrock.NAME, new BlockPos(8307, 156, -4165)),
             // The goblin cave page 27 is fought in, settled along the road at the door the scout walked: the
             // mountain rises south of it, so the cut runs into the hill there. The shelter camp beyond the way in
             // is pinned beside it, so the fires have a camp outside them in every world rather than only in the
             // one they were scouted in - a pin under a template's own name is what Sites raises, and the two of
             // these are the pair the chapter walks up to.
-            Map.entry(GoblinCave.PIN, new BlockPos(5628, 196, -3621)),
-            Map.entry(Sites.SHELTER_CAMP, new BlockPos(5595, 196, -3621)),
+            Map.entry(GoblinCave.PIN, new BlockPos(5628, 146, -3621)),
+            Map.entry(Sites.SHELTER_CAMP, new BlockPos(5595, 143, -3621)),
             // The dwarven keep: its own north-west bottom corner, which is the plan the pass was cut to and the box
             // GundabadKeep lays on the first start of a world. Pinned because the hold is a hundred and twenty-two by
             // a hundred and eighty-three and there is exactly one box in the massif it fits - the one the chamber's
@@ -114,66 +121,66 @@ public final class Pins extends SavedData {
             // the camps and the four crags on the hillsides they were found on. The y is where the scout stood;
             // the laying measures the ground under a footprint and seats it, so the block is a target and not a
             // measurement. Keys go through the Sites constants, so a checklist line and a placement cannot drift.
-            Map.entry("thorenhad", new BlockPos(4691, 87, -3273)),
-            Map.entry("barachen", new BlockPos(4812, 77, -2885)),
+            Map.entry("thorenhad", new BlockPos(4691, 119, -3273)),
+            Map.entry("barachen", new BlockPos(4812, 120, -2885)),
             // Barachen's own camp, raised by the world rather than by a page: the corner of the doorway the scout
             // marked at 4820, 76, -2885, that block being the middle of the template's south face, so the corner
             // is eight west of it and the build is seated level with the ground the road arrives on.
-            Map.entry(Sites.BARACHENS_CAMP, new BlockPos(4812, 77, -2885)),
-            Map.entry("ford", new BlockPos(5061, 75, -3136)),
+            Map.entry(Sites.BARACHENS_CAMP, new BlockPos(4812, 120, -2885)),
+            Map.entry("ford", new BlockPos(5061, 118, -3136)),
             // Elladan's camp, read back out of the scouted save rather than written down from the drawing: the world
             // raised it at 4640, 92, -3313, six east and one north of the pin that asked for it, with its floor four
             // blocks above the ground outside its door. Its seat drops it by that four, so the pin is written where
             // the camp will stand - the corner, dropped - and not where it happened to be standing when it was read.
-            Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4640, 88, -3313)),
-            Map.entry(Sites.WOOD_RUIN, new BlockPos(4782, 79, -3058)),
-            Map.entry(Sites.TROLL_CAVE, new BlockPos(4460, 125, -2477)),
-            Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4568, 112, -2511)),
-            Map.entry(Sites.TROLL_CAVE_3, new BlockPos(4508, 124, -2429)),
+            Map.entry(Sites.ELLADAN_CAMP, new BlockPos(4640, 117, -3313)),
+            Map.entry(Sites.WOOD_RUIN, new BlockPos(4782, 121, -3058)),
+            Map.entry(Sites.TROLL_CAVE, new BlockPos(4460, 112, -2477)),
+            Map.entry(Sites.TROLL_CAVE_2, new BlockPos(4568, 116, -2511)),
+            Map.entry(Sites.TROLL_CAVE_3, new BlockPos(4508, 115, -2429)),
             // Matuna's lair, the wood-troll's own crag: the hill the scout marked in the wood east of the valley, at
             // 4633, 94, -3081. Pinned like the stone's three, so the lair stands whether or not the page that names him
             // has been taken, and /tmpin and /tmtp have a name for it at last. Without a pin the crag had none of that:
             // a command asking for it was told nothing was called that, and the page's own survey fell back on the
             // middle of the Trollshaws.
-            Map.entry(Sites.TROLL_CAVE_4, new BlockPos(4633, 94, -3081)),
+            Map.entry(Sites.TROLL_CAVE_4, new BlockPos(4633, 122, -3081)),
             // Where the ruin's animal lies and where Barachen's keeper stands, marked after both builds had already
             // been raised: a building is dressed every visit now, so these are read rather than only laid once.
-            Map.entry(Sites.WOOD_RUIN + ".body", new BlockPos(4787, 79, -3052)),
-            Map.entry(Sites.BARACHENS_CAMP + ".keeper", new BlockPos(4822, 77, -2875)),
+            Map.entry(Sites.WOOD_RUIN + ".body", new BlockPos(4787, 121, -3052)),
+            Map.entry(Sites.BARACHENS_CAMP + ".keeper", new BlockPos(4822, 120, -2875)),
             // The road half of each doorway pair, recorded where a route can read it: the second marker of a pair
             // is the last block of the road that reaches that door, and the ruin's and Barachen's were both walked.
-            Map.entry(Sites.WOOD_RUIN + ".end", new BlockPos(4787, 78, -3058)),
-            Map.entry(Sites.BARACHENS_CAMP + ".end", new BlockPos(4820, 76, -2886)),
+            Map.entry(Sites.WOOD_RUIN + ".end", new BlockPos(4787, 121, -3058)),
+            Map.entry(Sites.BARACHENS_CAMP + ".end", new BlockPos(4820, 120, -2886)),
             // Elladan's camp's own two: the door's block and the ground outside it, and the spot inside the camp a
             // scout stood on, both walked on the camp as it stands and both written four lower - the drop its seat
             // gives it - so the man at the fire stands on the floor that will be under him rather than the one under
             // him now.
-            Map.entry(Sites.ELLADAN_CAMP + ".end", new BlockPos(4648, 90, -3314)),
-            Map.entry(Sites.ELLADAN_CAMP + ".keeper", new BlockPos(4645, 90, -3308)),
+            Map.entry(Sites.ELLADAN_CAMP + ".end", new BlockPos(4648, 117, -3314)),
+            Map.entry(Sites.ELLADAN_CAMP + ".keeper", new BlockPos(4645, 117, -3308)),
             // Where the road out of the valley's crossing ends and the next one begins: the marker at 4972 is both,
             // so the road south to Thorenhad starts here rather than at the water.
             // The ford's marker as the redux world reads it: one block west of where it was first written down, and
             // two lower, which is the ground beside the road's last block rather than on it.
-            Map.entry("ford.road", new BlockPos(4971, 84, -3075)),
+            Map.entry("ford.road", new BlockPos(4971, 118, -3075)),
             // The four crags' road ends, read off the ammolite markers set down in the redux world once the crags were
             // standing. Each sits on its crag's footprint edge, twenty-seven or twenty-eight blocks out from the
             // middle of it, which is the ground a road arriving at a crag has to meet. Recorded so that a road to any
             // of the stone's three, or to Matuna's lair, has an end to grade to instead of the survey's guess. The
             // chapter's other road ends were written down earlier: the ruin's, Barachen's fire's, Thorenhad's door
             // and the valley's two banks.
-            Map.entry(Sites.TROLL_CAVE + ".end", new BlockPos(4515, 121, -2446)),
-            Map.entry(Sites.TROLL_CAVE_2 + ".end", new BlockPos(4624, 107, -2479)),
-            Map.entry(Sites.TROLL_CAVE_3 + ".end", new BlockPos(4562, 120, -2398)),
-            Map.entry(Sites.TROLL_CAVE_4 + ".end", new BlockPos(4689, 86, -3050)),
+            Map.entry(Sites.TROLL_CAVE + ".end", new BlockPos(4515, 115, -2446)),
+            Map.entry(Sites.TROLL_CAVE_2 + ".end", new BlockPos(4624, 117, -2479)),
+            Map.entry(Sites.TROLL_CAVE_3 + ".end", new BlockPos(4562, 116, -2398)),
+            Map.entry(Sites.TROLL_CAVE_4 + ".end", new BlockPos(4689, 122, -3050)),
             // Chapter two's camp, walked at the High Pass's east mouth: 8215, -3674 is the corner the 28 by 22 camp
             // is laid from, so its south wall stands on the doorway the scout marked at 8229, -3652 and its floor runs
             // twelve blocks north of it, where he stood inside it at 8233, -3664. The .end is that doorway's road
             // block, the ground outside the wall the camp's own track leaves from.
-            Map.entry(Sites.GLOIN_CAMP, new BlockPos(8215, 224, -3674)),
-            Map.entry(Sites.GLOIN_CAMP + ".end", new BlockPos(8229, 223, -3652)),
+            Map.entry(Sites.GLOIN_CAMP, new BlockPos(8215, 181, -3674)),
+            Map.entry(Sites.GLOIN_CAMP + ".end", new BlockPos(8229, 180, -3652)),
             // The camp's own name, written at the middle of the footprint the pin above lays: a page that names
             // Glóin's camp asks for ground by the name, and the middle is where the fire and the man at it stand.
-            Map.entry("gloin", new BlockPos(8229, 223, -3663)),
+            Map.entry("gloin", new BlockPos(8229, 180, -3663)),
             // The departure's own courtyard, read off eleven marker blocks laid on the staging plaza at
             // 5117, -3409 on 10 November 2026 - one block per body, the mithril one Elrond's. The blocks were
             // a survey and are not wanted again: they stand in the world they were laid in and in no other, so
