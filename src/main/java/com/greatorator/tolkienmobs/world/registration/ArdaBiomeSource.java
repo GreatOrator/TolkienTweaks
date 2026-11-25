@@ -43,7 +43,7 @@ import java.util.stream.Stream;
  */
 public class ArdaBiomeSource extends BiomeSource {
     /** The biomes the map can name that are not countries: a river's bed and a shore. */
-    private static final List<ResourceKey<Biome>> OVERLAYS = List.of(Biomes.RIVER, Biomes.BEACH,
+    private static final List<ResourceKey<Biome>> OVERLAYS = List.of(Biomes.RIVER, Biomes.BEACH, Biomes.OCEAN,
             TolkienBiomes.RIVER, TolkienBiomes.LAKE, TolkienBiomes.LAKE_EVENDIM, TolkienBiomes.SEA_OF_RHUN,
             TolkienBiomes.SEA_OF_NURNEN, TolkienBiomes.LONG_LAKE, TolkienBiomes.RIVER_ANDUIN,
             TolkienBiomes.RIVER_CELDUIN, TolkienBiomes.RIVER_GWATHLO, TolkienBiomes.RIVER_LUNE,
@@ -151,7 +151,12 @@ public class ArdaBiomeSource extends BiomeSource {
      */
     private static ResourceKey<Biome> water(ArdaMap.Sample sample, int blockX, int blockZ) {
         ResourceKey<Biome> key = sample.biome();
-        return key == Biomes.RIVER ? ArdaMap.waterBiome(blockX, blockZ) : key;
+        if (key == Biomes.RIVER) {
+            return ArdaMap.waterBiome(blockX, blockZ);
+        }
+        // The sea's biome follows its depth, because the shelf does: a column two blocks under the water is the
+        // shallow sea and not the deep ocean, and a land column answers its own biome whichever way the sum falls.
+        return ArdaMap.seaBiome(key, sample.water() - sample.height());
     }
 
     /**

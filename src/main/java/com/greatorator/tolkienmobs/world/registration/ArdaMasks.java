@@ -561,6 +561,60 @@ final class ArdaMasks {
         return false;
     }
 
+    /**
+     * How far the shelf reach is looked for, in blocks: the sea's own depths stand past it, so this is the width
+     * of the shallows a coast is given rather than a distance anything else is measured at.
+     */
+    static final int COAST_REACH = 176;
+
+    /**
+     * How far a column of the drawn sea stands from the drawing's nearest land, in blocks: nothing where the
+     * column is land itself, and {@link #COAST_REACH} where there is no land within that reach.
+     * <p>
+     * The drawing paints the sea at zero and says nothing at all about its bed, so a coast read off the raster
+     * alone is a wall: the water stands over the sand and twenty-five deep over the ground beside it, because
+     * there is no drawn ground under the sea to shoal toward. This is the measure the generator's shelf is graded
+     * on. It is read outward along eight rays a pixel at a time - eight-block steps, so a coast is found within a
+     * pixel of where the raster puts it - and answered as the distance from the block to that pixel's own edge,
+     * which is the line the drawing calls the shore.
+     */
+    static int coastDistance(int blockX, int blockZ) {
+        if (GROUND.length == 0) {
+            return COAST_REACH;
+        }
+        int column = Math.floorDiv(blockX - WEST, BLOCKS);
+        int row = Math.floorDiv(blockZ - NORTH, BLOCKS);
+        if (column < 0 || column >= WIDTH || row < 0 || row >= HEIGHT) {
+            return COAST_REACH;
+        }
+        int reach = COAST_REACH / BLOCKS;
+        for (int r = 1; r <= reach; r++) {
+            int nearest = Integer.MAX_VALUE;
+            for (int ray = 0; ray < RAY_X.length; ray++) {
+                int nearColumn = column + RAY_X[ray] * r;
+                int nearRow = row + RAY_Z[ray] * r;
+                if (nearColumn < 0 || nearColumn >= WIDTH || nearRow < 0 || nearRow >= HEIGHT) {
+                    continue;
+                }
+                if (GROUND[nearRow * WIDTH + nearColumn] == 0) {
+                    continue;
+                }
+                double outX = blockX - (WEST + nearColumn * BLOCKS + BLOCKS / 2.0D);
+                double outZ = blockZ - (NORTH + nearRow * BLOCKS + BLOCKS / 2.0D);
+                nearest = Math.min(nearest,
+                        (int) Math.max(0.0D, Math.round(Math.hypot(outX, outZ) - BLOCKS / 2.0D)));
+            }
+            if (nearest != Integer.MAX_VALUE) {
+                return nearest;
+            }
+        }
+        return COAST_REACH;
+    }
+
+    /** The eight directions the coast is looked for along, as pixel steps. */
+    private static final int[] RAY_X = {1, -1, 0, 0, 1, 1, -1, -1};
+    private static final int[] RAY_Z = {0, 0, 1, -1, 1, -1, 1, -1};
+
     static int maskWidth() {
         return WIDTH;
     }

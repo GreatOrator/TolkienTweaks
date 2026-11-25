@@ -4,6 +4,26 @@ The working state of the campaign, written so a session picking this up cold doe
 then `docs/chapter-two-state.md` for the chapter being walked and `docs/chapter-three.md` for the one after.
 `docs/HANDOFF.md` is the long history - how each thing came to be - and `docs/arda-roads.md` the road design.
 
+**The sea shoals into its coasts, and the shallows are the shallow sea.** The owner's fresh world at -948, 97, 418
+(grass at 25 at his feet, `minecraft:deep_ocean` on the water eight blocks west) asked whether the map reads its
+distances right and why the coast is a hard edge, and the answer is that the coast sits where the drawing puts it
+while the bed is what made it read as a wall. The masks are read block for block through the committed
+calibration: at z 418 the raster's zero runs from -1060 to -940 and `ardaSample` reads those columns
+`TEMPERATE_SEA` at 0 to 3 - the reference's own bight, 930 blocks from the Shire's cell centre - so no scale or
+offset moved and the Shire is untouched (55 at -700, -512; 65 at 0, 0). What was wrong is the bed: every drawn sea
+stood on the sea country's own 0 to 3, twenty-two to twenty-five blocks under the water right up to the sand, and
+every sea column was `minecraft:deep_ocean`. `ArdaMasks.coastDistance` measures a sea column's distance to the
+drawing's nearest land and `ArdaMap.shelf` raises the bed toward it - two blocks of water at the coast, one more per
+eight blocks of run, to twenty-one, inside 176 blocks - so the bight on z 418 is now two to eight deep and the
+Brandywine's estuary shelves from four to sixteen where it was twenty-three to twenty-six; `ArdaMap.seaBiome` puts
+water twelve deep or less in `minecraft:ocean` (`minecraft:frozen_ocean` in the north) and the biome list grew its
+69th line by `runData`. Open sea past the reach and every land column are unchanged. **Not seen in a world:**
+compiled and sampled, no chunk generated and no client - the old bed stays in the Shire's bay until that ground is
+made again, and the shallows' colour is still to be looked at. **If the owner wants the water physically farther
+from Hobbiton,** the next thing is not a worldgen rule but the masks' Eriador coast: the hand-drawn cells put it
+about 1,560 blocks west of where the reference paints it, and moving it is a re-cut of `height.png` (and the
+Rivers/Lakes masks with it), not a shelf.
+
 **The tools read the ground the world stands at, raggedness and all.** `tools/arda_ground.py` is
 `ArdaMap.groundHeight` in Python - the baked masks the game itself reads, its Catmull-Rom spline between
 the height pixels, its bilinear cover of the mountain mask, the mask's climb of sixty-four and `ragged`'s

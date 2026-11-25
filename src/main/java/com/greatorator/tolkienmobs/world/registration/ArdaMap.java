@@ -922,6 +922,61 @@ public final class ArdaMap {
     }
 
     /**
+     * The sea's shelf: how deep the water stands at the drawn coast, how much run one more block of depth takes,
+     * and how deep the shelf itself is allowed to go.
+     * <p>
+     * The drawing puts the sea at zero and says nothing about its bed, so the water beside a beach was the same
+     * twenty-two to twenty-five blocks deep as the open sea: a coast that steps straight off into the deep, with no
+     * shallows to walk into. The bed is raised toward the shoreline instead - two blocks of water at the coast,
+     * deepening a block in every {@link #SHELF_RUN} - until the drawing's own bed is the shallower of the two. It is
+     * a ceiling on the depth, not a second sea: it never raises the floor over the waterline, so an island the
+     * drawing did not draw cannot appear, and past {@link ArdaMasks#COAST_REACH} the drawn bed answers alone.
+     */
+    private static final int SHELF_AT_COAST = 1;
+    private static final int SHELF_RUN = 8;
+    private static final int SHELF_DEPTH = 21;
+
+    /**
+     * How shallow the water has to be before a sea column reads as the shallow band rather than the deep ocean.
+     * <p>
+     * Twelve leaves the shelf's own shallows - the first eighty blocks of run - reading shallow, and hands the rest
+     * of the shelf to the deep biome somewhere off the beach rather than at it.
+     */
+    private static final int SHALLOW_SEA = 12;
+
+    /** The bed the shelf stands at over a column of the drawn sea, or the sea's own bed where no coast is in reach. */
+    private static int shelf(int blockX, int blockZ) {
+        int out = ArdaMasks.coastDistance(blockX, blockZ);
+        if (out >= ArdaMasks.COAST_REACH) {
+            return Integer.MIN_VALUE;
+        }
+        int deep = Math.min(SHELF_DEPTH, SHELF_AT_COAST + out / SHELF_RUN);
+        return SEA_LEVEL - 1 - deep;
+    }
+
+    /**
+     * The biome a column of sea reads as: the shallow band beside a coast is not the deep ocean.
+     * <p>
+     * The seas' countries name the deep biomes, which is right for the open water and wrong for the shelf: two
+     * blocks of water beside a beach were coloured, fogged and spawned as `minecraft:deep_ocean`, so the ocean read
+     * as deep right up to the sand. A column the shelf has raised stands in the shallow band instead -
+     * `minecraft:ocean` for the temperate sea, `minecraft:frozen_ocean` for the northern one - and the deep biome
+     * takes the water back where the shelf has run out.
+     */
+    static ResourceKey<Biome> seaBiome(ResourceKey<Biome> sea, int depth) {
+        if (depth > SHALLOW_SEA) {
+            return sea;
+        }
+        if (sea == Biomes.DEEP_OCEAN) {
+            return Biomes.OCEAN;
+        }
+        if (sea == Biomes.DEEP_FROZEN_OCEAN) {
+            return Biomes.FROZEN_OCEAN;
+        }
+        return sea;
+    }
+
+    /**
      * How much a drawn lake's bed rolls, in blocks, and the sizes of the two noises that roll it.
      * <p>
      * A sheet's bed is cut to its depth by how much of the column the mask covers, which is a smooth dome - the same
@@ -2951,6 +3006,9 @@ public final class ArdaMap {
             if (bed < SEA_LEVEL) {
                 bed = Math.min(SEA_LEVEL - 2, bed + seabed(blockX, blockZ));
             }
+            // And it shoals toward a coast. The drawing says nothing about the bed, so the open sea's own depth laid
+            // to the waterline is a wall at the sand; the shelf is the ceiling on that depth, read off the drawn shore.
+            bed = Math.max(bed, shelf(blockX, blockZ));
             // Held under the waterline even where the mountain mask lifts the ground: a drawn sea is water, and a
             // bed the mask raised over it is the dry ocean this reads the poster to avoid.
             height = Math.min(SEA_LEVEL - 1, ragged(blockX, blockZ,
