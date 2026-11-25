@@ -379,7 +379,7 @@ public final class CutCommands {
             level.getChunk(x >> 4, z >> 4);
             int ceiling = planted.getY() + top;
             int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
-            if (standsOnOwnGround(level, at, x, z, surface, ceiling)) {
+            if (standsOnOwnGround(level, at, x, z, surface, ceiling, shape, index, planted.getY())) {
                 kept++;
                 continue;
             }
@@ -414,13 +414,23 @@ public final class CutCommands {
      * stands over that course with its trunk on it, and read by the country's rule the tree comes off at the grass
      * and the village loses the thing it was built around. So a column is asked what its top actually is - read
      * down from the surface through leaves and wood to the first block that is neither, which is the block the tree
-     * stands on. A tree standing at or under the cut's own top in that column stands on the build's ground and is
-     * the build's; one whose ground is above that top stands on the country over the build - a hill the clear is
-     * taking off - and goes with it, and a crown hanging over air has no ground of its own and goes, so nothing is
-     * left standing on nothing.
+     * stands on - and then whether that block is the build's own ground: one the cut places, at or under the top of
+     * the cut's own ground in that column, which is what {@code foot} is. A tree standing on anything else stands
+     * on the country over the build, and goes with it; a crown hanging over air has no ground of its own and goes
+     * too, so nothing is left standing on nothing.
+     * <p>
+     * Being at or under the cut's own top was the whole of the test, and it is not enough. A column's top is a
+     * canopy wherever the build draws a tree, so the country's hill under that canopy stood under it and read as
+     * ground the tree was the build's on, and the column was left entire. What the Shire's fields came up with is a
+     * plinth of the country under every drawn crown - stone and dirt and grass from the drawn ground to the canopy,
+     * with a birch or an oak on it. At -260, -216 the cut draws rock to 41, dirt to 46 and a mushroom block on 47,
+     * with one leaf at 70, and the world held all of that and then the country's own stone 48..63, dirt 64..67,
+     * grass 68 and a crown on it: twenty-two blocks the clear walked past in one go. Read against {@code foot}, the
+     * country's grass at 68 is twenty-one blocks over the cut's own ground at 47, so the column is the country's
+     * and is cleared like any other.
      */
     private static boolean standsOnOwnGround(ServerLevel level, BlockPos.MutableBlockPos at, int x, int z,
-                                             int surface, int ceiling) {
+                                             int surface, int ceiling, Shape shape, int column, int planted) {
         int y = surface - 1;
         boolean tree = false;
         while (y > level.getMinY()) {
@@ -430,7 +440,7 @@ public final class CutCommands {
             y--;
         }
         if (!tree) return false;
-        return !level.getBlockState(at.set(x, y, z)).isAir() && y <= ceiling;
+        return y <= ceiling && y - planted <= shape.foot()[column] && shape.solid(column, y - planted);
     }
 
     /**
@@ -441,7 +451,11 @@ public final class CutCommands {
      */
     private static boolean tree(BlockState state) {
         if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)) return true;
-        String name = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
+        return tree(BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString());
+    }
+
+    /** The same reading by name, for a cut read out of its files rather than out of the world. */
+    private static boolean tree(String name) {
         return name.endsWith("_leaves") || name.contains("leaves_") || name.endsWith("_log")
                 || name.contains("log_") || name.contains("_wood") || name.contains("wood_")
                 || name.contains("_stem") || name.contains("_hyphae");
@@ -471,8 +485,11 @@ public final class CutCommands {
         return new BlockPos(feet.getX(), groundY, feet.getZ());
     }
 
-    /** Where a cut's own blocks are: its top and bottom in each column, and a bit for every block it places. */
-    record Shape(int wide, int deep, int tall, int low, int[] top, int[] bottom, long[] solid) {
+    /**
+     * Where a cut's own blocks are: its top and bottom in each column, the top of its own ground with its trees left
+     * out, and a bit for every block it places.
+     */
+    record Shape(int wide, int deep, int tall, int low, int[] top, int[] bottom, int[] foot, long[] solid) {
         boolean solid(int column, int localY) {
             int at = column * tall + (localY - low);
             return at >= 0 && at < solid.length * 64 && (solid[at >> 6] & (1L << (at & 63))) != 0L;
@@ -490,12 +507,14 @@ public final class CutCommands {
         int deep = parts.stream().mapToInt(part -> part.dz() + part.deep() - lowZ).max().orElse(0);
         int tall = parts.stream().mapToInt(part -> part.dy() + part.tall() - lowY).max().orElse(0);
         if (wide <= 0 || deep <= 0 || tall <= 0) {
-            return new Shape(0, 0, 0, lowY, new int[0], new int[0], new long[0]);
+            return new Shape(0, 0, 0, lowY, new int[0], new int[0], new int[0], new long[0]);
         }
         int[] top = new int[wide * deep];
         int[] bottom = new int[wide * deep];
+        int[] foot = new int[wide * deep];
         Arrays.fill(top, Integer.MIN_VALUE);
         Arrays.fill(bottom, Integer.MAX_VALUE);
+        Arrays.fill(foot, Integer.MIN_VALUE);
         long[] solid = new long[(wide * deep * tall + 63) >> 6];
         for (Part part : parts) {
             CompoundTag piece = raw(level, cut, part.name());
@@ -508,25 +527,25 @@ public final class CutCommands {
                     CompoundTag palette = palettes.getCompoundOrEmpty(i);
                     heights(palette.getList("palette").orElseGet(ListTag::new),
                             palette.getList("blocks").orElseGet(ListTag::new),
-                            part, lowX, lowY, lowZ, wide, deep, tall, top, bottom, solid);
+                            part, lowX, lowY, lowZ, wide, deep, tall, top, bottom, foot, solid);
                 }
             } else {
                 heights(piece.getList("palette").orElseGet(ListTag::new),
                         piece.getList("blocks").orElseGet(ListTag::new),
-                        part, lowX, lowY, lowZ, wide, deep, tall, top, bottom, solid);
+                        part, lowX, lowY, lowZ, wide, deep, tall, top, bottom, foot, solid);
             }
         }
         for (int i = 0; i < bottom.length; i++) {
             if (bottom[i] == Integer.MAX_VALUE) bottom[i] = Integer.MIN_VALUE;
         }
-        Shape shape = new Shape(wide, deep, tall, lowY, top, bottom, solid);
+        Shape shape = new Shape(wide, deep, tall, lowY, top, bottom, foot, solid);
         SHAPES.put(cut, shape);
         return shape;
     }
 
     /** One palette's blocks: a bit for every position the cut fills, and the column's own span. */
     private static void heights(ListTag palette, ListTag blocks, Part part, int lowX, int lowY, int lowZ,
-                                int wide, int deep, int tall, int[] top, int[] bottom, long[] solid) {
+                                int wide, int deep, int tall, int[] top, int[] bottom, int[] foot, long[] solid) {
         String[] names = new String[palette.size()];
         for (int i = 0; i < palette.size(); i++) {
             names[i] = palette.getCompoundOrEmpty(i).getStringOr("Name", "");
@@ -548,6 +567,7 @@ public final class CutCommands {
             solid[at >> 6] |= 1L << (at & 63);
             if (y > top[column]) top[column] = y;
             if (y < bottom[column]) bottom[column] = y;
+            if (!tree(name) && y > foot[column]) foot[column] = y;
         }
     }
 
