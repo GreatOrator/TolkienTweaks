@@ -97,8 +97,6 @@ public final class Hobbiton {
      * across, so a player standing at one wall is not "far" from the other.
      */
     private static final int REACH = 192;
-    /** How far from the caller `/hobbiton heal` puts the village's own ground back, in blocks. */
-    private static final int HEAL_REACH = 64;
     /** How long after a start the pass waits before it will touch anything: a start is busy enough as it is. */
     private static final int GRACE_TICKS = 200;
     /** How many of the village's columns one unit of the clear works: a band across the footprint. */
@@ -360,7 +358,11 @@ public final class Hobbiton {
      * did not skip it: inside the walls the drape takes off what stands over the cut and never rewrites the cut's own
      * blocks, which is what keeps a wall and a floor a wall and a floor. So the one repair that can be made without
      * guessing is asked for by hand: the cut's own grass goes back wherever the world holds plain dirt at the cut's
-     * height with nothing solid or wet over it, within {@link #HEAL_REACH} of the caller.
+     * height with nothing solid or wet over it, anywhere in the village's footprint.
+     * <p>
+     * Nowhere in the footprint is the answer rather than a circle round the hand, because the wear is the village's
+     * own folk walking: they walk the whole of it, so a circle round wherever the hand happens to stand misses nearly
+     * all of it. The cut is read in full either way, so there is nothing saved by asking for less.
      */
     private static int healNow(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
@@ -369,7 +371,6 @@ public final class Hobbiton {
             source.sendFailure(Component.literal("Arda is not in this world, so there is no village ground to heal."));
             return 0;
         }
-        BlockPos centre = BlockPos.containing(source.getPosition());
         try {
             List<CutCommands.Part> parts = CutCommands.parts(level, CUT);
             if (parts.isEmpty()) {
@@ -380,10 +381,9 @@ public final class Hobbiton {
             List<CityCommands.Part> cityParts = CutCommands.cityParts(parts);
             int healed = Dressing.repair(level, CutCommands.folder(level).resolve(CUT),
                     piece -> CutCommands.raw(level, CUT, piece), cityParts, corner,
-                    CityCommands.Box.of(cityParts, corner), true, CutCommands.deck(level, CUT),
-                    centre.getX(), centre.getZ(), HEAL_REACH);
+                    CityCommands.Box.of(cityParts, corner), true, CutCommands.deck(level, CUT));
             source.sendSuccess(() -> Component.literal("The Shire: " + healed + " column(s) of the village's own"
-                    + " ground within " + HEAL_REACH + " of " + centre.toShortString() + " took their grass back."), true);
+                    + " ground took their grass back."), true);
             return healed;
         } catch (IOException unreadable) {
             source.sendFailure(Component.literal("The village's cut could not be read: " + unreadable.getMessage()));

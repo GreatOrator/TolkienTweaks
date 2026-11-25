@@ -1372,7 +1372,15 @@ all unverified.
 - A road already laid is never taken back: `surfaceAt` reads the old embankment as ground, and `forget` clears only the
   saved alignment and grade.
 
-- **The village's worn ground has a repair, and it is a hand's**: `/hobbiton heal` puts the cut's own grass back over the columns within 64 blocks of the caller where the world holds plain `dirt` or `coarse_dirt` at the height the cut draws grass, with nothing solid or wet over it. It is not on a clock and nothing calls it: the wear is the village's own folk walking, so it returns, and a pass that watches a village for a living is idle work. It has not been run on `Generation Redux - 3` yet, so the 68 columns behind the muster hall still read as dirt. It reads the cut the jar holds, so it is worth running in a world raised from that cut and not in one raised before a re-cut.
+- **The village's worn ground has a repair, and it is a hand's**: `/hobbiton heal` puts the cut's own grass back over every column of the cut's
+  footprint where the world holds plain `dirt` or `coarse_dirt` at the height the cut draws grass, with nothing solid or wet over it. It is not on
+  a clock and nothing calls it: the wear is the village's own folk walking, so it returns, and a pass that watches a village for a living is idle
+  work. It asks the whole cut rather than a circle round the caller, because the world says the circle is worth little: `Generation Redux - 3`
+  holds 5,450 worn columns in the footprint and 5,446 of them are further than 64 blocks from the spot behind the muster hall. **Run by the owner
+  on 25 November 2026, and the patch in the picture did not change** - nor could it: the 25 bare columns under the camera lie past the cut's
+  southern edge at z -45, where the cut draws nothing and the repair never looks, and untouched country is mottled the same way (1.1-1.7% bare),
+  so that brown is the Shire's own top rather than a skipped pass. The widened pass has not been run; the 5,450 columns still read as dirt.
+  It reads the cut the jar holds, so it is worth running in a world raised from that cut and not in one raised before a re-cut.
 
 ## The rules this project is walked by
 

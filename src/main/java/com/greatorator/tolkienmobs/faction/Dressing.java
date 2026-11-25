@@ -195,23 +195,29 @@ public final class Dressing {
     }
 
     /**
-     * Puts a build's own ground back where something has worn it away, within a radius of a point.
+     * Puts a build's own ground back where something has worn it away.
      * <p>
      * The drape lays a build once and never rewrites the cut's own blocks, which is what keeps a wall, a floor and a
      * roof whole inside its walls. Nothing in the drape wears them either - what does is the build's own folk walking
      * over its grass, which vanilla turns to dirt under a body's feet, so a village a fortnight old has a trail of bare
      * dirt through it that reads as ground the drape skipped. This is the repair, and it is asked for by a hand: the
      * cut is read for its own grass and nothing but a worn column of it is written.
+     * <p>
+     * The whole cut is asked, not a circle round the caller. The wear is the village's own folk walking, and they walk
+     * it end to end: the village in `Generation Redux - 3` holds 5,450 columns of it, and a hand stood where the
+     * screenshots are taken is within sixty-four blocks of four of them, because the other 5,446 are across the green
+     * and no nearer the hand than they are each other. Reading the cut's grass is what the pass costs - its grid is 551
+     * by 468 columns, and every one of them is read before a single block is written - so the radius never bought a
+     * cheaper pass, only a smaller one.
      *
      * @return how many columns took their grass back
      */
     static int repair(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
-                      BlockPos origin, CityCommands.Box box, boolean trees, int deck,
-                      int centreX, int centreZ, int radius) {
+                      BlockPos origin, CityCommands.Box box, boolean trees, int deck) {
         Job job = new Job("", folder, pieces, parts, origin, box, false, false, trees, deck);
         while (job.piece < parts.size()) job.takePieces();
         job.grow();
-        return job.heal(level, centreX, centreZ, radius);
+        return job.heal(level);
     }
 
     /**
@@ -799,7 +805,7 @@ public final class Dressing {
         }
 
         /**
-         * Puts the cut's own grass back on the columns within a radius that have been worn to plain dirt.
+         * Puts the cut's own grass back on every column of the cut that has been worn to plain dirt.
          * <p>
          * Only the one case, and it is the case a build's own feet make: the cut draws grass on the column's top, the
          * world holds plain dirt at that same height, and nothing solid or wet stands over it. A floor laid at the
@@ -808,16 +814,13 @@ public final class Dressing {
          *
          * @return how many columns took their grass back
          */
-        private int heal(ServerLevel level, int centreX, int centreZ, int radius) {
+        private int heal(ServerLevel level) {
             BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
             int healed = 0;
-            for (int dz = -radius; dz <= radius; dz++) {
-                for (int dx = -radius; dx <= radius; dx++) {
-                    int x = centreX + dx;
-                    int z = centreZ + dz;
-                    int gx = x - box.lowX();
-                    int gz = z - box.lowZ();
-                    if (gx < 0 || gx >= wide || gz < 0 || gz >= deep) continue;
+            for (int gz = 0; gz < deep; gz++) {
+                for (int gx = 0; gx < wide; gx++) {
+                    int x = box.lowX() + gx;
+                    int z = box.lowZ() + gz;
                     int at = gx + gz * wide;
                     int top = crownY[at];
                     if (top == Integer.MIN_VALUE) continue;
