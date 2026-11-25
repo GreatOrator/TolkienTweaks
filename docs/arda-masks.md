@@ -42,6 +42,70 @@ The mountain mask lines up with the rest. Of its ridges, 43.3% stand on the heig
 ground against 5.5% for the rest of the canvas, and the best line-up shift is 0 pixels across and 10
 along — a hundred and sixty blocks, inside the noise.
 
+## One block to the pixel
+
+The map was hand-made at **one block to the pixel**: a 24576-pixel square, one pixel per block, the height and the
+rivers and the lakes laid over each other, and the 48 by 36 country grid drawn on the same canvas. That is three
+blocks per 8192-pixel, not the committed 3.954 and 4.018 - a thirty-two per cent difference - so before any bake
+was changed both placements were put against the drawing. The drawing was made on the committed frame, and 1:1 is
+refuted by the drawing's own features.
+
+**The large rasters are the same canvas, not a second one.** `ME_SimpleTopoTerrain_Lakes_albedo-large.png`,
+reduced by three with a max pool, matches the committed 8192 lakes mask at IoU **1.000** with the best shift at
+**zero pixels**, and the rivers mask with it. They are the originals of the committed thirds, so they add
+resolution and cannot move anything. There is no original height: the owner's 24576 copy would not transfer, and
+`Reference/Final Height-large.png` is a three-times nearest-neighbour enlargement of `Final Height.png`, verified
+both ways (the step-three sample and the three-by-three max pool each return the source exactly). It carries the
+8192's own detail and exists only to put the height on the same pixel grid as the other two for the tests below.
+
+**The drawn lakes decide it.** Each inland sea has a hand-drawn block rectangle in `ArdaMap` (`EVENDIM_SPAN`,
+`RHUN_SPAN`, `NURNEN_SPAN`), and the lakes mask has a sheet for each. The origin each sheet needs to land on its
+rectangle's centre:
+
+| sheet | span centre | origin needed at 3.954 | origin needed at 1 px/block | error at 3.954 | error at 1:1 |
+| --- | --- | --- | --- | --- | --- |
+| Evendim | 508, -4888 | -7548 | -5604 | 13 | 661 |
+| Rhûn | 17572, -116 | -7546 | -1485 | 104 | 3950 |
+| Núrnen | 15456, 7068 | -7540 | -1991 | 65 | 4132 |
+
+At the committed frame the three agree on one origin to **eight blocks** and sit 13, 65 and 104 blocks from their
+span centres. At one block to the pixel no single origin exists at all: the three need origins spread over 4,119
+blocks, and whatever is chosen leaves two of them up to 4,132 blocks out. A grid drawn at one pixel per block
+cannot leave its own inland seas four thousand blocks from the boxes drawn round them.
+
+**The coast says the same, and says 1:1 is worse.** The sea's western runs across the world, at the rows the
+Shire and the coast stand on, in blocks:
+
+| z | the drawing's cells | art at 3.954 | art at 1 px = 1 block |
+| --- | --- | --- | --- |
+| -512 | -4356 | -3404 | -1028 |
+| 0 | -3844 | -2392 | -436 |
+| 418 | -3844 | -1680, with the bight -1072..-932 inside it | -384 |
+| 800 | -3844 | -1032 | +164 |
+| 1200 | -3332 | -992 | +608 |
+| 1801 | -2820 | -304 | +1084 |
+
+The drawing puts Eriador's coast at -4,356 to -2,820. The art at the committed frame puts it **950 to 2,810 blocks
+east** of that - the cell-level disagreement `docs/arda-map-gaps.md` already records, and the whole of why the
+Shire's bay reads as close. At one block to the pixel the art's coast is **3,300 to 4,000 blocks east** of the
+drawing: from z -512 south it stands at the Shire's own columns, and from z 800 south it is east of the world's
+origin entirely. 1:1 does not take the water away from Hobbiton; it brings the water over the Shire.
+
+**The country cells alone cannot settle it, and neither can the rivers.** Scoring all 1,728 cell centres against
+the art's land and sea, with the origin re-optimised at each scale, gives 0.936 at 2.8 blocks/pixel, 0.937 at 3.0,
+0.947 at 3.954 and 0.948 at 3.6 - flat, because a 512-block cell is coarser than a coastline, so that score cannot
+pick the scale. The seven river polylines, recovered from `5fd24dfa^` before the masks replaced them, are flat too:
+392 blocks mean at 3.0 and 256 at 3.954, still falling at 4.6. Only the sharp rectangles decide, and they decide
+for the frame that is committed.
+
+**What a rebuild would cost, if it were chosen anyway.** The bake's scale in `tools/arda_masks.py` and
+`Reference/work/calibration.json`, the frame in `ArdaMasks` (`BLOCKS`, `WEST`, `NORTH`), the Bruinen window, and the
+four lake rectangles and the river mouths in `ArdaMap`; then a re-bake of all seven assets (`height`, `rivers`,
+`lakes`, `mountains`, `bruinen`, `river-names`, `lake-ids`). A scale change moves every feature by twenty-four per
+cent of its distance from the anchor - up to four thousand blocks at the frame's edges - so every site, camp, keep,
+gate and road the save holds would need re-surveying and re-pinning, and no generated chunk retrofits: it would be
+a new world, with `Generation Redux - 3` and everything walked in it left on the old frame.
+
 ## Where they live
 
 `Reference/` in the mod root, committed with the project: eight files, 59 MB, of which `Final Height.png`
