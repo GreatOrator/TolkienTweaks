@@ -2894,45 +2894,67 @@ public final class ArdaMap {
         // without moving the country itself.
         Country cover = patchAt(mapX, mapZ);
         if (cover == null) cover = northWest;
-        int relief = cover.relief();
+        // The height raster is the map: where it has no land the column is sea, whatever country the poster paints
+        // over it. The poster's cells are half a kilometre across and run out over the water - Cardolan's reach
+        // forty blocks past the Brandywine's mouth - and read as land they stood the bay at sixty and left a cliff
+        // at its edge. The sea's own country carries the water's height and its banded biome, so the column is a bed
+        // under open water rather than dry country standing at the waterline.
+        int mapped = ArdaMasks.ground(blockX, blockZ);
+        if (mapped == ArdaMasks.NO_GROUND) {
+            cover = seaCountry(column, row);
+        }
         double rough = fractal(blockX, blockZ, 192, 1) + 0.5D * fractal(blockX, blockZ, 96, 2)
                 + 0.25D * fractal(blockX, blockZ, 48, 3);
-        // The ground is the reference heightmap where it has land, and the drawing where it has sea:
-        // an ocean column is the drawing's, and the map's own zero would put it at the sea's height.
-        int height = groundHeight(blockX, blockZ, drawn, relief, rough);
+        // The ground is the reference heightmap where it has land, and the sea's own country where it has sea.
+        int height = groundHeight(blockX, blockZ, mapped, cover, rough);
         // The shore is read off the ground that is actually there, not off the drawing: the cells are blended
         // over half a cell either side of a border, so a cell drawn at seventy beside a sea drawn at forty
         // crosses the waterline in a band eighty blocks wide - a beach across country that is nowhere near
         // the water. A hole in the drawing (every cell starts as sea) then reads as a coast on all four sides.
-        boolean shore = seaInReach && Math.abs(height - SEA_LEVEL) <= BEACH_HEIGHT;
+        // The raster's own water counts as well as the grid's, because the coast is the raster's and the grid
+        // often paints land across it - which is what left a beach only where two drawn cells happened to meet.
+        // The band is read off the height the column will stand at, not the height the drawing gave it: a land
+        // column at the water's edge is clamped up to the waterline after this, and tested before that clamp the
+        // edge stood at nought to six blocks - twenty blocks under it - so the one row a beach is made of was the
+        // one row that never qualified and the coast had no sand at all.
+        int standing = cover.land() ? Math.max(height, SEA_LEVEL) : height;
+        boolean shore = cover.land() && Math.abs(standing - SEA_LEVEL) <= BEACH_HEIGHT
+                && (seaInReach || ArdaMasks.nearSea(blockX, blockZ));
         return new Ground(cover, height, drawn, shore, upland);
     }
 
     /**
-     * The ground at a column: the reference heightmap where it has land, the drawing where it has sea.
+     * The ground at a column: the reference heightmap where it has land, the sea's own bed where it has sea.
      * <p>
      * The heightmap is read from the sea's own height up to the crown, and the mountain mask then raises
      * the ground toward the crown by its brightness, pinning its whitest pixels there: the ranges stand
      * where the mask draws them, and a summit is the city's own crown, so drawn rock and built rock reach
      * the same sky. That climb alone is a cone, because the brightness it is read from is blurred - so the
-     * ridges are broken by {@link #ragged} before they are answered. A column the map calls sea keeps the
-     * drawing's answer, because the map's zero is the sea's height and a bed at that height is a dry ocean.
+     * ridges are broken by {@link #ragged} before they are answered.
+     * <p>
+     * A column the map calls sea is a bed under the waterline, read from the sea's own country rather than from the
+     * country cell the poster paints over it: the poster's cells are half a kilometre across and run out over the
+     * water, and a sea filled in at the land country's height is a dry shelf that ends in a cliff at the coast.
      */
-    private static int groundHeight(int blockX, int blockZ, int drawn, int relief, double rough) {
-        int mapped = ArdaMasks.ground(blockX, blockZ);
+    private static int groundHeight(int blockX, int blockZ, int mapped, Country cover, double rough) {
         int height;
         if (mapped != ArdaMasks.NO_GROUND) {
             height = ragged(blockX, blockZ, ArdaMasks.raise(blockX, blockZ, vale(blockX, blockZ,
                     BLACK_Y + (int) Math.round(mapped / 65535.0D * (WHITE_Y - BLACK_Y))),
                     MASK_GAIN));
         } else {
-            int bed = Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
-                    MOUNTAIN_CEILING);
+            // The sea's own height and its own five blocks of relief, not the land country's: read from the poster,
+            // a bay the grid still calls Cardolan stood its floor at sixty and held it dry over the waterline.
+            int bed = Mth.clamp((int) Math.round(cover.height() + cover.relief() * (rough / 1.75D - 0.5D) * 2.0D),
+                    -60, MOUNTAIN_CEILING);
             // A drawn sea is a bed rather than a plate: its floor rolls, and the water over it deepens and shallows.
             if (bed < SEA_LEVEL) {
                 bed = Math.min(SEA_LEVEL - 2, bed + seabed(blockX, blockZ));
             }
-            height = ragged(blockX, blockZ, ArdaMasks.raise(blockX, blockZ, bed, MASK_GAIN));
+            // Held under the waterline even where the mountain mask lifts the ground: a drawn sea is water, and a
+            // bed the mask raised over it is the dry ocean this reads the poster to avoid.
+            height = Math.min(SEA_LEVEL - 1, ragged(blockX, blockZ,
+                    ArdaMasks.raise(blockX, blockZ, bed, MASK_GAIN)));
         }
         // Gundabad last, so the valley cuts the drawn rock, its crags and its lean-to all at once.
         return breeHill(blockX, blockZ, gundabadPass(blockX, blockZ, height));
@@ -3343,20 +3365,34 @@ public final class ArdaMap {
      * water. The bands are drawn on the map's own rows, so the north Atlantic beside Forodwaith is
      * frozen ocean and the water off the Haradwaith coast is warm.
      */
+    private static final int FROZEN_ROWS = 8;
+    private static final int WARM_ROWS = 27;
+
     private static void bandSeas(Country[][] map) {
         for (int row = 0; row < ROWS; row++) {
             for (int column = 0; column < COLUMNS; column++) {
-                Country country = map[row][column];
-                if (country != Country.TEMPERATE_SEA) {
-                    continue;
-                }
-                if (row <= 8) {
-                    map[row][column] = Country.FROZEN_SEA;
-                } else if (row >= 27 && !inlandSea(column, row)) {
-                    map[row][column] = Country.WARM_SEA;
+                if (map[row][column] == Country.TEMPERATE_SEA) {
+                    map[row][column] = seaCountry(column, row);
                 }
             }
         }
+    }
+
+    /**
+     * The sea a cell belongs to, by the map's own rows: frozen at the northern edge and warm at the southern.
+     * <p>
+     * Read by {@link #bandSeas} for every sea cell of the grid and by {@link #groundAt} for every column the height
+     * raster draws as sea, so water the poster paints land over is ocean of the same band as the water beside it - a
+     * bay inside Cardolan reads temperate rather than the land country's own biome.
+     */
+    private static Country seaCountry(int column, int row) {
+        if (row <= FROZEN_ROWS) {
+            return Country.FROZEN_SEA;
+        }
+        if (row >= WARM_ROWS && !inlandSea(column, row)) {
+            return Country.WARM_SEA;
+        }
+        return Country.TEMPERATE_SEA;
     }
 
     /** The Sea of Rhun and the Sea of Nurnen lie inland, so they are not banded by latitude. */

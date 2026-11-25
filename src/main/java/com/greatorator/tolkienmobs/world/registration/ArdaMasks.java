@@ -526,6 +526,41 @@ final class ArdaMasks {
         return LAKE_SHEETS;
     }
 
+    /**
+     * Whether the drawing's sea is within three of its own pixels of a column.
+     * <p>
+     * The height raster is the map's coast and the country grid is a poster: the grid's cells are half a kilometre
+     * across and paint land over water, so the shore cannot be read off the cells - a beach would only appear where
+     * two drawn cells happened to meet. The raster's own zero is the sea, and a column within a pixel of it is the
+     * water's edge. Read nearest, from the same raster the ground comes from, so the test costs forty-nine array reads
+     * and no spline.
+     */
+    static boolean nearSea(int blockX, int blockZ) {
+        if (GROUND.length == 0) {
+            return false;
+        }
+        int column = Math.floorDiv(blockX - WEST, BLOCKS);
+        int row = Math.floorDiv(blockZ - NORTH, BLOCKS);
+        // Three pixels, twenty-four blocks: the raster's coast is a stair of its own pixels, and a beach read only
+        // over the one beside it would be eight blocks wide or absent wherever the stair runs the other way.
+        for (int dz = -3; dz <= 3; dz++) {
+            int nearRow = row + dz;
+            if (nearRow < 0 || nearRow >= HEIGHT) {
+                continue;
+            }
+            for (int dx = -3; dx <= 3; dx++) {
+                int nearColumn = column + dx;
+                if (nearColumn < 0 || nearColumn >= WIDTH) {
+                    continue;
+                }
+                if (GROUND[nearRow * WIDTH + nearColumn] == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     static int maskWidth() {
         return WIDTH;
     }
