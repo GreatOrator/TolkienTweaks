@@ -1403,6 +1403,13 @@ all unverified.
   so that brown is the Shire's own top rather than a skipped pass. The widened pass has not been run; the 5,450 columns still read as dirt.
   It reads the cut the jar holds, so it is worth running in a world raised from that cut and not in one raised before a re-cut.
 
+- **A biome key added without its JSON is a world that will not open.** 25 Nov: `Generation Redux - 3` stopped at
+  registry load with `Unbound values ... [tolkienmobs:river_brandywine]` because `4b6782fa` added the key, the
+  maker, the biome source overlay, the dimension list, both tags and both lang lines but did not run `runData`, so
+  `data/tolkienmobs/worldgen/biome/river_brandywine.json` did not exist. Datagen writes it now and nothing else in
+  `src/generated/resources` moved. Whenever a datapack-registry entry is added - a biome, a dimension, a structure -
+  run `runData` in the same commit and look for its file in `git status`.
+
 ## The rules this project is walked by
 
 - One `CHANGELOG.md` bullet per change, in the long `- **Claim.** …` prose.
