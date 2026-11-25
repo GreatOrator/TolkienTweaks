@@ -46,7 +46,8 @@ public class ArdaBiomeSource extends BiomeSource {
     private static final List<ResourceKey<Biome>> OVERLAYS = List.of(Biomes.RIVER, Biomes.BEACH,
             TolkienBiomes.RIVER, TolkienBiomes.LAKE, TolkienBiomes.LAKE_EVENDIM, TolkienBiomes.SEA_OF_RHUN,
             TolkienBiomes.SEA_OF_NURNEN, TolkienBiomes.LONG_LAKE, TolkienBiomes.RIVER_ANDUIN,
-            TolkienBiomes.RIVER_CELDUIN, TolkienBiomes.RIVER_GWATHLO, TolkienBiomes.RIVER_LUNE);
+            TolkienBiomes.RIVER_CELDUIN, TolkienBiomes.RIVER_GWATHLO, TolkienBiomes.RIVER_LUNE,
+            TolkienBiomes.RIVER_BRANDYWINE);
 
     /**
      * The biome list is serialized as a plain list of biome ids, one per entry of {@link #keys()},

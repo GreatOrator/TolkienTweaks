@@ -1255,6 +1255,7 @@ public final class ArdaMap {
                 case 2 -> TolkienBiomes.RIVER_CELDUIN;
                 case 3 -> TolkienBiomes.RIVER_GWATHLO;
                 case 4 -> TolkienBiomes.RIVER_LUNE;
+                case 5 -> TolkienBiomes.RIVER_BRANDYWINE;
                 default -> TolkienBiomes.RIVER;
             };
         }

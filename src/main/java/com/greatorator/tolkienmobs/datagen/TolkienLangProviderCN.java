@@ -742,6 +742,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("biome.tolkienmobs.river_celduin", "凯尔杜因河");
             this.add("biome.tolkienmobs.river_gwathlo", "格瓦司罗河");
             this.add("biome.tolkienmobs.river_lune", "隆恩河");
+            this.add("biome.tolkienmobs.river_brandywine", "巴兰都因河");
             this.add("biome.tolkienmobs.mirkwood", "黑森林");
             this.add("biome.tolkienmobs.old_forest", "老林");
             this.add("biome.tolkienmobs.mirkwood_spooky", "蜘蛛黑森林");

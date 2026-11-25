@@ -89,12 +89,15 @@ public class TolkienBiomes {
     /*
      * The named rivers: the channels the river mask's own components can be named without guessing. The
      * rest of the drawing's water stays the generic river, because the drawing fuses tributaries into one
-     * component and one name cannot stand for three rivers.
+     * component and one name cannot stand for three rivers. The Lune and the Brandywine are the one pair
+     * the fuse joins into a single network, so that component is divided between them by water distance
+     * at the bake - tools/arda_river_names.py - and each half wears its own name.
      */
     public static final ResourceKey<Biome> RIVER_ANDUIN = createBiome("river_anduin", BiomeMaker::makeBiomeRiverAnduin);
     public static final ResourceKey<Biome> RIVER_CELDUIN = createBiome("river_celduin", BiomeMaker::makeBiomeRiverCelduin);
     public static final ResourceKey<Biome> RIVER_GWATHLO = createBiome("river_gwathlo", BiomeMaker::makeBiomeRiverGwathlo);
     public static final ResourceKey<Biome> RIVER_LUNE = createBiome("river_lune", BiomeMaker::makeBiomeRiverLune);
+    public static final ResourceKey<Biome> RIVER_BRANDYWINE = createBiome("river_brandywine", BiomeMaker::makeBiomeRiverBrandywine);
     public static final ResourceKey<Biome> LORINAND = createBiome("lorinand", BiomeMaker::makeBiomeLorinad, TolkienTags.Biomes.CONIFEROUS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> BARROW_DOWNS = createBiome("barrow_downs", BiomeMaker::makeBiomeBarrowDowns, TolkienTags.Biomes.DEAD, TolkienTags.Biomes.COLD, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> OLD_FOREST = createBiome("old_forest", BiomeMaker::makeBiomeOldForest, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);

@@ -749,6 +749,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("biome.tolkienmobs.river_celduin", "Celduin");
             this.add("biome.tolkienmobs.river_gwathlo", "Gwathlo");
             this.add("biome.tolkienmobs.river_lune", "Lune");
+            this.add("biome.tolkienmobs.river_brandywine", "Brandywine");
             this.add("biome.tolkienmobs.mirkwood", "Mirkwood Forest");
             this.add("biome.tolkienmobs.old_forest", "Old Forest");
             this.add("biome.tolkienmobs.mirkwood_spooky", "Mirkwood Spider Forest");

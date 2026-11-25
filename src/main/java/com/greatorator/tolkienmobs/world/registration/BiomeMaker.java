@@ -1206,6 +1206,15 @@ public class BiomeMaker extends BiomeHelper{
         return waterBiome(placedFeatureGetter, carverGetter, 0x2B6478, 0x86A9B6, 0xB9CDD6, 0.45F);
     }
 
+    /**
+     * The Brandywine, the Baranduin: the Shire's eastern border and the river its own folk call the
+     * Brandywine, wide and slow with Eriador's silt in it - so its water is greener and lighter than the
+     * Lune's beside it, and it is temperate where that river is cold.
+     */
+    public static Biome makeBiomeRiverBrandywine(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x2E6F72, 0x8AB2BC, 0xBFD6D8, 0.5F);
+    }
+
     public static Biome makeBiomeLakeEvendim(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         return waterBiome(placedFeatureGetter, carverGetter, 0x2E5F8A, 0x6E93BE, 0xA8C0D8, 0.4F);
     }
