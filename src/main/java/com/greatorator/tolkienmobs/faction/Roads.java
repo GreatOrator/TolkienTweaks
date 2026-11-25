@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
@@ -496,7 +497,9 @@ public final class Roads {
      * built from would carry every column of the span to the bed.
      *
      * @param name        what the span is called, for the log rather than for a lookup
-     * @param at          a block on the water the span crosses, which is the whole of how the span is found
+     * @param at          a block on the water the span crosses, which is the whole of how the span is found, or
+     *                    null where the crossing is not known yet: a bridge is listed with its pieces before the
+     *                    road it carries has been walked, and a bridge with no block answers no span
      * @param endPiece    the abutment piece, in the jar's structure folder
      * @param middlePiece the span piece between the abutments
      * @param support     the block the pieces' piers are made of, and the block a pier is drawn to the bed in
@@ -526,29 +529,49 @@ public final class Roads {
      * has its first span at whichever river its own end met first, so a bridge named for the third crossing of a road
      * would move the moment the plan met another river before it. The water does not move.
      * <p>
-     * <b>Bucklebury's bridge and the Last Bridge are both drawn and neither is named.</b> {@code bucklebury_end}
-     * and {@code bucklebury_middle} (cobblestone-wall piers) were the pair for the Shire leg's crossing of the
-     * Brandywine, and {@code last_bridge_end} and {@code last_bridge_middle} (stone-brick piers) are the pair for the
-     * Last Bridge, where the East-West Road crosses the Mitheithel. Neither crossing is in the table because both legs
-     * left it on 25 November 2026: the leg that crossed the Brandywine is gone, and the leg to Bree crossed no drawn
-     * water at all - "Nothing on the way is water, so nothing is bridged", 11:39 on 22 November. So every span still
-     * stands from the standard pair, and the four pieces wait in the jar for the owner's own road: naming a bridge is
-     * one line here, at a block on the water its road crosses.
+     * <b>The Last Bridge is listed, with its pieces and without its crossing.</b> {@code last_end} and
+     * {@code last_middle} are the owner's pair for the Last Bridge, where the East-West Road crosses the Mitheithel,
+     * and they are in the jar beside the standard pair: an abutment seventeen long and twelve high on its own bank, a
+     * span twenty, both nine columns across, and piers of {@code wall_cobbled_dwarven_stone} under a
+     * {@code wall_dwarven_stone_bricks} parapet. The block on its water is the one thing left to name. The leg that
+     * would have crossed the river left the table on 25 November 2026 and the owner's own road has not been walked, so
+     * the entry holds no place at all: it answers no span, every span still stands from the standard pair, and a block
+     * on the water his road crosses is the whole of what turns it on. {@code bucklebury_end} and
+     * {@code bucklebury_middle} (cobblestone-wall piers) are the pair for the Shire's crossing of the Brandywine and
+     * are held for the road to Bucklebury, so they are not in the table at all.
      */
-    private static final List<Bridge> BRIDGES = List.of();
+    private static List<Bridge> BRIDGES;
+
+    /**
+     * The table, read the first time a span asks for it rather than when this class is loaded.
+     * <p>
+     * The Last Bridge's piers are made of a block this mod registers, and a table held in an initialiser would ask the
+     * registry for it whenever the first line of {@link Roads} happened to run, which is not necessarily after the
+     * blocks are in it. One read of the mod's own blocks is cheap, and naming a bridge is still one line here.
+     */
+    private static List<Bridge> bridges() {
+        if (BRIDGES == null) {
+            BRIDGES = List.of(
+                    new Bridge("Last Bridge", null, "last_end", "last_middle",
+                            TolkienBlocks.WALL_COBBLED_DWARVEN_STONE.get()));
+        }
+        return BRIDGES;
+    }
 
     /**
      * The bridge a span is stood with, or null where it is the standard one.
      * <p>
      * A span covers a bridge's block when the block lies between its banks on the span's own axis and no further from
      * the line its pieces are stood on than half the deck plus {@link #BRIDGE_LEEWAY}: the same reading {@link #water}
-     * does for a column, asked once for a bridge rather than a block at a time.
+     * does for a column, asked once for a bridge rather than a block at a time. A bridge whose crossing is not
+     * named yet holds no block, so it covers no span and the standard pair stands.
      */
     public static Bridge bridge(Route.Crossing span) {
         boolean alongX = span.alongX();
         int near = Math.min(span.bank(), span.far());
         int far = Math.max(span.bank(), span.far());
-        for (Bridge bridge : BRIDGES) {
+        for (Bridge bridge : bridges()) {
+            if (bridge.at() == null) continue;
             int along = alongX ? bridge.at().getX() : bridge.at().getZ();
             if (along < near - 1 || along > far + 1) continue;
             int lateral = (alongX ? bridge.at().getZ() : bridge.at().getX()) - span.line();
