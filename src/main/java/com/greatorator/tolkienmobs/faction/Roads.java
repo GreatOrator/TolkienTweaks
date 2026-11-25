@@ -131,6 +131,22 @@ public final class Roads {
      */
     private static final boolean NETWORK_OPEN = false;
 
+    // The two long legs are out of the table, at the owner's word on 25 November 2026: the road between Bree
+    // and the Shire (walked in `Progress Check 3`, five wide, from Bree's hall front at 1032, -34 to the
+    // village's east side at -150, -382) and the road between Rivendell and Bree (marked in `Progress Check 4`,
+    // five wide, from the vale's junction at 4648, -3316 to the same hall front at 1031, -36). He is laying that
+    // road himself as the next build, so the mod must not stand a second line beside it - not now, and not when
+    // the survey is opened again after Rivendell's site is re-scouted.
+    //
+    // The two ends are written down here rather than the entries left in the table behind a flag, because a leg
+    // in the table is a leg a fresh world plans: NETWORK_OPEN only decides whether the table is read, so a
+    // session that opened it would put both lines on the ground the owner is building over. An id is a road's
+    // two ends, so a leg walked again later is a new entry under a new pair; there is nothing here to restore.
+    //
+    // What a table cannot take back is the ground a world has already laid. Nothing in the mod lifts a road, and
+    // a plan a hand wrote under either id is that save's own, read back by RoadPlans at every start - /tmroad
+    // forget standing on the line drops it, and the blocks it laid stay.
+
     private static final List<Named> NETWORK = List.of(
             new Named(GUNDABAD_ROAD, Kind.WILD, false, GUNDABAD_GATE, GUNDABAD_JOIN),
             new Named("tolkienmobs:roads/planned_11813_-3901_8229_-3654", Kind.WILD, false, at(11813, -3901), at(8229, -3654)),
@@ -142,25 +158,7 @@ public final class Roads {
             new Named("tolkienmobs:roads/planned_5105_-3413_5605_-3622", Kind.WILD, false, at(5105, -3413), at(5605, -3622)),
             new Named("tolkienmobs:roads/planned_5606_-3622_8229_-3654", Kind.WILD, false, at(5606, -3622), at(8229, -3654)),
             new Named("tolkienmobs:roads/planned_5200_-3033_4647_-3315", Kind.WILD, false, at(5200, -3033), at(4647, -3315)),
-            new Named("tolkienmobs:roads/planned_5111_-3399_5072_-3221", Kind.WILD, false, at(5111, -3399), at(5072, -3221)),
-            // The road between Bree and the Shire, walked by the owner in Progress Check 3 on 22 November: five wide, of
-            // the country's gravel, from Bree's hall front at 1032, -34 to the village's east side at -150, -382 - the
-            // gate the owner marked in Progress Check 6 on 23 November, on the footprint's own edge. Its first walk ended
-            // at -150, 114, the village's east edge line but a hundred and fifty blocks south of the footprint in open
-            // wood, and it was then re-ended at the village's /tmtp point at -463, -124; the owner moved it back to the
-            // east side after seeing the leg laid. An id is a road's two ends, so each re-ending names a different
-            // road: a world that walked an earlier line keeps that plan under its own id, and the ground it laid stays,
-            // because nothing in the mod lifts a road.
-            new Named("tolkienmobs:roads/planned_1032_-34_-150_-382", Kind.WILD_WIDE, false, at(1032, -34), at(-150, -382)),
-            // The road between Rivendell and Bree, marked by the owner in Progress Check 4 on 22 November: five wide, of
-            // the country's own surface, from the vale's road junction at 4648, -3316 - the block beside the join the
-            // three vale roads make at 4647, -3315 - to Bree's own hall front at 1031, -36. The pin was first given with
-            // the whole far end wrong - the town's x negated, and the hall's height of 123 read as its z - which sent
-            // the search two thousand blocks out into Eriador and had it find seven sections and three spans there; an
-            // id is a road's two ends, so correcting them names a different road, and that world still holds the first
-            // line under ..._4648_-3316_-1031_123: /tmroad forget there is what leaves the leg that arrives as the only
-            // one of the two, and the stretch of it already laid stays standing, because nothing in the mod lifts a road.
-            new Named("tolkienmobs:roads/planned_4648_-3316_1031_-36", Kind.WILD_WIDE, false, at(4648, -3316), at(1031, -36)));
+            new Named("tolkienmobs:roads/planned_5111_-3399_5072_-3221", Kind.WILD, false, at(5111, -3399), at(5072, -3221)));
 
     /**
      * Every road the world knows about, which is nothing until one is named.
@@ -528,19 +526,14 @@ public final class Roads {
      * has its first span at whichever river its own end met first, so a bridge named for the third crossing of a road
      * would move the moment the plan met another river before it. The water does not move.
      * <p>
-     * <b>Bucklebury's bridge is drawn but not named.</b> {@code bucklebury_end} and {@code bucklebury_middle}, with
-     * cobblestone-wall piers, are in the jar's bridges folder for the road from the Shire to Bucklebury when that leg
-     * is walked, and the table is empty again: the owner's call is that the crossing from the Shire to Bree keeps the
-     * standard pair, so the leg's crossing of the Brandywine is stood from {@code bridge_end} and
-     * {@code bridge_middle} like every other crossing. Naming the drawn bridge is one line here, at a block on the
-     * Bucklebury road's own water.
-     * <p>
-     * <b>The Last Bridge</b> is not here yet, and that is not an omission. It stands where the East-West Road crosses the
-     * Mitheithel, and the leg the network holds to Bree - {@code planned_4648_-3316_1031_-36} - crosses no drawn water
-     * at all: read against the drawing it plans as one dry section, and the world said the same in as many words when it
-     * laid it, "Nothing on the way is water, so nothing is bridged". A bridge is named by a block on its water, so its
-     * line goes in when the river that road crosses is there to name it: the pieces are {@code last_bridge_end} and
-     * {@code last_bridge_middle}, and the piers under them are stone brick.
+     * <b>Bucklebury's bridge and the Last Bridge are both drawn and neither is named.</b> {@code bucklebury_end}
+     * and {@code bucklebury_middle} (cobblestone-wall piers) were the pair for the Shire leg's crossing of the
+     * Brandywine, and {@code last_bridge_end} and {@code last_bridge_middle} (stone-brick piers) are the pair for the
+     * Last Bridge, where the East-West Road crosses the Mitheithel. Neither crossing is in the table because both legs
+     * left it on 25 November 2026: the leg that crossed the Brandywine is gone, and the leg to Bree crossed no drawn
+     * water at all - "Nothing on the way is water, so nothing is bridged", 11:39 on 22 November. So every span still
+     * stands from the standard pair, and the four pieces wait in the jar for the owner's own road: naming a bridge is
+     * one line here, at a block on the water its road crosses.
      */
     private static final List<Bridge> BRIDGES = List.of();
 
@@ -619,9 +612,9 @@ public final class Roads {
      * finish holds the whole road instead, hundreds of blocks of open country the town will never touch. So the road
      * stops a margin past the ring, in country the town leaves as it found it, and the arrival is laid when it stands.
      * <p>
-     * The distance is measured from the block the road meets the town on, and both of the legs in {@link #TOWNS} end at
-     * a gate or a hall front on the footprint's own edge - which is what makes forty blocks back outside the ring. A
-     * road that ended deep inside a town would have to have its hold measured from the footprint instead.
+     * The distance is measured from the block the road meets the town on, and the table names a gate or a hall front on
+     * the footprint's own edge rather than a block inside the town, which is what makes forty blocks back outside the
+     * ring. A road that ended deep inside a town would have to have its hold measured from the footprint instead.
      */
     static final int SHORT_OF_TOWN = 40;
 
@@ -629,22 +622,24 @@ public final class Roads {
      * The towns a road runs between, and the ground each of them is met on, by the road it is a section of.
      * <p>
      * A road that starts from a build's door is that build's road and is held by {@link #BUILDS}; a road between two
-     * towns is neither town's, and both ends of it arrive on ground that is still being made. The Shire's leg leaves
-     * Bree's hall front and arrives at the village's gate, and the Bree leg leaves the vale's junction and arrives at the
-     * same hall front. Both towns raise themselves out of a cut and dress the ring round it, which is the ground those
-     * ends are graded on - so a leg begun while either is going up has its arrival taken out with the ring, and the
-     * pass believes the road is down and never grades that stretch again. The measured case is the Shire leg's own
-     * arrival (`..._2`), begun at 11:23 on 22 November while the village was still rising and never reported laid.
+     * towns is neither town's, and both ends of it arrive on ground that is still being made. Both towns raise
+     * themselves out of a cut and dress the ring round it, which is the ground those ends are graded on - so a leg
+     * begun while either is going up has its arrival taken out with the ring, and the pass believes the road is down
+     * and never grades that stretch again. The measured case was the Shire leg's own arrival (`..._2`), begun at 11:23
+     * on 22 November while the village was still rising and never reported laid.
      * <p>
-     * The Bree leg names only bree because its other end, the vale's junction at 4648, -3316, is no town's ground: the
-     * road leaves ground that stands and arrives on ground that does not. That is the case {@link #hold} is for, and
-     * the reason the table names the ground of an end rather than the ends of the leg.
+     * The table is empty now. The two legs it named - the road from Bree's hall front to the village's gate, and the
+     * road from the vale's junction to the same hall front - were taken out of {@link #NETWORK} at the owner's word on
+     * 25 November 2026, and no road left in the table runs between two towns. Nothing else about the hold changes: a
+     * leg surveyed between two towns names both of their grounds here again, and the hold is measured from the block it
+     * names rather than from the footprint.
+     * <p>
+     * One end of a leg may name a town and the other none: the leg to Bree named only bree, because its other end, the
+     * vale's junction at 4648, -3316, was no town's ground - it left ground that stands and arrived on ground that does
+     * not. That is the case {@link #hold} is for, and the reason the table names the ground of an end rather than the
+     * ends of the leg.
      */
-    private static final Map<String, List<Gate>> TOWNS = Map.of(
-            "tolkienmobs:roads/planned_1032_-34_-150_-382",
-            List.of(new Gate("bree", at(1032, -34)), new Gate("hobbiton", at(-150, -382))),
-            "tolkienmobs:roads/planned_4648_-3316_1031_-36",
-            List.of(new Gate("bree", at(1031, -36))));
+    private static final Map<String, List<Gate>> TOWNS = Map.of();
 
     /** The build a road leaves from: its own name where it is that build's road, the build it serves otherwise. */
     public static String build(Route route) {
