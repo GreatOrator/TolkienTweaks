@@ -49,18 +49,19 @@ is 57 MB. `Final Height.png` is the sixteen-bit topography, `ME_SimpleTopoTerrai
 rivers, `..._Lakes_albedo.png` the lakes, `AreaMasks_westernMountain.png` the ranges, and
 `work/calibration.json` the transform between the 8192 canvas and the world.
 
-`tools/mask_probe.py` reads them at their own resolution while a build or a piece of terrain is being
-worked on, which is finer than the game's bake can afford to be:
+`tools/mask_probe.py` answers one block while a build or a piece of terrain is being worked on:
 
-    python tools/mask_probe.py 4995 -3311                      what the masks say about one block
+    python tools/mask_probe.py 4995 -3311                      what the world makes of one block
     python tools/mask_probe.py --near 5477 -3114 --radius 400   the nearest river, in blocks
     python tools/mask_probe.py --near 5477 -3114 --radius 900 --layer lake
 
-It answers the height as the drawing puts that column - read between black at 0 and white at 318, and
-lifted by the mountain mask's own sixty-four the way `ArdaMap` lifts it, with a column under the sea's 25
-named as such - whether a river or a lake runs through the column, and how bright the mountain mask is
-there. Nothing has to be baked for
-it to be right: it reads `Reference/` directly, using the same calibration worldgen uses.
+It answers the height the world stands at, and the terms that made it - what the drawing has, what the
+mountain mask lifts, what `ragged` moves - by reading the baked masks through `tools/arda_ground.py`,
+which is `ArdaMap.groundHeight` in Python: the same spline between the height pixels, the same cover of
+the mountain mask, the same folded noise. It says whether a river or a lake runs through the column and
+how bright the mountain mask is in the drawing, read from `Reference/` at its own resolution; the height
+is the game's own answer instead, so it matches `ardaSample` to the block on open country and on a
+mountainside alike. `tools/arda_scout.py` uses the same module for the ground its relief reports stand on.
 
 ## What each mask is for
 
