@@ -10,8 +10,12 @@ mountain mask is, and where the nearest river pixel is.
     python tools/mask_probe.py --near 4900 -3322 --radius 900 --layer river
 
 The calibration is the one worldgen uses (`Reference/work/calibration.json`): block x = origin + blocks
-per pixel * pixel x, and the same in z. The height is the same sixteen-bit topography the game reads,
-scaled the way `ArdaMap.groundHeight` scales it, so the number here is the number the world stands at.
+per pixel * pixel x, and the same in z. The height is the same sixteen-bit topography the game reads, read
+between the drawing's black at 0 and its white at 318 - the span `ArdaMap` has used since it stopped reading
+black as the old sea of sixty-three - and lifted by the mountain mask's own sixty-four blocks the way
+`ArdaMap.groundHeight` lifts it, so the number is the ground the drawing puts there. A column the drawing has
+no ground for is sea. What neither tool adds is the generator's own raggedness on top, which is a few blocks
+either way.
 """
 
 import argparse
@@ -32,8 +36,12 @@ LAYERS = {
     "mountain": "AreaMasks_westernMountain.png",
     "height": "Final Height.png",
 }
-SEA_LEVEL = 63
-CROWN = 318
+# The drawing's two ends, as ArdaMap reads them: black is y0, white is y318, and its waterline is y25.
+BLACK_Y = 0
+WHITE_Y = 318
+SEA_LEVEL = 25
+# The climb the mountain mask adds at its brightest, ArdaMap.MASK_GAIN.
+MASK_GAIN = 64
 NO_GROUND = 0
 
 _cache = {}
@@ -94,11 +102,18 @@ class Mask:
         return float(xs[best]), float(zs[best]), float(distance[best])
 
 
-def game_height(raw):
-    """A heightmap sample, as the world stands on it."""
+def drawing_height(raw):
+    """A topography sample read between the drawing's black and white, before the mask lifts it."""
     if raw is None or raw <= NO_GROUND:
         return None
-    return int(round(SEA_LEVEL + raw / 65535.0 * (CROWN - SEA_LEVEL)))
+    return BLACK_Y + int(round(raw / 65535.0 * (WHITE_Y - BLACK_Y)))
+
+
+def mountain_lift(bright, peak):
+    """The blocks the mountain mask adds over a column: its own share of MASK_GAIN."""
+    if not bright or peak <= 0:
+        return 0
+    return int(round(bright / float(peak) * MASK_GAIN))
 
 
 def main():
@@ -131,12 +146,20 @@ def main():
         return 1
 
     print("block %d, %d" % (args.x, args.z))
-    raw = Mask("height").at(args.x, args.z)
-    height = game_height(raw)
-    print("  height   %s" % ("%.1f blocks" % height if height is not None else "sea"))
+    drawn = drawing_height(Mask("height").at(args.x, args.z))
+    bright = Mask("mountain").at(args.x, args.z) or 0
+    lifted = mountain_lift(bright, int(Mask("mountain").raster.max()))
+    if drawn is None:
+        print("  height   sea - the drawing has no ground under this column")
+    else:
+        note = ""
+        if lifted:
+            note = " (%d as the drawing has it, %d lifted by the mask)" % (drawn, lifted)
+        if drawn + lifted < SEA_LEVEL:
+            note += " - under the sea's %d, which the game holds a land column up to" % SEA_LEVEL
+        print("  height   %d blocks%s" % (drawn + lifted, note))
     print("  river    %s" % ("yes" if Mask("river").at(args.x, args.z) > 100 else "no"))
     print("  lake     %s" % ("yes" if Mask("lake").at(args.x, args.z) > 100 else "no"))
-    bright = Mask("mountain").at(args.x, args.z)
     print("  mountain %d/255%s" % (bright, " - white is a crest" if bright > 127 else ""))
     return 0
 

@@ -56,8 +56,10 @@ worked on, which is finer than the game's bake can afford to be:
     python tools/mask_probe.py --near 5477 -3114 --radius 400   the nearest river, in blocks
     python tools/mask_probe.py --near 5477 -3114 --radius 900 --layer lake
 
-It answers the height as the world will stand on it - the game's own 63 to 318 scaling - whether a river
-or a lake runs through the column, and how bright the mountain mask is there. Nothing has to be baked for
+It answers the height as the drawing puts that column - read between black at 0 and white at 318, and
+lifted by the mountain mask's own sixty-four the way `ArdaMap` lifts it, with a column under the sea's 25
+named as such - whether a river or a lake runs through the column, and how bright the mountain mask is
+there. Nothing has to be baked for
 it to be right: it reads `Reference/` directly, using the same calibration worldgen uses.
 
 ## What each mask is for
@@ -98,7 +100,7 @@ same at eight, and the counts have not been re-measured.
 ## What the game does with them
 
 - **The ground.** `height.png` is `Final Height.png` at eight blocks to the pixel, unsigned 16-bit, and
-  it is the ground now: interpolated between its pixels from the sea's own 63 up to the crown at 318, so
+  it is the ground now: interpolated between its pixels from the black at 0 up to the crown at 318, so
   the country rolls where the map rolls. The Shire reads 116 where the drawing had 68, Rohan 170, Mordor's
   plateau 224, the Misty Mountains 178. A column the map calls sea keeps the drawing's bed, because the
   map's zero is the sea's height.
