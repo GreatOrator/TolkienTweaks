@@ -17,7 +17,11 @@ it, and how far the nearest river is. A tent wants two blocks of drop, a hall wa
 bank wants a bank - the numbers are what decide which, so they are printed rather than eyeballed.
 
 The calibration is the one worldgen uses (`Reference/work/calibration.json`), and the heights are
-scaled the way `ArdaMap.groundHeight` scales them, so a number here is the number the world stands at.
+scaled the way `ArdaMap.groundHeight` scales them - read between the drawing's black at 0 and its white
+at 318, then lifted by the mountain mask's own sixty-four, which is what makes a summit read as one - so
+a number here is the ground the drawing puts there. What is not added is the generator's own `ragged`
+noise on top: on open country it is nothing at all and the two answers agree to the block, and across a
+mountainside it stands the game about ten blocks over the drawing.
 """
 
 import argparse
@@ -32,7 +36,13 @@ REFERENCE = os.path.join(ROOT, "Reference")
 
 WEST, NORTH, EAST, SOUTH = -5120, -10240, 19456, 8192
 CELL = 512
-SEA_LEVEL, CROWN, NO_GROUND = 63, 318, 0
+# The drawing's two ends, as ArdaMap reads them: black is y0, white is y318, and its waterline is y25.
+BLACK_Y = 0
+WHITE_Y = 318
+SEA_LEVEL = 25
+# The climb the mountain mask adds at its brightest, ArdaMap.MASK_GAIN.
+MASK_GAIN = 64
+NO_GROUND = 0
 
 Image.MAX_IMAGE_PIXELS = None
 LAYERS = {
@@ -66,10 +76,17 @@ def raster(name):
     return _loaded[name]
 
 
-def game_height(raw):
-    """A heightmap sample as the world stands on it, or sea level where the mask has no ground."""
-    ground = raw > NO_GROUND
-    return np.where(ground, SEA_LEVEL + raw / 65535.0 * (CROWN - SEA_LEVEL), float(SEA_LEVEL))
+def game_height(raw, bright):
+    """A heightmap sample as the drawing puts the ground: black to white, then the mountain mask's climb.
+
+    A zero sample is a column the drawing has no ground for, so it stands at the waterline. Everything
+    else is read between the drawing's black and white the way `ArdaMap.groundHeight` reads it, and lifted
+    by the mask's own share of `MASK_GAIN` at its brightness, so a summit is a summit. What is not added
+    is the generator's `ragged` noise on top, which is a few blocks either way.
+    """
+    drawn = np.where(raw > NO_GROUND,
+                     BLACK_Y + np.round(raw / 65535.0 * (WHITE_Y - BLACK_Y)), float(SEA_LEVEL))
+    return drawn + np.round(bright / 255.0 * MASK_GAIN)
 
 
 def sample(box_x0, box_z0, box_x1, box_z1, blocks, scale):
@@ -82,9 +99,9 @@ def sample(box_x0, box_z0, box_x1, box_z1, blocks, scale):
     mesh_rows, mesh_columns = np.meshgrid(pixel_rows, pixel_columns, indexing="ij")
 
     ground = raster("terrain")[mesh_rows, mesh_columns].astype(np.float32)
-    height = game_height(raster("height")[mesh_rows, mesh_columns].astype(np.float32))
     water = (raster("river")[mesh_rows, mesh_columns] > 100) | (raster("lake")[mesh_rows, mesh_columns] > 100)
-    bright = raster("mountain")[mesh_rows, mesh_columns]
+    bright = raster("mountain")[mesh_rows, mesh_columns].astype(np.float32)
+    height = game_height(raster("height")[mesh_rows, mesh_columns].astype(np.float32), bright)
     return ground, height, water, bright
 
 
@@ -146,7 +163,7 @@ def report(x, z, footprint, radius):
     for px, pz in points:
         column = int(np.clip((px - ox) / sx, 0, raster("height").shape[1] - 1))
         row = int(np.clip((pz - oz) / sz, 0, raster("height").shape[0] - 1))
-        heights.append(float(game_height(raster("height")[row, column])))
+        heights.append(float(game_height(raster("height")[row, column], raster("mountain")[row, column])))
         if raster("river")[row, column] > 100 or raster("lake")[row, column] > 100:
             wet += 1
         bright = max(bright, int(raster("mountain")[row, column]))
@@ -162,10 +179,11 @@ def report(x, z, footprint, radius):
     else:
         nearest = float("inf")
 
+    middle_row = int(np.clip((z - oz) / sz, 0, raster("height").shape[0] - 1))
+    middle_column = int(np.clip((x - ox) / sx, 0, raster("height").shape[1] - 1))
     return {
-        "height": int(round(float(game_height(
-            raster("height")[int(np.clip((z - oz) / sz, 0, raster("height").shape[0] - 1)),
-                                 int(np.clip((x - ox) / sx, 0, raster("height").shape[1] - 1))])))),
+        "height": int(round(float(game_height(raster("height")[middle_row, middle_column],
+                                              raster("mountain")[middle_row, middle_column])))),
         "low": int(round(float(heights.min()))),
         "high": int(round(float(heights.max()))),
         "drop": int(round(float(heights.max() - heights.min()))),

@@ -14,8 +14,8 @@ per pixel * pixel x, and the same in z. The height is the same sixteen-bit topog
 between the drawing's black at 0 and its white at 318 - the span `ArdaMap` has used since it stopped reading
 black as the old sea of sixty-three - and lifted by the mountain mask's own sixty-four blocks the way
 `ArdaMap.groundHeight` lifts it, so the number is the ground the drawing puts there. A column the drawing has
-no ground for is sea. What neither tool adds is the generator's own raggedness on top, which is a few blocks
-either way.
+no ground for is sea. What neither tool adds is the generator's own raggedness on top: on open country it is nothing, and across
+a mountainside it stands the game about ten blocks over the drawing.
 """
 
 import argparse
