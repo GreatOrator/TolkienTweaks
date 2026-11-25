@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.faction;
 import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -193,6 +194,36 @@ public final class Dressing {
         return new Job("", folder, pieces, parts, origin, box, false, true, trees, deck);
     }
 
+    /**
+     * Puts a build's own ground back where something has worn it away, within a radius of a point.
+     * <p>
+     * The drape lays a build once and never rewrites the cut's own blocks, which is what keeps a wall, a floor and a
+     * roof whole inside its walls. Nothing in the drape wears them either - what does is the build's own folk walking
+     * over its grass, which vanilla turns to dirt under a body's feet, so a village a fortnight old has a trail of bare
+     * dirt through it that reads as ground the drape skipped. This is the repair, and it is asked for by a hand: the
+     * cut is read for its own grass and nothing but a worn column of it is written.
+     *
+     * @return how many columns took their grass back
+     */
+    static int repair(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
+                      BlockPos origin, CityCommands.Box box, boolean trees, int deck,
+                      int centreX, int centreZ, int radius) {
+        Job job = new Job("", folder, pieces, parts, origin, box, false, false, trees, deck);
+        while (job.piece < parts.size()) job.takePieces();
+        job.grow();
+        return job.heal(level, centreX, centreZ, radius);
+    }
+
+    /**
+     * Whether a cut's palette name is the grass a build's feet wear.
+     * <p>
+     * A palette name is the block's own key, written by the same `getKey` every piece in the jar was cut with, so
+     * the test is a string's and needs no registry read: what a repair puts back is grass and nothing else.
+     */
+    private static boolean grass(String name) {
+        return name.equals("minecraft:grass_block") || name.equals("grass_block");
+    }
+
     /** Where a job reads its pieces' NBT from: the city's cut, or any other cut a hand names. */
     interface Pieces {
         CompoundTag raw(String name) throws IOException;
@@ -282,6 +313,8 @@ public final class Dressing {
          */
         private final int[] whole;
         private final int[] watered;
+        /** How high the cut's own grass stands in every column - the one block a repair puts back. */
+        private final int[] crownY;
         private boolean[] channel;
         /** The chunks of the ring, worked out once so the pass is a cursor rather than a nested loop. */
         private final List<int[]> ring = new ArrayList<>();
@@ -324,6 +357,8 @@ public final class Dressing {
             Arrays.fill(this.whole, Integer.MIN_VALUE);
             this.watered = new int[wide * deep];
             Arrays.fill(this.watered, Integer.MIN_VALUE);
+            this.crownY = new int[wide * deep];
+            Arrays.fill(this.crownY, Integer.MIN_VALUE);
             int reach = CityCommands.DRAPE_REACH;
             for (int chunkX = (box.lowX() - reach) >> 4; chunkX <= (box.highX() + reach) >> 4; chunkX++) {
                 for (int chunkZ = (box.lowZ() - reach) >> 4; chunkZ <= (box.highZ() + reach) >> 4; chunkZ++) {
@@ -398,6 +433,7 @@ public final class Dressing {
                     // Read before the trees are skipped: a drawn tree is the build's own height inside its walls, and
                     // the inside cut has to know it stands there or it takes the canopy for the country over the village.
                     if (y > whole[at]) whole[at] = y;
+                    if (y >= crownY[at] && grass(name)) crownY[at] = y;
                     if (drawn) continue;
                     if (y > outline[at]) outline[at] = y;
                     if (name.contains("water")) watered[at] = Math.max(watered[at], y);
@@ -760,6 +796,42 @@ public final class Dressing {
                 level.setBlock(new BlockPos(x, y, z), Blocks.WATER.defaultBlockState(), 2);
             }
             return true;
+        }
+
+        /**
+         * Puts the cut's own grass back on the columns within a radius that have been worn to plain dirt.
+         * <p>
+         * Only the one case, and it is the case a build's own feet make: the cut draws grass on the column's top, the
+         * world holds plain dirt at that same height, and nothing solid or wet stands over it. A floor laid at the
+         * cut's height is another block and is left, a garden the cut draws as dirt is not grass and is left, and a
+         * hole under the cut is a hole - the drape's own rule is that it never fills over the build.
+         *
+         * @return how many columns took their grass back
+         */
+        private int heal(ServerLevel level, int centreX, int centreZ, int radius) {
+            BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+            int healed = 0;
+            for (int dz = -radius; dz <= radius; dz++) {
+                for (int dx = -radius; dx <= radius; dx++) {
+                    int x = centreX + dx;
+                    int z = centreZ + dz;
+                    int gx = x - box.lowX();
+                    int gz = z - box.lowZ();
+                    if (gx < 0 || gx >= wide || gz < 0 || gz >= deep) continue;
+                    int at = gx + gz * wide;
+                    int top = crownY[at];
+                    if (top == Integer.MIN_VALUE) continue;
+                    if (!level.isLoaded(cursor.set(x, top, z))) continue;
+                    BlockState worn = level.getBlockState(cursor);
+                    if (!worn.is(Blocks.DIRT) && !worn.is(Blocks.COARSE_DIRT)) continue;
+                    BlockState over = level.getBlockState(cursor.set(x, top + 1, z));
+                    if (over.isSolid() || !over.getFluidState().isEmpty()) continue;
+                    level.setBlock(cursor.set(x, top, z), Blocks.GRASS_BLOCK.defaultBlockState(),
+                            Block.UPDATE_CLIENTS);
+                    healed++;
+                }
+            }
+            return healed;
         }
 
         /** One step of the road: the hand's own pass, taken a stage at a time so no tick carries it whole. */

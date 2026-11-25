@@ -1372,6 +1372,8 @@ all unverified.
 - A road already laid is never taken back: `surfaceAt` reads the old embankment as ground, and `forget` clears only the
   saved alignment and grade.
 
+- **The village's worn ground has a repair, and it is a hand's**: `/hobbiton heal` puts the cut's own grass back over the columns within 64 blocks of the caller where the world holds plain `dirt` or `coarse_dirt` at the height the cut draws grass, with nothing solid or wet over it. It is not on a clock and nothing calls it: the wear is the village's own folk walking, so it returns, and a pass that watches a village for a living is idle work. It has not been run on `Generation Redux - 3` yet, so the 68 columns behind the muster hall still read as dirt. It reads the cut the jar holds, so it is worth running in a world raised from that cut and not in one raised before a re-cut.
+
 ## The rules this project is walked by
 
 - One `CHANGELOG.md` bullet per change, in the long `- **Claim.** …` prose.

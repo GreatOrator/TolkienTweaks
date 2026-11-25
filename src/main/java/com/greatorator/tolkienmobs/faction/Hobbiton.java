@@ -97,6 +97,8 @@ public final class Hobbiton {
      * across, so a player standing at one wall is not "far" from the other.
      */
     private static final int REACH = 192;
+    /** How far from the caller `/hobbiton heal` puts the village's own ground back, in blocks. */
+    private static final int HEAL_REACH = 64;
     /** How long after a start the pass waits before it will touch anything: a start is busy enough as it is. */
     private static final int GRACE_TICKS = 200;
     /** How many of the village's columns one unit of the clear works: a band across the footprint. */
@@ -345,10 +347,50 @@ public final class Hobbiton {
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("hobbiton")
                 .requires(source -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source))
-                .then(Commands.literal("raise").executes(Hobbiton::raiseNow)));
+                .then(Commands.literal("raise").executes(Hobbiton::raiseNow))
+                .then(Commands.literal("heal").executes(Hobbiton::healNow)));
     }
 
     /** Lays, clears and dresses the village now, wherever the players are, at the same budget a tick. */
+    /**
+     * Puts the village's own ground back where it has been worn away.
+     * <p>
+     * A village is walked over by its own folk, and a grass block under a body's feet turns to dirt, so a fortnight's
+     * walking leaves a trail of bare dirt through the yards behind the hall that reads as ground the drape skipped. It
+     * did not skip it: inside the walls the drape takes off what stands over the cut and never rewrites the cut's own
+     * blocks, which is what keeps a wall and a floor a wall and a floor. So the one repair that can be made without
+     * guessing is asked for by hand: the cut's own grass goes back wherever the world holds plain dirt at the cut's
+     * height with nothing solid or wet over it, within {@link #HEAL_REACH} of the caller.
+     */
+    private static int healNow(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getServer().getLevel(TolkienDimensions.ARDA);
+        if (level == null) {
+            source.sendFailure(Component.literal("Arda is not in this world, so there is no village ground to heal."));
+            return 0;
+        }
+        BlockPos centre = BlockPos.containing(source.getPosition());
+        try {
+            List<CutCommands.Part> parts = CutCommands.parts(level, CUT);
+            if (parts.isEmpty()) {
+                source.sendFailure(Component.literal("No cut named " + CUT + " is in this world or in the jar."));
+                return 0;
+            }
+            BlockPos corner = ArdaMap.hobbitonPlan();
+            List<CityCommands.Part> cityParts = CutCommands.cityParts(parts);
+            int healed = Dressing.repair(level, CutCommands.folder(level).resolve(CUT),
+                    piece -> CutCommands.raw(level, CUT, piece), cityParts, corner,
+                    CityCommands.Box.of(cityParts, corner), true, CutCommands.deck(level, CUT),
+                    centre.getX(), centre.getZ(), HEAL_REACH);
+            source.sendSuccess(() -> Component.literal("The Shire: " + healed + " column(s) of the village's own"
+                    + " ground within " + HEAL_REACH + " of " + centre.toShortString() + " took their grass back."), true);
+            return healed;
+        } catch (IOException unreadable) {
+            source.sendFailure(Component.literal("The village's cut could not be read: " + unreadable.getMessage()));
+            return 0;
+        }
+    }
+
     private static int raiseNow(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         Standing work = autospawn(source.getServer());
