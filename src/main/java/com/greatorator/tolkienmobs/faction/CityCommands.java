@@ -139,7 +139,7 @@ public final class CityCommands {
      * left the build. Thirty-two is where the settled ring still meets the drawn country without touching
      * the branch.
      */
-    static final int DRAPE_REACH = 32;
+    static final int DRAPE_REACH = 60;
     /**
      * How far over the city's own floor a column's top may stand and still be a deck and not a wall: the
      * floor tile and the course laid on it. Read as a lift over the build's corner rather than as a height in

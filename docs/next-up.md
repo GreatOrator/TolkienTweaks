@@ -1496,6 +1496,14 @@ all unverified.
   somewhere, the remaining suspects are the `tall` gate at the very edge of the build's low fronts, and columns the
   cut leaves empty (`outline` of `MIN_VALUE`), which no mountain can be hung from.
 
+- **The mountain's edge and its missing places are fixed; the edge tree is not.** 26 Nov: `DRAPE_REACH` 32 -> 60,
+  `HEM_FEATHER = 2`, `mound` signed so the same line fills where the country is low and cuts where it is high, and the
+  mountain's line now replaces the ring's join on its flank; `DRESS_VERSION = 9`. Headless `Smooth Check`: 91,533
+  filled, 67 cut, 54,111 on the flank, 1,216 left alone, dressed in 47 s. Not looked at. The tree-shaped pieces at the
+  edge are open: the ring reads ground from the top of the column down, and a crown that reaches out over the build's
+  own edge is the case it has always been weakest at - if they are still there, the next step is to read such a
+  column's ground from the ring's side rather than its own.
+
 ## The rules this project is walked by
 
 - One `CHANGELOG.md` bullet per change, in the long `- **Claim.** …` prose.

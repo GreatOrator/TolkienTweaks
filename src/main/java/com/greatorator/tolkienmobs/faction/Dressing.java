@@ -119,6 +119,15 @@ public final class Dressing {
     private static final int HEM_CREST = 3;
     /** How far the whole hill is lowered, crest and foot together: the owner's "lower it about 3 blocks". */
     private static final int HEM_DROP = 3;
+    /**
+     * How many blocks of the hill's own rise are feathered off at the end of its reach.
+     * <p>
+     * A smoothstep lands on nought, but the lift it multiplies is measured from each column's own ground, so the last
+     * few blocks of the reach still stood a block or two over the country beside them and ended on a line: the sharp
+     * cut-off the owner photographed on 26 November. Taking the last two blocks of rise off leaves nothing standing at
+     * the boundary that the ground beside it does not have.
+     */
+    private static final int HEM_FEATHER = 2;
     /** How far the build's edge must stand over its own deck before a mountain is planted over it. */
     private static final int HEM_TALL = 4;
 
@@ -863,8 +872,10 @@ public final class Dressing {
             // same twenty blocks read this way is the same join with nothing to stand on and nothing to fall off: one
             // block down for every one or two out, all the way to the country.
             int ridge = mound(outX, outZ, at, top);
-            boolean onFlank = ridge != Integer.MIN_VALUE;
-            int cap = Math.max((int) Math.round(wall + (top - wall) * share), ridge);
+            boolean onFlank = ridge != Integer.MIN_VALUE && ridge != top;
+            // On the mountain's own flank the mountain's line is the join, not a floor under the ring's: it is the same
+            // shape rising to the crest and the same shape cutting the country down to it.
+            int cap = onFlank ? ridge : (int) Math.round(wall + (top - wall) * share);
             if (onFlank) mounted++;
             // A deck is not a roofline, so the ground outside it is not cut - the trench that opened round every
             // face the build leaves open is why. A spring is a different column: its pool is the build's own top
@@ -978,11 +989,15 @@ public final class Dressing {
             double out = Math.hypot(outX, outZ);
             if (out >= HEM_REACH) return Integer.MIN_VALUE;
             int crest = outline[at] + HEM_CREST - HEM_DROP;
-            int lift = Math.max(0, crest - top);
-            if (lift == 0) return Integer.MIN_VALUE;
             double t = out / (double) HEM_REACH;
             double ease = t * t * (3.0D - 2.0D * t);
-            return top + (int) Math.round(lift * (1.0D - ease));
+            int line = top + (int) Math.round((crest - top) * (1.0D - ease));
+            // Sign matters: where the country already stands over the crest the same line is below its own ground, and
+            // the ring's cut takes the difference off. A column that only ever answered with a fill could not do that,
+            // and the country beside the build stayed a wall the hill had no way to reach - the cuts the owner found at
+            // 856,118 and the corner where the drape looked like it was not reaching at all.
+            if (line > top) line = Math.max(top, line - HEM_FEATHER);
+            return line;
         }
 
         /**
