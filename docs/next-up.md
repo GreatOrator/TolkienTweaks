@@ -1490,6 +1490,12 @@ all unverified.
   the owner's new world on this build, and the shape tuned from the pictures - `HEM_CREST` for height, `HEM_REACH` for
   spread, `HEM_TALL` for how much of the perimeter is buried, `HEM_INSET` for how far the crest sits inside.
 
+- **Mountain tuned to the owner's four answers.** 26 Nov: `HEM_REACH = 60`, `HEM_DROP = 3`, `HEM_TALL = 4`, the
+  `mouth()` guard deleted so the outflow is buried; `DRESS_VERSION = 8`. Headless `Ring Check`: 49,584 filled,
+  95 left alone, 38,464 on the flank, 518 carried under the mountain. Not looked at. If the ring is still short
+  somewhere, the remaining suspects are the `tall` gate at the very edge of the build's low fronts, and columns the
+  cut leaves empty (`outline` of `MIN_VALUE`), which no mountain can be hung from.
+
 ## The rules this project is walked by
 
 - One `CHANGELOG.md` bullet per change, in the long `- **Claim.** …` prose.

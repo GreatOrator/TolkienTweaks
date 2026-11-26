@@ -114,11 +114,13 @@ public final class Dressing {
     /** How far in from the build's own edge the mountain's crest stands, in blocks. */
     private static final int HEM_INSET = 4;
     /** How far out from the build the mountain runs before it is the country again, in blocks. */
-    private static final int HEM_REACH = 45;
-    /** How far the crest stands over the build's own top, in blocks. */
+    private static final int HEM_REACH = 60;
+    /** How far the crest stands over the build's own top, in blocks, before {@link #HEM_DROP} is taken off it. */
     private static final int HEM_CREST = 3;
+    /** How far the whole hill is lowered, crest and foot together: the owner's "lower it about 3 blocks". */
+    private static final int HEM_DROP = 3;
     /** How far the build's edge must stand over its own deck before a mountain is planted over it. */
-    private static final int HEM_TALL = 10;
+    private static final int HEM_TALL = 4;
 
     /**
      * How deep the country keeps its own dirt under its grass, and so how deep a fill keeps it too.
@@ -915,31 +917,15 @@ public final class Dressing {
         }
 
         /**
-         * Whether a column of the ring is carried under the mountain: the edge it joins stands tall, the column is
-         * inside the mountain's own reach, and it is not in front of the city's outflow, whose mouth must stay open.
+         * Whether a column of the ring is carried under the mountain: the edge it joins stands tall enough to be
+         * worth burying, and the column is inside the mountain's own reach. The city's outflow is not exempt - the
+         * owner's answer is that the hill takes it, so the river ends under the mountain rather than in a walled pond.
          */
         private boolean mountain(int x, int z, int at) {
             if (!tall(at)) return false;
             int outX = Math.max(0, Math.max(box.lowX() - x, x - box.highX()));
             int outZ = Math.max(0, Math.max(box.lowZ() - z, z - box.highZ()));
-            return Math.hypot(outX, outZ) < HEM_REACH && !mouth(x, z);
-        }
-
-        /** Whether a column stands within three blocks of the city's own outflow, which the mountain must not close. */
-        private boolean mouth(int x, int z) {
-            if (channel == null) return false;
-            int gx = x - box.lowX();
-            int gz = z - box.lowZ();
-            for (int dz = -3; dz <= 3; dz++) {
-                for (int dx = -3; dx <= 3; dx++) {
-                    int nx = gx + dx;
-                    int nz = gz + dz;
-                    if (nx < 0 || nx >= wide || nz < 0 || nz >= deep) continue;
-                    int n = nx + nz * wide;
-                    if (channel[n] && watered[n] - (box.lowY() - 1) <= CityCommands.OUTLET_LIFT) return true;
-                }
-            }
-            return false;
+            return Math.hypot(outX, outZ) < HEM_REACH;
         }
 
         /** Whether the build's own edge stands tall here: the high points a mountain is planted round. */
@@ -976,7 +962,7 @@ public final class Dressing {
             if (channel[at]) return 0;
             int eat = edge(x, z);
             if (!tall(eat)) return 0;
-            return outline[eat] + HEM_CREST;
+            return outline[eat] + HEM_CREST - HEM_DROP;
         }
 
         /**
@@ -991,7 +977,7 @@ public final class Dressing {
             if (!tall(at)) return Integer.MIN_VALUE;
             double out = Math.hypot(outX, outZ);
             if (out >= HEM_REACH) return Integer.MIN_VALUE;
-            int crest = outline[at] + HEM_CREST;
+            int crest = outline[at] + HEM_CREST - HEM_DROP;
             int lift = Math.max(0, crest - top);
             if (lift == 0) return Integer.MIN_VALUE;
             double t = out / (double) HEM_REACH;
