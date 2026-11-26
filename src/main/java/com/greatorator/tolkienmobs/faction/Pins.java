@@ -70,14 +70,13 @@ public final class Pins extends SavedData {
             // cut's low corner went on, and both it and the stone inside the city were removed on 24 November 2026.
             // The new pin goes on the block the replaced cut's lowest band stands on, and the city occupies that y
             // to y + 243. It is not in this table until the site is walked.
-            // The Shire's village, re-sited on the re-based drawing on 26 November 2026: the west bank of the pond the
-            // owner marked, ground 81, dry, with the hill behind it to the north-west and the Water to the south-west.
-            // The old pin, -463, 44, -124, was the east gate of the village walked in Progress Check 3, whose cut still
-            // stands at -700, -512; the Shire's ground moved under it when the drawing was re-based, so the name moves
-            // first and the village's own corner follows it when the plan is re-sited. The y is the drawing's surface
-            // one over, 81 at that column, which is where a /tmtp should arrive until a cut raises the ground there.
-            // A world that already holds the old village keeps its own saved pin, so nothing moves under it.
-            Map.entry("hobbiton", new BlockPos(866, 82, -2917)),
+            // The Shire's village, raised at the pond the owner marked on 26 November 2026: the cut is planted at its low
+            // corner, 866, 70, -2917, and this is the same gate in the cut that -463, 44, -124 was in the village walked
+            // in Progress Check 3 - the corner plus 237 east, 11 up and 388 south, which is the block the cut leaves
+            // from. A pin is where the name stands rather than where the cut starts, so the corner is not the gate and
+            // the corner is not the pin: /tmtp should put a traveller inside the village, not on its wall. A world that
+            // already holds the old village keeps its own saved pin, so nothing moves under it.
+            Map.entry("hobbiton", new BlockPos(1103, 81, -2529)),
             // Bree, walked in the same world: the town's own arrival point at the head of the hall's front line, one
             // over the ground the hall's markers were set in. It was the middle of the cut's footprint - 1272, 122, 80 -
             // which is a fifth of the way across a 496 by 672 town from its west gate.
@@ -98,8 +97,10 @@ public final class Pins extends SavedData {
             // -74 by /tmpin hall add in the owner's Progress Check 1 world, and read back out of that world's own pins
             // once the hall was up and called perfect. The key comes from TownHalls rather than being written here, so
             // the table and the command cannot disagree about how a town's hall is named. The hall is laid at the pin's
-            // own column, so it came down with the village's seven: 54 to 47.
-            Map.entry(TownHalls.key("hobbiton"), new BlockPos(-529, 47, -74)),
+            // own column, so it came down with the village's seven: 54 to 47. It moves with the village on 26 November
+            // 2026 by the same offsets it had in the cut - 171 east, 14 up and 438 south of the corner - so it stands in
+            // the new footprint at 1037, 84, -2479 and not two thousand blocks from it, on the ground its old village left.
+            Map.entry(TownHalls.key("hobbiton"), new BlockPos(1037, 84, -2479)),
             // Bree's mustering hall, marked in the owner's Progress Check 3 world: two blocks of ammolite at 1031 and
             // 1032, 122, -32, set into the grass on the town's west side and pointed at the middle two blocks of the
             // hall's own front - the 16-block side the job board is on. The hall is laid turned half round from the
