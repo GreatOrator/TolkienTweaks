@@ -1468,6 +1468,14 @@ all unverified.
   inside a cube: no worse. Nothing was walked - the shape is numbers only, and the band left at full height has not been
   looked at.
 
+- **Stray water at the edge is drained, and the apron is next if it is not enough.** 26 Nov: `EDGE_WATER = 3` in `Dressing`,
+  `stray(x, z)` and `drain(level, x, z, surface)`, so a pool within three blocks of the box edge that is not within three of
+  a cut water column is turned to dirt and then dressed by the ordinary join; `DRESS_VERSION = 6`. Same seed and corner as
+  `Apron Check` on the dedicated server (`Water Check`): 6,789 left alone against 7,798, 40,864 filled against 39,881, 15
+  cut outside the walls against none, 2,656 left for the water both times. Not looked at in game. The answer to "if this
+  does not fix it": yes - the lift-only hem already measured (reach 96, smoothstep, cap 24, the four rim tables) is the
+  apron round the high points, and it is the next thing to build if the pools are still not the whole of it.
+
 ## The rules this project is walked by
 
 - One `CHANGELOG.md` bullet per change, in the long `- **Claim.** …` prose.

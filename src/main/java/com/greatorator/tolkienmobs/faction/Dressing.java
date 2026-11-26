@@ -100,6 +100,18 @@ public final class Dressing {
     private static final int APRON_CAP = 8;
 
     /**
+     * How close to the build's own edge a pool is drained, in blocks, when it is not the river through the city.
+     * <p>
+     * The drape never dresses a column standing in water, which is right for the drawing's river and wrong for the
+     * puddles the drawing leaves at a build's own edge: the ring could not cut or fill beside them, so the join
+     * stopped dead at a source a block wide and the wall stood beside it - the stalls the owner photographed on
+     * 26 November. Three blocks is the width of the shoulder the ring lays, so a pool further in than that is the
+     * drawing's water and stays. A pool within three blocks of a column the cut itself carries water in is the
+     * river's own and is left as well.
+     */
+    private static final int EDGE_WATER = 3;
+
+    /**
      * How deep the country keeps its own dirt under its grass, and so how deep a fill keeps it too.
      * <p>
      * The drawn ground shows three to four blocks of dirt over its stone wherever a riser is cut (dirt 83 to 85 under
@@ -761,8 +773,12 @@ public final class Dressing {
             // meet. The build's pool needs no exemption: it is inside the walls, and this pass never cuts inside as
             // ring. A column outside that is itself water is the drawing's water whoever holds it up.
             if (water(level, x, surface, z)) {
-                skipped++;
-                return;
+                int bed = stray(x, z) ? drain(level, x, z, surface) : -1;
+                if (bed < 0) {
+                    skipped++;
+                    return;
+                }
+                surface = bed;
             }
             // A tree is not ground, and the top of its crown is not where its ground is. The height that counts
             // leaves out answers where the column really stands; read from the leaves' own top, a column under a
@@ -879,6 +895,64 @@ public final class Dressing {
         }
 
         /**
+         * Whether a pool at this column is a stray one, standing within {@link #EDGE_WATER} blocks of the build's own
+         * edge and away from the river the cut carries through the city.
+         * <p>
+         * The distance is measured to the box, so a column three blocks inside the edge and one three blocks outside it
+         * are both asked. A pool within the same distance of a column the cut fills with water is the river's own - the
+         * mouth and its approach - and is left exactly as it stands: draining that would take the river out of its bed
+         * to tidy a bank.
+         */
+        private boolean stray(int x, int z) {
+            if (channel == null) return false;
+            int away = Math.max(Math.max(box.lowX() - x, x - box.highX()),
+                    Math.max(box.lowZ() - z, z - box.highZ()));
+            if (Math.abs(away) > EDGE_WATER) return false;
+            int gx = x - box.lowX();
+            int gz = z - box.lowZ();
+            for (int dz = -EDGE_WATER; dz <= EDGE_WATER; dz++) {
+                for (int dx = -EDGE_WATER; dx <= EDGE_WATER; dx++) {
+                    int nx = gx + dx;
+                    int nz = gz + dz;
+                    if (nx < 0 || nx >= wide || nz < 0 || nz >= deep) continue;
+                    if (channel[nx + nz * wide]) return false;
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Takes a stray pool out of a column: the sheet over its ground, and the water in it, become dirt, and the
+         * column answers with the height of the bed it stands on.
+         * <p>
+         * What is left is ground, so the drape's own join then cuts or fills the column as it would any other: the pool
+         * is not hidden under a fill but replaced by the shoulder the join was always meant to have there. Nothing over
+         * the column is touched, so a build's own blocks are not read as bed.
+         *
+         * @return the bed's height, or nought when the column holds no ground under its water
+         */
+        private int drain(ServerLevel level, int x, int z, int surface) {
+            int floor = Math.max(level.getMinY(), surface - COLUMN_DEPTH);
+            for (int y = surface + 1; y <= surface + 2; y++) {
+                if (!level.getBlockState(new BlockPos(x, y, z)).getFluidState().isEmpty()) {
+                    level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+                }
+            }
+            int bed = 0;
+            for (int y = surface; y > floor; y--) {
+                BlockState state = level.getBlockState(new BlockPos(x, y, z));
+                if (state.getFluidState().isEmpty()) {
+                    if (state.isAir()) continue;
+                    bed = y;
+                    break;
+                }
+                level.setBlock(new BlockPos(x, y, z), Blocks.DIRT.defaultBlockState(), 2);
+                if (bed == 0) bed = y;
+            }
+            return bed;
+        }
+
+        /**
          * Whether a column's top, or the block over it, is a fluid: the drawing's water, which the drape never dresses.
          * <p>
          * Both blocks, because the answer must not depend on whether the height map counted the fluid: a column under a
@@ -917,7 +991,11 @@ public final class Dressing {
             int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
                     level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
             if (surface <= level.getMinY() || surface - roof < BANK_BLOCKS) return;
-            if (!level.getBlockState(new BlockPos(x, surface, z)).getFluidState().isEmpty()) return;
+            if (!level.getBlockState(new BlockPos(x, surface, z)).getFluidState().isEmpty()) {
+                int bed = stray(x, z) ? drain(level, x, z, surface) : -1;
+                if (bed < 0) return;
+                surface = bed;
+            }
             BlockState skin = level.getBlockState(new BlockPos(x, surface, z));
             int down = apron(level, x, z, roof, surface);
             if (down >= surface) return;
