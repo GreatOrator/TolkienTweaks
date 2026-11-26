@@ -84,6 +84,14 @@ public final class Dressing {
      * block or two round a city's open faces is left alone, and a bank the height of a storey is dressed.
      */
     private static final int BANK_BLOCKS = 3;
+
+    /**
+     * What the water map answers for a column with no water within the ring, in blocks.
+     * <p>
+     * Past any cap, so a column that took this number is left at its own shape: the shore rule can only lower a fill,
+     * never raise one.
+     */
+    private static final int NO_WATER = 1024;
     /**
      * How far under the top of a column the drape will look for the ground it stands on.
      * <p>
@@ -328,6 +336,23 @@ public final class Dressing {
         private int chunk;
         private boolean grown;
         private boolean dressed;
+        /**
+         * How far every column of the ring stands from water, and the level that water is at.
+         * <p>
+         * Water is the one thing the ring never dresses, so a fill that ran to a shoreline stopped dead at it and
+         * stood as a face - a fill of twenty blocks beside the river in the world made on 26 November. The distance is
+         * read once for the whole ring, before the ring is dressed, so a column can be carried down into the water it
+         * is beside as a shore.
+         */
+        private int[] shore = new int[0];
+        private int[] shoreLevel = new int[0];
+        private int shoreLowX;
+        private int shoreLowZ;
+        private int shoreWide;
+        private int shoreDeep;
+        /** How far the water has been read, in the ring's own chunks, and whether its distances are worked out. */
+        private int shoreChunk;
+        private boolean shoreReady;
         private boolean road;
         /** The road being laid, once the ground is dressed. */
         private RoadCommands.RoadJob laying;
@@ -382,6 +407,10 @@ public final class Dressing {
                 }
                 if (!grown) {
                     grow();
+                    return true;
+                }
+                if (!shoreReady) {
+                    mapWater(level);
                     return true;
                 }
                 if (chunk < ring.size()) {
@@ -534,6 +563,103 @@ public final class Dressing {
         }
 
         /**
+         * Reads the water across the ring, a couple of chunks a step, and works out the distance to it.
+         * <p>
+         * Read before the ring is dressed and from the ground as the world had it, so a fill cannot be mistaken for
+         * water and the distance cannot depend on the order the chunks are walked in. The distance is then two sweeps
+         * of the ring - forward, then back - each column taking the nearest water's distance and level from the eight
+         * beside it, which is all the shore rule needs and is paid once for a pass that is already minutes long.
+         * <p>
+         * Only the water's own top is asked for: a column whose top is a fluid is a water column, and its level is
+         * that top. A lily or a leaf pile over the water is not water and is left to the column's own height, since
+         * the fill's business is the water's surface and not what floats on it.
+         */
+        private void mapWater(ServerLevel level) {
+            int reach = CityCommands.DRAPE_REACH;
+            if (shore.length == 0) {
+                this.shoreLowX = box.lowX() - reach;
+                this.shoreLowZ = box.lowZ() - reach;
+                this.shoreWide = box.highX() + reach - shoreLowX + 1;
+                this.shoreDeep = box.highZ() + reach - shoreLowZ + 1;
+                this.shore = new int[shoreWide * shoreDeep];
+                this.shoreLevel = new int[shoreWide * shoreDeep];
+                Arrays.fill(shore, NO_WATER);
+            }
+            int upto = Math.min(ring.size(), shoreChunk + CHUNKS_PER_TICK * 2);
+            for (; shoreChunk < upto; shoreChunk++) {
+                int[] at = ring.get(shoreChunk);
+                level.getChunk(at[0], at[1]);
+                int fromX = Math.max(at[0] << 4, shoreLowX);
+                int toX = Math.min((at[0] << 4) + 15, shoreLowX + shoreWide - 1);
+                int fromZ = Math.max(at[1] << 4, shoreLowZ);
+                int toZ = Math.min((at[1] << 4) + 15, shoreLowZ + shoreDeep - 1);
+                for (int x = fromX; x <= toX; x++) {
+                    for (int z = fromZ; z <= toZ; z++) {
+                        int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+                        if (top <= level.getMinY()) continue;
+                        if (level.getBlockState(new BlockPos(x, top, z)).getFluidState().isEmpty()) continue;
+                        int index = (x - shoreLowX) + (z - shoreLowZ) * shoreWide;
+                        shore[index] = 0;
+                        shoreLevel[index] = top;
+                    }
+                }
+            }
+            if (shoreChunk < ring.size()) return;
+            for (int pass = 0; pass < 2; pass++) {
+                for (int n = 0; n < shore.length; n++) {
+                    int index = pass == 0 ? n : shore.length - 1 - n;
+                    int gx = index % shoreWide;
+                    int gz = index / shoreWide;
+                    int best = shore[index];
+                    int bestLevel = shoreLevel[index];
+                    for (int ox = -1; ox <= 1; ox++) {
+                        int nx = gx + ox;
+                        if (nx < 0 || nx >= shoreWide) continue;
+                        for (int oz = -1; oz <= 1; oz++) {
+                            int nz = gz + oz;
+                            if (nz < 0 || nz >= shoreDeep) continue;
+                            int beside = nx + nz * shoreWide;
+                            int far = shore[beside];
+                            if (far == NO_WATER) continue;
+                            if (far + 1 < best) {
+                                best = far + 1;
+                                bestLevel = shoreLevel[beside];
+                            }
+                        }
+                    }
+                    shore[index] = best;
+                    shoreLevel[index] = bestLevel;
+                }
+            }
+            shoreReady = true;
+            LOGGER.info("Rivendell: the water is mapped over the ring - {} columns of it, so the ring is dressed"
+                    + " as a shore", countWater());
+        }
+
+        /** How many columns of the ring stand in water, which is what the shore rule is worked from. */
+        private int countWater() {
+            int wet = 0;
+            for (int at : shore) if (at == 0) wet++;
+            return wet;
+        }
+
+        /** How far a column of the ring stands from the nearest water, or {@link #NO_WATER} when there is none. */
+        private int shore(int x, int z) {
+            int gx = x - shoreLowX;
+            int gz = z - shoreLowZ;
+            if (gx < 0 || gz < 0 || gx >= shoreWide || gz >= shoreDeep) return NO_WATER;
+            return shore[gx + gz * shoreWide];
+        }
+
+        /** The level the nearest water stands at, which is nought when there is none. */
+        private int shoreLevel(int x, int z) {
+            int gx = x - shoreLowX;
+            int gz = z - shoreLowZ;
+            if (gx < 0 || gz < 0 || gx >= shoreWide || gz >= shoreDeep) return 0;
+            return shoreLevel[gx + gz * shoreWide];
+        }
+
+        /**
          * One column outside the walls, carried to the build's own outline.
          * <p>
          * Capped at the nearest outline column where the wall is, easing to what the ground already stands at
@@ -678,6 +804,22 @@ public final class Dressing {
             // over the floor is cut to the same join every other column is cut to - the build's own ground at the
             // wall, easing back into the country over the reach - and the shallow grooves round a city's open faces
             // are left exactly as they were.
+            // A fill is a shoulder and a shoulder is a slope: it never stands more than one block over its own
+            // distance from water. Without this the ease runs out at the shoreline - water is not dressed, so nothing
+            // carries the ground down to it - and the shoulder reads as a quarry face standing beside a pond.
+            if (top < cap) {
+                int to = shore(x, z);
+                if (to > 0) {
+                    int line = shoreLevel(x, z) + to - 1;
+                    if (line <= top) {
+                        // The shore line is at or under the ground the column already stands on, so the bank there is
+                        // the country's own and a fill over it would be the face again. Left exactly as it stands.
+                        skipped++;
+                        return;
+                    }
+                    cap = Math.min(cap, line);
+                }
+            }
             int down = spring ? Math.max(cap, watered[at]) : cap;
             boolean bank = banked && !spring && top - (origin.getY() + deck) >= BANK_BLOCKS;
             if (top > down && (!banked || spring || bank)) {

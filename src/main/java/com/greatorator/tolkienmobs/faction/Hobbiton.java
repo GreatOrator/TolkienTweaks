@@ -113,7 +113,7 @@ public final class Hobbiton {
      * drape - a mouth filled, a deck read from the build - has to reach a world that already holds the village, and the
      * cut it is dressed from is unchanged, so the version is what says so.
      */
-    private static final int DRESS_VERSION = 2;
+    private static final int DRESS_VERSION = 3;
     /** How far a probe column's top may move and still be the village: growth, mostly, not a village taken away. */
     private static final int PROBE_SLACK = 6;
     /**
