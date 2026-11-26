@@ -906,8 +906,30 @@ public final class Dressing {
                 }
             }
             int down = spring ? Math.max(cap, watered[at]) : cap;
+            // A join that takes or lays a single block is a lip and not a join. The falloff lands a block over the
+            // country somewhere along every seam - at the build's own edge, and at the foot of the mountain where its
+            // reach meets the ground - and a one-block rim round the dressed ring is what the owner photographed as a
+            // lip on 26 November. The column is left exactly as it stands, so the join begins where it is two blocks
+            // and ends a step short of the country: a step of two is a shoulder, a step of one is a lip to walk over.
+            if (Math.abs(down - top) == 1) {
+                skipped++;
+                return;
+            }
             boolean bank = banked && !spring && top - (origin.getY() + deck) >= BANK_BLOCKS;
             if (top > down && (!banked || spring || bank)) {
+                // A cut beside water is the water's too. The sheet itself is left exactly as it stands, so a column
+                // cut below the level beside it leaves the drawing's water standing on a face - the walls of water
+                // the owner photographed on 26 November, where the ring went through a pool instead of round it.
+                // The bank is cut to the water's own surface and no further, and a column the water already holds
+                // up is left as it stands rather than cut to nothing.
+                int beside = shore(x, z);
+                if (beside > 0 && beside <= EDGE_WATER) {
+                    down = Math.max(down, shoreLevel(x, z));
+                }
+                if (top <= down) {
+                    skipped++;
+                    return;
+                }
                 for (int y = surface; y > down; y--) {
                     level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
                 }
