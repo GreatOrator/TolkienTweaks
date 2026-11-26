@@ -70,18 +70,30 @@ public final class Pins extends SavedData {
             // cut's low corner went on, and both it and the stone inside the city were removed on 24 November 2026.
             // The new pin goes on the block the replaced cut's lowest band stands on, and the city occupies that y
             // to y + 243. It is not in this table until the site is walked.
-            // The Shire's village, walked in Progress Check 3 on 22 November: the gate a traveller arrives at, seven
-            // east and one over the block its cut leaves from. It used to be the middle of the footprint, and the middle
-            // of a 551 by 468 village is a field a long walk from its own door, which is no answer for a name whose
-            // whole job is to put somebody in the village. The build is still raised by Hobbiton.autospawn at its own
-            // corner - the pin is where the name stands, not where the cut starts. It is 44 rather than 51 because the
-            // village came down seven on 24 November 2026, when it was walked in a world made from the re-based
-            // drawing: this is a column of the village, so it moves with the cut.
-            Map.entry("hobbiton", new BlockPos(-463, 44, -124)),
+            // The Shire's village, re-sited on the re-based drawing on 26 November 2026: the west bank of the pond the
+            // owner marked, ground 81, dry, with the hill behind it to the north-west and the Water to the south-west.
+            // The old pin, -463, 44, -124, was the east gate of the village walked in Progress Check 3, whose cut still
+            // stands at -700, -512; the Shire's ground moved under it when the drawing was re-based, so the name moves
+            // first and the village's own corner follows it when the plan is re-sited. The y is the drawing's surface
+            // one over, 81 at that column, which is where a /tmtp should arrive until a cut raises the ground there.
+            // A world that already holds the old village keeps its own saved pin, so nothing moves under it.
+            Map.entry("hobbiton", new BlockPos(866, 82, -2917)),
             // Bree, walked in the same world: the town's own arrival point at the head of the hall's front line, one
             // over the ground the hall's markers were set in. It was the middle of the cut's footprint - 1272, 122, 80 -
             // which is a fifth of the way across a 496 by 672 town from its west gate.
             Map.entry("bree", new BlockPos(1059, 77, -31)),
+            // Bucklebury, the first village east of the crossing, pinned for a build that does not exist yet: the east
+            // bank 150 east and 60 south of the Brandywine bridge at 1230, -3490, ground 90, dry from the bridge's own
+            // east foot and dry the whole 1,076 blocks to Bree. It has no cut, no template and no catalogue entry, so the
+            // key is inert until a build asks for it - the ground is written down so it cannot be lost, and /tmtp
+            // finds it by that name as a set point in the meantime; the catalogue does not carry it, so /tmpin
+            // place refuses it. The reference sheet's own label at pixel 795, 740 is this place, not Hobbiton.
+            Map.entry("bucklebury", new BlockPos(1380, 91, -3432)),
+            // Michel Delving, pinned for the same reason: the flat shelf 906 blocks due west of Hobbiton, ground 103,
+            // with the land climbing away west and north and a shallow vale to the south-east. Four blocks of relief
+            // across a hundred and eight across two hundred, so a town plan has room; the whole line from Hobbiton is
+            // dry and steps up by at most one block a column, so a road west would grade without a cut. No cut yet.
+            Map.entry("micheldelving", new BlockPos(-40, 104, -2740)),
             // Hobbiton's mustering hall, on the ground it was raised on and has stood on since: pinned at -529, 101,
             // -74 by /tmpin hall add in the owner's Progress Check 1 world, and read back out of that world's own pins
             // once the hall was up and called perfect. The key comes from TownHalls rather than being written here, so
