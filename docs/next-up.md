@@ -1517,3 +1517,19 @@ all unverified.
 - `docs/HANDOFF.md` is the long history and is worth reading before changing a system it explains.
 
 The lip and the water beside a cut are answered in `Dressing` (a one-block join is left alone, and a cut stops at the surface of the water within `EDGE_WATER` of it). What is still open is the spot at 859/124/-2769, the one the owner keeps coming back to: the village's own edge there stands nine blocks over the water at its foot, and no hill is planted because `HEM_TALL` measures the edge against the village's own deck (three there) and asks for four - the owner's own rule, "ring every edge where the build is 4+ over the deck". Measuring it against the country and the water just outside the edge instead would plant the hill there and bury the cliff, at the cost of ring much more of a village that sits on a plateau; that answer is the owner's to give. The water walls are not reproduced from the coordinates given (848/-2863 and 1347/-2457), where the reading shows grass to the water's own level - one coordinate of a wall still standing would pin it. A tree on the build's own edge remains the one shape the ring has no answer for.
+- **The seam and the pad.** 26 Nov, second batch of screenshots: the lip round the whole build, a stone step in a   field on the east side, a hollow beside the west edge that refuses to meet the village, and the river walled off
+  after the drape. The cause was one thing read three ways: the ring clamped every column outside the footprint to
+  the edge of the forty-eight-block tile the cut was laid in, and the village fills only part of that tile - its east
+  edge 25 blocks short, its south 12 - so the whole of those sides was skipped as having no wall to join, and the
+  country's own steps stood where the join belonged. `Dressing.held` now walks in along the row and then the column
+  to the nearest filled column (`HEM_HELD = 64`), a column of the tiles the cut leaves empty is dressed by that join,
+  the crest no longer loses its two-block feather, the bank rule is measured over the build's own top rather than the
+  deck, and the mountain's flank answers the shore rule; `DRESS_VERSION = 11`. Headless `Pad Check 3`: 71,715 filled,
+  9,523 cut, 30,361 left alone, 65,016 on the flank (the owner's world on the previous build: 75,715 / 33 / 26,265 /
+  54,096). At 1416/1417 the ground now steps 91 to 91 rather than 91 to 89; the hollow at 861/-2784 ramps 88 to 80 in
+  ones instead of standing six deep; the bank at 1455/-2862 meets the sheet at 79. Not looked at in game. Open: the
+  hollow's floor stays at its pond's own level, because the shore rule holds a fill down beside water, and burying it
+  would bury the pond - the owner's call; country steps more than twelve blocks past the south edge, and the mid-field
+  step at 1450/-2725, are the country's own and stand under a bank of three; and a tree standing in the new pad keeps
+  its crown over ground that is now at the village's own height, which may be the "trees blocking it" the owner
+  meant at 12.20.18 - whether those crowns come off is theirs to say.

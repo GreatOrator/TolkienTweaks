@@ -82,6 +82,12 @@ public final class Dressing {
      * foot of its own country, so the ground along its south edge stood eleven blocks over its paving with a raw cliff
      * between them - not a trench but a wall the town never asked for. Three is the line between the two: a groove of a
      * block or two round a city's open faces is left alone, and a bank the height of a storey is dressed.
+     * <p>
+     * It is measured over the build's own top at the wall rather than over its deck. The deck is a floor tile, and a
+     * village cut into the side of its valley draws edges well under it: the Shire's own north edge stands at 81 with
+     * the deck at 86, and the country beside it at 85 - four blocks of raw face at every column of that side, which
+     * the deck's rule read as a groove because 85 is under 86, and left standing. Three over the build's own top is a
+     * face whatever the build's top is.
      */
     private static final int BANK_BLOCKS = 3;
 
@@ -120,14 +126,16 @@ public final class Dressing {
     /** How far the whole hill is lowered, crest and foot together: the owner's "lower it about 3 blocks". */
     private static final int HEM_DROP = 3;
     /**
-     * How many blocks of the hill's own rise are feathered off at the end of its reach.
+     * How far into the cut's own tiles the build's own edge is looked for, in blocks.
      * <p>
-     * A smoothstep lands on nought, but the lift it multiplies is measured from each column's own ground, so the last
-     * few blocks of the reach still stood a block or two over the country beside them and ended on a line: the sharp
-     * cut-off the owner photographed on 26 November. Taking the last two blocks of rise off leaves nothing standing at
-     * the boundary that the ground beside it does not have.
+     * The cut is laid in forty-eight-block tiles and the build does not fill the last tile of a row: the village's own
+     * east edge stands twenty-five blocks short of its tile's edge, and its south edge twelve. A ring column clamps to
+     * the tile's edge, which is air, so a ring that only asked the clamped column left the whole of those sides of the
+     * country exactly as it stood - the two- and five-block steps the owner photographed on 26 November. The nearest
+     * filled column is looked for along the row and then along the column, and never further than a tile and a half,
+     * so the search cannot cross a hollow in the build and join to something else.
      */
-    private static final int HEM_FEATHER = 2;
+    private static final int HEM_HELD = 64;
     /** How far the build's edge must stand over its own deck before a mountain is planted over it. */
     private static final int HEM_TALL = 4;
 
@@ -738,15 +746,67 @@ public final class Dressing {
                 dressInside(level, x, z);
                 return;
             }
-            int gx = Mth.clamp(x, box.lowX(), box.highX()) - box.lowX();
-            int gz = Mth.clamp(z, box.lowZ(), box.highZ()) - box.lowZ();
-            int at = gx + gz * wide;
-            int wall = outline[at];
-            if (wall == Integer.MIN_VALUE) {
-                // No piece of the cut at this column of the wall: there is no shape to join to, so it is left.
+            join(level, x, z);
+        }
+
+        /**
+         * The build's own edge column nearest a column of the ring, as {x, z}, or null when the cut fills none of
+         * that row or column.
+         * <p>
+         * The cut is a row of forty-eight-block tiles, and the edge of a tile is not the edge of the build: the
+         * village's own east edge stands twenty-five blocks inside the tile it was cut from, and its south edge
+         * twelve. The ring clamped every column outside the footprint to the edge of a tile, which there is air, so
+         * the whole of those sides of the ring was left exactly as it stood - the country's own two- and five-block
+         * steps standing where the join should be, which is the lip the owner photographed round the build on 26
+         * November, and the flat field with a stone wall across it that they photographed beside it. So the wall is
+         * read from the nearest column the cut actually fills, along the row first and then along the column: the
+         * join is measured from the build a player can see, not from the tile the build was cut in.
+         */
+        private int[] held(int x, int z) {
+            int cx = Mth.clamp(x, box.lowX(), box.highX());
+            int cz = Mth.clamp(z, box.lowZ(), box.highZ());
+            if (outline[(cx - box.lowX()) + (cz - box.lowZ()) * wide] != Integer.MIN_VALUE) {
+                return new int[]{cx, cz};
+            }
+            for (int step = 1; step <= HEM_HELD; step++) {
+                for (int way = -1; way <= 1; way += 2) {
+                    int nx = cx + way * step;
+                    if (nx >= box.lowX() && nx <= box.highX()
+                            && outline[(nx - box.lowX()) + (cz - box.lowZ()) * wide] != Integer.MIN_VALUE) {
+                        return new int[]{nx, cz};
+                    }
+                }
+                for (int way = -1; way <= 1; way += 2) {
+                    int nz = cz + way * step;
+                    if (nz >= box.lowZ() && nz <= box.highZ()
+                            && outline[(cx - box.lowX()) + (nz - box.lowZ()) * wide] != Integer.MIN_VALUE) {
+                        return new int[]{cx, nz};
+                    }
+                }
+            }
+            return null;
+        }
+
+        /** One column of the ring, carried to the shape of the nearest column of the build's own edge. */
+        private void join(ServerLevel level, int x, int z) {
+            int[] held = held(x, z);
+            if (held == null) {
+                // No piece of the build in this row or column: there is no shape to join to, so it is left.
                 skipped++;
                 return;
             }
+            int hx = held[0];
+            int hz = held[1];
+            int gx = hx - box.lowX();
+            int gz = hz - box.lowZ();
+            int at = gx + gz * wide;
+            int wall = outline[at];
+            int outX = Math.abs(x - hx);
+            int outZ = Math.abs(z - hz);
+            // Whether the shape is this column's own wall rather than one looked for past an empty tile column. A
+            // fallback wall is the build's shape but not the column's, and the hill is only ever planted over the
+            // build itself: water at a column that had to look past its own wall is the drawing's and stays.
+            boolean own = hx == Mth.clamp(x, box.lowX(), box.highX()) && hz == Mth.clamp(z, box.lowZ(), box.highZ());
             // The deck line is the build's own floor, read from the corner the city was planted at: its deck
             // tiles lie on the two blocks over it, whatever height the world has room for.
             boolean banked = wall <= origin.getY() + deck;
@@ -800,7 +860,7 @@ public final class Dressing {
                 int bed = stray(x, z) ? drain(level, x, z, surface) : -1;
                 if (bed > 0) {
                     surface = bed;
-                } else if (!mountain(x, z, at)) {
+                } else if (!own || !mountain(outX, outZ, at)) {
                     // No mountain here: the water is the drawing's and the column is left exactly as it stands. A
                     // mountain is another matter - the owner's own answer is that it takes that stretch of river with
                     // it - so the column is carried on to the fill, which lays ground over the sheet.
@@ -861,8 +921,6 @@ public final class Dressing {
                 skipped++;
                 return;
             }
-            int outX = Math.max(0, Math.max(box.lowX() - x, x - box.highX()));
-            int outZ = Math.max(0, Math.max(box.lowZ() - z, z - box.highZ()));
             double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) CityCommands.DRAPE_REACH);
             // A shoulder is a slope, and a slope is straight. Easing the join - the smoothstep this used to be - held
             // the ring at the build's own height for the first four or five blocks out and then dropped the rest in the
@@ -892,7 +950,7 @@ public final class Dressing {
             // A fill is a shoulder and a shoulder is a slope: it never stands more than one block over its own
             // distance from water. Without this the ease runs out at the shoreline - water is not dressed, so nothing
             // carries the ground down to it - and the shoulder reads as a quarry face standing beside a pond.
-            if (top < cap && !onFlank) {
+            if (top < cap) {
                 int to = shore(x, z);
                 if (to > 0) {
                     int line = shoreLevel(x, z) + to - 1;
@@ -915,7 +973,11 @@ public final class Dressing {
                 skipped++;
                 return;
             }
-            boolean bank = banked && !spring && top - (origin.getY() + deck) >= BANK_BLOCKS;
+            // A bank is measured against the build's own ground at the wall, not against its deck. The deck is the
+            // village's floor, and the country along its north edge stood four blocks over the edge the village
+            // actually draws there - under the deck, so the deck's rule called it a groove and left a four-block
+            // face round the whole side. Three over the build's own top is a face wherever the build's top is.
+            boolean bank = !spring && top - wall >= BANK_BLOCKS;
             if (top > down && (!banked || spring || bank)) {
                 // A cut beside water is the water's too. The sheet itself is left exactly as it stands, so a column
                 // cut below the level beside it leaves the drawing's water standing on a face - the walls of water
@@ -954,10 +1016,8 @@ public final class Dressing {
          * worth burying, and the column is inside the mountain's own reach. The city's outflow is not exempt - the
          * owner's answer is that the hill takes it, so the river ends under the mountain rather than in a walled pond.
          */
-        private boolean mountain(int x, int z, int at) {
+        private boolean mountain(int outX, int outZ, int at) {
             if (!tall(at)) return false;
-            int outX = Math.max(0, Math.max(box.lowX() - x, x - box.highX()));
-            int outZ = Math.max(0, Math.max(box.lowZ() - z, z - box.highZ()));
             return Math.hypot(outX, outZ) < HEM_REACH;
         }
 
@@ -1018,7 +1078,6 @@ public final class Dressing {
             // the ring's cut takes the difference off. A column that only ever answered with a fill could not do that,
             // and the country beside the build stayed a wall the hill had no way to reach - the cuts the owner found at
             // 856,118 and the corner where the drape looked like it was not reaching at all.
-            if (line > top) line = Math.max(top, line - HEM_FEATHER);
             return line;
         }
 
@@ -1112,8 +1171,9 @@ public final class Dressing {
             // read a party tree's crown as the country standing five blocks over the village.
             int roof = whole[at];
             if (roof == Integer.MIN_VALUE) {
-                // A column the cut leaves empty is a hole in the city, not ground the country is standing over.
-                skipped++;
+                // A column the cut's tiles leave empty is not the city at all: it is the country the tile was cut
+                // over, and it is dressed by the ring's own join, read from the build's nearest column.
+                join(level, x, z);
                 return;
             }
             int buried = crest(x, z, at);
