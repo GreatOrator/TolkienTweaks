@@ -1483,6 +1483,13 @@ all unverified.
   not looked at. Next: dress a new world and read the `carried under the mountain` count, then look at the same two
   spots; if the crest is too high or stands too far in, it is one constant each.
 
+- **The mountain now reaches the world.** 26 Nov: `mountain(x, z, at)` and `mouth(x, z)` in `Dressing`, `onFlank`
+  bypassing the shore clamp and the tap-water guard for ring columns on the mountain's flank; the crest raises the
+  build's outer four blocks (`crest`), lifts the ring's cap (`mound`), and only the outflow stays open. Headless `Hill
+  Check`: 46,525 filled, 2,487 left alone, 2,112 carried under the mountain, 27,806 on its flank. Not looked at. Next:
+  the owner's new world on this build, and the shape tuned from the pictures - `HEM_CREST` for height, `HEM_REACH` for
+  spread, `HEM_TALL` for how much of the perimeter is buried, `HEM_INSET` for how far the crest sits inside.
+
 ## The rules this project is walked by
 
 - One `CHANGELOG.md` bullet per change, in the long `- **Claim.** …` prose.

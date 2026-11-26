@@ -414,6 +414,8 @@ public final class Dressing {
         private int inside;
         /** Columns of the build's own outer blocks carried under the mountain planted round its high points. */
         private int covered;
+        /** Columns of the ring the mountain raised or cut to its own flank. */
+        private int mounted;
 
         private Job(String key, Path folder, Pieces pieces, List<CityCommands.Part> parts, BlockPos origin,
                     CityCommands.Box box, boolean dressed, boolean road, boolean trees, int deck) {
@@ -467,8 +469,8 @@ public final class Dressing {
                 dressed = true;
                 LOGGER.info("Rivendell: the ground is dressed - {} columns cut down, {} filled up, {} left for the "
                         + "water, {} left alone, {} cleared of a tree standing on nothing, {} inside the walls cut "
-                        + "down to the cut, {} of the build carried under the mountain",
-                        cut, filled, open, skipped, orphaned, inside, covered);
+                        + "down to the cut, {} of the build carried under the mountain, {} of the ring on its flank",
+                        cut, filled, open, skipped, orphaned, inside, covered, mounted);
                 write(level, true, road);
             }
             if (!road) {
@@ -785,11 +787,15 @@ public final class Dressing {
             // ring. A column outside that is itself water is the drawing's water whoever holds it up.
             if (water(level, x, surface, z)) {
                 int bed = stray(x, z) ? drain(level, x, z, surface) : -1;
-                if (bed < 0) {
+                if (bed > 0) {
+                    surface = bed;
+                } else if (!mountain(x, z, at)) {
+                    // No mountain here: the water is the drawing's and the column is left exactly as it stands. A
+                    // mountain is another matter - the owner's own answer is that it takes that stretch of river with
+                    // it - so the column is carried on to the fill, which lays ground over the sheet.
                     skipped++;
                     return;
                 }
-                surface = bed;
             }
             // A tree is not ground, and the top of its crown is not where its ground is. The height that counts
             // leaves out answers where the column really stands; read from the leaves' own top, a column under a
@@ -854,8 +860,10 @@ public final class Dressing {
             // the squares before it - a straight build edge makes a straight plate and a corner makes a square one. The
             // same twenty blocks read this way is the same join with nothing to stand on and nothing to fall off: one
             // block down for every one or two out, all the way to the country.
-            int cap = (int) Math.round(wall + (top - wall) * share);
-            cap = Math.max(cap, mound(outX, outZ, at, top));
+            int ridge = mound(outX, outZ, at, top);
+            boolean onFlank = ridge != Integer.MIN_VALUE;
+            int cap = Math.max((int) Math.round(wall + (top - wall) * share), ridge);
+            if (onFlank) mounted++;
             // A deck is not a roofline, so the ground outside it is not cut - the trench that opened round every
             // face the build leaves open is why. A spring is a different column: its pool is the build's own top
             // there, so the cut stops at the pool's surface and no further. The mountain standing over the water
@@ -871,7 +879,7 @@ public final class Dressing {
             // A fill is a shoulder and a shoulder is a slope: it never stands more than one block over its own
             // distance from water. Without this the ease runs out at the shoreline - water is not dressed, so nothing
             // carries the ground down to it - and the shoulder reads as a quarry face standing beside a pond.
-            if (top < cap) {
+            if (top < cap && !onFlank) {
                 int to = shore(x, z);
                 if (to > 0) {
                     int line = shoreLevel(x, z) + to - 1;
@@ -904,6 +912,34 @@ public final class Dressing {
                 level.setBlock(new BlockPos(x, cap, z), skin, 2);
                 filled++;
             }
+        }
+
+        /**
+         * Whether a column of the ring is carried under the mountain: the edge it joins stands tall, the column is
+         * inside the mountain's own reach, and it is not in front of the city's outflow, whose mouth must stay open.
+         */
+        private boolean mountain(int x, int z, int at) {
+            if (!tall(at)) return false;
+            int outX = Math.max(0, Math.max(box.lowX() - x, x - box.highX()));
+            int outZ = Math.max(0, Math.max(box.lowZ() - z, z - box.highZ()));
+            return Math.hypot(outX, outZ) < HEM_REACH && !mouth(x, z);
+        }
+
+        /** Whether a column stands within three blocks of the city's own outflow, which the mountain must not close. */
+        private boolean mouth(int x, int z) {
+            if (channel == null) return false;
+            int gx = x - box.lowX();
+            int gz = z - box.lowZ();
+            for (int dz = -3; dz <= 3; dz++) {
+                for (int dx = -3; dx <= 3; dx++) {
+                    int nx = gx + dx;
+                    int nz = gz + dz;
+                    if (nx < 0 || nx >= wide || nz < 0 || nz >= deep) continue;
+                    int n = nx + nz * wide;
+                    if (channel[n] && watered[n] - (box.lowY() - 1) <= CityCommands.OUTLET_LIFT) return true;
+                }
+            }
+            return false;
         }
 
         /** Whether the build's own edge stands tall here: the high points a mountain is planted round. */
@@ -956,8 +992,8 @@ public final class Dressing {
             double out = Math.hypot(outX, outZ);
             if (out >= HEM_REACH) return Integer.MIN_VALUE;
             int crest = outline[at] + HEM_CREST;
-            int lift = crest - top;
-            if (lift <= 0) return Integer.MIN_VALUE;
+            int lift = Math.max(0, crest - top);
+            if (lift == 0) return Integer.MIN_VALUE;
             double t = out / (double) HEM_REACH;
             double ease = t * t * (3.0D - 2.0D * t);
             return top + (int) Math.round(lift * (1.0D - ease));
