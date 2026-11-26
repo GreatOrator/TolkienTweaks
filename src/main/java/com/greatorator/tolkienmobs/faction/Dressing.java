@@ -86,6 +86,20 @@ public final class Dressing {
     private static final int BANK_BLOCKS = 3;
 
     /**
+     * How wide a bank over the cut is graded back from the cut's own edge, in blocks, and how deep a bank the
+     * grading reaches.
+     * <p>
+     * The inside cut takes the country off a column down to the cut's own top, which is a face wherever the cut
+     * steps. Measured on the Shire's village, 99% of neighbouring cut columns differ by a block or none, so the cut
+     * itself is not terraced - but a bank of three to eight blocks beside a field plate reads as a straight drop at
+     * the plate's edge, which is the square the owner photographed. Four blocks is how wide a hobbit bank is at its
+     * steepest, and eight is the deepest bank the inside of a village carries: a column with more than that over it
+     * is the country outside the build, which the ring and its own join answer, not this.
+     */
+    private static final int APRON_WIDTH = 4;
+    private static final int APRON_CAP = 8;
+
+    /**
      * How deep the country keeps its own dirt under its grass, and so how deep a fill keeps it too.
      * <p>
      * The drawn ground shows three to four blocks of dirt over its stone wherever a riser is cut (dirt 83 to 85 under
@@ -885,7 +899,9 @@ public final class Dressing {
          * the walls whose country stands {@link #BANK_BLOCKS} or more over the top of the cut in it has the country
          * taken off down to that top: the cut's own top course is the city's and stays, nothing below it is touched,
          * so no wall, floor or roof of the build can be cut - and what stood over the city was never part of it. The
-         * ring's shallow grooves are left as grooves here too, and the water is left where it is.
+         * ring's shallow grooves are left as grooves here too, and the water is left where it is. A bank of
+         * {@link #APRON_CAP} blocks or less is graded back to the cut over {@link #APRON_WIDTH} rather than left as a
+         * face - see {@link #apron} - so a field plate's edge is a slope and not a wall.
          */
         private void dressInside(ServerLevel level, int x, int z) {
             int at = (x - box.lowX()) + (z - box.lowZ()) * wide;
@@ -902,10 +918,84 @@ public final class Dressing {
                     level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
             if (surface <= level.getMinY() || surface - roof < BANK_BLOCKS) return;
             if (!level.getBlockState(new BlockPos(x, surface, z)).getFluidState().isEmpty()) return;
-            for (int y = surface; y > roof; y--) {
+            BlockState skin = level.getBlockState(new BlockPos(x, surface, z));
+            int down = apron(level, x, z, roof, surface);
+            if (down >= surface) return;
+            for (int y = surface; y > down; y--) {
                 level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
             }
+            // A graded cut is a hillside rather than a face, so its top course is the country's own grass - the same
+            // block the ring lays on a fill - and not the bare dirt the cut opened.
+            if (down > roof && soft(skin) && level.getBlockState(new BlockPos(x, down, z)).isSolid()) {
+                level.setBlock(new BlockPos(x, down, z), skin, 2);
+            }
             inside++;
+        }
+
+        /** The eight ways out from a column in unit steps, so a bank running diagonally to its plate is measured too. */
+        private static final int[][] WAYS = {
+                {-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+
+        /**
+         * How far down the country is cut in a column: the cut's own top, unless the column is the edge of a bank that
+         * can be graded.
+         * <p>
+         * A bank of {@link #APRON_CAP} blocks or less standing over the cut's own ground is cut in quarters of its
+         * height rather than all at once - one quarter at the first block out from the plate, all of it at the
+         * {@link #APRON_WIDTH}th - so the join it leaves is a slope and not a face. A taller bank is the country
+         * outside the build and is cut exactly as it was, since the ring's own join is what dresses that, and a column
+         * whose top course is a wall, a roof or a beam is refused the grading, because a slope laid against one buries
+         * its foot.
+         *
+         * @return the block the column is cut down to, which is the country's own top when nothing is cut
+         */
+        private int apron(ServerLevel level, int x, int z, int roof, int surface) {
+            int tall = surface - roof;
+            if (tall > APRON_CAP) return roof;
+            if (!earth(level.getBlockState(new BlockPos(x, roof, z)))) return roof;
+            int out = shoulder(level, x, z, roof);
+            if (out <= 0) return roof;
+            return Math.min(surface, roof + (tall * out + APRON_WIDTH - 1) / APRON_WIDTH);
+        }
+
+        /**
+         * How many blocks out the cut's own shoulder stands, or nought when there is none within the apron.
+         * <p>
+         * A shoulder is a column the cut has not left the country standing over - its own country lies within a bank
+         * of its top - which is the plate a bank beside it falls to. The nearest shoulder in the eight ways is the
+         * distance the grading is measured from, so a column deep inside a filled bank finds none and is cut as it
+         * always was.
+         */
+        private int shoulder(ServerLevel level, int x, int z, int roof) {
+            for (int ring = 1; ring <= APRON_WIDTH; ring++) {
+                for (int[] way : WAYS) {
+                    int nx = x + way[0] * ring;
+                    int nz = z + way[1] * ring;
+                    int gx = nx - box.lowX();
+                    int gz = nz - box.lowZ();
+                    if (gx < 0 || gx >= wide || gz < 0 || gz >= deep) continue;
+                    int there = whole[gx + gz * wide];
+                    if (there == Integer.MIN_VALUE) continue;
+                    int top = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, nx, nz),
+                            level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, nx, nz)) - 1;
+                    if (top - there < BANK_BLOCKS) return ring;
+                }
+            }
+            return 0;
+        }
+
+        /**
+         * Whether a top is the country's own ground rather than the build's, so a bank may be graded down from it.
+         * <p>
+         * Soil and the rock and sand under it: a grass field, a path laid in the cut, a gravel bed or a stone shoulder
+         * are all ground a slope can meet. A plank, a beam, a slab or a wall is not, and a bank left against one buries
+         * the foot of it.
+         */
+        private static boolean earth(BlockState state) {
+            return soft(state) || state.is(BlockTags.DIRT) || state.is(BlockTags.SAND)
+                    || state.is(BlockTags.BASE_STONE_OVERWORLD) || state.is(Blocks.GRAVEL) || state.is(Blocks.CLAY)
+                    || state.is(Blocks.SNOW_BLOCK) || state.is(Blocks.MUD) || state.is(Blocks.PACKED_MUD)
+                    || state.is(Blocks.MOSS_BLOCK) || state.is(Blocks.DIRT_PATH) || state.is(Blocks.FARMLAND);
         }
 
         /**

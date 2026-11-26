@@ -1457,6 +1457,17 @@ all unverified.
   `src/generated/resources` moved. Whenever a datapack-registry entry is added - a biome, a dimension, a structure -
   run `runData` in the same commit and look for its file in `git status`.
 
+- **The apron is built and measured, not yet walked.** 26 Nov: `Hobbiton`'s `DRESS_VERSION` is 5 and `Dressing`'s inside
+  cut grades a bank of `APRON_CAP = 8` or less over `APRON_WIDTH = 4` before it reaches the cut's own top (`apron`,
+  `shoulder`, `earth`), refusing banks over eight, columns whose roof course is built, and columns with no shoulder
+  within four. A new world raised headless on the dedicated server (`runServer`, level `Apron Check`) dressed itself in
+  38 s: 9,871 columns inside the walls over the cut, 0 ring cuts, 39,881 fills, 2,656 left for the water. The save reads
+  back 256 columns still three or more over a real roof - 120 in the three-to-eight band (the top row of a graded bank,
+  by design) and 136 at the footprint's edge, which is the ring's join and the unbuilt hem's business. The 48-cube step
+  histogram of the dressed ground is 1% >= 3 across a cube edge (max 8 east-west, 23 north-south) against 1% and 26-27
+  inside a cube: no worse. Nothing was walked - the shape is numbers only, and the band left at full height has not been
+  looked at.
+
 ## The rules this project is walked by
 
 - One `CHANGELOG.md` bullet per change, in the long `- **Claim.** …` prose.
