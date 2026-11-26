@@ -86,6 +86,16 @@ public final class Dressing {
     private static final int BANK_BLOCKS = 3;
 
     /**
+     * How deep the country keeps its own dirt under its grass, and so how deep a fill keeps it too.
+     * <p>
+     * The drawn ground shows three to four blocks of dirt over its stone wherever a riser is cut (dirt 83 to 85 under
+     * the grass at 86 the whole length of the village's ring), and that band is what makes a one-block terrace read as
+     * ground. A fill laid in stone to the surface showed every step of its shoulder as a grey plate: the ring is 24,417
+     * fills, and from the water the whole apron read as a quarry cut rather than a hillside.
+     */
+    private static final int SOIL_BLOCKS = 3;
+
+    /**
      * What the water map answers for a column with no water within the ring, in blocks.
      * <p>
      * Past any cap, so a column that took this number is left at its own shape: the shore rule can only lower a fill,
@@ -476,6 +486,12 @@ public final class Dressing {
             }
         }
 
+        /** Whether a top is soil, so a fill under it keeps the country's own band of dirt over its stone. */
+        private static boolean soft(BlockState state) {
+            return state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.DIRT) || state.is(Blocks.COARSE_DIRT)
+                    || state.is(Blocks.PODZOL) || state.is(Blocks.MYCELIUM) || state.is(Blocks.ROOTED_DIRT);
+        }
+
         /** Whether a block is part of a tree rather than part of the ground: leaves, a trunk, a fungus stem. */
         private static boolean tree(String name) {
             return name.endsWith("_leaves") || name.contains("leaves_") || name.endsWith("_log")
@@ -790,8 +806,14 @@ public final class Dressing {
             int outX = Math.max(0, Math.max(box.lowX() - x, x - box.highX()));
             int outZ = Math.max(0, Math.max(box.lowZ() - z, z - box.highZ()));
             double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) CityCommands.DRAPE_REACH);
-            double ease = share * share * (3.0D - 2.0D * share);
-            int cap = (int) Math.round(wall + (top - wall) * ease);
+            // A shoulder is a slope, and a slope is straight. Easing the join - the smoothstep this used to be - held
+            // the ring at the build's own height for the first four or five blocks out and then dropped the rest in the
+            // middle of the reach: a flat plate of fill at the build's height with a cliff at its outer edge, which is
+            // the "little bit of raised terrain" the owner photographed on 26 November beside the Shire's own hill, and
+            // the squares before it - a straight build edge makes a straight plate and a corner makes a square one. The
+            // same twenty blocks read this way is the same join with nothing to stand on and nothing to fall off: one
+            // block down for every one or two out, all the way to the country.
+            int cap = (int) Math.round(wall + (top - wall) * share);
             // A deck is not a roofline, so the ground outside it is not cut - the trench that opened round every
             // face the build leaves open is why. A spring is a different column: its pool is the build's own top
             // there, so the cut stops at the pool's surface and no further. The mountain standing over the water
@@ -829,8 +851,13 @@ public final class Dressing {
                 level.setBlock(new BlockPos(x, down, z), skin, 2);
                 cut++;
             } else if (top < cap) {
+                // A shoulder is ground, so its face is the country's own shape: the same band of dirt under the grass
+                // that every drawn riser shows, and stone only under that. Rock to the surface made a fill read as a
+                // quarry face however gently it was sloped, because every one-block step of it exposed stone.
+                int soil = soft(skin) ? Math.min(SOIL_BLOCKS, cap - 1 - top) : 0;
                 for (int y = top + 1; y < cap; y++) {
-                    level.setBlock(new BlockPos(x, y, z), Blocks.STONE.defaultBlockState(), 2);
+                    level.setBlock(new BlockPos(x, y, z),
+                            y > cap - 1 - soil ? Blocks.DIRT.defaultBlockState() : Blocks.STONE.defaultBlockState(), 2);
                 }
                 level.setBlock(new BlockPos(x, cap, z), skin, 2);
                 filled++;
