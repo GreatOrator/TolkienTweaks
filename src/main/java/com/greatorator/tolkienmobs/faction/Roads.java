@@ -55,37 +55,6 @@ public final class Roads {
     /** The same window for a planned road: a hem either side of the line, and no more. */
     private static final int PLANNED_WANDER = 32;
 
-    /**
-     * The road out of Gundabad: the hold's way down out of its own gate, and the north's road to everything else.
-     * <p>
-     * The hold stands at `ArdaMap.keepPlan()` - 5528, 176, -7112 since 21 November - at the head of its own valley,
-     * and what the road leaves into is
-     * country nobody has walked: the nearest road of any age is the chapter's own at the far end of the old forest
-     * road, three and a half thousand blocks south. Its two ends were pinned in a test world - the gate block at
-     * 5578, -6769 and the join on the old forest road at 8583, -3617 - and everything between them is planned: the
-     * hold's road carries no marks at all, and those two blocks are the whole of the survey it needs.
-     * <p>
-     * The name is the id the pins were given rather than a name of its own, and written out in full for that reason.
-     * A section's id is made of the road's two ends, so a road called {@code gundabad_road} here would plan sections
-     * the test world's save has never heard of: the ground would be laid a second time in the world that walked it,
-     * and a fresh world would hold a road that is not the road that was walked. Nothing about a road needs a name of
-     * its own - the id is the two ends, and those say where it goes.
-     */
-    public static final String GUNDABAD_ROAD = "tolkienmobs:roads/planned_5578_-6769_8583_-3617";
-
-    /**
-     * The Gundabad road's two ends, as they were pinned: the block at the foot of the hold's own way out, and the mark
-     * where the road meets the road it joins.
-     * <p>
-     * Everything else about the road is worked out from them - the way it goes, where it crosses water, how wide its
-     * span is and how wide it is laid - so these two lines are the whole of what the road is.
-     * <p>
-     * They are declared above {@link #ROUTES} on purpose: the list is built once when this class loads, and a mark
-     * written below it would still be null at that moment, which is a road that never appears and never says why.
-     */
-    private static final BlockPos GUNDABAD_GATE = at(5578, -6769);
-    private static final BlockPos GUNDABAD_JOIN = at(8583, -3617);
-
     /** One road the code names: its id, the width it is laid at, and the two blocks it runs between. */
     private record Named(String id, Kind kind, boolean town, BlockPos from, BlockPos to) {
     }
@@ -98,82 +67,27 @@ public final class Roads {
     /**
      * The network the world is laid with: every road a surveyor has pinned, as the two ends it was pinned between.
      * <p>
-     * This is the whole of a road - the way it takes, the bends the pass searches between, where it crosses water and
-     * how wide its span is all read off the drawing from these two blocks. It was worked out in a test world by
-     * {@code /tmroad pin}, one road at a time, and the ends are copied here so a world made from scratch has the same
-     * network without anybody plotting it again; the ids are the ones the pins were given, so a section laid in that
-     * world and a section made here are the same road and the same name in the log.
+     * <b>Empty since 26 November 2026, and emptied on purpose.</b> A fresh world is being generated with the Shire, Bree
+     * and Rivendell re-based and the Brandywine crossing moved, so nearly every road that was laid out against the old
+     * ground has to be rerouted - and a road whose end moves is a different road, with a different id, because an id is
+     * its two ends. Fourteen stood here: the hold's road out of Gundabad's gate down to the old forest road; the old
+     * forest road east of Mirkwood on to Glóin's camp; the four legs of the high pass; Rivendell's road to the meeting
+     * plaza and the plaza's on to Glóin's camp; the road down to Elladan's camp; the short shoulder leg beside
+     * Rivendell's south gate; and the three stretches the owner walked between Bree and the Shire on 25 November. They
+     * are written down in the changelog of that date and in {@code docs/arda-roads.md} rather than left here behind a
+     * switch: a table is what a fresh world plans, and a line left in it lays ground nobody asked for.
      * <p>
-     * The first entry is the hold's road, out of Gundabad's own gate and down to the old forest road
-     * (see {@link #GUNDABAD_GATE}). Everything after it is a road the test world lays today, in the order they were
-     * walked: the old forest road east of Mirkwood to Glóin's camp; the four legs of the high pass between Rivendell's
-     * roads and Glóin's camp; the road out of Rivendell to the meeting plaza, and the plaza's road on to Glóin's camp;
-     * the road from Rivendell down to Elladan's camp; and the short leg between Rivendell's south gate and the same
-     * road's shoulder, which the first of those two was laid from. All of them are the country's own track, three wide,
-     * because nothing that crosses that country is paved.
+     * <b>A road is added back one line at a time, in the order the owner walks them.</b> One {@link Named} entry is a
+     * road whose two ends are known, and {@link RoadPlan} works out everything else - the way it takes, the bends, where
+     * it crosses water and how wide the span is - from the drawing. There is no switch in front of the table any more:
+     * it was {@code NETWORK_OPEN}, off from 24 November while Rivendell was re-scouted, and a switch is one more thing
+     * to remember before a road added here lays anything. An empty table plans nothing; the first entry plans that road
+     * and no other, which is what step by step means.
      * <p>
-     * The last three are the road the owner walked himself between Bree and the Shire on 25 November 2026,
-     * copied out of that world's plan store rather than surveyed: from Bree's hall front at 1031, -34 down to
-     * 480, -6, the middle stretch from there to 381, -5 that crosses the Brandywine, and the last from that mark
-     * to the village's east side at -149, -382, so the whole leg runs 1031, -34 to -149, -382. They are three
-     * roads because he planned them as three, each with the id its own two ends give it; the first is laid at
-     * the town's bands and the other two at the country's own width, as he planned them. {@link #NETWORK_OPEN}
-     * is still off, so the record lays nothing in any world today - it is what a world made after the survey is
-     * opened will plan, and his own world keeps the road he built.
-     * <p>
-     * A road is here when it is in the world's store - the roads the test world walked are read back one at a time and
-     * written down here with the ends their own ids were made of. A road left out is not a road that waits: a fresh
-     * world plans only what is in this list and quietly has no road there, which is how three roads of the vale came to
-     * be missing from a world made after them. Nor is a line here a road: a leg pinned in a test world and never laid
-     * is a line that plans sections in every fresh world for ground nobody has walked, so the table holds the store's
-     * roads and nothing else.
-     * <p>
-     * Declared above {@link #ROUTES} on purpose, as the hold's two marks are: the list is built once when this class
-     * loads, and a road written below it would not be in the list at all.
+     * Declared above {@link #ROUTES} on purpose: the list is built once when this class loads, and a road written below
+     * it would not be in the list at all.
      */
-    /**
-     * Whether the surveyed network is laid at all.
-     * <p>
-     * Off from 24 November 2026 while Rivendell's site is re-scouted: every leg here was surveyed around the city
-     * as it stood, and a road whose end moves is a different road. The table below is kept entire, so opening this
-     * lays the old lines again; a road re-surveyed from the new city is a new entry under the id its two ends give
-     * it.
-     */
-    private static final boolean NETWORK_OPEN = false;
-
-    // The two long legs are out of the table, at the owner's word on 25 November 2026: the road between Bree
-    // and the Shire (walked in `Progress Check 3`, five wide, from Bree's hall front at 1032, -34 to the
-    // village's east side at -150, -382) and the road between Rivendell and Bree (marked in `Progress Check 4`,
-    // five wide, from the vale's junction at 4648, -3316 to the same hall front at 1031, -36). He is laying that
-    // road himself as the next build, so the mod must not stand a second line beside it - not now, and not when
-    // the survey is opened again after Rivendell's site is re-scouted.
-    //
-    // The two ends are written down here rather than the entries left in the table behind a flag, because a leg
-    // in the table is a leg a fresh world plans: NETWORK_OPEN only decides whether the table is read, so a
-    // session that opened it would put both lines on the ground the owner is building over. An id is a road's
-    // two ends, so a leg walked again later is a new entry under a new pair; there is nothing here to restore.
-    //
-    // What a table cannot take back is the ground a world has already laid. Nothing in the mod lifts a road, and
-    // a plan a hand wrote under either id is that save's own, read back by RoadPlans at every start - /tmroad
-    // forget standing on the line drops it, and the blocks it laid stay.
-
-    private static final List<Named> NETWORK = List.of(
-            new Named(GUNDABAD_ROAD, Kind.WILD, false, GUNDABAD_GATE, GUNDABAD_JOIN),
-            new Named("tolkienmobs:roads/planned_11813_-3901_8229_-3654", Kind.WILD, false, at(11813, -3901), at(8229, -3654)),
-            new Named("tolkienmobs:roads/planned_4515_-2446_4705_-3169", Kind.WILD, false, at(4515, -2446), at(4705, -3169)),
-            new Named("tolkienmobs:roads/planned_4528_-2541_4624_-2480", Kind.WILD, false, at(4528, -2541), at(4624, -2480)),
-            new Named("tolkienmobs:roads/planned_4776_-3063_4684_-3050", Kind.WILD, false, at(4776, -3063), at(4684, -3050)),
-            new Named("tolkienmobs:roads/planned_4787_-3059_4778_-3059", Kind.WILD, false, at(4787, -3059), at(4778, -3059)),
-            new Named("tolkienmobs:roads/planned_4819_-2887_4647_-3315", Kind.WILD, false, at(4819, -2887), at(4647, -3315)),
-            new Named("tolkienmobs:roads/planned_5105_-3413_5605_-3622", Kind.WILD, false, at(5105, -3413), at(5605, -3622)),
-            new Named("tolkienmobs:roads/planned_5606_-3622_8229_-3654", Kind.WILD, false, at(5606, -3622), at(8229, -3654)),
-            new Named("tolkienmobs:roads/planned_5200_-3033_4647_-3315", Kind.WILD, false, at(5200, -3033), at(4647, -3315)),
-            new Named("tolkienmobs:roads/planned_5111_-3399_5072_-3221", Kind.WILD, false, at(5111, -3399), at(5072, -3221)),
-            // The road from Bree to the Shire, walked by the owner on 25 November 2026 and read out of that
-            // world's plan store: the stretches he planned, in the order he walked them.
-            new Named("tolkienmobs:roads/planned_1031_-34_480_-6", Kind.WILD_WIDE, true, at(1031, -34), at(480, -6)),
-            new Named("tolkienmobs:roads/planned_480_-6_381_-5", Kind.WILD, false, at(480, -6), at(381, -5)),
-            new Named("tolkienmobs:roads/planned_381_-5_-149_-382", Kind.WILD, false, at(381, -5), at(-149, -382)));
+    private static final List<Named> NETWORK = List.of();
 
     /**
      * Every road the world knows about, which is nothing until one is named.
@@ -283,12 +197,11 @@ public final class Roads {
     /**
      * The roads as they stand: everything in {@link #NETWORK}, each planned from its own two ends.
      * <p>
-     * A road whose ends are not pinned - the hold's, until its walk is made - plans nothing and is not in the list,
-     * which is the same answer as having no entry for it at all.
+     * A road whose ends are not pinned plans nothing and is not in the list, which is the same answer as having no
+     * entry for it at all; with the table empty, the list is what the world's own plan store adds and nothing else.
      */
     private static List<Route> network(List<Route> walked) {
         List<Route> all = new ArrayList<>(walked);
-        if (!NETWORK_OPEN) return all;
         for (Named road : NETWORK) {
             all.addAll(RoadPlan.of(road.id(), road.kind(), road.town(), road.from(), road.to()).sections());
         }
@@ -627,13 +540,10 @@ public final class Roads {
      * from, so forgetting the road at the build reaches the build's flag.
      */
     private static final Map<String, String> BUILDS = Map.of(
-            // The three roads out of the valley, which leave the city's own ground. Named by the road's two ends
-            // because that is what a road's id is: the city's roads were the first to be planned from pins, and their
-            // ids are those pins rather than a name. A section of one of these - a bridge, a later dry stretch - carries
-            // the road's id with a suffix, which buildOf reads as the same road.
-            "tolkienmobs:roads/planned_5200_-3033_4647_-3315", "rivendell",
-            "tolkienmobs:roads/planned_5111_-3399_5072_-3221", "rivendell",
-            "tolkienmobs:roads/planned_5105_-3413_5605_-3622", "rivendell");
+            // Empty with the network on 26 November 2026: the three roads out of the valley were here, under the ids
+            // their own pinned ends gave them, and those ids are gone with the roads. A road re-surveyed out of
+            // Rivendell is a new pair of ends and a new entry, and until it is walked there is nothing to name.
+            );
 
     /**
      * A town a road arrives on, and the block of that town's own ground the road meets: the gate a leg ends at, or the
@@ -688,8 +598,12 @@ public final class Roads {
      * ends of the leg.
      */
     private static final Map<String, List<Gate>> TOWNS = Map.of(
-            "tolkienmobs:roads/planned_1031_-34_480_-6", List.of(new Gate("bree", at(1031, -34))),
-            "tolkienmobs:roads/planned_381_-5_-149_-382", List.of(new Gate("hobbiton", at(-149, -382))));
+            // Empty with the network on 26 November 2026: the two ends named here were Bree's hall front at 1031, -34
+            // and the old village's east side at -149, -382, on the two legs of the road the owner walked between them.
+            // Both legs are out of the table, and the village those ends met has moved 2,400 blocks south-east, so the
+            // next leg to it names its own gate. The hold itself is unchanged: it is measured from the block a road's
+            // own end stands on, not from the footprint.
+            );
 
     /** The build a road leaves from: its own name where it is that build's road, the build it serves otherwise. */
     public static String build(Route route) {

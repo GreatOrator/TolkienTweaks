@@ -51,11 +51,14 @@ every road between two builds on the same bank - it is a `Route.Riverless`: the 
 point, and the far end a surveyor marked. Two ends and the distance between them is the whole route; the search
 finds the way, the grade lays it, and there is nothing to bridge.
 
-The roads are planned now rather than walked: `Roads.NETWORK` names eleven roads, each by the two blocks it runs
-between, and `RoadPlan` works the way out from the drawing - a lane walk over `ArdaMap.sample` - and cuts the
-result into sections, a span among them wherever the line crosses water. Three of the eleven are the valley's,
-carried in `Roads.BUILDS` and waiting for the city to stand. A section ends where the next one begins rather
-than at the far bank, so neither pass grades country the other has already laid. A road is also stepped from the
+The roads are planned now rather than walked: `Roads.NETWORK` names a road by the two blocks it runs between, and
+`RoadPlan` works the way out from the drawing - a lane walk over `ArdaMap.sample` - and cuts the result into
+sections, a span among them wherever the line crosses water. **The table is empty as of 26 November 2026.** It held
+eleven surveyed roads in fourteen sections, and the fresh world is being generated with the Shire's village moved
+and Bree and Rivendell re-scouted, so nearly every line has to be rerouted - and a road whose end moves is a
+different road, with a different id, because an id is its two ends. Nothing is planned today; a road goes back in
+one line at a time, and a road out of a city is named in `Roads.BUILDS` again when its city stands. A section ends where
+the next one begins rather than at the far bank, so neither pass grades country the other has already laid. A road is also stepped from the
 block its pass has reached rather than from the building it leaves, which is what lets a section fill in as it
 is walked; and its grade is held within four blocks of the ground, so a hill is walked over instead of bored
 through. A leg whose climb is more than the grade can lay - the pass settles its surface on half a block a station, so
@@ -125,8 +128,9 @@ troll caves) are trustworthy. The rest — Bree 12/20, Weathertop 15/18, Tharbad
 Tirith 25/28, Edoras 26/24 — are proposals, read off the drawing's countries and the canon map's labels.
 
 `tools/arda_roads.py` renders these over the reference terrain, with the grid and the campaign's pinned places,
-so a route can be seen against the ground before anything is built. None of them was: the roads that exist were
-planned from pinned ends in a test world, which is the network at the end of this file.
+so a route can be seen against the ground before anything is built. None of them was: the roads that existed were
+planned from pinned ends in a test world, which is the network `Roads.NETWORK` named until 26 November 2026 and no
+longer does - the table is empty and each road goes back in as its two ends are walked again.
 
 ## The surface, as decided
 
@@ -202,8 +206,7 @@ wild road's gravel falls if the ground under it is ever removed - a note, not a 
 
 ## What is not decided
 
-- Whether the eleven roads in the network are the right eleven, and whether their bends match the canon map well
-  enough.
+- Which roads go back in and in what order, and whether their bends match the canon map well enough.
 - Which road towns get pinned cells, and to which cells: that is the first actual change, and it is small.
 - The band radii themselves (64, and 16 inside that), and which locations own a band: both fixed as the
   builds are placed.
@@ -304,8 +307,8 @@ the surface. It can only read a world that still has the road in it - a stretch 
 line to recover, and a box of ordinary terrain reports as pieces of gravel rather than a road.
 
 The pass below is still the shape a road with ground under it is laid by, and it is still the only thing that
-bridges one: a generated line follows the grade its waypoints give, so the network's roads - the valley's three,
-and the eight between the camps and Gundabad's gate - are all laid by the pass, a section at a time. A section
+bridges one: a generated line follows the grade its waypoints give, so the network's roads, once they are added
+back, are all laid by the pass, a section at a time. A section
 is promoted to a generated line only once it can be described without searching it.
 
 ## Water a road was told about
