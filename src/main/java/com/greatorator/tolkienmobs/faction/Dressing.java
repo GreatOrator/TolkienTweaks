@@ -111,6 +111,15 @@ public final class Dressing {
      */
     private static final int EDGE_WATER = 3;
 
+    /** How far in from the build's own edge the mountain's crest stands, in blocks. */
+    private static final int HEM_INSET = 4;
+    /** How far out from the build the mountain runs before it is the country again, in blocks. */
+    private static final int HEM_REACH = 45;
+    /** How far the crest stands over the build's own top, in blocks. */
+    private static final int HEM_CREST = 3;
+    /** How far the build's edge must stand over its own deck before a mountain is planted over it. */
+    private static final int HEM_TALL = 10;
+
     /**
      * How deep the country keeps its own dirt under its grass, and so how deep a fill keeps it too.
      * <p>
@@ -403,6 +412,8 @@ public final class Dressing {
         private int orphaned;
         /** Columns inside the walls where the country was standing over the cut and was taken off it. */
         private int inside;
+        /** Columns of the build's own outer blocks carried under the mountain planted round its high points. */
+        private int covered;
 
         private Job(String key, Path folder, Pieces pieces, List<CityCommands.Part> parts, BlockPos origin,
                     CityCommands.Box box, boolean dressed, boolean road, boolean trees, int deck) {
@@ -456,8 +467,8 @@ public final class Dressing {
                 dressed = true;
                 LOGGER.info("Rivendell: the ground is dressed - {} columns cut down, {} filled up, {} left for the "
                         + "water, {} left alone, {} cleared of a tree standing on nothing, {} inside the walls cut "
-                        + "down to the cut",
-                        cut, filled, open, skipped, orphaned, inside);
+                        + "down to the cut, {} of the build carried under the mountain",
+                        cut, filled, open, skipped, orphaned, inside, covered);
                 write(level, true, road);
             }
             if (!road) {
@@ -844,6 +855,7 @@ public final class Dressing {
             // same twenty blocks read this way is the same join with nothing to stand on and nothing to fall off: one
             // block down for every one or two out, all the way to the country.
             int cap = (int) Math.round(wall + (top - wall) * share);
+            cap = Math.max(cap, mound(outX, outZ, at, top));
             // A deck is not a roofline, so the ground outside it is not cut - the trench that opened round every
             // face the build leaves open is why. A spring is a different column: its pool is the build's own top
             // there, so the cut stops at the pool's surface and no further. The mountain standing over the water
@@ -892,6 +904,63 @@ public final class Dressing {
                 level.setBlock(new BlockPos(x, cap, z), skin, 2);
                 filled++;
             }
+        }
+
+        /** Whether the build's own edge stands tall here: the high points a mountain is planted round. */
+        private boolean tall(int at) {
+            return outline[at] != Integer.MIN_VALUE && outline[at] - (origin.getY() + deck) >= HEM_TALL;
+        }
+
+        /** The nearest column of the build's own edge to a column inside it, as an index into the outline. */
+        private int edge(int x, int z) {
+            int nx = x;
+            int nz = z;
+            int edgeX = Math.min(x - box.lowX(), box.highX() - x);
+            int edgeZ = Math.min(z - box.lowZ(), box.highZ() - z);
+            if (edgeX < edgeZ) {
+                nx = x - box.lowX() <= box.highX() - x ? box.lowX() : box.highX();
+            } else {
+                nz = z - box.lowZ() <= box.highZ() - z ? box.lowZ() : box.highZ();
+            }
+            return (nx - box.lowX()) + (nz - box.lowZ()) * wide;
+        }
+
+        /**
+         * The mountain's own top over a column inside the crest, or nought where no mountain is planted there.
+         * <p>
+         * The crest stands {@link #HEM_INSET} blocks inside the build's own edge and {@link #HEM_CREST} over the top of
+         * the build there, so the tall outer wall is carried under the hill rather than left standing as the face the
+         * owner photographed on 26 November. Only where the edge stands {@link #HEM_TALL} blocks over the deck: a
+         * garden, a field or a low front is the village's and is not buried.
+         */
+        private int crest(int x, int z, int at) {
+            int edgeX = Math.min(x - box.lowX(), box.highX() - x);
+            int edgeZ = Math.min(z - box.lowZ(), box.highZ() - z);
+            if (Math.min(edgeX, edgeZ) > HEM_INSET) return 0;
+            if (channel[at]) return 0;
+            int eat = edge(x, z);
+            if (!tall(eat)) return 0;
+            return outline[eat] + HEM_CREST;
+        }
+
+        /**
+         * The mountain's own top over a column of the ring, or {@link Integer#MIN_VALUE} where none is planted.
+         * <p>
+         * The crest is the same height the crest inside the edge is, so the hill runs through the build's own edge
+         * without a step, and it falls to the country the column already stands at over {@link #HEM_REACH} blocks: a
+         * smoothstep, so the foot of the mountain is flat where it meets the ground and the mountain is the country's
+         * own slope and not a plate of fill with a face at its end.
+         */
+        private int mound(int outX, int outZ, int at, int top) {
+            if (!tall(at)) return Integer.MIN_VALUE;
+            double out = Math.hypot(outX, outZ);
+            if (out >= HEM_REACH) return Integer.MIN_VALUE;
+            int crest = outline[at] + HEM_CREST;
+            int lift = crest - top;
+            if (lift <= 0) return Integer.MIN_VALUE;
+            double t = out / (double) HEM_REACH;
+            double ease = t * t * (3.0D - 2.0D * t);
+            return top + (int) Math.round(lift * (1.0D - ease));
         }
 
         /**
@@ -986,6 +1055,19 @@ public final class Dressing {
             if (roof == Integer.MIN_VALUE) {
                 // A column the cut leaves empty is a hole in the city, not ground the country is standing over.
                 skipped++;
+                return;
+            }
+            int buried = crest(x, z, at);
+            if (buried > roof) {
+                // The mountain is planted over the build's own outer four blocks, and the column's country - which the
+                // cut below would have taken off down to the roofline - is the mountain's own flank here.
+                for (int y = roof + 1; y < buried; y++) {
+                    level.setBlock(new BlockPos(x, y, z),
+                            y > buried - 1 - SOIL_BLOCKS ? Blocks.DIRT.defaultBlockState()
+                                    : Blocks.STONE.defaultBlockState(), 2);
+                }
+                level.setBlock(new BlockPos(x, buried, z), Blocks.GRASS_BLOCK.defaultBlockState(), 2);
+                covered++;
                 return;
             }
             int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),

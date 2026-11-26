@@ -1476,6 +1476,13 @@ all unverified.
   does not fix it": yes - the lift-only hem already measured (reach 96, smoothstep, cap 24, the four rim tables) is the
   apron round the high points, and it is the next thing to build if the pools are still not the whole of it.
 
+- **The mountain over the high points is built, not yet shown.** 26 Nov: `HEM_INSET = 4`, `HEM_REACH = 45`,
+  `HEM_CREST = 3`, `HEM_TALL = 10` in `Dressing`, with `tall(at)`, `edge(x, z)`, `crest(x, z, at)` for the columns
+  inside the crest and `mound(outX, outZ, at, top)` raising the ring's cap over the same 45 blocks; `DRESS_VERSION = 7`.
+  Compiles; the one headless attempt ran a stale build (no new counter in the log), so the shape is not measured and
+  not looked at. Next: dress a new world and read the `carried under the mountain` count, then look at the same two
+  spots; if the crest is too high or stands too far in, it is one constant each.
+
 ## The rules this project is walked by
 
 - One `CHANGELOG.md` bullet per change, in the long `- **Claim.** …` prose.
