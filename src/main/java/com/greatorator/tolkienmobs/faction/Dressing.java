@@ -981,11 +981,14 @@ public final class Dressing {
             if (top > down && (!banked || spring || bank)) {
                 // A cut beside water is the water's too. The sheet itself is left exactly as it stands, so a column
                 // cut below the level beside it leaves the drawing's water standing on a face - the walls of water
-                // the owner photographed on 26 November, where the ring went through a pool instead of round it.
-                // The bank is cut to the water's own surface and no further, and a column the water already holds
-                // up is left as it stands rather than cut to nothing.
+                // the owner photographed on 26 November, where the ring went through a pool instead of round it -
+                // and the cut makes a bowl beside the lake that reads as a hole dug round the build. It is not only
+                // the three blocks beside the sheet: water spreads, so any column the ring cuts under the level of
+                // the nearest water leaves a way in for it, and the three-block guard was thirteen blocks too short
+                // for the lakes on the village's north and west sides. The cut stops at the water's own surface
+                // wherever water is in the ring, and a column the water already holds up is left as it stands.
                 int beside = shore(x, z);
-                if (beside > 0 && beside <= EDGE_WATER) {
+                if (beside > 0) {
                     down = Math.max(down, shoreLevel(x, z));
                 }
                 if (top <= down) {
@@ -1189,24 +1192,39 @@ public final class Dressing {
                 covered++;
                 return;
             }
+            // The country is measured against the build's own ground - the outline, with its trees left out - and not
+            // against the top of a drawn tree. A crown stands ten or twelve blocks over the ground it grows in, and
+            // every column under one held its country at the crown's own height, so the country stayed twelve blocks
+            // over a village floor graded beside it: the standing wall the owner photographed on 26 November with the
+            // trees still on top of it, one wall per grove. Where the cut draws no ground under a crown - a tree
+            // reaching out past the build's own edge - the roof is the answer, as it always was.
+            int ground = outline[at];
+            int base = ground == Integer.MIN_VALUE ? roof : ground;
             int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
                     level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
-            if (surface <= level.getMinY() || surface - roof < BANK_BLOCKS) return;
+            if (surface <= level.getMinY() || surface - base < BANK_BLOCKS) return;
             if (!level.getBlockState(new BlockPos(x, surface, z)).getFluidState().isEmpty()) {
                 int bed = stray(x, z) ? drain(level, x, z, surface) : -1;
                 if (bed < 0) return;
                 surface = bed;
             }
             BlockState skin = level.getBlockState(new BlockPos(x, surface, z));
-            int down = apron(level, x, z, roof, surface);
+            int down = apron(level, x, z, base, surface);
             if (down >= surface) return;
+            // What comes off is the country, and the village's own trees stay: a column can be country all the way up
+            // under a crown, and clearing it from the top would take the crown with it - which is how a party tree came
+            // up as sawn-off poles. Leaves and wood are passed over and the country between them is taken out.
             for (int y = surface; y > down; y--) {
-                level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+                BlockPos pos = new BlockPos(x, y, z);
+                BlockState state = level.getBlockState(pos);
+                if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)
+                        || tree(BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString())) continue;
+                level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
             }
             // A graded cut is a hillside rather than a face, so its top course is the country's own grass - the same
             // block the ring lays on a fill - and not the bare dirt the cut opened.
-            if (down > roof && soft(skin) && level.getBlockState(new BlockPos(x, down, z)).isSolid()) {
-                level.setBlock(new BlockPos(x, down, z), skin, 2);
+            if (down > base && level.getBlockState(new BlockPos(x, down, z)).isSolid()) {
+                level.setBlock(new BlockPos(x, down, z), soft(skin) ? skin : Blocks.GRASS_BLOCK.defaultBlockState(), 2);
             }
             inside++;
         }

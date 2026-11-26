@@ -1533,3 +1533,24 @@ The lip and the water beside a cut are answered in `Dressing` (a one-block join 
   step at 1450/-2725, are the country's own and stand under a bank of three; and a tree standing in the new pad keeps
   its crown over ground that is now at the village's own height, which may be the "trees blocking it" the owner
   meant at 12.20.18 - whether those crowns come off is theirs to say.
+
+**The ring stops cutting under the water's own level, and the country under the village's trees comes off, `DRESS_VERSION` 12.**
+A fresh world on this build reads `9525 cut, 71638 filled, 4980 left for the water, 30394 left alone, 45383 inside the
+walls cut down to the cut, 518 of the build carried under the mountain, 65029 of the ring on its flank`; the owner's
+world ten on the build before it read 9,415 inside, so the 36,000 columns that moved are the country under the village's
+crowns. **Why they moved:** `dressInside` compared the country against `whole`, the cut's top with its trees counted. At
+1412..1422 by -2521..-2507 the cut's outline is 85..88 and its whole 94..106, the world stood its country at 99..102 in
+those columns and the field four blocks east was graded to 87 - `surface - roof` was two at most, so a twelve-block wall
+of country stayed up under each grove, which is the standing wall in two of the owner's screenshots, and passing a bank
+where there was none is why no apron ran. The measure is the outline now, with the whole only where the cut draws no
+ground under a crown, and the clear skips leaves and wood so a crown is not taken with the country it hid. **Why the
+water moved:** the cut's guard against standing below a sheet was `beside <= EDGE_WATER`, three blocks, and water spreads,
+so a cut thirteen blocks back from a lake left it a way in; it now holds at `shoreLevel(x, z)` wherever the ring holds
+water. **What to look at in the next world:** the north lake's bank (1354..1370 by -2440..-2424) and the west one
+(832..848 by -2596..-2582) for stepped ground *above* the sheet and no face at the waterline, and the grove at
+1412..1422 by -2521..-2507 for the wall gone with the crowns intact. **Still open, and the owner's to call:** the
+1-block terraces are the country's own and stay; the fill's material was left as it was at his word that he is not
+concerned with the ground's type; and the trees that look as though they stand in water are on a bank seven over it at
+1360, -2430 - if they still read as drowned in a picture, the answer is the sheet's own level, not the dressing. **Not
+seen in a world:** nothing was opened in a client on this build, and a re-dress of world ten could not be saved, so the
+before and after are two worlds of the same shape rather than one world twice.
