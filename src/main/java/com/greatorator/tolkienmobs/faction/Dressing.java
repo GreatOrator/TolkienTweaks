@@ -819,8 +819,23 @@ public final class Dressing {
                 wall = Math.max(wall, level.getHeight(Heightmap.Types.MOTION_BLOCKING,
                         gx + box.lowX(), gz + box.lowZ()) - 1);
             }
+            int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
+                    level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
+            if (surface <= level.getMinY()) {
+                skipped++;
+                return;
+            }
             if (channel[at]) {
-                if (watered[at] - (box.lowY() - 1) <= CityCommands.OUTLET_LIFT) {
+                // An outflow is water the build holds up over the country in front of it. A pond at the build's own
+                // edge is not: its water already stands at the level the ground beside it stands at, and it leaves
+                // where it has always left. Every column of the Shire's pond is within OUTLET_LIFT of the box's base -
+                // the village's floor is sixteen over it and the pond nine - so the pond answered as the city's
+                // outflow along the whole of its own edge, and the drape cut a mouth at every column of it: a channel
+                // three deep, filled to the pond's level, running out across the country. That is the water the owner
+                // photographed threading through the village's fields as a set of channels on 26 November. The test is
+                // the water standing over the country in front of it, which is what a held-up spring is and what a
+                // pond is not.
+                if (watered[at] > surface && watered[at] - (box.lowY() - 1) <= CityCommands.OUTLET_LIFT) {
                     // The city's outflow: the branch takes the water out at the floor, so the mouth stays open - and
                     // the ground in front of it is taken out with it. Left standing, the country's own bank is a bar
                     // across the mouth, because every column of the ring in front of a mouth clamps to the mouth's
@@ -832,12 +847,6 @@ public final class Dressing {
                 }
                 spring = true;
                 banked = true;
-            }
-            int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
-                    level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
-            if (surface <= level.getMinY()) {
-                skipped++;
-                return;
             }
             // A column standing in the drawing's water is the drawing's, and dressing it carves the river. A height that
             // counts fluids answers with the water's own surface, so the ground search below walked under the sheet to
@@ -1200,15 +1209,31 @@ public final class Dressing {
             // reaching out past the build's own edge - the roof is the answer, as it always was.
             int ground = outline[at];
             int base = ground == Integer.MIN_VALUE ? roof : ground;
-            int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
+            // The country is measured by its ground and not by the tree standing on it. A crown is the highest block
+            // in a column, so a height that counts leaves answers with the crown - and a column under a canopy then
+            // measured its tree's height over the cut's own ground, which is a bank past APRON_CAP, and was cut
+            // straight down to that ground. That is a pit in the shape of the crown, with the country beside it left
+            // standing in the shape of everything between the crowns: the chunks with dirt and stone pillars shaped
+            // like the trees above them that the owner photographed on 26 November. The column's own ground is read
+            // here instead, down through whatever stands on it, and the clear below passes over leaves and wood so a
+            // crown is left on the ground that stays under it.
+            int sky = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
                     level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
-            if (surface <= level.getMinY() || surface - base < BANK_BLOCKS) return;
-            if (!level.getBlockState(new BlockPos(x, surface, z)).getFluidState().isEmpty()) {
-                int bed = stray(x, z) ? drain(level, x, z, surface) : -1;
+            if (sky > level.getMinY()
+                    && !level.getBlockState(new BlockPos(x, sky, z)).getFluidState().isEmpty()) {
+                // Water over the column is still water: a stray pool is drained to its bed, as it always was.
+                int bed = stray(x, z) ? drain(level, x, z, sky) : -1;
                 if (bed < 0) return;
-                surface = bed;
             }
+            int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
+            if (surface <= level.getMinY()) return;
+            int floor = Math.max(level.getMinY(), surface - COLUMN_DEPTH);
             BlockState skin = level.getBlockState(new BlockPos(x, surface, z));
+            while (surface > floor && !ground(skin)) {
+                skin = level.getBlockState(new BlockPos(x, --surface, z));
+            }
+            if (!ground(skin)) return;
+            if (surface - base < BANK_BLOCKS) return;
             int down = apron(level, x, z, base, surface);
             if (down >= surface) return;
             // What comes off is the country, and the village's own trees stay: a column can be country all the way up
