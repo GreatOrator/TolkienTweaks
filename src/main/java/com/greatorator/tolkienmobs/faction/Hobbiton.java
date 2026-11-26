@@ -114,6 +114,16 @@ public final class Hobbiton {
      * cut it is dressed from is unchanged, so the version is what says so.
      */
     private static final int DRESS_VERSION = 13;
+    /**
+     * What the note says instead of {@link #DRESS_VERSION} when the ring was left alone.
+     * <p>
+     * The note answers "is the village this build would make of this ground already here", and a village raised with
+     * {@code dressShireRing} off has no ring to answer for. Kept apart from the version rather than sharing it, so a
+     * world raised bare and a world dressed are not the same note: turning the ring back on dresses a village that
+     * was raised without it instead of walking past one that was never dressed, and turning it off re-clears a
+     * dressed footprint rather than leaving the old ring in place under the new rules.
+     */
+    private static final int UNDRESSED = 0;
     /** How far a probe column's top may move and still be the village: growth, mostly, not a village taken away. */
     private static final int PROBE_SLACK = 6;
     /**
@@ -259,7 +269,10 @@ public final class Hobbiton {
                     || Integer.parseInt(fields[2]) != corner.getY()
                     || Integer.parseInt(fields[3]) != corner.getZ()) return false;
             if (!fields[4].equals(CutCommands.fingerprint(level, CUT))) return false;
-            return Integer.parseInt(fields[5]) == DRESS_VERSION;
+            // The note's fifth field is the dressing the village was given, so it has to be the dressing this build
+            // would give it: a dressed village is not a bare one, whatever the ring is set to now.
+            int noted = Integer.parseInt(fields[5]);
+            return TolkienMobsConfig.dressShireRing ? noted == DRESS_VERSION : noted == UNDRESSED;
         } catch (IOException | NumberFormatException unreadable) {
             return false;
         }
@@ -338,7 +351,7 @@ public final class Hobbiton {
      * the one already standing. A drape is the last of the three passes, so a corner that has had one has its village.
      */
     static void dressed(ServerLevel level, String cut, BlockPos planted) {
-        if (CUT.equals(cut)) note(level, planted);
+        if (CUT.equals(cut)) note(level, planted, true);
     }
 
     @SubscribeEvent
@@ -515,15 +528,16 @@ public final class Hobbiton {
                 work.release(level);
                 standing = null;
                 releaseAwake(event.getServer());
-                note(level, work.planted);
+                note(level, work.planted, work.dress);
                 // The town's hall goes up with the village and after it: this pass has just laid the cut, cleared the
                 // footprint and dressed the ring, and a hall stood in that ground first would have been cleared with the
                 // country. Before the folk, so nobody is stood inside its walls.
                 TownHalls.raise(level, "hobbiton");
                 inhabit(level, work);
-                LOGGER.info("The Shire: the village stands at {} in {} ticks ({} s), dressed to its own outline",
-                        work.planted.toShortString(), work.ticks,
-                        String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D));
+                LOGGER.info("The Shire: the village stands at {} in {} ticks ({} s){}", work.planted.toShortString(),
+                        work.ticks, String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D),
+                        work.dress ? ", dressed to its own outline"
+                                : ", on the country as the cut lays it, with the ring left alone");
             }
         } catch (IOException unreadable) {
             LOGGER.warn("The Shire: the village could not be raised: {}", unreadable.getMessage());
@@ -586,6 +600,9 @@ public final class Hobbiton {
         private CutCommands.Shape shape;
         private Dressing.Job dressing;
         /** The tick the pass began on, -1 until it does, and how many ticks it has taken. */
+        /** Whether this world's pass dresses the ring, taken once when the pass is made rather than read a step at a
+         * time: a setting changed under a pass in hand would leave half a ring behind it. */
+        private final boolean dress;
         private int began = -1;
         private int ticks;
         /** Whether a hand asked for it, or the config did, rather than a player being near. */
@@ -604,7 +621,11 @@ public final class Hobbiton {
             this.box = box;
             this.cityBox = CityCommands.Box.of(this.cityParts, planted);
             this.deck = deck;
-            int reach = CityCommands.DRAPE_REACH;
+            this.dress = TolkienMobsConfig.dressShireRing;
+            // The ring is the only reason the pass holds chunks outside the footprint, so a bare village asks for its
+            // own ground and nothing else: the country round it is left to generate as it would with the cut laid by
+            // itself, which is the whole of what the ring was there to hide.
+            int reach = this.dress ? CityCommands.DRAPE_REACH : 0;
             this.chunkLowX = (box.lowX() - reach) >> 4;
             this.chunkLowZ = (box.lowZ() - reach) >> 4;
             this.chunkWide = ((box.highX() + reach) >> 4) - this.chunkLowX + 1;
@@ -635,6 +656,7 @@ public final class Hobbiton {
             if (this.stage == 0) return awaitGround(level);
             if (this.stage == 1) return layPiece(level);
             if (this.stage == 2) return clearBand(level);
+            if (!this.dress) return true;
             return dressStep(level);
         }
 
@@ -765,7 +787,7 @@ public final class Hobbiton {
     }
 
     /** Writes the note that says what the village stands on, so the next start knows whether it still holds it. */
-    private static void note(ServerLevel level, BlockPos corner) {
+    private static void note(ServerLevel level, BlockPos corner, boolean dressed) {
         try {
             Path marker = marker(level);
             Files.createDirectories(marker.getParent());
@@ -773,7 +795,7 @@ public final class Hobbiton {
                     .append(level.dimension().identifier()).append(' ')
                     .append(corner.getX()).append(' ').append(corner.getY()).append(' ').append(corner.getZ())
                     .append(' ').append(CutCommands.fingerprint(level, CUT))
-                    .append(' ').append(DRESS_VERSION);
+                    .append(' ').append(dressed ? DRESS_VERSION : UNDRESSED);
             for (Probe probe : probe(level, corner)) {
                 line.append(' ').append(probe.top()).append('@')
                         .append(probe.block() == null ? "-" : probe.block());

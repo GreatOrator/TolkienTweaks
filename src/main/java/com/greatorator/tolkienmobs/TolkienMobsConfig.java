@@ -72,6 +72,7 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue TRINKET_CRAFT_TIME;
     private static final ModConfigSpec.IntValue FIREPLACE_CRAFT_TIME;
     private static final ModConfigSpec.BooleanValue RAISE_SHIRE_ON_START;
+    private static final ModConfigSpec.BooleanValue DRESS_SHIRE_RING;
 
     /* Server: the pipe's own numbers - how long a draw takes and what each strain's smoke leaves behind. */
     private static final ModConfigSpec.IntValue PIPE_DRAW_TICKS;
@@ -317,6 +318,16 @@ public class TolkienMobsConfig {
                         "already holds the village is left alone, and the pass is held off by a server that pauses",
                         "when empty (Default true)")
                 .define("raiseShireOnStart", true);
+        DRESS_SHIRE_RING = BUILDER
+                .comment("Dresses the ring round the Shire once its footprint is cleared: the join from the village's",
+                        "own edge out into the country, the shoulder under it, the shore rule beside water, and the",
+                        "mountain planted over the build's high points, which are one pass and stand or fall together.",
+                        "Off by default while that pass is being rebuilt: the village is then laid exactly as a cut",
+                        "laid on the country by itself, and nothing outside its footprint is read or written. The",
+                        "mountain is the outer ring of that same pass, so with this off there is none. A world notes",
+                        "which of the two it was given, so turning this on again dresses one that was raised without it",
+                        "(Default false)")
+                .define("dressShireRing", false);
         BUILDER.pop();
 
         BUILDER.comment("How a Shire pipe draws, and what each strain of pipe-weed leaves behind once it is smoked.",
@@ -584,6 +595,7 @@ public class TolkienMobsConfig {
     public static boolean disableAllBlocks;
     public static boolean disableAllItems;
     public static boolean raiseShireOnStart;
+    public static boolean dressShireRing;
     public static boolean questBadge;
 
     public static int distanceCost;
@@ -939,6 +951,7 @@ public class TolkienMobsConfig {
         autoUse = AUTO_USE.get();
         disableHobbitGrowth = HOBBIT_GROWTH.get();
         raiseShireOnStart = RAISE_SHIRE_ON_START.get();
+        dressShireRing = DRESS_SHIRE_RING.get();
         questBadge = QUEST_BADGE.get();
         pickupRange = PICKUP_RANGE.get();
         growthRange = GROWTH_RANGE.get();
