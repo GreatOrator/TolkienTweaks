@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -260,6 +261,51 @@ public final class Drape {
                                int version, Outline outline) {
     }
 
+    /** The version of the rules a declaration made by {@link #declare} was written under, for a build that keeps a note. */
+    public static final int RULES = 1;
+
+    /**
+     * How far out any build's ring dresses when nobody says otherwise, in blocks.
+     * <p>
+     * The camp's own number, which is the smallest ring that reads as ground rather than as a plinth: the wall is met
+     * by its own height at the wall, and the country is reached a dozen blocks out. It is enough for a house, a hall
+     * and a tower; a build whose rim is taller than a house's passes its own reach. A footprint wider than {@link #WIDE}
+     * columns loses this number to {@link #NARROW} whichever way it is declared, so a castle still cannot spend itself
+     * on its own shoulder.
+     */
+    public static final int DEFAULT_REACH = 12;
+
+    /**
+     * Any build's shoulder, declared from its own file.
+     * <p>
+     * The ordinary rules without a number written by hand: the outline is the template's own columns read with its
+     * trees discounted, the ring is {@link #DEFAULT_REACH} out, the build stands on its own low corner (a deck of
+     * nought), and the ring both takes ground down and builds it up. A house, a hall, a tower, a ruin and a camp all
+     * take this declaration as it stands; the ones that do not - a floor standing over its corner, a ring that may
+     * only cut - pass their own numbers, which is why {@link Declaration} is still the way a build says what it is.
+     *
+     * @return the declaration, or null when the file cannot be read or holds nothing
+     */
+    @Nullable
+    public static Declaration declare(ServerLevel level, String structure, BlockPos corner, Vec3i size) {
+        return declare(level, structure, corner, size, DEFAULT_REACH);
+    }
+
+    /** The same declaration with a ring of the given reach, for a build whose rim is taller than a house's. */
+    @Nullable
+    public static Declaration declare(ServerLevel level, String structure, BlockPos corner, Vec3i size, int reach) {
+        if (size.getX() <= 0 || size.getZ() <= 0) return null;
+        Outline outline = outline(level, structure, size, true);
+        if (outline == null) return null;
+        return new Declaration(structure, structure, Box.of(corner, size), reach, 0, true, true, RULES, outline);
+    }
+
+    /** Reads a build's file and dresses its ring in one call, on the rules {@link #declare} writes down. */
+    public static Counts dress(ServerLevel level, String structure, BlockPos corner, Vec3i size) {
+        Declaration drape = declare(level, structure, corner, size);
+        return drape == null ? new Counts(0, 0, 0) : dress(level, drape);
+    }
+
     /** What one pass came to, in columns: the ring's ground cut down, its dips filled, and the ground taken inside. */
     public record Counts(int cut, int filled, int inside) {
     }
@@ -327,6 +373,68 @@ public final class Drape {
             }
         }
         return new Counts(cut, filled, inside);
+    }
+
+    /**
+     * Dresses a build that is cut into rock rather than seated on ground: the ring around it is filled with the rock
+     * the build was cut out of, so its walls meet stone instead of a trench of air.
+     * <p>
+     * The surface ring asks the heightmap where the country stands, and underground that answer belongs to the sky,
+     * forty blocks over the roof. What a buried build wants is the other half of the same rule: nothing above its roof
+     * and nothing below its floor, and between the two, the columns outside its walls filled with the stone they are
+     * cut into. That is what a capture's air takes away - a template writes the air it carries, so a hall cut out of a
+     * mountain clears a box of rock around itself and stands in it with straight sides - and this is what puts the rock
+     * back. It is the specific case the one surface rule cannot answer, kept beside it rather than bending it: a
+     * declaration's box, outline, reach and deck mean the same thing to both.
+     * <p>
+     * The stone is the country's own, read from the first solid block above the build's roof in that column, so a
+     * chamber's shoulder is the mountain it was cut from and not a wall of one chosen stone. A column with sky or water
+     * over its roof is left alone (that column is a surface column and belongs to {@link #dress}), the build's own
+     * blocks are never replaced, and nothing between the walls is touched at all.
+     * <p>
+     * Water in the ring is left where it is, the same rule the surface ring follows.
+     *
+     * @return what came to, in columns: {@code filled} is every column the rock was carried into
+     */
+    public static Counts enclose(ServerLevel level, Declaration drape) {
+        Box box = drape.box();
+        Outline outline = drape.outline();
+        int wide = outline.wide();
+        int deep = outline.deep();
+        if (wide <= 0 || deep <= 0) return new Counts(0, 0, 0);
+        int[] top = outline.roof();
+        int[] floor = outline.floor();
+        open(top, wide, deep);
+        open(floor, wide, deep);
+        int ring = wide * deep > WIDE ? NARROW : drape.reach();
+        int base = box.lowY() + drape.deck();
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        int filled = 0;
+        for (int dx = -ring; dx < wide + ring; dx++) {
+            for (int dz = -ring; dz < deep + ring; dz++) {
+                int out = Math.max(0, Math.max(Math.max(-dx, dx - wide + 1), Math.max(-dz, dz - deep + 1)));
+                if (out == 0 || out > ring) continue;
+                int nearX = Math.max(0, Math.min(wide - 1, dx));
+                int nearZ = Math.max(0, Math.min(deep - 1, dz));
+                int roof = top[nearX + nearZ * wide];
+                int bottom = floor[nearX + nearZ * wide];
+                if (roof == Integer.MIN_VALUE || bottom == Integer.MIN_VALUE) continue;
+                int x = box.lowX() + dx;
+                int z = box.lowZ() + dz;
+                cursor.set(x, base + roof + 1, z);
+                BlockState rock = level.getBlockState(cursor);
+                if (!rock.isSolid() || !rock.getFluidState().isEmpty()) continue;
+                for (int y = base + bottom; y <= base + roof; y++) {
+                    if (outline.own().contains(offset(dx, y - base, dz))) continue;
+                    cursor.set(x, y, z);
+                    BlockState state = level.getBlockState(cursor);
+                    if (!state.getFluidState().isEmpty() || !state.canBeReplaced()) continue;
+                    level.setBlock(cursor, rock, Block.UPDATE_CLIENTS);
+                    filled++;
+                }
+            }
+        }
+        return new Counts(0, filled, 0);
     }
 
     /**
