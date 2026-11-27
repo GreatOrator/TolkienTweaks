@@ -122,8 +122,12 @@ public final class Hobbiton {
      * world raised bare and a world dressed are not the same note: turning the ring back on dresses a village that
      * was raised without it instead of walking past one that was never dressed, and turning it off re-clears a
      * dressed footprint rather than leaving the old ring in place under the new rules.
+     * <p>
+     * It is a version of its own, and 1 now: the clear a bare village gets changed when it started taking off the
+     * trunks that stand on nothing, and a rank of bare posts left by 0 is exactly what a world raised under the old
+     * rules keeps. A world noted 0 raises its village again on the next start, and the sweep runs over it.
      */
-    private static final int UNDRESSED = 0;
+    private static final int UNDRESSED = 1;
     /** How far a probe column's top may move and still be the village: growth, mostly, not a village taken away. */
     private static final int PROBE_SLACK = 6;
     /**

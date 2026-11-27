@@ -375,28 +375,32 @@ public final class CutCommands {
             int x = box.lowX() + xi;
             int z = box.lowZ() + zi;
             int top = shape.top()[index];
-            if (top == Integer.MIN_VALUE) continue;
             level.getChunk(x >> 4, z >> 4);
-            int ceiling = planted.getY() + top;
             int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
-            if (standsOnOwnGround(level, at, x, z, surface, ceiling, shape, index, planted.getY())) {
-                kept++;
-                continue;
-            }
             int taken = 0;
-            for (int y = surface; y > ceiling; y--) {
-                at.set(x, y, z);
-                if (level.getBlockState(at).isAir()) continue;
-                level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
-                taken++;
+            if (top != Integer.MIN_VALUE) {
+                int ceiling = planted.getY() + top;
+                if (standsOnOwnGround(level, at, x, z, surface, ceiling, shape, index, planted.getY())) {
+                    kept++;
+                    continue;
+                }
+                for (int y = surface; y > ceiling; y--) {
+                    at.set(x, y, z);
+                    if (level.getBlockState(at).isAir()) continue;
+                    level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                    taken++;
+                }
+                for (int y = ceiling; y >= planted.getY() + shape.bottom()[index]; y--) {
+                    if (shape.solid(index, y - planted.getY())) continue;
+                    at.set(x, y, z);
+                    if (level.getBlockState(at).isAir()) continue;
+                    level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                    taken++;
+                }
             }
-            for (int y = ceiling; y >= planted.getY() + shape.bottom()[index]; y--) {
-                if (shape.solid(index, y - planted.getY())) continue;
-                at.set(x, y, z);
-                if (level.getBlockState(at).isAir()) continue;
-                level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
-                taken++;
-            }
+            // A column the cut draws nothing in is still sky over the build, and so is every block the cut does draw:
+            // both are swept for trunks that stand on nothing. See {@link #strays}.
+            taken += strays(level, at, x, z, surface, planted.getY());
             if (taken > 0) {
                 columns++;
                 removed += taken;
@@ -404,6 +408,56 @@ public final class CutCommands {
             }
         }
         return new Cleared(columns, removed, deepest, kept);
+    }
+
+    /**
+     * Takes out the trunks that stand on nothing: the bare posts left over a cut.
+     * <p>
+     * The rest of the clear works column by column, so it either takes everything over a cut's top or nothing at all -
+     * and a trunk the cut itself draws is the cut's, so it is never touched. But a drawn trunk with air under it is no
+     * more the build's than the country's: a canopied tree in the art is caught in the cut with its crown and its
+     * ground, but a trunk that reaches down into air has had the ground taken out from under it, and stands in the
+     * village as a pillar. Measured in `DoOver - 1`, the Shire's box held 269 columns topped by wood, every one of them
+     * `oak_wood` from the cut (the art holds 5,781 and the world held 5,781), and the tallest of them was six blocks of
+     * trunk with four blocks of air under it and grass below that. The same sweep takes the country's own leftovers -
+     * a trunk the country left floating over a column the cut draws nothing in, which the clear used to skip entirely.
+     * <p>
+     * A trunk standing on a solid block, or on another part of a tree, is where it grew and stays; a crown is leaves and
+     * is never questioned, so taking a pillar out does not touch the trees round it.
+     *
+     * @return how many blocks came off
+     */
+    private static int strays(ServerLevel level, BlockPos.MutableBlockPos at, int x, int z, int surface, int floor) {
+        int taken = 0;
+        for (int y = surface; y > floor; y--) {
+            at.set(x, y, z);
+            if (!trunk(level.getBlockState(at))) continue;
+            at.set(x, y - 1, z);
+            BlockState under = level.getBlockState(at);
+            if (under.isSolid() || tree(under)) continue;
+            // The whole reach of that trunk goes, a block at a time, as far up as it is wood.
+            for (int up = y; up <= surface + 1; up++) {
+                at.set(x, up, z);
+                if (!trunk(level.getBlockState(at))) break;
+                level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                taken++;
+            }
+        }
+        return taken;
+    }
+
+    /**
+     * Whether a block is a trunk rather than a crown: this mod's logs and wood are in no tag, so the tag alone would
+     * leave a pillar of its own timber standing.
+     */
+    private static boolean trunk(BlockState state) {
+        if (state.is(BlockTags.LOGS)) return true;
+        return trunk(BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString());
+    }
+
+    /** The same reading by name: `log_culumalda`, `wood_lebethron`, `stripped_oak_wood` and the like. */
+    private static boolean trunk(String name) {
+        return name.endsWith("_log") || name.contains("log_") || name.contains("_wood") || name.contains("wood_");
     }
 
     /**
@@ -447,7 +501,10 @@ public final class CutCommands {
      * Whether a block is part of a tree rather than part of the ground: leaves, a trunk, a fungus stem.
      * <p>
      * The same reading the drape uses, and for the same reason: this mod's leaves are in {@code #minecraft:leaves},
-     * but its logs and wood are in no tag, so the tags alone would read a trunk of the mod's own wood as ground.
+     * but its logs and wood are in no tag, so the tags alone would read a trunk of the mod's own wood as ground. The
+     * Shire's own trees are read by name, and so are the ones it shares with the country - the culumalda and the
+     * lebethron of its broadleaf, whose `leaves_` and `hardened_leaves_` crowns and `log_`/`wood_` trunks are no
+     * different to the clear, and the holly of Firien beside it.
      */
     private static boolean tree(BlockState state) {
         if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)) return true;
