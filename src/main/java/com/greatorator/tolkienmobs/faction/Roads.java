@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -474,6 +475,12 @@ public final class Roads {
      * would have crossed the river left the table on 25 November 2026 and the owner's own road has not been walked
      * over that water at all, so the entry holds no place: it answers no span, and putting a block on the water the
      * road crosses there is the whole of what turns it on.
+     * <p>
+     * <b>A bridge is found by the water it is named at, or by the pieces a plan was given.</b> The block is how a bridge
+     * this table holds is recognised from the ground; a road planned with one named on the command - {@code /tmroad
+     * build 480 -6 main bucklebury} - writes that bridge's two pieces into every span it makes instead, so a span is
+     * the bridge wherever the water it crosses happens to lie, and the block keeps finding it for a road that was
+     * planned without the word.
      */
     private static List<Bridge> BRIDGES;
 
@@ -496,6 +503,40 @@ public final class Roads {
     }
 
     /**
+     * A bridge by the word a command names it with: its own name with the spaces taken out, in either case.
+     * <p>
+     * {@code bucklebury} is {@code Bucklebury} and {@code lastbridge} is the {@code Last Bridge}; a word that is only
+     * the start of one name answers it too ({@code last}), because the name is what the log says and the word is what a
+     * hand types. A name that is exactly one of them outranks a name it merely begins, so a shorter bridge is never
+     * lost to a longer one that happens to start the same way. Nothing is guessed: a word this table does not hold
+     * answers null, and the caller refuses the command rather than laying the standard bridge under a stone one's name.
+     */
+    public static Bridge bridge(String name) {
+        if (name == null) return null;
+        String asked = name.toLowerCase(Locale.ROOT).replace(" ", "");
+        if (asked.isEmpty()) return null;
+        for (Bridge bridge : bridges()) {
+            if (word(bridge).equals(asked)) return bridge;
+        }
+        for (Bridge bridge : bridges()) {
+            if (word(bridge).startsWith(asked)) return bridge;
+        }
+        return null;
+    }
+
+    /** A bridge's name as the word that names it. */
+    private static String word(Bridge bridge) {
+        return bridge.name().toLowerCase(Locale.ROOT).replace(" ", "");
+    }
+
+    /** The words a bridge can be named by, for a command that was given one the table does not hold. */
+    public static String bridgeNames() {
+        List<String> words = new ArrayList<>();
+        for (Bridge bridge : bridges()) words.add(word(bridge));
+        return String.join(", ", words);
+    }
+
+    /**
      * The bridge a span is stood with, or null where it is the standard one.
      * <p>
      * A span covers a bridge's block when the block lies between its banks on the span's own axis and no further from
@@ -504,6 +545,15 @@ public final class Roads {
      * named yet holds no block, so it covers no span and the standard pair stands.
      */
     public static Bridge bridge(Route.Crossing span) {
+        // A span planned with a bridge's pieces is that bridge's, whatever water it found: the pieces are the
+        // surveyor's choice, written into the plan and kept in the world's store, so they outrank the block the table
+        // names. Without this, naming a bridge at the command would be undone the moment the span covered another
+        // crossing the table holds, and a road re-planned over water it had crossed before would change its bridge.
+        for (Bridge bridge : bridges()) {
+            if (bridge.endPiece().equals(span.endPiece()) && bridge.middlePiece().equals(span.middlePiece())) {
+                return bridge;
+            }
+        }
         boolean alongX = span.alongX();
         int near = Math.min(span.bank(), span.far());
         int far = Math.max(span.bank(), span.far());

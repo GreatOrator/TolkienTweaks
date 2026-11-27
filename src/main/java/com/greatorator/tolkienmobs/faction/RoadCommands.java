@@ -113,6 +113,15 @@ public final class RoadCommands {
      * is the same string wherever it is written down and this is the one place its path is spelled.
      */
     private static final String BRIDGE_PIECES = "bridges/";
+    /**
+     * The pair the jar always holds, which a span is stood with when the bridge it names is not in the jar.
+     * <p>
+     * A span carries the two pieces of the bridge it is meant to be - the standard pair, or one named on the command -
+     * so a bridge whose files never arrived cannot fall back to its own name. The standard pair is the answer either
+     * way: a span is always crossable with what the jar ships.
+     */
+    private static final String STANDARD_END = "bridge_end";
+    private static final String STANDARD_MIDDLE = "bridge_middle";
 
     /**
      * How far out from a build its road stops being the town's own street, and then stops being a road at all.
@@ -246,6 +255,10 @@ public final class RoadCommands {
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+        // The bridge word rides after the kind, because it is the last thing chosen about a road and only a road that
+        // crosses water uses it: `bucklebury` stands every span of the leg from the owner's stone pair instead of the
+        // standard one. A word the table does not hold is refused by `planned` rather than quietly laid with the
+        // standard pair, so a mistyped name cannot leave a stone bridge lying unbuilt over a river.
         dispatcher.register(Commands.literal("tmroad")
                 .requires(MAY_BUILD)
                 .then(Commands.literal("build")
@@ -254,7 +267,9 @@ public final class RoadCommands {
                                 .then(Commands.argument("minz", IntegerArgumentType.integer())
                                         .executes(RoadCommands::buildHere)
                                         .then(Commands.argument("kind", StringArgumentType.word())
-                                                .executes(RoadCommands::buildHere)))))
+                                                .executes(RoadCommands::buildHere)
+                                                .then(Commands.argument("bridge", StringArgumentType.word())
+                                                        .executes(RoadCommands::buildHere))))))
                 // Both ends as numbers, so a leg is pinned by the ground it is meant to cross rather than by where the
                 // hand happens to be standing: the first pair is where it leaves, the second where it arrives. It has
                 // a literal of its own because a width word after the first pair would read a mistyped third number as
@@ -266,13 +281,18 @@ public final class RoadCommands {
                                                 .then(Commands.argument("toz", IntegerArgumentType.integer())
                                                         .executes(RoadCommands::pinHere)
                                                         .then(Commands.argument("kind", StringArgumentType.word())
-                                                                .executes(RoadCommands::pinHere)))))))
+                                                                .executes(RoadCommands::pinHere)
+                                                                .then(Commands.argument("bridge",
+                                                                        StringArgumentType.word())
+                                                                        .executes(RoadCommands::pinHere))))))))
                 .then(Commands.literal("plan")
                         .then(Commands.argument("minx", IntegerArgumentType.integer())
                                 .then(Commands.argument("minz", IntegerArgumentType.integer())
                                         .executes(RoadCommands::planHere)
                                         .then(Commands.argument("kind", StringArgumentType.word())
-                                                .executes(RoadCommands::planHere)))))
+                                                .executes(RoadCommands::planHere)
+                                                .then(Commands.argument("bridge", StringArgumentType.word())
+                                                        .executes(RoadCommands::planHere))))))
                 .then(Commands.literal("forget").executes(RoadCommands::forget)));
     }
 
@@ -416,6 +436,10 @@ public final class RoadCommands {
      * ground under its head is loaded, so the road fills in behind the walk rather than freezing the server for a
      * road's worth of blocks.
      */
+    // A bridge may be named after the kind - `/tmroad build 480 -6 main bucklebury` - and every span the plan makes
+    // is then stood from that bridge's pieces instead of the standard pair. Without the word a span is stood from the
+    // pieces the plan gave it, and `Roads.bridge(span)` still answers from the water when `Roads.BRIDGES` names a block
+    // on the crossing the road found.
     private static int planned(CommandContext<CommandSourceStack> context, boolean lay) {
         CommandSourceStack source = context.getSource();
         BlockPos feet = BlockPos.containing(source.getPosition());
@@ -439,9 +463,22 @@ public final class RoadCommands {
         Choice asked = choice(source, from, context);
         Roads.Kind kind = asked.kind();
         boolean town = asked.town();
+        // A bridge is named rather than found when the water the road is meant to cross is not the water the table
+        // knows: the pieces it names are written into every span this plan makes, where the table's own block is only
+        // read off the ground the road found. Nothing is guessed about a word it does not hold.
+        String named = word(context, "bridge");
+        Roads.Bridge bridge = null;
+        if (named != null) {
+            bridge = Roads.bridge(named);
+            if (bridge == null) {
+                source.sendFailure(Component.literal("No bridge is set up under \"" + named + "\". The bridges are: "
+                        + Roads.bridgeNames() + "."));
+                return 0;
+            }
+        }
         String id = "tolkienmobs:roads/planned_" + from.getX() + "_" + from.getZ() + "_" + to.getX() + "_"
                 + to.getZ();
-        RoadPlan.Plan plan = RoadPlan.of(id, kind, town, from, to);
+        RoadPlan.Plan plan = RoadPlan.of(id, kind, town, from, to, bridge);
         if (plan.refused()) {
             String why = plan.refusal();
             source.sendFailure(Component.literal("No road would be laid: " + why + "."));
@@ -464,10 +501,14 @@ public final class RoadCommands {
         }
         String how = lay ? "laid as the world steps it" : "planned, nothing laid";
         String wide = town ? "town bands (7 in, 5 through, 3 out)" : kind.blocks() + " wide";
+        boolean crossed = sections.stream().anyMatch(Route.Crossing.class::isInstance);
+        String spanned = bridge == null ? ""
+                : crossed ? ", crossings stood with the " + bridge.name() + " bridge"
+                : ", and it crosses no water, so the " + bridge.name() + " bridge stands nowhere";
         source.sendSuccess(() -> Component.literal("Road " + id + " from " + from.getX() + ", " + from.getZ()
                 + " to " + to.getX() + ", " + to.getZ() + ": " + sections.size() + " section"
                 + (sections.size() == 1 ? "" : "s")
-                + " at " + wide + ", " + how + "."), true);
+                + " at " + wide + spanned + ", " + how + "."), true);
         return 1;
     }
 
@@ -481,6 +522,15 @@ public final class RoadCommands {
         Route.Riverless dry = (Route.Riverless) section;
         LOGGER.info("Road plan {}: {}, {} to {}, {}, {} bends", section.id(), dry.pathX(), dry.pathZ(), dry.farX(),
                 dry.farZ(), Roads.bends(section).size());
+    }
+
+    /** One word named in the command, or null where it was not given. */
+    private static String word(CommandContext<CommandSourceStack> context, String name) {
+        try {
+            return StringArgumentType.getString(context, name);
+        } catch (IllegalArgumentException absent) {
+            return null;
+        }
     }
 
     /** One end named as a number, or null when that end was left to the block underfoot. */
@@ -1574,15 +1624,21 @@ public final class RoadCommands {
      */
     private static Pieces pieces(Route.Crossing span) {
         Roads.Bridge named = Roads.bridge(span);
-        if (named == null) return new Pieces(span.endPiece(), span.middlePiece(), Blocks.OAK_LOG);
-        if (shipped(named.endPiece()) && shipped(named.middlePiece())) {
+        if (named != null && shipped(named.endPiece()) && shipped(named.middlePiece())) {
             LOGGER.info("Road {}: the crossing at {}, {} is stood as the {} bridge", span.id(), span.bankX(),
                     span.bankZ(), named.name());
             return new Pieces(named.endPiece(), named.middlePiece(), named.support());
         }
-        LOGGER.info("Road {}: the {} bridge is not in the jar ({} and {}), so its crossing is stood with the standard"
-                + " bridge", span.id(), named.name(), named.endPiece(), named.middlePiece());
-        return new Pieces(span.endPiece(), span.middlePiece(), Blocks.OAK_LOG);
+        if (named != null) {
+            LOGGER.info("Road {}: the {} bridge is not in the jar ({} and {}), so its crossing is stood with the"
+                    + " standard bridge", span.id(), named.name(), named.endPiece(), named.middlePiece());
+        }
+        // A span this table cannot name is stood from its own pieces, which is how a saved plan keeps a bridge the table
+        // has since lost; one whose pieces are not in the jar either falls back to the pair the jar always holds.
+        if (shipped(span.endPiece()) && shipped(span.middlePiece())) {
+            return new Pieces(span.endPiece(), span.middlePiece(), Blocks.OAK_LOG);
+        }
+        return new Pieces(STANDARD_END, STANDARD_MIDDLE, Blocks.OAK_LOG);
     }
 
     /** Whether a piece of that name is in the jar's bridges folder, asked without reading it. */

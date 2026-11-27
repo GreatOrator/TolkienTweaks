@@ -207,6 +207,23 @@ final class RoadPlan {
      * with the reason rather than laying the road straight through the water it would not bridge.
      */
     static Plan of(String id, Roads.Kind kind, boolean town, BlockPos from, BlockPos to) {
+        return of(id, kind, town, from, to, null);
+    }
+
+    /**
+     * The same plan, with every span in it stood from one bridge's pieces.
+     * <p>
+     * A bridge is otherwise found from the ground: {@code Roads.BRIDGES} names a block on the water a bridge crosses,
+     * and the span covering that block is stood with its pieces. That reading cannot help a leg whose water is not the
+     * water the table names - a road planned toward a town crosses where the country takes it - so the surveyor may
+     * name the bridge instead, and the plan writes that bridge's two pieces into every span it makes. The pieces are
+     * the whole of what a span carries about its bridge, and the world keeps them in its own plan store, so a road
+     * planned with the stone bridge is still stone after a restart.
+     * <p>
+     * A road that crosses nothing is unaffected, and the caller says so rather than leaving a bridge's name on a leg it
+     * never stood.
+     */
+    static Plan of(String id, Roads.Kind kind, boolean town, BlockPos from, BlockPos to, Roads.Bridge bridge) {
         if (from == null || to == null) return new Plan(List.of(), null, false);
         Plan plan = walk(id, from, to, false, false);
         if (plan != null && plan.doubled()) {
@@ -232,6 +249,7 @@ final class RoadPlan {
         List<Route> sections = plan == null || plan.sections().isEmpty()
                 ? List.of(new Route.Riverless(id, 0, 0, 0, 0, from.getX(), from.getZ(), to.getX(), to.getZ()))
                 : plan.sections();
+        if (bridge != null) sections = bridged(sections, bridge);
         // The kind and the marks are the plan's answer whether or not the road is laid, so a route can be judged before
         // any ground is moved. The road itself joins ROUTES only when it is laid - a corridor that remembered a planned
         // road would have the world start laying it the next time a chunk of it loaded, which is not what `plan` means.
@@ -240,6 +258,29 @@ final class RoadPlan {
             if (town) BANDED.add(section.id());
         }
         return new Plan(sections, null, false);
+    }
+
+    /**
+     * The sections with every span stood from one bridge's pieces.
+     * <p>
+     * A span is a record and its bridge is two of its fields, so standing the road's crossings as the named bridge's is
+     * a copy of each span with those two fields written. The banks, the deck and the approaches stay the plan's own: a
+     * bridge is as long as the water between its abutments allows rather than as long as it was drawn, so the pieces a
+     * span names are all a bridge's plan needs to know.
+     */
+    private static List<Route> bridged(List<Route> sections, Roads.Bridge bridge) {
+        List<Route> stood = new ArrayList<>(sections.size());
+        for (Route section : sections) {
+            if (!(section instanceof Route.Crossing span)) {
+                stood.add(section);
+                continue;
+            }
+            stood.add(new Route.Crossing(span.id(), span.cityX0(), span.cityX1(), span.cityZ0(), span.cityZ1(),
+                    span.pathX(), span.pathZ(), span.bankX(), span.bankZ(), span.farX(), span.farZ(), span.half(),
+                    span.bridgeBase(), span.endBase(), span.deckY(), span.runIn(), span.exitReach(),
+                    bridge.endPiece(), bridge.middlePiece()));
+        }
+        return stood;
     }
 
     /** One walk of a leg, or null when the drawing could not be read for it at all. */

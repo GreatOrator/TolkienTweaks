@@ -91,7 +91,7 @@ ground.
 
 | hand | what it does |
 |---|---|
-| `build [x z] [kind]` | Sweeps any bridge timbers already in the water, stands the bridge from the shipped `bridge_end`
+| `build [x z] [kind] [bridge]` | Sweeps any bridge timbers already in the water, stands the bridge from the shipped `bridge_end`
 and `bridge_middle` pieces, and draws every pillar the pieces carry down through air and water to the bed
 under it. Then it searches its own way down the mountain from the path's last block, rounds every corner
 into a curve - eased up to twenty-four blocks either way for an ordinary bend, ten for a switchback, and
@@ -102,8 +102,16 @@ standing it on stone where the ground falls away, turns the higher column of eve
 cobblestone-slab lip, and carries only the road's own three columns over water. Answers with pieces laid,
 pillar blocks drawn, the approach's length and its steepest graded step, and columns laid, cut, filled,
 cleared and left open. |
-| `pin <x z> <x z> [kind]` | Plans a road between two blocks named as numbers - the only form that does not read the caller's own block - and lays nothing. |
-| `plan <x z> [kind]` | Plans a road from the ground the caller stands on to that block, says what the drawing found for the way between them, and lays nothing. |
+| `pin <x z> <x z> [kind] [bridge]` | Plans a road between two blocks named as numbers - the only form that does not read the caller's own block - and lays nothing. |
+| `plan <x z> [kind] [bridge]` | Plans a road from the ground the caller stands on to that block, says what the drawing found for the way between them, and lays nothing. |
+
+**A bridge is named after the kind.** `bucklebury` stands every span the plan makes from the owner's
+`bucklebury_end`/`bucklebury_middle` pair and its cobblestone-wall piers, and `last`/`lastbridge` the
+Last Bridge's pair, instead of the standard `bridge_end`/`bridge_middle` and oak log; the word is a
+bridge's name in `Roads.BRIDGES` with its spaces taken out, or the start of one. A word the table does
+not hold is refused, with the names it does hold, rather than quietly laid with the standard pair; a leg
+that crosses no water answers that the bridge stands nowhere. Without a word, a span is still found by
+the water when the table names a block on the crossing the road met.
 
 The waypoints are the ammolite markers walked in the scouted world: the path's last block at 5200, 134,
 -3034, and the two banks at 5055 and 5006 on z -3075. Both ends of the bridge are met along the span's
