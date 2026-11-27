@@ -113,7 +113,7 @@ public final class Hobbiton {
      * drape - a mouth filled, a deck read from the build - has to reach a world that already holds the village, and the
      * cut it is dressed from is unchanged, so the version is what says so.
      */
-    private static final int DRESS_VERSION = 14;
+    private static final int DRESS_VERSION = 15;
     /**
      * How far outside the footprint a village's ground is carried down to the country, in blocks.
      * <p>
@@ -122,15 +122,16 @@ public final class Hobbiton {
      * country at its own edge was a face of dirt and stone one column wide the whole length of its west and north
      * sides, with a river at the foot of it. What that edge wants is not sixty blocks of ring and not a hill planted
      * over the village, but the join at a shoulder's reach: the build's own ground at the wall, easing to the country
-     * over twelve blocks, which is one block down for every one or two out. The ring's mountain is not planted with it
-     * (see {@code Dressing}'s own reach).
+     * one block down for every one out. The ring's mountain is not planted with it (see {@code Dressing}'s own reach).
      * <p>
-     * Twelve is measured: the Shire's west face stands eleven over the river and its north face nine over the land,
-     * and a rise of nine to eleven over twelve blocks is a hillside rather than a bank. It costs a chunk's worth of
-     * ground round the footprint - 1,050 chunks become about 1,240 - and it is the only way the downhill edge can be a
-     * hill, since no pass that stays inside the footprint can lower the country below the village.
+     * Thirty-two is the room the cone needs rather than a slope's own length. The shoulder is one block down for every
+     * one block out, so its run is the height it has to lose, and the Shire's worst edge stands thirty over the land
+     * (27 at {@code 867,-2788} on the west foot, over the river). The ring is a rectangle at this reach, so the cost
+     * goes up - 1,050 chunks become about 2,800 - but only the columns within their own drop are written; the rest are
+     * a heightmap read each. It is the only way the downhill edge can be a hill, since no pass that stays inside the
+     * footprint can lower the country below the village.
      */
-    private static final int SHOULDER_REACH = 12;
+    private static final int SHOULDER_REACH = 32;
     /**
      * What the note says instead of {@link #DRESS_VERSION} when the ring was left alone.
      * <p>

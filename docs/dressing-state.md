@@ -275,6 +275,50 @@ so a world raised under the old rules raises again.
 **Not seen at a screen:** no client was run. The world is copied to `run/saves/Shoulder 2` so the owner can walk the
 corner.
 
+## The cone: the shoulder at the height's own reach (28 November)
+
+The owner's second look at the shoulder, three pictures on 28 November, found the tree tops read as ground, the two tall
+faces still lipped at the seam, and one place where the bank did not meet. The fix is one rule rather than three: the
+shoulder is a cone. `join` used to ease over the job's fixed reach (`share = distance / reach`), so the first column
+outside the wall stood a twelfth of the drop below it - two blocks of lip under a 25-block edge, and a five-block step
+held out for twelve columns as a plate. It is now `cap = clamp(top, wall - run, wall + run)` with `run` the horizontal
+distance to the nearest build edge, plus `CutCommands.wander` a quarter of a block, so the run is the height difference
+by construction: 25 blocks out on a 25-block edge, 5 on a 5-block one, and the mountain's own ring keeps its ease. That
+is also why `Hobbiton.SHOULDER_REACH` is 32: the ring is a rectangle at the reach, and the cone needs room for the worst
+edge (30 blocks, 27 of them over the river at `867,-2788`), not a slope's own length.
+
+The edge's wall was read with `MOTION_BLOCKING` on a deck column and `MOTION_BLOCKING_NO_LEAVES` on a shoulder - the
+first answers with a crown, the second with a trunk - so a tree on the village's line lifted the whole shoulder to its
+own top. Both now use `standing`, which walks down through air, leaves and wood to the first `ground()`, the walk the
+ring's own columns already made. And the one-block rim rule (`abs(down - top) == 1` is skipped) is now only a rim in flat
+country: `sloped` reads the eight neighbours through `standing` and the step is laid wherever one of them is already
+below, which closes the notch where the bank stopped short. The seam column itself is exempt (`out > 2`).
+
+`Cone 1`, a fresh headless world: `13 columns cut down, 20953 filled up, 0 left for the water, 2036 left alone, 0
+cleared of a tree standing on nothing, 0 inside the walls cut down to the cut, 0 of the build's own edge banked up, 0 of
+the build carried under the mountain, 0 of the ring on its flank`; the village up in 1,051 ticks (52.6 s) over 1,326
+chunks, against the twelve-block shoulder's 1,045 ticks and 1,184 chunks. `wall.py`, step 4, the same box:
+
+| edge | 0-2 | 3-6 | 7-12 | 13+ | longest wall | `Bare 1`, 0-2 / 13+ |
+|---|---|---|---|---|---|---|
+| west | 93 | 10 | 8 | 6 | 3 | 18 / 59 |
+| north | 91 | 11 | 9 | 29 | 11 | 2 / 96 |
+| east | 101 | 16 | 0 | 0 | 0 | 113 / 0 |
+| south | 139 | 0 | 1 | 0 | 1 | 118 / 0 |
+
+The step at the line is 0 to 2 blocks on four fifths of the west and north edges now. What is left is the corner the
+owner named: at `867,-2712` the country outside stands at 82 and the river is three blocks away, so the fill that would
+reach the village's 98 is refused by the shore rule and the run is three columns long. `leafgrass.py` reads 590 grass
+blocks on a leaf or on timber, 44 in the rim band (576 and 48 on `Shoulder 2`; 587 and 55 on `Crown 1`).
+
+**The water, priced and not built.** A cone that ignored the water and laid itself through it - the owner's "ignore the
+water like it's not there, and let any remaining water sit over the blocks" - would touch 1,594 water columns outside
+the footprint with 21,378 blocks: 352 columns end with the fill under the surface and the water left standing over it
+(2,009 blocks), and 1,242 come out of the water, replacing that much of the surface (19,369 blocks), because the cone's
+top is above the water until it has run `wall - water level` columns. Capping the fill one below the surface instead
+keeps every water block but shallows the river's edge by the same 1,594 columns. Neither is in this build: the river
+foot stays the art's own bank, as the owner asked.
+
 ## What is still open
 
 - **The tall faces** (west and north, 9..19 blocks over the country) were answered with the shoulder rather than with

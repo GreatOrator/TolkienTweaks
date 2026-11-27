@@ -831,6 +831,40 @@ public final class Dressing {
             return null;
         }
 
+        /**
+         * The ground a column stands on, read down through whatever is growing on it, or {@link Integer#MIN_VALUE}.
+         * <p>
+         * A height answers with the highest thing in the column: a crown over the edge is a tree's top and not the
+         * ground the tree grows in, and a height without leaves still answers with a trunk. The same walk the ring's
+         * own columns make, asked of the build's edge so the join is measured from ground.
+         */
+        private int standing(ServerLevel level, int x, int z) {
+            int from = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
+                    level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
+            int floor = Math.max(level.getMinY(), from - COLUMN_DEPTH);
+            BlockState state = level.getBlockState(new BlockPos(x, from, z));
+            while (from > floor && !ground(state)) {
+                state = level.getBlockState(new BlockPos(x, --from, z));
+            }
+            return ground(state) ? from : Integer.MIN_VALUE;
+        }
+
+        /**
+         * Whether a column stands on the edge of a slope rather than in flat country.
+         * <p>
+         * A one-block step is a lip when the country round it stands at the same height, and it is the bank when a
+         * neighbour is already below it. Skipped everywhere, the step punched a one-column notch through the bank
+         * wherever the falloff landed on a single block - the gap the owner photographed where the shore bank stopped
+         * short on 28 November.
+         */
+        private boolean sloped(ServerLevel level, int x, int z, int top) {
+            for (int[] way : WAYS) {
+                int beside = standing(level, x + way[0], z + way[1]);
+                if (beside != Integer.MIN_VALUE && beside < top) return true;
+            }
+            return false;
+        }
+
         /** One column of the ring, carried to the shape of the nearest column of the build's own edge. */
         private void join(ServerLevel level, int x, int z) {
             int[] held = held(x, z);
@@ -857,18 +891,21 @@ public final class Dressing {
             // A spring at the wall is not a deck: the column is held for its water, but the ground over that
             // water is still ground the drape is for.
             boolean spring = false;
-            if (banked) {
+            if (banked || !mountain) {
                 // A deck is a floor tile rather than a roofline, so the ground outside meets the rock standing over
-                // that deck inside the box and is never cut down to the deck itself.
-                wall = Math.max(wall, level.getHeight(Heightmap.Types.MOTION_BLOCKING,
-                        gx + box.lowX(), gz + box.lowZ()) - 1);
-            } else if (!mountain) {
-                // A shoulder is measured from the ground the village's edge actually stands at, and at the Shire's
-                // north edge that is not the cut's own top: the clear keeps the country standing at the line there, so
-                // the edge of the village is twelve blocks over its own cut - and a shoulder filled to the cut alone
-                // left the bank's face standing one column wide above it, which is the wall the owner photographed on
-                // 27 November. Read without leaves, so the join climbs the ground and never a crown.
-                wall = Math.max(wall, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, hx, hz) - 1);
+                // that deck inside the box and is never cut down to the deck itself. A shoulder is measured from the
+                // ground the village's edge actually stands at, and at the Shire's north edge that is not the cut's
+                // own top: the clear keeps the country standing at the line there, so the edge of the village is
+                // twelve blocks over its own cut - and a shoulder filled to the cut alone left the bank's face
+                // standing one column wide above it, which is the wall the owner photographed on 27 November.
+                //
+                // It is read down through whatever stands on the edge. A height that counts leaves answers with a
+                // crown, so a tree growing on the line lifted the whole shoulder to its own top and the fill came up
+                // through the leaves - the drape counting tree tops instead of the ground under them, which the owner
+                // photographed on 27 November and again on the 28th. A height without leaves still answers with a
+                // trunk. The ground under the crown is the ground the join is for.
+                int under = standing(level, hx, hz);
+                if (under != Integer.MIN_VALUE) wall = Math.max(wall, under);
             }
             int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
                     level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
@@ -981,7 +1018,16 @@ public final class Dressing {
                 skipped++;
                 return;
             }
-            double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) reach);
+            double out = Math.hypot(outX, outZ);
+            double share = Math.min(1.0D, out / (double) reach);
+            // The shoulder's run is the height it has to lose. A fixed reach put the first column outside the wall
+            // already a twelfth of the drop down - two blocks of lip under a 25-block edge, which is the step the
+            // owner photographed above the terraces on 28 November - and held a five-block step out for twelve
+            // columns as a plate. One block down for every one out is the same bank at every height: the cone meets
+            // the country by itself, 25 blocks out on a 25-block edge and 5 on a 5-block one, and the wander breaks
+            // the contour so the foot does not draw a circle. The mountain's own ring keeps its ease, since its flank
+            // is the mountain's and not the shoulder's.
+            double run = out + CutCommands.wander(x, z) * 0.25D;
             // A shoulder is a slope, and a slope is straight. Easing the join - the smoothstep this used to be - held
             // the ring at the build's own height for the first four or five blocks out and then dropped the rest in the
             // middle of the reach: a flat plate of fill at the build's height with a cliff at its outer edge, which is
@@ -993,7 +1039,10 @@ public final class Dressing {
             boolean onFlank = ridge != Integer.MIN_VALUE && ridge != top;
             // On the mountain's own flank the mountain's line is the join, not a floor under the ring's: it is the same
             // shape rising to the crest and the same shape cutting the country down to it.
-            int cap = onFlank ? ridge : (int) Math.round(wall + (top - wall) * share);
+            int cap = onFlank ? ridge : mountain
+                    ? (int) Math.round(wall + (top - wall) * share)
+                    : (wall > top ? Math.max(top, (int) Math.round(wall - run))
+                                  : Math.min(top, (int) Math.round(wall + run)));
             if (onFlank) mounted++;
             // A deck is not a roofline, so the ground outside it is not cut - the trench that opened round every
             // face the build leaves open is why. A spring is a different column: its pool is the build's own top
@@ -1029,7 +1078,7 @@ public final class Dressing {
             // reach meets the ground - and a one-block rim round the dressed ring is what the owner photographed as a
             // lip on 26 November. The column is left exactly as it stands, so the join begins where it is two blocks
             // and ends a step short of the country: a step of two is a shoulder, a step of one is a lip to walk over.
-            if (Math.abs(down - top) == 1) {
+            if (Math.abs(down - top) == 1 && out > 2.0D && !sloped(level, x, z, top)) {
                 skipped++;
                 return;
             }
