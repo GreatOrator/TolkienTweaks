@@ -115,6 +115,23 @@ public final class Hobbiton {
      */
     private static final int DRESS_VERSION = 14;
     /**
+     * How far outside the footprint a village's ground is carried down to the country, in blocks.
+     * <p>
+     * The ring is the sixty-block join a city's valley needs, and it is switched off for the Shire - but "no ring" left
+     * the ground outside the village exactly as the land made it, so a village standing nine or eleven blocks over the
+     * country at its own edge was a face of dirt and stone one column wide the whole length of its west and north
+     * sides, with a river at the foot of it. What that edge wants is not sixty blocks of ring and not a hill planted
+     * over the village, but the join at a shoulder's reach: the build's own ground at the wall, easing to the country
+     * over twelve blocks, which is one block down for every one or two out. The ring's mountain is not planted with it
+     * (see {@code Dressing}'s own reach).
+     * <p>
+     * Twelve is measured: the Shire's west face stands eleven over the river and its north face nine over the land,
+     * and a rise of nine to eleven over twelve blocks is a hillside rather than a bank. It costs a chunk's worth of
+     * ground round the footprint - 1,050 chunks become about 1,240 - and it is the only way the downhill edge can be a
+     * hill, since no pass that stays inside the footprint can lower the country below the village.
+     */
+    private static final int SHOULDER_REACH = 12;
+    /**
      * What the note says instead of {@link #DRESS_VERSION} when the ring was left alone.
      * <p>
      * The note answers "is the village this build would make of this ground already here", and a village raised with
@@ -123,12 +140,13 @@ public final class Hobbiton {
      * was raised without it instead of walking past one that was never dressed, and turning it off re-clears a
      * dressed footprint rather than leaving the old ring in place under the new rules.
      * <p>
-     * It is a version of its own, and 2 now: the clear a bare village gets changed when the country at the footprint's
-     * own edge was left standing and rolled down into the build, so a world raised under the old rules keeps the face
-     * at the line that this build grades into a bank. A world noted 1 raises its village again on the next start, and
-     * the rim is graded then.
+     * It is a version of its own, and 3 now. Two came when the country at the footprint's own edge was left standing and
+     * rolled down into the build. Three came when the ground outside the footprint was carried down to the country over
+     * a twelve-block shoulder, so a village standing over the land at its edge is a hill rather than a face; a world
+     * raised under the old rules keeps the wall it was raised with and raises its village again on the next start. A
+     * world noted 1 or 2 raises again, and the shoulder is laid then.
      */
-    private static final int UNDRESSED = 2;
+    private static final int UNDRESSED = 3;
     /** How far a probe column's top may move and still be the village: growth, mostly, not a village taken away. */
     private static final int PROBE_SLACK = 6;
     /**
@@ -542,7 +560,7 @@ public final class Hobbiton {
                 LOGGER.info("The Shire: the village stands at {} in {} ticks ({} s){}", work.planted.toShortString(),
                         work.ticks, String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D),
                         work.dress ? ", dressed to its own outline and the ring"
-                                : ", its own rim graded and the ring left alone");
+                                : ", its own rim graded, a shoulder laid to the country and the ring left alone");
             }
         } catch (IOException unreadable) {
             LOGGER.warn("The Shire: the village could not be raised: {}", unreadable.getMessage());
@@ -636,10 +654,9 @@ public final class Hobbiton {
             this.cityBox = CityCommands.Box.of(this.cityParts, planted);
             this.deck = deck;
             this.dress = TolkienMobsConfig.dressShireRing;
-            // The ring is the only reason the pass holds chunks outside the footprint, so a bare village asks for its
-            // own ground and nothing else: the country round it is left to generate as it would with the cut laid by
-            // itself, which is the whole of what the ring was there to hide.
-            int reach = this.dress ? CityCommands.DRAPE_REACH : 0;
+            // The ground the pass writes reaches exactly as far as its chunks do, and a village with its ring off still
+            // lays a shoulder outside its footprint: twelve blocks, not the ring's sixty, and not none.
+            int reach = this.dress ? CityCommands.DRAPE_REACH : SHOULDER_REACH;
             this.chunkLowX = (box.lowX() - reach) >> 4;
             this.chunkLowZ = (box.lowZ() - reach) >> 4;
             this.chunkWide = ((box.highX() + reach) >> 4) - this.chunkLowX + 1;
@@ -727,7 +744,7 @@ public final class Hobbiton {
             if (this.dressing == null) {
                 this.dressing = Dressing.begin(level, CutCommands.folder(level).resolve(CUT),
                         piece -> CutCommands.raw(level, CUT, piece), this.cityParts, this.planted, this.cityBox,
-                        true, this.deck, this.dress ? CityCommands.DRAPE_REACH : 0);
+                        true, this.deck, this.dress ? CityCommands.DRAPE_REACH : SHOULDER_REACH);
             }
             return !this.dressing.step(level);
         }

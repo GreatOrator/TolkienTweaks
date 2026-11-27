@@ -236,10 +236,50 @@ The fix, `7644ebc4`:
 **Not seen in a world:** the fix is compiled and no world has been raised with it; `Drape Test - 1` was dressed before
 it.
 
+## The shoulder: the downhill edge, built on 27 November
+
+The owner raised `Drape Test - 2` on the crown fix and photographed the other half of the seam: the village's ground
+standing over the land at its own line. The save says the wall is the **build's own hill**, not the clear's bank and
+not the country: on the north edge at `1143,-2916` the land outside is 85 and the village's ground 94 to 95 from the
+line inward, one column wide for 138 columns; on the west edge a 66-column run at 9 to 11 over the river. Measured with
+`build/tmp/wall.py` over the whole footprint: west 23 of 59 sampled columns 13+ down, north 56 of 93, east and south
+at or near nothing.
+
+An inward answer was tried first and abandoned: cutting the build's own outer band back into a slope fires on 2,206
+columns but cannot reach the faces in the photograph, because the hilltop is the art's and it is wooded - at
+`866,-2844` the ground is 95 in **`Bare 1`** too, with `oak_leaves` at 109 over it, so the slope correctly refuses
+every column with a tree standing on it, which is the whole of that face. It was reverted rather than shipped.
+
+What is built instead is the ring's own join at a shorter reach, in `Dressing`:
+
+- `SHOULDER_REACH` 12 in `Hobbiton`, used for the chunk ring and for `Dressing.begin` when `dressShireRing` is off, so
+  a village holds 1,184 chunks of ground instead of 1,050;
+- `join` eases over the **job's** reach rather than `CityCommands.DRAPE_REACH`, so the same rule is sixty blocks for a
+  city's valley and twelve for a village's shoulder;
+- `Job.mountain` - true only when the reach is the ring's - gates `crest` and `mound`, so the rejected hill cannot grow
+  back out of a shoulder; the Shire reports `0 of the build carried under the mountain`;
+- the `wall` a must-hill job joins to is `max(outline, MOTION_BLOCKING_NO_LEAVES at the edge column)`, so the shoulder
+  climbs to the ground the village actually stands at - including country the clear keeps standing as a bank at the
+  line - and never to a crown.
+
+The shore rule is untouched and is what stops the shoulder at the river: a fill never stands more than one block over
+its distance to water. That leaves the residual faces, and they are geometry rather than a miss - at `867,-2708` the
+art's hill is 98 in the bare world and the river is two blocks out, so no fill may stand twelve over it.
+
+`Shoulder 2` (a headless raise, 1,045 ticks, 52.3 s): `16,122 filled up, 0 cut down, 3,028 left alone, 0 carried under
+the mountain`. Read back: west 13+ faces 23 of 59 samples to **2**, longest unbroken wall 66 columns to **2**; north 56
+of 93 to **15 of 70**; east's steps are a slope now (0-2: 34, 3-6: 23, 13+: 0); south 0. `leafgrass.py`: 576 grass on
+leaf or timber, **48** in the rim band against 1,830 in `Drape Test - 1`, the deep pool the art's own. `UNDRESSED` 3,
+so a world raised under the old rules raises again.
+
+**Not seen at a screen:** no client was run. The world is copied to `run/saves/Shoulder 2` so the owner can walk the
+corner.
+
 ## What is still open
 
-- **The tall faces** (west and north, 9..19 blocks over the country) are not dressing's to fix as the passes stand. They
-  are the art's own terrain, and the ranked options are the section of 27 November; the terraced skirt is first.
+- **The tall faces** (west and north, 9..19 blocks over the country) were answered with the shoulder rather than with
+  the terraced skirt, which is still unbuilt, as is the revetment and lane. What remains are the faces the shore rule
+  refuses - the art's hill within a couple of blocks of the river.
 - **The crown fix is unverified in a world.** The counts above are the fault it repairs, not the repair: nothing has
   been raised with `7644ebc4` in it, and `leafgrass.py` over a fresh world (expect 0, or only columns the clear never
   touched) is the check.

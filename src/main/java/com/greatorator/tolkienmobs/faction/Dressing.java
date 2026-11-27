@@ -400,11 +400,23 @@ public final class Dressing {
          * How far outside the footprint this job dresses, in blocks.
          * <p>
          * The ring is the ground outside the build, and sixty blocks of it is what a city's valley needs. A village
-         * whose ring is switched off still wants its own rim graded - the banks at the foot of its fields are inside
-         * its footprint - so the same job runs with a reach of nought: the same columns walked, the same inside pass,
-         * and not one block outside the build read or written.
+         * whose ring is switched off gets a shorter one, and the difference between the two is what the ground outside
+         * a village's wall needs: the ring is a join to country sixty blocks away, while a village standing nine or
+         * eleven blocks over the land at its own edge wants the ground carried down to that land over twelve. So the
+         * join is the same rule at two reaches - the build's own edge at the wall, the country's own ground at the
+         * foot - and a shoulder twelve blocks wide is the hill the owner asked for on 27 November, where the ring's
+         * sixty was a plate the eye caught at its outer edge.
          */
         private final int reach;
+        /**
+         * Whether the ring's mountain is planted with this job.
+         * <p>
+         * The mountain is the hill laid over the build's own high points and eased out over {@link #HEM_REACH}. The
+         * owner rejected it for the Shire on 26 November, and it must not grow back out of a village's shoulder: it is
+         * planted by the jobs whose reach is the ring's own - the city's and the town's - and by none whose reach is
+         * shorter, which is a village with its ring switched off.
+         */
+        private final boolean mountain;
         /** The build's own height in every column of its footprint, and where its water stands on top of that. */
         private final int[] outline;
         /**
@@ -472,6 +484,7 @@ public final class Dressing {
                     CityCommands.Box box, boolean dressed, boolean road, boolean trees, int deck, int reach) {
             this.deck = deck;
             this.reach = reach;
+            this.mountain = reach >= CityCommands.DRAPE_REACH;
             this.key = key;
             this.folder = folder;
             this.pieces = pieces;
@@ -767,9 +780,9 @@ public final class Dressing {
         /**
          * One column outside the walls, carried to the build's own outline.
          * <p>
-         * Capped at the nearest outline column where the wall is, easing to what the ground already stands at
-         * {@code DRAPE_REACH} out, so the join at the wall is the build's shape and the join in the country is the
-         * country's. Water at the build's own edge is left alone where it is the outflow, banked where it is a spring
+         * Capped at the nearest outline column where the wall is, easing to what the ground already stands at the
+         * job's own reach out, so the join at the wall is the build's shape and the join in the country is the
+         * country's. The reach is the ring's sixty for a city and a village's twelve for a shoulder. Water at the build's own edge is left alone where it is the outflow, banked where it is a spring
          * held up in the build, and a column standing in the drawing's own water is not dressed at all.
          */
         private void dressColumn(ServerLevel level, int x, int z) {
@@ -849,6 +862,13 @@ public final class Dressing {
                 // that deck inside the box and is never cut down to the deck itself.
                 wall = Math.max(wall, level.getHeight(Heightmap.Types.MOTION_BLOCKING,
                         gx + box.lowX(), gz + box.lowZ()) - 1);
+            } else if (!mountain) {
+                // A shoulder is measured from the ground the village's edge actually stands at, and at the Shire's
+                // north edge that is not the cut's own top: the clear keeps the country standing at the line there, so
+                // the edge of the village is twelve blocks over its own cut - and a shoulder filled to the cut alone
+                // left the bank's face standing one column wide above it, which is the wall the owner photographed on
+                // 27 November. Read without leaves, so the join climbs the ground and never a crown.
+                wall = Math.max(wall, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, hx, hz) - 1);
             }
             int surface = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
                     level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
@@ -961,7 +981,7 @@ public final class Dressing {
                 skipped++;
                 return;
             }
-            double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) CityCommands.DRAPE_REACH);
+            double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) reach);
             // A shoulder is a slope, and a slope is straight. Easing the join - the smoothstep this used to be - held
             // the ring at the build's own height for the first four or five blocks out and then dropped the rest in the
             // middle of the reach: a flat plate of fill at the build's height with a cliff at its outer edge, which is
@@ -969,7 +989,7 @@ public final class Dressing {
             // the squares before it - a straight build edge makes a straight plate and a corner makes a square one. The
             // same twenty blocks read this way is the same join with nothing to stand on and nothing to fall off: one
             // block down for every one or two out, all the way to the country.
-            int ridge = mound(outX, outZ, at, top);
+            int ridge = mountain ? mound(outX, outZ, at, top) : Integer.MIN_VALUE;
             boolean onFlank = ridge != Integer.MIN_VALUE && ridge != top;
             // On the mountain's own flank the mountain's line is the join, not a floor under the ring's: it is the same
             // shape rising to the crest and the same shape cutting the country down to it.
@@ -1228,7 +1248,7 @@ public final class Dressing {
             // The mountain is the ring's outermost ring, and a village with no ring round it is the cut's own blocks
             // and nothing written over them: a bare build that had its outer four columns carried under a hill the
             // ring never planted would be the mountain arriving without the mountain.
-            int buried = reach > 0 ? crest(x, z, at) : 0;
+            int buried = mountain ? crest(x, z, at) : 0;
             if (buried > roof) {
                 // The mountain is planted over the build's own outer four blocks, and the column's country - which the
                 // cut below would have taken off down to the roofline - is the mountain's own flank here.
