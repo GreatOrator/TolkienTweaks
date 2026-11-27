@@ -376,11 +376,15 @@ public final class CutCommands {
             int z = box.lowZ() + zi;
             int top = shape.top()[index];
             level.getChunk(x >> 4, z >> 4);
-            int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+            // The sweep above a cut starts over the build's own sky, not at the heightmap alone. A country tree taller
+            // than the cut's own blocks stands over the village wherever the heightmap answers with something lower
+            // than the cut's top - the template is laid with the flags that tell the level not to update its shapes -
+            // and a sweep that began at that answer walked down to the cut's top and found nothing to take.
+            int surface = Math.max(level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z), box.highY() + 16);
             int taken = 0;
             if (top != Integer.MIN_VALUE) {
                 int ceiling = planted.getY() + top;
-                if (standsOnOwnGround(level, at, x, z, surface, ceiling, shape, index, planted.getY())) {
+                if (standsOnOwnGround(level, at, x, z, surface, shape, index, planted.getY())) {
                     kept++;
                     continue;
                 }
@@ -461,40 +465,34 @@ public final class CutCommands {
     }
 
     /**
-     * Whether a column's top is a tree standing on the build's own ground, which the clear leaves whole.
+     * Whether a column's top is a tree the cut itself draws, which the clear leaves whole.
      * <p>
-     * The clear takes everything over a cut's own top, which is right for the country and wrong for a tree the
-     * build was drawn round: a village's party tree grows in a garden whose cut is a course of grass, so its crown
-     * stands over that course with its trunk on it, and read by the country's rule the tree comes off at the grass
-     * and the village loses the thing it was built around. So a column is asked what its top actually is - read
-     * down from the surface through leaves and wood to the first block that is neither, which is the block the tree
-     * stands on - and then whether that block is the build's own ground: one the cut places, at or under the top of
-     * the cut's own ground in that column, which is what {@code foot} is. A tree standing on anything else stands
-     * on the country over the build, and goes with it; a crown hanging over air has no ground of its own and goes
-     * too, so nothing is left standing on nothing.
+     * A build's own trees are drawn into it: every leaf and every length of trunk is one of the cut's blocks. So the
+     * test is the blocks themselves - the column's tree is read down from the world's top and each block of it has to
+     * be one the cut draws in that column - and a tree the art was merely drawn round is not the build's and comes off
+     * with the rest of the land.
      * <p>
-     * Being at or under the cut's own top was the whole of the test, and it is not enough. A column's top is a
-     * canopy wherever the build draws a tree, so the country's hill under that canopy stood under it and read as
-     * ground the tree was the build's on, and the column was left entire. What the Shire's fields came up with is a
-     * plinth of the country under every drawn crown - stone and dirt and grass from the drawn ground to the canopy,
-     * with a birch or an oak on it. At -260, -216 the cut draws rock to 41, dirt to 46 and a mushroom block on 47,
-     * with one leaf at 70, and the world held all of that and then the country's own stone 48..63, dirt 64..67,
-     * grass 68 and a crown on it: twenty-two blocks the clear walked past in one go. Read against {@code foot}, the
-     * country's grass at 68 is twenty-one blocks over the cut's own ground at 47, so the column is the country's
-     * and is cleared like any other.
+     * This replaced a test of where the tree's foot stood: the top of a column was read down through leaves and wood to
+     * the block the tree stood on, and the column was kept whole if that block was the cut's own ground at or under the
+     * top of the column's ground ({@code foot}). That kept a village's party tree, but it kept the land's trees too:
+     * every country culumalda, lebethron or oak whose trunk happened to reach the build's own ground, and every one that
+     * grew up through a drawn crown, was read as the build's and left standing whole. In `DoOver - 1` 16,617 columns of
+     * the Shire still topped out in the country's own tree material over the cut's own top, across 670 of the 1,080
+     * chunks of the box, and they are the bare culumalda and Firien stems in the owner's screenshot - trunks with their
+     * crowns taken by the clear and their feet on the build's ground, which is the one thing the old test asked about.
+     *
+     * @return whether the column holds a tree and every block of it is the cut's
      */
     private static boolean standsOnOwnGround(ServerLevel level, BlockPos.MutableBlockPos at, int x, int z,
-                                             int surface, int ceiling, Shape shape, int column, int planted) {
-        int y = surface - 1;
+                                             int surface, Shape shape, int column, int planted) {
         boolean tree = false;
-        while (y > level.getMinY()) {
+        for (int y = surface - 1; y > planted; y--) {
             BlockState state = level.getBlockState(at.set(x, y, z));
             if (!tree(state)) break;
+            if (!shape.solid(column, y - planted)) return false;
             tree = true;
-            y--;
         }
-        if (!tree) return false;
-        return y <= ceiling && y - planted <= shape.foot()[column] && shape.solid(column, y - planted);
+        return tree;
     }
 
     /**
