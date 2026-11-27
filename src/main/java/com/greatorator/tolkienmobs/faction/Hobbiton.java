@@ -113,7 +113,7 @@ public final class Hobbiton {
      * drape - a mouth filled, a deck read from the build - has to reach a world that already holds the village, and the
      * cut it is dressed from is unchanged, so the version is what says so.
      */
-    private static final int DRESS_VERSION = 16;
+    private static final int DRESS_VERSION = 17;
     /**
      * How far outside the footprint a village's ground is carried down to the country, in blocks.
      * <p>

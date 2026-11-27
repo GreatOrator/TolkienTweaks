@@ -1099,9 +1099,26 @@ public final class Dressing {
             if (top < cap) {
                 int to = shore(x, z);
                 if (to > 0) {
-                    int line = shoreLevel(x, z) + to - 1;
+                    // The bank is the straight line from the water's edge up to the build's own edge, and not the
+                    // one-block-per-block cone from the water alone. The cone is the right bank when the edge stands
+                    // about as far over the water as the water is away from it, and it is the wrong one when the edge
+                    // is high and the water close: there it stops the fill well short of the wall, and the shoulder is
+                    // left standing as a face at its own seam - under ground the country still holds, and beside the
+                    // trees that grow there, whose crowns it then stands at the height of. The owner photographed both
+                    // on 28 November, at the Shire's east edge and at the south-west foot. One line from the wall's
+                    // top to the water's surface meets both ends: steeper than one in one where the drop needs it,
+                    // and the same one in one everywhere the cone was already the answer.
+                    int water = shoreLevel(x, z);
+                    int away = (int) Math.round(out);
+                    // The line is read from the wall's top to the water's surface, over the whole distance between them:
+                    // `to - 1` blocks out of a span of `to + away - 2`, so the fill stands on the wall's own top where the
+                    // wall touches it and on the water's surface at the water's edge. Where the drop and the distance
+                    // are the same number the line is the one-in-one cone from the water, block for block.
+                    int span = Math.max(1, to + away - 2);
+                    int line = water + (int) Math.round((double) (wall - water) * (to - 1) / span);
+                    line = Math.max(water, line);
                     if (line <= top) {
-                        // The shore line is at or under the ground the column already stands on, so the bank there is
+                        // The bank is at or under the ground the column already stands on, so the bank there is
                         // the country's own and a fill over it would be the face again. Left exactly as it stands.
                         skipped++;
                         return;
