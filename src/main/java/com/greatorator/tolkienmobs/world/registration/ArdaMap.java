@@ -569,6 +569,31 @@ public final class ArdaMap {
      * cut down to, which is what keeps the town's open faces out of a trench.
      */
     public static final int BREE_DECK_LIFT = 5;
+
+    /**
+     * Bucklebury's pin: the low north-west corner of its cut, which is the corner the pieces are planted on.
+     * <p>
+     * The site is the east bank of the Brandywine, 150 east and 60 south of the bridge at 1230, -3490, ground 90 to
+     * 91 - dry from the bridge's own east foot and dry the whole 1,076 blocks to Bree, which is why the town sits
+     * there and not on the west bank. {@code Pins} carries the same column under the name {@code bucklebury}, which
+     * is where a traveller is put; this is the cut's own corner, and the two are the same column, 13 apart in height:
+     * the art's west edge stands a median of 13 over its own low corner - the cut's own {@code deck} - so a corner of
+     * 78 puts that edge on the ground the scout stood on at 91. Moving the pin moves this corner by the same 13 down
+     * and by nought across, and the whole town goes with it.
+     * <p>
+     * The footprint is 478 by 278 columns and 77 high, which is what the cut in the jar holds: eighty pieces, its
+     * west edge's ground a median of thirteen over the corner, and the town rising some sixty blocks northwards across
+     * its depth. 11,908 of its cells are water, and 10,912 of its columns have a room or a cellar in them that only the
+     * clear opens.
+     */
+    public static final int BUCKLEBURY_X = 1380;
+    public static final int BUCKLEBURY_Y = 78;
+    public static final int BUCKLEBURY_Z = -3432;
+    /** How wide and how deep the town's footprint is, out of its own cut: 478 by 278. */
+    public static final int BUCKLEBURY_WIDE = 478;
+    public static final int BUCKLEBURY_DEEP = 278;
+    /** How high the art's west edge stands over the cut's own corner: the table's {@code deck}, thirteen. */
+    public static final int BUCKLEBURY_DECK_LIFT = 13;
     /** The course the markers stood on in the cut: the build's own heights are read off it. */
     private static final int BREE_BASE = 14;
     /**
@@ -649,6 +674,17 @@ public final class ArdaMap {
     /** The middle of the town's footprint at its own ground: where a name for it is written. */
     public static BlockPos breeCentre() {
         return new BlockPos(BREE_X + BREE_WIDE / 2, BREE_Y + BREE_DECK_LIFT, BREE_Z + BREE_DEEP / 2);
+    }
+
+    /** The corner Bucklebury's cut is planted on: the low north-west corner of the town's footprint. */
+    public static BlockPos buckleburyPlan() {
+        return new BlockPos(BUCKLEBURY_X, BUCKLEBURY_Y, BUCKLEBURY_Z);
+    }
+
+    /** The middle of the town's footprint at its own ground: where a name for it is written. */
+    public static BlockPos buckleburyCentre() {
+        return new BlockPos(BUCKLEBURY_X + BUCKLEBURY_WIDE / 2, BUCKLEBURY_Y + BUCKLEBURY_DECK_LIFT,
+                BUCKLEBURY_Z + BUCKLEBURY_DEEP / 2);
     }
 
     /**
