@@ -1293,7 +1293,9 @@ public final class Dressing {
             }
             // A graded cut is a hillside rather than a face, so its top course is the country's own grass - the same
             // block the ring lays on a fill - and not the bare dirt the cut opened.
-            if (down > base && level.getBlockState(new BlockPos(x, down, z)).isSolid()) {
+            BlockState cutTop = level.getBlockState(new BlockPos(x, down, z));
+            if (down > base && cutTop.isSolid()
+                    && !tree(BuiltInRegistries.BLOCK.getKey(cutTop.getBlock()).toString())) {
                 level.setBlock(new BlockPos(x, down, z), soft(skin) ? skin : Blocks.GRASS_BLOCK.defaultBlockState(), 2);
             }
             inside++;
@@ -1346,6 +1348,16 @@ public final class Dressing {
                 skin = level.getBlockState(new BlockPos(x, --top, z));
             }
             if (!ground(skin)) {
+                skipped++;
+                return;
+            }
+            // A bank is laid on ground and not through a tree. This column is inside the village, where the trees are
+            // the village's own, so a crown standing over its ground is left exactly as it stands: the fill went up
+            // through the leaves and its grass came up on top of the crown, which is what the owner photographed on
+            // 27 November. Anything standing on the ground - leaves, timber, a drawn block - is the same answer.
+            int standing = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
+                    level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
+            if (standing > top) {
                 skipped++;
                 return;
             }

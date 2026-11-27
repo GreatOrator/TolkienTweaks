@@ -432,11 +432,28 @@ public final class CutCommands {
                     level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
                     taken++;
                 }
-                if (down > ceiling) banked++;
-                if (down > ceiling && level.getBlockState(at.set(x, down, z)).isSolid()) {
+                if (down > ceiling) {
+                    banked++;
                     // A graded bank is ground and not a cut face: its top course is grass, the way the country's own
-                    // risers are, whatever stone the cut opened underneath it.
-                    level.setBlock(at, Blocks.GRASS_BLOCK.defaultBlockState(), 2);
+                    // risers are, whatever stone the cut opened underneath it. A crown is not ground, though, and the
+                    // bank's height is measured without leaves, so where the country stands in a tree the height the
+                    // bank keeps falls inside the tree - and the grass laid on the leaf the sweep stopped at stood on a
+                    // crown: a plate of grass on top of every tree along the rim, which the owner photographed on
+                    // 27 November. The bank is laid under its own top instead, the tree still inside it carried into
+                    // the bank's soil, so its grass goes on ground wherever a tree stood. Where the column holds no
+                    // ground under its leaves at all - a crown over air - nothing is laid and the leaves stay.
+                    int foot = down;
+                    BlockState under = level.getBlockState(at.set(x, foot, z));
+                    while (foot > ceiling && tree(under)) {
+                        under = level.getBlockState(at.set(x, --foot, z));
+                    }
+                    boolean onto = under.isSolid() && under.getFluidState().isEmpty();
+                    if (onto && foot < down) {
+                        for (int y = foot + 1; y <= down; y++) {
+                            level.setBlock(at.set(x, y, z), Blocks.DIRT.defaultBlockState(), 2);
+                        }
+                    }
+                    if (onto) level.setBlock(at.set(x, down, z), Blocks.GRASS_BLOCK.defaultBlockState(), 2);
                 }
                 for (int y = ceiling; y >= planted.getY() + shape.bottom()[index]; y--) {
                     if (shape.solid(index, y - planted.getY())) continue;
