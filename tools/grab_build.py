@@ -28,9 +28,15 @@ build needs: the offsets are the same kind the valley's own eleven pieces are la
 A build standing inside a mountain brings the mountain with it, so `--only` keeps just the blocks named
 and turns everything else into air: the rooms come across, the hillside they were cut into does not.
 
-Block entities (chest contents, sign text, spawners) are not carried: a palette of block states is
-what a structure file is made of. Everything else - every block, every state, every air gap inside
-the build's box - is kept, because air in a template is what carves a fortress out of a hillside.
+A build's block entities come across when the caller has them: `cut` and `write_tile` take a
+`{pos: compound}` map and write each one as that block's own `nbt`, which is where a structure file
+keeps a chest's contents, a sign's lines and a head's skin. The map is the caller's because a schem
+carries its entities in a `BlockEntities` list apart from its blocks, and the two only meet once the
+blocks have a frame. A palette of block states is what a structure file is made of, so an entity on a
+position whose block is not written - air, or a block dropped by `--only` - has nowhere to go and is
+not carried; the same is true of every entity outside the build's own box. Everything else - every
+block, every state, every air gap inside the build's box - is kept, because air in a template is what
+carves a fortress out of a hillside.
 """
 
 import argparse
@@ -343,8 +349,12 @@ def blocks_from_world(world, dimension, low, high):
 
 # ---- cutting and writing -----------------------------------------------------------------------
 
-def write_tile(blocks, origin, size, path, keep_air):
-    """size and each block pos must be lists of ints, as vanilla writes them."""
+def write_tile(blocks, origin, size, path, keep_air, nbt=None):
+    """size and each block pos must be lists of ints, as vanilla writes them.
+
+    `nbt` is a {pos: compound} map in the same frame as `blocks`, or nothing; a block whose position is
+    in it carries the compound as its own `nbt`, which is where vanilla keeps a block entity.
+    """
     palette = []
     indices = {}
     listed = []
@@ -362,7 +372,11 @@ def write_tile(blocks, origin, size, path, keep_air):
                     if state[1]:
                         entry["Properties"] = dict(state[1])
                     palette.append(entry)
-                listed.append({"pos": NbtList(3, (x, y, z)), "state": indices[state]})
+                written = {"pos": NbtList(3, (x, y, z)), "state": indices[state]}
+                carried = nbt.get((origin[0] + x, origin[1] + y, origin[2] + z)) if nbt else None
+                if carried is not None:
+                    written["nbt"] = carried
+                listed.append(written)
     if not listed:
         return False
     root = {
@@ -376,7 +390,7 @@ def write_tile(blocks, origin, size, path, keep_air):
     return True
 
 
-def cut(name, blocks, size, low, out, keep_air):
+def cut(name, blocks, size, low, out, keep_air, nbt=None):
     out.mkdir(parents=True, exist_ok=True)
     parts = []
     for tile_y in range(0, size[1], TILE):
@@ -386,7 +400,7 @@ def cut(name, blocks, size, low, out, keep_air):
                         min(TILE, size[2] - tile_z))
                 tile_name = "%s_%d_%d_%d" % (name, tile_x // TILE, tile_y // TILE, tile_z // TILE)
                 origin = (low[0] + tile_x, low[1] + tile_y, low[2] + tile_z)
-                if write_tile(blocks, origin, tile, out / (tile_name + ".nbt"), keep_air):
+                if write_tile(blocks, origin, tile, out / (tile_name + ".nbt"), keep_air, nbt):
                     parts.append((tile_name + ".nbt", tile_x, tile_y, tile_z) + tile)
     table = out / (name + ".parts")
     table.write_text("".join("%s %d %d %d %d %d %d\n" % part for part in parts), encoding="utf-8")
