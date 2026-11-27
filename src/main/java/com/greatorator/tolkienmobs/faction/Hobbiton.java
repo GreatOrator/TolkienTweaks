@@ -113,7 +113,7 @@ public final class Hobbiton {
      * drape - a mouth filled, a deck read from the build - has to reach a world that already holds the village, and the
      * cut it is dressed from is unchanged, so the version is what says so.
      */
-    private static final int DRESS_VERSION = 13;
+    private static final int DRESS_VERSION = 14;
     /**
      * What the note says instead of {@link #DRESS_VERSION} when the ring was left alone.
      * <p>
@@ -123,11 +123,12 @@ public final class Hobbiton {
      * was raised without it instead of walking past one that was never dressed, and turning it off re-clears a
      * dressed footprint rather than leaving the old ring in place under the new rules.
      * <p>
-     * It is a version of its own, and 1 now: the clear a bare village gets changed when it started taking off the
-     * trunks that stand on nothing, and a rank of bare posts left by 0 is exactly what a world raised under the old
-     * rules keeps. A world noted 0 raises its village again on the next start, and the sweep runs over it.
+     * It is a version of its own, and 2 now: the clear a bare village gets changed when the country at the footprint's
+     * own edge was left standing and rolled down into the build, so a world raised under the old rules keeps the face
+     * at the line that this build grades into a bank. A world noted 1 raises its village again on the next start, and
+     * the rim is graded then.
      */
-    private static final int UNDRESSED = 1;
+    private static final int UNDRESSED = 2;
     /** How far a probe column's top may move and still be the village: growth, mostly, not a village taken away. */
     private static final int PROBE_SLACK = 6;
     /**
@@ -540,8 +541,8 @@ public final class Hobbiton {
                 inhabit(level, work);
                 LOGGER.info("The Shire: the village stands at {} in {} ticks ({} s){}", work.planted.toShortString(),
                         work.ticks, String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D),
-                        work.dress ? ", dressed to its own outline"
-                                : ", on the country as the cut lays it, with the ring left alone");
+                        work.dress ? ", dressed to its own outline and the ring"
+                                : ", its own rim graded and the ring left alone");
             }
         } catch (IOException unreadable) {
             LOGGER.warn("The Shire: the village could not be raised: {}", unreadable.getMessage());
@@ -604,8 +605,15 @@ public final class Hobbiton {
         private CutCommands.Shape shape;
         private Dressing.Job dressing;
         /** The tick the pass began on, -1 until it does, and how many ticks it has taken. */
-        /** Whether this world's pass dresses the ring, taken once when the pass is made rather than read a step at a
-         * time: a setting changed under a pass in hand would leave half a ring behind it. */
+        /**
+         * Whether this world's pass dresses the ring outside the footprint, taken once when the pass is made rather
+         * than read a step at a time: a setting changed under a pass in hand would leave half a ring behind it.
+         * <p>
+         * The cut's own rim is graded either way. What the setting takes away is the ground outside the build, where
+         * the join, the shoulder, the shore and the mountain are one pass; the banks at the foot of the village's own
+         * fields are inside its footprint, and a village with no ring that left them as the country found them is the
+         * plate with a one-column drop at its edge the owner photographed.
+         */
         private final boolean dress;
         private int began = -1;
         private int ticks;
@@ -615,6 +623,8 @@ public final class Hobbiton {
         private int stage;
         private int piece;
         private int column;
+        /** How many columns of the footprint's own edge kept a bank of the country while it was cleared. */
+        private int banked;
         /** How far through the rectangle the ground has been asked for and taken. */
         private int askedUpto;
 
@@ -660,7 +670,6 @@ public final class Hobbiton {
             if (this.stage == 0) return awaitGround(level);
             if (this.stage == 1) return layPiece(level);
             if (this.stage == 2) return clearBand(level);
-            if (!this.dress) return true;
             return dressStep(level);
         }
 
@@ -704,10 +713,13 @@ public final class Hobbiton {
                 return false;
             }
             int upto = Math.min(total, this.column + COLUMNS_PER_UNIT);
-            CutCommands.clearColumns(level, this.planted, this.box, this.shape, this.column, upto);
+            this.banked += CutCommands.clearColumns(level, this.planted, this.box, this.shape, this.column, upto)
+                    .banked();
             this.column = upto;
             if (this.column < total) return false;
             this.stage = 3;
+            LOGGER.info("The Shire: the footprint is cleared, and {} columns of its own edge kept a bank of the country",
+                    this.banked);
             return false;
         }
 
@@ -715,7 +727,7 @@ public final class Hobbiton {
             if (this.dressing == null) {
                 this.dressing = Dressing.begin(level, CutCommands.folder(level).resolve(CUT),
                         piece -> CutCommands.raw(level, CUT, piece), this.cityParts, this.planted, this.cityBox,
-                        true, this.deck);
+                        true, this.deck, this.dress ? CityCommands.DRAPE_REACH : 0);
             }
             return !this.dressing.step(level);
         }

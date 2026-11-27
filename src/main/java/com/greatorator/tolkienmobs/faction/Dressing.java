@@ -106,6 +106,25 @@ public final class Dressing {
     private static final int APRON_CAP = 8;
 
     /**
+     * How far inside the build's own ground the country is graded up to it, in blocks, and the tallest edge it is
+     * graded against.
+     * <p>
+     * The inside of a village is not all cut. The pieces are forty-eight-block tiles and a village's fields stop short
+     * of the tile's edge, so a quarter of the footprint is country the tile was cut over - and the clear leaves that
+     * country exactly where the land put it while the field beside it stands four blocks over. That is the plate with a
+     * straight drop at its edge the owner photographed: one column wide, all round every field. Three to six blocks of
+     * bank is how a hobbit field meets the land it is cut into, so the country is filled up to the plate over this many
+     * blocks - following the country's own top, so the foot of the bank wanders with the land and not with the tile -
+     * and the country beyond is left alone. Four, with the wander on top, is a bank of four to seven blocks.
+     * <p>
+     * The rise is capped because a build's own hill stands seventeen blocks over the country on the Shire's west side,
+     * and a fill laid against it buries its foot rather than joining it. That edge is the build's and is counted as left
+     * alone, not dressed; only the short edges a field or a lane makes are graded.
+     */
+    private static final int SKIRT_REACH = 4;
+    private static final int SKIRT_RISE = 6;
+
+    /**
      * How close to the build's own edge a pool is drained, in blocks, when it is not the river through the city.
      * <p>
      * The drape never dresses a column standing in water, which is right for the drawing's river and wrong for the
@@ -245,7 +264,8 @@ public final class Dressing {
      */
     static CityCommands.Drape drape(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
                                     BlockPos origin, CityCommands.Box box, boolean trees, int deck) {
-        Job whole = new Job("", folder, pieces, parts, origin, box, false, false, trees, deck);
+        Job whole = new Job("", folder, pieces, parts, origin, box, false, false, trees, deck,
+                CityCommands.DRAPE_REACH);
         while (whole.piece < parts.size()) whole.takePieces();
         whole.grow();
         while (whole.chunk < whole.ring.size()) whole.dressChunks(level);
@@ -262,8 +282,8 @@ public final class Dressing {
      * so a build with no city is given the same job rather than a second copy of it.
      */
     static Job begin(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
-                     BlockPos origin, CityCommands.Box box, boolean trees, int deck) {
-        return new Job("", folder, pieces, parts, origin, box, false, true, trees, deck);
+                     BlockPos origin, CityCommands.Box box, boolean trees, int deck, int reach) {
+        return new Job("", folder, pieces, parts, origin, box, false, true, trees, deck, reach);
     }
 
     /**
@@ -286,7 +306,8 @@ public final class Dressing {
      */
     static int repair(ServerLevel level, Path folder, Pieces pieces, List<CityCommands.Part> parts,
                       BlockPos origin, CityCommands.Box box, boolean trees, int deck) {
-        Job job = new Job("", folder, pieces, parts, origin, box, false, false, trees, deck);
+        Job job = new Job("", folder, pieces, parts, origin, box, false, false, trees, deck,
+                CityCommands.DRAPE_REACH);
         while (job.piece < parts.size()) job.takePieces();
         job.grow();
         return job.heal(level);
@@ -340,7 +361,7 @@ public final class Dressing {
                 return null;
             }
             return new Job(key, folder, Pieces.ofCity(folder), parts, corner, box, done[0], roadDown, false,
-                    CityCommands.DECK_LIFT);
+                    CityCommands.DECK_LIFT, CityCommands.DRAPE_REACH);
         } catch (IOException unreadable) {
             LOGGER.warn("Rivendell: the cut could not be read, so the ground is not dressed: {}",
                     unreadable.getMessage());
@@ -375,6 +396,15 @@ public final class Dressing {
         private final int deck;
         private final int wide;
         private final int deep;
+        /**
+         * How far outside the footprint this job dresses, in blocks.
+         * <p>
+         * The ring is the ground outside the build, and sixty blocks of it is what a city's valley needs. A village
+         * whose ring is switched off still wants its own rim graded - the banks at the foot of its fields are inside
+         * its footprint - so the same job runs with a reach of nought: the same columns walked, the same inside pass,
+         * and not one block outside the build read or written.
+         */
+        private final int reach;
         /** The build's own height in every column of its footprint, and where its water stands on top of that. */
         private final int[] outline;
         /**
@@ -431,14 +461,17 @@ public final class Dressing {
         private int orphaned;
         /** Columns inside the walls where the country was standing over the cut and was taken off it. */
         private int inside;
+        /** Columns inside the footprint where the country was graded up to the foot of the build's own ground. */
+        private int skirted;
         /** Columns of the build's own outer blocks carried under the mountain planted round its high points. */
         private int covered;
         /** Columns of the ring the mountain raised or cut to its own flank. */
         private int mounted;
 
         private Job(String key, Path folder, Pieces pieces, List<CityCommands.Part> parts, BlockPos origin,
-                    CityCommands.Box box, boolean dressed, boolean road, boolean trees, int deck) {
+                    CityCommands.Box box, boolean dressed, boolean road, boolean trees, int deck, int reach) {
             this.deck = deck;
+            this.reach = reach;
             this.key = key;
             this.folder = folder;
             this.pieces = pieces;
@@ -458,7 +491,6 @@ public final class Dressing {
             Arrays.fill(this.watered, Integer.MIN_VALUE);
             this.crownY = new int[wide * deep];
             Arrays.fill(this.crownY, Integer.MIN_VALUE);
-            int reach = CityCommands.DRAPE_REACH;
             for (int chunkX = (box.lowX() - reach) >> 4; chunkX <= (box.highX() + reach) >> 4; chunkX++) {
                 for (int chunkZ = (box.lowZ() - reach) >> 4; chunkZ <= (box.highZ() + reach) >> 4; chunkZ++) {
                     ring.add(new int[]{chunkX, chunkZ});
@@ -488,8 +520,9 @@ public final class Dressing {
                 dressed = true;
                 LOGGER.info("Rivendell: the ground is dressed - {} columns cut down, {} filled up, {} left for the "
                         + "water, {} left alone, {} cleared of a tree standing on nothing, {} inside the walls cut "
-                        + "down to the cut, {} of the build carried under the mountain, {} of the ring on its flank",
-                        cut, filled, open, skipped, orphaned, inside, covered, mounted);
+                        + "down to the cut, {} of the build's own edge banked up, {} of the build carried under the "
+                        + "mountain, {} of the ring on its flank",
+                        cut, filled, open, skipped, orphaned, inside, skirted, covered, mounted);
                 write(level, true, road);
             }
             if (!road) {
@@ -619,7 +652,6 @@ public final class Dressing {
 
         /** Dresses the next chunks of the ring, opening each one first: a block written into a closed chunk is lost. */
         private void dressChunks(ServerLevel level) {
-            int reach = CityCommands.DRAPE_REACH;
             int upto = Math.min(ring.size(), chunk + CHUNKS_PER_TICK);
             for (; chunk < upto; chunk++) {
                 int[] at = ring.get(chunk);
@@ -649,7 +681,6 @@ public final class Dressing {
          * the fill's business is the water's surface and not what floats on it.
          */
         private void mapWater(ServerLevel level) {
-            int reach = CityCommands.DRAPE_REACH;
             if (shore.length == 0) {
                 this.shoreLowX = box.lowX() - reach;
                 this.shoreLowZ = box.lowZ() - reach;
@@ -1177,18 +1208,27 @@ public final class Dressing {
          * face - see {@link #apron} - so a field plate's edge is a slope and not a wall.
          */
         private void dressInside(ServerLevel level, int x, int z) {
-            int at = (x - box.lowX()) + (z - box.lowZ()) * wide;
+            int gx = x - box.lowX();
+            int gz = z - box.lowZ();
+            int at = gx + gz * wide;
             // The build's own top here with its trees counted: inside the walls a drawn tree is the village, and the
             // ring's outline - which leaves canopies out so the ring does not stand a wall beside every tree - would
             // read a party tree's crown as the country standing five blocks over the village.
             int roof = whole[at];
             if (roof == Integer.MIN_VALUE) {
                 // A column the cut's tiles leave empty is not the city at all: it is the country the tile was cut
-                // over, and it is dressed by the ring's own join, read from the build's nearest column.
-                join(level, x, z);
+                // over. With a ring round the build it is dressed by the ring's own join, read from the nearest
+                // column of the build; with no ring it gets the bank at the foot of the build's own ground instead,
+                // because the join eases that ground over sixty blocks and inside the footprint that is a plate of
+                // fill where the country should still be the country.
+                if (reach > 0) join(level, x, z);
+                else skirt(level, x, z);
                 return;
             }
-            int buried = crest(x, z, at);
+            // The mountain is the ring's outermost ring, and a village with no ring round it is the cut's own blocks
+            // and nothing written over them: a bare build that had its outer four columns carried under a hill the
+            // ring never planted would be the mountain arriving without the mountain.
+            int buried = reach > 0 ? crest(x, z, at) : 0;
             if (buried > roof) {
                 // The mountain is planted over the build's own outer four blocks, and the column's country - which the
                 // cut below would have taken off down to the roofline - is the mountain's own flank here.
@@ -1233,6 +1273,11 @@ public final class Dressing {
                 skin = level.getBlockState(new BlockPos(x, --surface, z));
             }
             if (!ground(skin)) return;
+            // The band at the cut's own edge is the clear's, and it is graded there: a bank of the country left
+            // standing at the footprint's line and rolled down into the build over CutCommands.RIM_REACH. Cutting that
+            // bank a second time here would take it off at the apron's four blocks and put the face back exactly where
+            // the clear had taken it out - the join would be the ring's rule fighting the cut's.
+            if (CutCommands.rimDistance(gx, gz, wide, deep) < CutCommands.RIM_REACH) return;
             if (surface - base < BANK_BLOCKS) return;
             int down = apron(level, x, z, base, surface);
             if (down >= surface) return;
@@ -1252,6 +1297,82 @@ public final class Dressing {
                 level.setBlock(new BlockPos(x, down, z), soft(skin) ? skin : Blocks.GRASS_BLOCK.defaultBlockState(), 2);
             }
             inside++;
+        }
+
+        /**
+         * One column inside the footprint the cut draws nothing in, at the foot of the build's own ground: the country
+         * graded up to that ground over a few blocks, so the plate's edge is a bank rather than a wall one column wide.
+         * <p>
+         * The bank follows the country's own top rather than a plane laid through the box, so its foot wanders with the
+         * land; its reach wanders a column at a time as well, so no two neighbouring columns end their bank at the same
+         * distance out. The top course is the country's own skin and the fill under it is the country's own band of
+         * dirt, which is what makes a one-block step read as ground rather than as a wall built of stone.
+         * <p>
+         * Left exactly as it stands: a column with no build within the bank's reach, an edge taller than
+         * {@link #SKIRT_RISE} (the build's own hill, which a fill would bury), a one- or two-block step, and water.
+         */
+        private void skirt(ServerLevel level, int x, int z) {
+            int[] near = held(x, z);
+            if (near == null) {
+                skipped++;
+                return;
+            }
+            int out = Math.max(Math.abs(x - near[0]), Math.abs(z - near[1]));
+            int reach = SKIRT_REACH + CutCommands.wander(x, z);
+            if (out <= 0 || out > reach) {
+                skipped++;
+                return;
+            }
+            int at = (near[0] - box.lowX()) + (near[1] - box.lowZ()) * wide;
+            int wall = outline[at];
+            if (wall == Integer.MIN_VALUE) {
+                skipped++;
+                return;
+            }
+            int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
+            if (surface <= level.getMinY()) {
+                skipped++;
+                return;
+            }
+            if (!level.getBlockState(new BlockPos(x, surface, z)).getFluidState().isEmpty()) {
+                // Water is left exactly where it stands, as the ring leaves it: a bank laid over a sheet fills it.
+                skipped++;
+                return;
+            }
+            int floor = Math.max(level.getMinY(), surface - COLUMN_DEPTH);
+            int top = surface;
+            BlockState skin = level.getBlockState(new BlockPos(x, top, z));
+            while (top > floor && !ground(skin)) {
+                skin = level.getBlockState(new BlockPos(x, --top, z));
+            }
+            if (!ground(skin)) {
+                skipped++;
+                return;
+            }
+            // A bank is laid against a field, a lane or a gravel bed and never against a wall: the top of the build's
+            // column has to be ground, or the fill buries the foot of the very thing the join is for. The same test
+            // the apron makes, for the same reason.
+            if (!earth(level.getBlockState(new BlockPos(near[0], wall, near[1])))) {
+                skipped++;
+                return;
+            }
+            int rise = wall - top;
+            if (rise < BANK_BLOCKS || rise > SKIRT_RISE) {
+                skipped++;
+                return;
+            }
+            int cap = Math.min(wall, top + (int) Math.round(rise * (reach - out) / (double) (reach - 1)));
+            if (cap <= top) {
+                skipped++;
+                return;
+            }
+            int soil = soft(skin) ? Math.min(SOIL_BLOCKS, cap - top) : 0;
+            for (int y = top + 1; y < cap; y++) {
+                level.setBlock(new BlockPos(x, y, z),
+                        y > cap - 1 - soil ? Blocks.DIRT.defaultBlockState() : Blocks.STONE.defaultBlockState(), 2);
+            }
+            level.setBlock(new BlockPos(x, cap, z), skin, 2);
+            skirted++;
         }
 
         /** The eight ways out from a column in unit steps, so a bank running diagonally to its plate is measured too. */

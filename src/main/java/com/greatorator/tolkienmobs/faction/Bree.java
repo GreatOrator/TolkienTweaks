@@ -475,7 +475,7 @@ public final class Bree {
                 // both are the village's answers, and both are the town's numbers rather than the city's.
                 this.dressing = Dressing.begin(level, CutCommands.folder(level).resolve(CUT),
                         piece -> CutCommands.raw(level, CUT, piece), this.cityParts, this.planted, this.cityBox,
-                        true, ArdaMap.BREE_DECK_LIFT);
+                        true, ArdaMap.BREE_DECK_LIFT, CityCommands.DRAPE_REACH);
             }
             return !this.dressing.step(level);
         }

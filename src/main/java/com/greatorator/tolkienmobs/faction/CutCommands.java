@@ -96,6 +96,38 @@ public final class CutCommands {
     private static final String TABLE = ".parts";
     /** A piece this wide and this tall is one the cutter wrote no size for. */
     private static final int TILE = 48;
+    /**
+     * How wide the band of country left standing inside a cut's own edge is, in blocks.
+     * <p>
+     * The clear takes the land off a cut's columns down to the cut's own top, which is right everywhere the build
+     * stands inside its footprint and wrong at the line where the build stops: the ground outside is where the land
+     * put it and the first column inside holds a roofline, so the join is a cliff one column wide - the face the owner
+     * has photographed at the Shire's edge. The band is the answer: the country keeps standing at the edge and is
+     * rolled down into the build over these blocks, so the seam is a hillside with the land's own grass on it.
+     * <p>
+     * Fourteen blocks is a slope and not a shelf - a bank eight blocks high over fourteen is one block down for every
+     * one or two out, which is what a country riser looks like - and it is short enough that no village's own ground is
+     * buried further in. Every column of the band is measured against the country's own height at that column, not
+     * against a plane laid through the box, so the bank follows the land's own contour lines rather than the rectangle.
+     */
+    static final int RIM_FEATHER = 14;
+    /**
+     * How far the band's inner edge wanders, in blocks, so the bank's foot is ragged rather than a line drawn with a
+     * foot-rule. Added to the feather a column at a time, from the column's own coordinates, so the same world always
+     * dresses the same way.
+     */
+    private static final int RIM_JITTER = 3;
+    /** The furthest in the band reaches: its feather plus the whole of its wander. */
+    static final int RIM_REACH = RIM_FEATHER + RIM_JITTER;
+    /**
+     * The deepest bank the band will leave standing, in blocks.
+     * <p>
+     * A country that stands twelve blocks over the cut's own top is a hillside the band can grade. One that stands
+     * forty is a build under a mountain, and leaving all forty standing at its edge buries the build rather than
+     * joining it: past this the country above is the cut's to take off, as it always was. Measured on the Shire, the
+     * land at the footprint's line stands under eight over the build in every column of the band.
+     */
+    private static final int RIM_CAP = 12;
     /** Templates already read this session, keyed by cut and piece, so a cut laid twice is parsed once. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
     /** A cut's own shape, keyed by cut, so a clearing or a drape is answered once. */
@@ -296,7 +328,7 @@ public final class CutCommands {
             source.sendSuccess(() -> Component.literal("Cleared " + name + ": " + done.columns()
                     + " columns cut back to the build, " + done.blocks() + " blocks of the country removed, "
                     + done.deepest() + " deep at the worst, " + done.kept() + " trees left standing on its own"
-                    + " ground."), true);
+                    + " ground, " + done.banked() + " columns of its edge kept a bank."), true);
             return done.columns();
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -347,7 +379,7 @@ public final class CutCommands {
      * What one sweep of a cut's columns took out: how many columns, how many blocks, the deepest cut, and how many
      * trees it left standing on the build's own ground.
      */
-    record Cleared(int columns, long blocks, int deepest, int kept) {
+    record Cleared(int columns, long blocks, int deepest, int kept, int banked) {
     }
 
     /**
@@ -363,8 +395,10 @@ public final class CutCommands {
      */
     static Cleared clearColumns(ServerLevel level, BlockPos planted, Box box, Shape shape, int first, int upto) {
         int wide = shape.wide();
+        int deep = shape.deep();
         int columns = 0;
         int kept = 0;
+        int banked = 0;
         int deepest = 0;
         long removed = 0L;
         int last = Math.min(upto, wide * shape.deep());
@@ -388,11 +422,21 @@ public final class CutCommands {
                     kept++;
                     continue;
                 }
-                for (int y = surface; y > ceiling; y--) {
+                // The country the cut's own edge keeps: a bank of the land outside, rolled down into the build over
+                // the band at the footprint's line. Away from the band, where the build already stands over the
+                // country and where the column is water, this is nought and the sweep is exactly what it always was.
+                int down = ceiling + rim(level, x, z, xi, zi, wide, deep, ceiling);
+                for (int y = surface; y > down; y--) {
                     at.set(x, y, z);
                     if (level.getBlockState(at).isAir()) continue;
                     level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
                     taken++;
+                }
+                if (down > ceiling) banked++;
+                if (down > ceiling && level.getBlockState(at.set(x, down, z)).isSolid()) {
+                    // A graded bank is ground and not a cut face: its top course is grass, the way the country's own
+                    // risers are, whatever stone the cut opened underneath it.
+                    level.setBlock(at, Blocks.GRASS_BLOCK.defaultBlockState(), 2);
                 }
                 for (int y = ceiling; y >= planted.getY() + shape.bottom()[index]; y--) {
                     if (shape.solid(index, y - planted.getY())) continue;
@@ -411,7 +455,55 @@ public final class CutCommands {
                 deepest = Math.max(deepest, taken);
             }
         }
-        return new Cleared(columns, removed, deepest, kept);
+        return new Cleared(columns, removed, deepest, kept, banked);
+    }
+
+    /**
+     * How many blocks a column stands inside the footprint's own edge: nought on the edge itself, rising inward.
+     * <p>
+     * Shared with the drape, which skips the same band: the clear grades the cut's rim and the drape's inside cut
+     * would grade it a second time, at its own four blocks, and put the face back where the clear had just taken it
+     * out. One band, one rule, whichever pass is asked about it.
+     */
+    static int rimDistance(int xi, int zi, int wide, int deep) {
+        return Math.min(Math.min(xi, wide - 1 - xi), Math.min(zi, deep - 1 - zi));
+    }
+
+    /**
+     * How much of the country a column at the cut's own edge keeps standing over the build, in blocks.
+     * <p>
+     * The bank is the country's own height at the column, weighted by how far in the column stands: all of it at the
+     * footprint's line, nought at the band's foot. Because the height is the column's own and not a plane laid through
+     * the box, the bank follows the land's contour: where the country is high it keeps more ground, so the foot of the
+     * slope wanders with the hill instead of running parallel to the rectangle. The foot is jittered a column at a time
+     * as well, so no two neighbouring columns end their bank at the same distance in.
+     * <p>
+     * Three cases keep the sweep as it always was: a column where the country already stands at or under the cut's own
+     * top (there is nothing to keep), a column whose ground is water (a bank laid over a sheet fills the water), and a
+     * column whose country stands more than {@link #RIM_CAP} over the build (that is a build under a mountain, and the
+     * country above it is the cut's to take off).
+     *
+     * @return the blocks of country left standing over the cut's own top
+     */
+    private static int rim(ServerLevel level, int x, int z, int xi, int zi, int wide, int deep, int ceiling) {
+        int reach = RIM_FEATHER + wander(x, z);
+        int inside = rimDistance(xi, zi, wide, deep);
+        if (inside >= reach) return 0;
+        int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
+        if (ground <= ceiling) return 0;
+        if (!level.getBlockState(new BlockPos(x, ground, z)).getFluidState().isEmpty()) return 0;
+        int over = Math.min(ground - ceiling, RIM_CAP);
+        return Math.max(0, Math.min(over, (int) Math.round(over * (reach - inside) / (double) reach)));
+    }
+
+    /**
+     * A column's own share of the wander a graded bank's foot takes, from its coordinates, so the same world always
+     * grades the same way. Shared with the drape, which grades the build's own edge to the same principle.
+     */
+    static int wander(int x, int z) {
+        int hash = x * 0x27d4eb2d ^ z * 0x165667b1;
+        hash ^= hash >>> 15;
+        return Math.floorMod(hash, RIM_JITTER + 1);
     }
 
     /**
