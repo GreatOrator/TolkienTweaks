@@ -576,10 +576,11 @@ public final class ArdaMap {
      * The site is the east bank of the Brandywine, 150 east and 60 south of the bridge at 1230, -3490, ground 90 to
      * 91 - dry from the bridge's own east foot and dry the whole 1,076 blocks to Bree, which is why the town sits
      * there and not on the west bank. {@code Pins} carries the same column under the name {@code bucklebury}, which
-     * is where a traveller is put; this is the cut's own corner, and the two are the same column, 13 apart in height:
-     * the art's west edge stands a median of 13 over its own low corner - the cut's own {@code deck} - so a corner of
-     * 78 puts that edge on the ground the scout stood on at 91. Moving the pin moves this corner by the same 13 down
-     * and by nought across, and the whole town goes with it.
+     * is where a traveller is put; this is the cut's own corner, 13 below that ground plus the four the town was
+     * lifted by: the art's west edge stands a median of 13 over its own low corner - the cut's own {@code deck} - and
+     * the owner raised the whole cut on 27 November 2026 because the hill it is seated in stands over parts of its
+     * floor, so a corner of 82 puts that edge on 95, four over the ground the scout stood on at 91. Moving the pin
+     * moves this corner by the same 13 down and by nought across, and the whole town goes with it.
      * <p>
      * The footprint is 478 by 278 columns and 77 high, which is what the cut in the jar holds: eighty pieces, its
      * west edge's ground a median of thirteen over the corner, and the town rising some sixty blocks northwards across
@@ -587,7 +588,7 @@ public final class ArdaMap {
      * clear opens.
      */
     public static final int BUCKLEBURY_X = 1380;
-    public static final int BUCKLEBURY_Y = 78;
+    public static final int BUCKLEBURY_Y = 82;
     public static final int BUCKLEBURY_Z = -3432;
     /** How wide and how deep the town's footprint is, out of its own cut: 478 by 278. */
     public static final int BUCKLEBURY_WIDE = 478;

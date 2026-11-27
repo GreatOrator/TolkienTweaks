@@ -83,11 +83,13 @@ public final class Pins extends SavedData {
             Map.entry("bree", new BlockPos(1059, 77, -31)),
             // Bucklebury, the first village east of the crossing, pinned for a build that does not exist yet: the east
             // bank 150 east and 60 south of the Brandywine bridge at 1230, -3490, ground 90, dry from the bridge's own
-            // east foot and dry the whole 1,076 blocks to Bree. It has no cut, no template and no catalogue entry, so the
+            // east foot and dry the whole 1,076 blocks to Bree. The town was lifted four blocks on 27 November 2026, so
+            // its own floor at this column is 95 rather than 91 - the pin rises with it, since it stands on the floor.
+            // It has no cut, no template and no catalogue entry, so the
             // key is inert until a build asks for it - the ground is written down so it cannot be lost, and /tmtp
             // finds it by that name as a set point in the meantime; the catalogue does not carry it, so /tmpin
             // place refuses it. The reference sheet's own label at pixel 795, 740 is this place, not Hobbiton.
-            Map.entry("bucklebury", new BlockPos(1380, 91, -3432)),
+            Map.entry("bucklebury", new BlockPos(1380, 95, -3432)),
             // Michel Delving, pinned for the same reason: the flat shelf 906 blocks due west of Hobbiton, ground 103,
             // with the land climbing away west and north and a shallow vale to the south-east. Four blocks of relief
             // across a hundred and eight across two hundred, so a town plan has room; the whole line from Hobbiton is

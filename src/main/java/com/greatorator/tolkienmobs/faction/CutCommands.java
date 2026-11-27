@@ -868,9 +868,13 @@ public final class CutCommands {
                 String[] fields = line.trim().split("\\s+");
                 if (fields.length < 4) continue;
                 try {
+                    // The table writes a size across, then tall, then deep - the order a tile is cut in - and a Part
+                    // holds it across, deep, tall. The two were handed over as written, which is invisible on a cube
+                    // and is not on any other piece: Bucklebury's upper pieces are 48 by 29 by 48, and read as 48
+                    // deep the lay clipped their last 19 rows of z away - two strips of the town's hillside left out.
                     parts.add(new Part(fields[0], Integer.parseInt(fields[1]),
                             Integer.parseInt(fields[2]), Integer.parseInt(fields[3]),
-                            size(fields, 4), size(fields, 5), size(fields, 6)));
+                            size(fields, 4), size(fields, 6), size(fields, 5)));
                 } catch (NumberFormatException skipped) {
                     // A line that is not a piece is not a reason to refuse the rest of the cut.
                 }
