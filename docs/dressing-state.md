@@ -311,13 +311,54 @@ owner named: at `867,-2712` the country outside stands at 82 and the river is th
 reach the village's 98 is refused by the shore rule and the run is three columns long. `leafgrass.py` reads 590 grass
 blocks on a leaf or on timber, 44 in the rim band (576 and 48 on `Shoulder 2`; 587 and 55 on `Crown 1`).
 
-**The water, priced and not built.** A cone that ignored the water and laid itself through it - the owner's "ignore the
-water like it's not there, and let any remaining water sit over the blocks" - would touch 1,594 water columns outside
-the footprint with 21,378 blocks: 352 columns end with the fill under the surface and the water left standing over it
-(2,009 blocks), and 1,242 come out of the water, replacing that much of the surface (19,369 blocks), because the cone's
-top is above the water until it has run `wall - water level` columns. Capping the fill one below the surface instead
-keeps every water block but shallows the river's edge by the same 1,594 columns. Neither is in this build: the river
-foot stays the art's own bank, as the owner asked.
+**The water, priced on 28 November and then built.** The price put here before it was built was 1,594 water columns
+outside the footprint and 21,378 blocks, 352 of them keeping their water over the fill and 1,242 coming out of it. The
+real number is larger, because the price was taken on a world whose pond's margins the old pass had already buried - see
+"The cone laid through the river" below for what it came to and why.
+
+## The cone laid through the river (28 November)
+
+The owner's ask, in their own words: "is there a way to do this that allows the water to stay while still having the
+ground meet ground? i.e. ignore the water like its not there and just place the blocks so any remaining water actually
+sits over the blocks after?" Then, plainly: lay the cone through the river at the feet, raise a fresh world, and say how
+much surface water it replaces. Two rules make it, and the second was found by measuring the first.
+
+**The bed is the ground.** `join` used to leave a column standing in water exactly as it was, which is why the cone
+stopped at the bank: the shoulder's line is `wall - run`, and the river is where that line meets the sheet. Now the
+column's waterline is read (`waterline`: from the top down to the first of a fluid and `ground()`, so a lily, a stand of
+seagrass or three blocks of cane is looked through rather than read as dry land by the height map), the column's ground
+is the bed, and the fill is laid from the bed up to the same cap as any other column. What the fill writes over the
+water displaces it; what it stays under is left as water standing over the ground, which is the shoaling shelf at the
+river's edge. A column whose line is at or under its bed is left at full depth rather than cut, and the count of
+columns whose cap is at or over their waterline is logged as `... of the river's surface taken by the fill (west,
+north, east, south counts)`.
+
+**Nothing above the bed is cleared.** The first cut of the rule read 17 columns on a fresh world and 13 on `Cone 1`'s
+ground, and the before/after said 515 - the difference was the clear loop, which ran from the column's top down to its
+ground before it knew whether it would lay anything at all. A column whose top is a plant over water was read as dry,
+its water cleared to the bed, and (where the cone was higher) stone laid over the hole; where the cone was lower than
+the bed, 188 columns of the east pond lost their surface with nothing put back. A control world from the same copy,
+ticked for four minutes with the dressing skipped by its note, lost none. So a fluid between the top and the ground is
+taken as the column's waterline by the fill's own walk, and nothing but what grows on dry land is cleared.
+
+`River 2`, fresh headless world, the box 866,1424,-2917,-2450:
+
+- `13 columns cut down, 20935 filled up, 0 left for the water, 2720 left alone, 0 cleared of a tree standing on
+  nothing, 0 inside the walls cut down to the cut, 3931 of the river's surface taken by the fill (669 west, 138 north,
+  3124 east, 0 south)`, the village up in 1,123 ticks (56.2 s) over 1,326 chunks.
+- `wall.py`, step 4: west 0-2 on 91 of 117, 3-6 10, 7-12 8, 13+ 8, longest run 7 columns, worst 17 at `867,-2680`;
+  north 95 of 140, 11, 9, 25, longest 10, worst 27 at `1375,-2916`; east 101 of 117 with no wall; south 140 of 140.
+  `Cone 1` for comparison: 93/117 and 91/140 at 0-2, 6 and 29 at 13+, longest 3 and 11.
+- `leafgrass.py`: 605 grass blocks on a leaf or a length of timber, 73 in the rim band - 590 and 44 on `Cone 1`, the
+  rise being new ground at the pond's edge under the trees there.
+
+The same ground re-dressed (`Cone 1`, noted as bare, re-raised with the new code) adds only 4,102 fills and 21 columns
+of surface water, because the older pass had already buried the plant-topped margins that carry most of the count. The
+split is the useful part of the number: the surface taken is 669 columns along the west foot and 138 along the north,
+and 3,124 along the east, where this world's pond lies nearest the build - the cone's line stands over the sheet for
+`wall - water level` columns out, which at a 98-to-110 build over water at 79 is nineteen to thirty-one blocks. The
+alternative that keeps every water block is to cap the fill one below the surface; it shallows the same band instead of
+taking it, and is not built.
 
 ## What is still open
 

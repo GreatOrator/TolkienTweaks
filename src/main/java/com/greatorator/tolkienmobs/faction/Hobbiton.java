@@ -113,7 +113,7 @@ public final class Hobbiton {
      * drape - a mouth filled, a deck read from the build - has to reach a world that already holds the village, and the
      * cut it is dressed from is unchanged, so the version is what says so.
      */
-    private static final int DRESS_VERSION = 15;
+    private static final int DRESS_VERSION = 16;
     /**
      * How far outside the footprint a village's ground is carried down to the country, in blocks.
      * <p>
@@ -141,13 +141,16 @@ public final class Hobbiton {
      * was raised without it instead of walking past one that was never dressed, and turning it off re-clears a
      * dressed footprint rather than leaving the old ring in place under the new rules.
      * <p>
-     * It is a version of its own, and 3 now. Two came when the country at the footprint's own edge was left standing and
+     * It is a version of its own, and 4 now. Two came when the country at the footprint's own edge was left standing and
      * rolled down into the build. Three came when the ground outside the footprint was carried down to the country over
-     * a twelve-block shoulder, so a village standing over the land at its edge is a hill rather than a face; a world
-     * raised under the old rules keeps the wall it was raised with and raises its village again on the next start. A
-     * world noted 1 or 2 raises again, and the shoulder is laid then.
+     * a twelve-block shoulder, so a village standing over the land at its edge is a hill rather than a face. Four came
+     * when the shoulder was laid through the river at that foot as well: the bed is the column's ground now and the
+     * water is left over the fill, so a world's own river is shallower - and taken where the shoulder rises through it -
+     * rather than the ground stopping at the bank. A world raised under the old rules keeps the wall or the bank it was
+     * raised with and raises its village again on the next start; a world noted 1, 2 or 3 raises again, and the shoulder
+     * is laid then.
      */
-    private static final int UNDRESSED = 3;
+    private static final int UNDRESSED = 4;
     /** How far a probe column's top may move and still be the village: growth, mostly, not a village taken away. */
     private static final int PROBE_SLACK = 6;
     /**

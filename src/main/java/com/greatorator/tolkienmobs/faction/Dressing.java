@@ -479,6 +479,18 @@ public final class Dressing {
         private int covered;
         /** Columns of the ring the mountain raised or cut to its own flank. */
         private int mounted;
+        /**
+         * Columns of the drawing's water the shoulder's fill stands over: the surface block the ground took.
+         * <p>
+         * The number the river at a village's feet is priced by. Where the fill's top stays under the surface the
+         * water keeps its place over the ground and is not counted - the river is shallower there, not gone - and a
+         * column whose shoulder rises through the surface is counted once, whatever the depth under it.
+         */
+        private int replaced;
+        private int riverWest;
+        private int riverNorth;
+        private int riverEast;
+        private int riverSouth;
 
         private Job(String key, Path folder, Pieces pieces, List<CityCommands.Part> parts, BlockPos origin,
                     CityCommands.Box box, boolean dressed, boolean road, boolean trees, int deck, int reach) {
@@ -534,8 +546,10 @@ public final class Dressing {
                 LOGGER.info("Rivendell: the ground is dressed - {} columns cut down, {} filled up, {} left for the "
                         + "water, {} left alone, {} cleared of a tree standing on nothing, {} inside the walls cut "
                         + "down to the cut, {} of the build's own edge banked up, {} of the build carried under the "
-                        + "mountain, {} of the ring on its flank",
-                        cut, filled, open, skipped, orphaned, inside, skirted, covered, mounted);
+                        + "mountain, {} of the ring on its flank, {} of the river's surface taken by the fill "
+                        + "({} west, {} north, {} east, {} south)",
+                        cut, filled, open, skipped, orphaned, inside, skirted, covered, mounted, replaced,
+                        riverWest, riverNorth, riverEast, riverSouth);
                 write(level, true, road);
             }
             if (!road) {
@@ -936,14 +950,12 @@ public final class Dressing {
                 spring = true;
                 banked = true;
             }
-            // A column standing in the drawing's water is the drawing's, and dressing it carves the river. A height that
-            // counts fluids answers with the water's own surface, so the ground search below walked under the sheet to
-            // the bed, and the column was then cut and filled against the build's outline like any land: where the ring
-            // crossed a river the water came out down to the cap, the bed was laid back over the hole and the bank was
-            // filled with stone - a trench walled with stone running through the river, three blocks deep. So a column
-            // with water as its top, or in the block over its top, is left exactly as it stands; `Drape` has always kept
-            // one so (`wet`), and the join at a river is the river. A spring the build itself holds up is the build's
-            // water and is not this case: that column is dressed, and the mountain over its pool comes off above it.
+            // A column standing in the drawing's water is the drawing's, and dressing it blindly carves the river. A
+            // height that counts fluids answers with the water's own surface, so the ground search below walks under
+            // the sheet to the bed, and the column cut and filled against the build's outline like any land is a trench
+            // walled with stone running through the river - which is what the first shape of the guard here was for: a
+            // water column was left exactly as it stood, and the join at a river was the river. That is what made the
+            // river the bank the shoulder stopped at, with the build's own wall standing beside it.
             //
             // The spring's exemption is gone, because a spring is not always the build's water. The ring reads its
             // shape from the nearest wall column, and where the drawing's river runs along the footprint's edge that
@@ -953,16 +965,27 @@ public final class Dressing {
             // river and a bank laid over the hole, which is the trench, surviving the guard the trench was meant to
             // meet. The build's pool needs no exemption: it is inside the walls, and this pass never cuts inside as
             // ring. A column outside that is itself water is the drawing's water whoever holds it up.
-            if (water(level, x, surface, z)) {
+            //
+            // The water's own surface, where this column stands in the drawing's river and the shoulder is laid
+            // through it. The river at the village's feet is not a line the ground stops at: the shoulder is the hill
+            // the build's edge stands on, and a hill meets its water the way any bank does - under it. So the column's
+            // ground is read down through the sheet to the bed, the water is not counted as anything that stands there,
+            // and the fill is laid from the bed as it would be from dry ground. What is over the fill's top is the
+            // water's own business: where the top stays under the surface the sheet keeps its place over the ground,
+            // and where the shoulder rises through the surface that stretch of river goes under it. The bed's cap of
+            // the fill is the bed's own block, so the band that comes out of the river reads as a riverbank and not as
+            // a wall of stone.
+            int wet = -1;
+            int fluid = waterline(level, x, surface, z);
+            if (fluid != Integer.MIN_VALUE) {
                 int bed = stray(x, z) ? drain(level, x, z, surface) : -1;
                 if (bed > 0) {
                     surface = bed;
                 } else if (!own || !mountain(outX, outZ, at)) {
-                    // No mountain here: the water is the drawing's and the column is left exactly as it stands. A
-                    // mountain is another matter - the owner's own answer is that it takes that stretch of river with
-                    // it - so the column is carried on to the fill, which lays ground over the sheet.
-                    skipped++;
-                    return;
+                    // No mountain here: this is the drawing's own water, and the shoulder is laid through it. A mountain
+                    // is another matter - the owner's own answer is that it takes that stretch of river with it - so
+                    // the column is carried on to the fill, which lays ground over the sheet.
+                    wet = fluid;
                 }
             }
             // A tree is not ground, and the top of its crown is not where its ground is. The height that counts
@@ -995,7 +1018,21 @@ public final class Dressing {
                 else skipped++;
                 return;
             }
+            // Nothing over a column of the river is cleared, and the water standing over its bed is found here as well
+            // as in the read above. That read answers with the top of the column, which is a plant's height wherever one
+            // grows on the water - a river's shallows are a stand of seagrass, a pond's margin a lily - and a column read
+            // as dry ground was then cleared straight down to its bed: the water the shoulder is meant to be laid under
+            // was taken out of the world, and where the shoulder's line was under the bed nothing was put back at all,
+            // so the river lost its surface to a pass that laid no ground. A fluid between the top and the ground is the
+            // river's whatever floats on it, so the walk takes it as the column's waterline and clears nothing above the
+            // ground but what grows there on dry land.
             for (int y = surface; y > top; y--) {
+                BlockState over = level.getBlockState(new BlockPos(x, y, z));
+                if (!over.getFluidState().isEmpty()) {
+                    if (wet < 0) wet = y;
+                    continue;
+                }
+                if (wet >= 0) continue;
                 level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
             }
             if (!skin.getFluidState().isEmpty()) {
@@ -1087,7 +1124,15 @@ public final class Dressing {
             // actually draws there - under the deck, so the deck's rule called it a groove and left a four-block
             // face round the whole side. Three over the build's own top is a face wherever the build's top is.
             boolean bank = !spring && top - wall >= BANK_BLOCKS;
-            if (top > down && (!banked || spring || bank)) {
+            // Under the river the join only ever rises. The bed is the ground, and a shoulder that ran out before it
+            // reached the bed's own height is not a cut of the bed's - there is nothing above the bed to take off but
+            // the water, and the water is the river's. So a column whose line is at or under its bed is left as it
+            // stands, full depth, and the fill begins where the line comes up over the bed.
+            if (wet >= 0 && top >= cap) {
+                skipped++;
+                return;
+            }
+            if (top > down && wet < 0 && (!banked || spring || bank)) {
                 // A cut beside water is the water's too. The sheet itself is left exactly as it stands, so a column
                 // cut below the level beside it leaves the drawing's water standing on a face - the walls of water
                 // the owner photographed on 26 November, where the ring went through a pool instead of round it -
@@ -1120,6 +1165,15 @@ public final class Dressing {
                 }
                 level.setBlock(new BlockPos(x, cap, z), skin, 2);
                 filled++;
+                // The ground's own top is at or over the sheet here, so the block it was set at is the block the
+                // surface used to be: that column of the river is under the shoulder rather than over it.
+                if (wet >= 0 && cap >= wet) {
+                    replaced++;
+                    if (x < box.lowX()) riverWest++;
+                    else if (x > box.highX()) riverEast++;
+                    else if (z < box.lowZ()) riverNorth++;
+                    else riverSouth++;
+                }
             }
         }
 
@@ -1252,14 +1306,24 @@ public final class Dressing {
         }
 
         /**
-         * Whether a column's top, or the block over it, is a fluid: the drawing's water, which the drape never dresses.
+         * The surface of the fluid a column stands in, or {@link Integer#MIN_VALUE} when it stands in none.
          * <p>
-         * Both blocks, because the answer must not depend on whether the height map counted the fluid: a column under a
-         * sheet has water for its top when it does, and water in the block over its ground when it does not.
+         * The column is walked from its own top down: whichever of a fluid and ground comes first is what the column
+         * stands in. The top block and the block over it would not do, because the answer must not depend on whether
+         * the height map counted the fluid, and a plant on the water is a height of its own - the lily of a pond, the
+         * seagrass of a river's shallows, a stand of cane three blocks over the surface. Read as the top, a plant made
+         * the column dry land, which was then cleared straight down to its bed: the water the shoulder is meant to be
+         * laid under was taken out of the world, and a pond's margins went with it - 502 columns of it lost on the
+         * Shire's own ground, and the control world that was ticked without being dressed lost none.
          */
-        private static boolean water(ServerLevel level, int x, int surface, int z) {
-            return !level.getBlockState(new BlockPos(x, surface, z)).getFluidState().isEmpty()
-                    || !level.getBlockState(new BlockPos(x, surface + 1, z)).getFluidState().isEmpty();
+        private static int waterline(ServerLevel level, int x, int surface, int z) {
+            int floor = Math.max(level.getMinY(), surface - COLUMN_DEPTH);
+            for (int y = Math.min(level.getMaxY(), surface + 1); y > floor; y--) {
+                BlockState state = level.getBlockState(new BlockPos(x, y, z));
+                if (!state.getFluidState().isEmpty()) return y;
+                if (ground(state)) return Integer.MIN_VALUE;
+            }
+            return Integer.MIN_VALUE;
         }
 
         /**
