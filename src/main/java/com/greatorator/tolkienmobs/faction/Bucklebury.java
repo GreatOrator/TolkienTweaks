@@ -115,6 +115,8 @@ public final class Bucklebury {
      */
     private static final String HALL = "tolkienmobs:key_structures/brandyhall";
     private static final BlockPos HALL_AT = new BlockPos(1561, 92, -3231);
+    /** How far past the hall's own box its ground is eased back to the country, in blocks. */
+    private static final int HALL_DRAPE = 12;
 
     /** What the note's probes answer: the ground is there, it is gone, or the level holds no chunk to ask. */
     private static final int PRESENT = 1, GONE = 0, UNASKED = -1;
@@ -585,8 +587,11 @@ public final class Bucklebury {
      * <p>
      * The box used to be swept to air first, to keep the town's ground from standing through the hall's walls. That
      * swept all 595,546 cells of the box, not the build, so it left a box of air round the hall - the owner's own look
-     * at it - and it is gone: the template's enclosed air clears what is inside the hall, and what is outside is not the
-     * hall's to clear.
+     * at it - and it is gone: the template's own air clears what is inside the hall, and what is outside is not the
+     * hall's to clear. The air the template carries is every cell of a column that the build draws a floor under and a
+     * roof over, which is the whole of its rooms and the space under its floors - 42,420 cells against the 11,609 the
+     * first pass found. What it holds no air for, the ground is cut to instead, before the template is laid: {@link
+     * #drape}, which takes the box down to the hall's floor course and the ring past it back to the country.
      * <p>
      * The guard is the world's own blocks, not a file: a hall whose sampled blocks are there is left alone, so a player
      * who has been inside Brandy Hall does not have it taken out and laid again on the next start. A box whose chunks
@@ -610,10 +615,59 @@ public final class Bucklebury {
             for (int cz = HALL_AT.getZ() >> 4; cz <= far.getZ() >> 4; cz++) level.getChunk(cx, cz);
         }
         if (Sites.standsAt(level, HALL, HALL_AT)) return 0;
+        // The ground first, and the hall on it: a cut run after the template was laid would take the hall's own lower
+        // walls down with the bank it is clearing.
+        int cut = drape(level, size);
         build.placeInWorld(level, HALL_AT, HALL_AT, new StructurePlaceSettings(), level.getRandom(), 2);
-        LOGGER.info("Bucklebury: Brandy Hall stands at {} over {} blocks of the build's own, the town's ground round it"
-                + " left as it was", HALL_AT.toShortString(), size.getX() * size.getY() * size.getZ());
+        LOGGER.info("Bucklebury: Brandy Hall stands at {} over {} blocks of the build's own, its ground cut to its own"
+                + " floor ({} blocks of bank off) and the ring round it eased back to the country",
+                HALL_AT.toShortString(), size.getX() * size.getY() * size.getZ(), cut);
         return size.getX() * size.getY() * size.getZ();
+    }
+
+    /**
+     * Settles the ground the hall is about to stand on: the box cut level with the hall's own floor course, and the
+     * ring past it eased back to the country, so the doors on its lower storey open onto ground.
+     * <p>
+     * The hall's floor is three under the town's own deck line, and the town dressed its ground to its footprint before
+     * the hall was laid, so the bank the dressing left on the doors' side stood over them - the owner's own look at it,
+     * "just needs a drape action to clear the side of it that is the first floor door". This is that drape, drawn to
+     * the hall's own box rather than to the town's outline: the town's ring is measured from the footprint, and the
+     * hall stands well inside it, where nothing has been dressed since the cut.
+     * <p>
+     * The cut is run before the template is laid, never after: a column cut to the hall's floor once the hall stood
+     * there would take the hall's own lower walls down with the bank. Only ground is taken away - nothing is filled -
+     * and a column whose own block is water is left as it is, the same rule the town's ring and the camp's sweep
+     * follow, so the lake two blocks off the west edge keeps its shore.
+     *
+     * @return how many blocks of ground came off
+     */
+    private static int drape(ServerLevel level, Vec3i size) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        int cut = 0;
+        for (int dx = -HALL_DRAPE; dx < size.getX() + HALL_DRAPE; dx++) {
+            for (int dz = -HALL_DRAPE; dz < size.getZ() + HALL_DRAPE; dz++) {
+                int out = Math.max(0, Math.max(Math.max(-dx, dx - size.getX() + 1),
+                        Math.max(-dz, dz - size.getZ() + 1)));
+                if (out > HALL_DRAPE) continue;
+                int x = HALL_AT.getX() + dx;
+                int z = HALL_AT.getZ() + dz;
+                if (!level.hasChunkAt(cursor.set(x, HALL_AT.getY(), z))) continue;
+                int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
+                if (surface <= level.getMinY()) continue;
+                if (!level.getBlockState(cursor.set(x, surface, z)).getFluidState().isEmpty()) continue;
+                // Inside the box the ground is the hall's own floor course; past it the country takes over across the
+                // ring, so the join at the wall is the build's height and the join at the ring's edge is the country's.
+                int cap = HALL_AT.getY();
+                if (out > 0) {
+                    double share = out / (double) HALL_DRAPE;
+                    double ease = share * share * (3.0D - 2.0D * share);
+                    cap = (int) Math.round(HALL_AT.getY() + (surface - HALL_AT.getY()) * ease);
+                }
+                cut += Drape.column(level, cursor, x, z, surface, cap);
+            }
+        }
+        return cut;
     }
 
     /** Where this world's note about the town lives: beside its cut, in the save's own folder. */

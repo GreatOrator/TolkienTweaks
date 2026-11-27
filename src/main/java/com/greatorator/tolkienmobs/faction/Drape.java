@@ -446,7 +446,7 @@ public final class Drape {
      *
      * @return how many blocks came off the column, which is nought when it already stood at or under the cap
      */
-    private static int column(ServerLevel level, BlockPos.MutableBlockPos cursor, int x, int z, int surface, int cap) {
+    static int column(ServerLevel level, BlockPos.MutableBlockPos cursor, int x, int z, int surface, int cap) {
         if (surface <= cap) return 0;
         BlockState skin = level.getBlockState(cursor.set(x, surface, z));
         boolean keep = skin.isSolid() && !skin.is(BlockTags.LOGS) && !skin.is(BlockTags.LEAVES)
