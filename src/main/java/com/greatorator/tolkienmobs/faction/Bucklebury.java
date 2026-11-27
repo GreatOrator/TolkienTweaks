@@ -14,7 +14,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -106,16 +105,16 @@ public final class Bucklebury {
      * <p>
      * The owner walked the town and set the water at 1449, 92, -3203 as the spot - the bed of a peninsula in the lake.
      * A hall's box cannot stand there: 118 by 103 laid on that block takes 1,611 columns of the lake with it. So the
-     * box is on the first ground east of the lake that holds it whole, inside the town's own cut: x 1561..1678,
-     * z -3257..-3155, its west edge two blocks off the lake's shore and its own rill - the stream the build carries -
-     * meeting the town's water at 1594, -3189 inside its own grounds. Laid the way it was cut, so the front door at
-     * 1620, -3162 opens north over the grounds, which is the room the path from it wants.
+     * box is on the first ground east of the lake that holds it whole, inside the town's own cut, and the owner's own
+     * walk of it then carried it 26 south and 3 down from where it first stood: x 1561..1678, z -3231..-3129, its west
+     * edge two blocks off the lake's shore. Laid the way it was cut, so the front door at 1620, -3136 opens north over
+     * the grounds, which is the room the path from it wants.
      * <p>
-     * The corner's y is the town's own deck line (82 + 13), so the hall's ground course is laid in the street's own
-     * course rather than a step above or below it.
+     * The corner's y is 92, three under the town's own deck line (82 + 13): the build's ground course is laid where the
+     * owner read the ground, not on the street's own course.
      */
     private static final String HALL = "tolkienmobs:key_structures/brandyhall";
-    private static final BlockPos HALL_AT = new BlockPos(1561, 95, -3257);
+    private static final BlockPos HALL_AT = new BlockPos(1561, 92, -3231);
 
     /** What the note's probes answer: the ground is there, it is gone, or the level holds no chunk to ask. */
     private static final int PRESENT = 1, GONE = 0, UNASKED = -1;
@@ -580,9 +579,14 @@ public final class Bucklebury {
     /**
      * Stands Brandy Hall on the town's own ground, unless it is already standing there.
      * <p>
-     * A town is a cut and a hall is a build of its own, so the hall's box is taken out of the town first and the
-     * template laid over it: what the town had in that ground - a street, the foot of a house - is the hall's ground
-     * now, and a hall laid over it without the sweep would have the town's own blocks standing through its walls.
+     * Only the build's own blocks are laid, and only its own air with them: the template carries the hall's enclosed air
+     * - the rooms, the space under its floors - and none of the air that opens on the box from outside, so the town's
+     * streets and the country round the hall stand as they were, and nothing of the build reaches past its own walls.
+     * <p>
+     * The box used to be swept to air first, to keep the town's ground from standing through the hall's walls. That
+     * swept all 595,546 cells of the box, not the build, so it left a box of air round the hall - the owner's own look
+     * at it - and it is gone: the template's enclosed air clears what is inside the hall, and what is outside is not the
+     * hall's to clear.
      * <p>
      * The guard is the world's own blocks, not a file: a hall whose sampled blocks are there is left alone, so a player
      * who has been inside Brandy Hall does not have it taken out and laid again on the next start. A box whose chunks
@@ -606,16 +610,9 @@ public final class Bucklebury {
             for (int cz = HALL_AT.getZ() >> 4; cz <= far.getZ() >> 4; cz++) level.getChunk(cx, cz);
         }
         if (Sites.standsAt(level, HALL, HALL_AT)) return 0;
-        int cleared = 0;
-        for (BlockPos at : BlockPos.betweenClosed(HALL_AT, far)) {
-            if (level.getBlockState(at).isAir()) continue;
-            level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
-            cleared++;
-        }
         build.placeInWorld(level, HALL_AT, HALL_AT, new StructurePlaceSettings(), level.getRandom(), 2);
-        LOGGER.info("Bucklebury: Brandy Hall stands at {} over {} blocks of the town's ground ({} taken out first),"
-                + " west edge two blocks off the lake", HALL_AT.toShortString(),
-                size.getX() * size.getY() * size.getZ(), cleared);
+        LOGGER.info("Bucklebury: Brandy Hall stands at {} over {} blocks of the build's own, the town's ground round it"
+                + " left as it was", HALL_AT.toShortString(), size.getX() * size.getY() * size.getZ());
         return size.getX() * size.getY() * size.getZ();
     }
 
