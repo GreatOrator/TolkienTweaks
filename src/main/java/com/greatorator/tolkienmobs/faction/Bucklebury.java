@@ -6,14 +6,19 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -49,9 +54,10 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * </ul>
  * <p>
  * It is {@link Bree}'s pass with Bucklebury's numbers, as that was {@link Hobbiton}'s with Bree's: the two builds want
- * the same four things in the same order. What is not here is the village's own folk and its hall - Bucklebury has no
- * faces of its own cut yet and no hall pinned - and nothing calls {@code TownHalls}, because a town with no hall in the
- * catalogue has none to stand.
+ * the same four things in the same order, and then a fifth - Brandy Hall, stood on the town's own ground once the ring
+ * is dressed. The hall is not {@code TownHalls}': that class stands one hall per alliance at a pin a hand walks, and
+ * this is one build in one town, so its box is written here beside the town it belongs to. What is not here is the
+ * village's own folk: Bucklebury has no faces of its own cut yet.
  * <p>
  * Nothing has to be asked for. A world made after this ships holds the town as soon as a player walks within
  * {@link #REACH} of its ground, which is the rule the village keeps when its config has the start-of-world pass off;
@@ -95,6 +101,21 @@ public final class Bucklebury {
      */
     private static final int[][] PROBES = {{8, 8}, {469, 8}, {8, 269}, {469, 269}, {239, 139}, {119, 69},
             {359, 209}};
+    /**
+     * Brandy Hall: the build, and the corner of the box it is laid from.
+     * <p>
+     * The owner walked the town and set the water at 1449, 92, -3203 as the spot - the bed of a peninsula in the lake.
+     * A hall's box cannot stand there: 118 by 103 laid on that block takes 1,611 columns of the lake with it. So the
+     * box is on the first ground east of the lake that holds it whole, inside the town's own cut: x 1561..1678,
+     * z -3257..-3155, its west edge two blocks off the lake's shore and its own rill - the stream the build carries -
+     * meeting the town's water at 1594, -3189 inside its own grounds. Laid the way it was cut, so the front door at
+     * 1620, -3162 opens north over the grounds, which is the room the path from it wants.
+     * <p>
+     * The corner's y is the town's own deck line (82 + 13), so the hall's ground course is laid in the street's own
+     * course rather than a step above or below it.
+     */
+    private static final String HALL = "tolkienmobs:key_structures/brandyhall";
+    private static final BlockPos HALL_AT = new BlockPos(1561, 95, -3257);
 
     /** What the note's probes answer: the ground is there, it is gone, or the level holds no chunk to ask. */
     private static final int PRESENT = 1, GONE = 0, UNASKED = -1;
@@ -330,6 +351,11 @@ public final class Bucklebury {
     public static void onServerStarted(ServerStartedEvent event) {
         standing = null;
         autospawn(event.getServer());
+        // A world that already holds the town gets its hall on the next start, and only then: a town still to come
+        // clears the country out of its whole footprint and dresses the ring round it, so a hall laid before the pass
+        // would be taken away by the ground it stands on.
+        ServerLevel arda = event.getServer().getLevel(TolkienDimensions.ARDA);
+        if (arda != null && complete(arda)) hall(arda);
     }
 
     @SubscribeEvent
@@ -374,6 +400,10 @@ public final class Bucklebury {
                 if (!work.dressOnly) work.release(level);
                 standing = null;
                 note(level, work.planted);
+                // Brandy Hall goes up with the town and after it: this pass has just laid the cut, cleared the
+                // footprint and dressed the ring, and a hall stood in that ground first would have been cleared with
+                // the country. After the note, so the hall finds the town finished rather than still coming up.
+                if (!work.dressOnly) hall(level);
                 if (work.dressOnly) {
                     LOGGER.info("Bucklebury: the ground round the town is dressed in {} ticks ({} s)", work.ticks,
                             String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D));
@@ -545,6 +575,48 @@ public final class Bucklebury {
                 level.setChunkForced(chunkX(at), chunkZ(at), false);
             }
         }
+    }
+
+    /**
+     * Stands Brandy Hall on the town's own ground, unless it is already standing there.
+     * <p>
+     * A town is a cut and a hall is a build of its own, so the hall's box is taken out of the town first and the
+     * template laid over it: what the town had in that ground - a street, the foot of a house - is the hall's ground
+     * now, and a hall laid over it without the sweep would have the town's own blocks standing through its walls.
+     * <p>
+     * The guard is the world's own blocks, not a file: a hall whose sampled blocks are there is left alone, so a player
+     * who has been inside Brandy Hall does not have it taken out and laid again on the next start. A box whose chunks
+     * are not loaded answers "not standing" - the guard has to be able to say "lay it" - so the chunks are asked for
+     * first, as the halls ask for theirs.
+     *
+     * @return how many blocks the template holds, or nil when it is already standing or is not in the jar
+     */
+    static int hall(ServerLevel level) {
+        Identifier id = Identifier.tryParse(HALL);
+        if (id == null) return 0;
+        StructureTemplate build = level.getStructureManager().get(id).orElse(null);
+        if (build == null) {
+            LOGGER.warn("Bucklebury: Brandy Hall is not in the jar - nothing at {}", HALL);
+            return 0;
+        }
+        Vec3i size = build.getSize();
+        if (size.getX() <= 0 || size.getY() <= 0 || size.getZ() <= 0) return 0;
+        BlockPos far = HALL_AT.offset(size.getX() - 1, size.getY() - 1, size.getZ() - 1);
+        for (int cx = HALL_AT.getX() >> 4; cx <= far.getX() >> 4; cx++) {
+            for (int cz = HALL_AT.getZ() >> 4; cz <= far.getZ() >> 4; cz++) level.getChunk(cx, cz);
+        }
+        if (Sites.standsAt(level, HALL, HALL_AT)) return 0;
+        int cleared = 0;
+        for (BlockPos at : BlockPos.betweenClosed(HALL_AT, far)) {
+            if (level.getBlockState(at).isAir()) continue;
+            level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+            cleared++;
+        }
+        build.placeInWorld(level, HALL_AT, HALL_AT, new StructurePlaceSettings(), level.getRandom(), 2);
+        LOGGER.info("Bucklebury: Brandy Hall stands at {} over {} blocks of the town's ground ({} taken out first),"
+                + " west edge two blocks off the lake", HALL_AT.toShortString(),
+                size.getX() * size.getY() * size.getZ(), cleared);
+        return size.getX() * size.getY() * size.getZ();
     }
 
     /** Where this world's note about the town lives: beside its cut, in the save's own folder. */
