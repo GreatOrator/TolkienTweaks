@@ -88,7 +88,18 @@ public final class Roads {
      * Declared above {@link #ROUTES} on purpose: the list is built once when this class loads, and a road written below
      * it would not be in the list at all.
      */
-    private static final List<Named> NETWORK = List.of();
+    private static final List<Named> NETWORK = List.of(
+            // The road the owner walked on 27 November 2026 from the block at 871, -2510, the first leg of the survey to
+            // go back in after the table was cleared. He planned it in `Bucklebury - 2` as
+            // `tolkienmobs:roads/planned_1200_-3500_871_-2510`: three wide of the country's own surface (`WILD`), from
+            // 1200, -3500 up to 871, -2510, with a span over the water it meets on the way, so the world's store holds
+            // three sections of it (`..._2` and `..._bridge_1` beside the road's own). The two ends and the kind are the
+            // whole of the record, exactly as the three Bree-to-Shire stretches were recorded on 25 November: the way
+            // between them is the drawing's, and the ids the plan gives its sections are the same three the store names,
+            // because an id is the road's two ends. The other road in that store, `planned_1387_-3196_14274_-3500`, is
+            // not here - the owner's word on the same day: it is his mistake and he is laying it again.
+            new Named("tolkienmobs:roads/planned_1200_-3500_871_-2510", Kind.WILD, false, at(1200, -3500),
+                    at(871, -2510)));
 
     /**
      * Every road the world knows about, which is nothing until one is named.
