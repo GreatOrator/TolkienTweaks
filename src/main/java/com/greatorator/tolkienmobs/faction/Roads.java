@@ -109,7 +109,7 @@ public final class Roads {
             // below that meet it at 868, -2518 - his word on the day is to leave them separate - so the junction is
             // three roads meeting, and each of them is its own two ends.
 
-            /** Hobbiton -> Bucklebury */
+            /* Hobbiton -> Bucklebury */
             new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(868, -2518),
                     at(597, -2787), null),
             new Named("tolkienmobs:roads/planned_1166_-3126_868_-2518", Kind.WILD, false, at(1203, -3131),
