@@ -28,4 +28,19 @@ gradle.projectsEvaluated {
         javaLauncher.set(toolchains.launcherFor(java25))
         args = ((root.findProperty('probeArgs') ?: 'at -700 -512') as String).trim().split('\s+') as List
     }
+
+    // Prints the sections RoadPlan makes of a leg, with no world:
+    //
+    //   ./gradlew -I tools/sampleprobe.gradle ardaRoad -PprobeArgs="1140 -3131 1320 -3131 bucklebury"
+    //
+    // "x0 z0 x1 z1 [bridge|-]" - the leg's two ends and its bridge word, or - for none.
+    root.tasks.register('ardaRoad', JavaExec) {
+        dependsOn root.tasks.named('compileSampleProbe')
+        classpath = root.files(out, root.sourceSets.main.runtimeClasspath)
+        mainClass.set('com.greatorator.tolkienmobs.faction.RoadProbe')
+        workingDir = root.projectDir
+        systemProperty 'java.awt.headless', 'true'
+        javaLauncher.set(toolchains.launcherFor(java25))
+        args = ((root.findProperty('probeArgs') ?: '1140 -3131 1320 -3131 -') as String).trim().split('\s+') as List
+    }
 }

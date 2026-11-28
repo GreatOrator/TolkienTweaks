@@ -119,21 +119,28 @@ public final class Roads {
             // the other way round until 28 November 2026 - from the bridge back to the junction - and a fresh
             // world's sections counted their first stretch from the bridge end because of it.
             //
-            // The crossing arm runs from 1140, -3131 to 1320, -3131 and not between the bridge's own two banks at
-            // 1203 and 1271, where the owner first put it: a span takes the sixteen blocks either side of its
-            // banks into itself (`EXIT_REACH`), so an end ten blocks off the water planned a six-block stretch
-            // *backwards* - the first fresh world to plan it laid seven stations running from 1203 back to 1197 -
-            // and the stretch that should have carried the bridge across the river was not a road at all. The
-            // drawing at z -3131 (`ArdaMap.sample`, read 28 November 2026) has dry ground of 83 from 1140 to 1215,
-            // the channel from 1216 to 1254 - bed 71 to 80 under water at 82 - and dry ground from 1256 rising 83
-            // to 86 by 1320: a span of forty-two columns with seventy-five blocks of road before the near bank
-            // and sixty-four after the far one, so neither end is within reach of the water and either can be a
-            // few blocks out in a world that draws its banks differently. 1140 is also the block the arm before it
-            // ends on.
+            // The crossing arm runs from 1140, -3131 to 1380, -3200: out of the block arm two ends on, across the
+            // river once, and on to Bucklebury's own west edge. It read 1203, -3131 to 1271, -3131 when the owner
+            // first pinned it, and 1140 to 1320 when it was first lengthened; both planned badly, and the second
+            // is what a fresh world laid on 28 November 2026 (`Bucklebury Ferry`). **Two ends alone do not make a
+            // crossing:** a span takes the sixteen blocks either side of its banks into itself (`EXIT_REACH`), so
+            // an end ten blocks off the water plans its stretch of road *backwards* - that was the 1203 end, seven
+            // stations running back to 1197 - and that is why the west end stands 75 blocks off the near bank.
+            //
+            // **A due-east line crosses this river twice.** The channel runs north-north-east - its middle is
+            // x 1237 at z -3145 and x 1273 at z -3061 - so a leg along z -3131 runs *along* it, and the walk,
+            // which prices water at 220 a lane times its depth and the bank beside it at 400 a step, follows the
+            // channel: it crossed at z -3108 and again at z -3085, ran the road between them back west (1283,
+            // -3108 to 1215, -3085), and stood a `bucklebury` span on each - five sections, two stone bridges 23
+            // blocks apart, and a road that reads as two. The word is the road's, so every span it makes is the
+            // stone pair. Aimed at the town the leg crosses once: `tools/sampleprobe` plans three sections - a
+            // road in from 1140, -3131, **one** span of thirty-nine columns between the banks at 1239 and 1277 on
+            // z -3212 at deck 85, and a road on to 1380, -3200. Length on the old row mends nothing: 1320 gives
+            // the same two spans and 1400 still gives two.
             new Named("tolkienmobs:roads/planned_1166_-3126_868_-2518", Kind.WILD, false, at(868, -2518),
                     at(1140, -3131), null),
             new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1140, -3131),
-                    at(1320, -3131), "bucklebury"));
+                    at(1380, -3200), "bucklebury"));
 
     // What is not in the table, and why - written beside it rather than left to be guessed at:
     // `planned_1284_-3128_1166_-3126` was planned from 1284, -3128 to the same junction with no bridge word, so its
