@@ -103,45 +103,44 @@ public final class Roads {
      * it would not be in the list at all.
      */
     private static final List<Named> NETWORK = List.of(
-            // The road the owner walked on 27 November 2026, out of 868, -2518 and away north-west to 597, -2787,
+            // The road the owner walked on 27 November 2026, out of 868, -2518 and away south-west to 597, -2787,
             // which he added to this table himself (`a945a485`): three wide of the country's own surface, and the
             // save he walked it in, `Bucklebury - Redux`, holds it laid across 297 stations. It is written from its
-            // far end so that it *ends* on the junction the arm below begins on: the three lines are three roads
-            // meeting there - his word on the day, and each of them its own two ends - but with this one the other
-            // way round the first two both *began* on 868, -2518, and a fresh world read the pair as two roads out
-            // of one block rather than one line through it (28 November 2026).
+            // Hobbiton end so that the road reads the way it is walked - out of the village, down to 597, -2787, and
+            // on from there to the bridge - because the arm after it begins on the block it ends on (28 November
+            // 2026). It read the other way round for a day, from 597, -2787 to the village: the arm after it then
+            // began on 868, -2518 as well, and a fresh world read the pair as two roads out of one block. That arm
+            // does not leave this block any more (see below), so the reason for the reversal went with it.
 
             /* Hobbiton -> Bucklebury */
-            new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(597, -2787),
-                    at(868, -2518), null),
-            // The two arms on to the bridge, written in the order the road is walked: out of the junction at
-            // 868, -2518 and away to the bridge, each beginning on the block the one before it ends on. They read
-            // the other way round until 28 November 2026 - from the bridge back to the junction - and a fresh
-            // world's sections counted their first stretch from the bridge end because of it.
+            new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(868, -2518),
+                    at(597, -2787), null),
+            // **The road leaves Hobbiton once, and this arm starts where the owner's road stops.** It began on
+            // 868, -2518 with the one above and could not get out of the junction southwards: the village's own
+            // water lies there - x 864 to 900 and wider, from the village's south end at z -2866 up to where it
+            // meets the town's channel at z -2630 - and the walk prices water at 220 a lane times its depth and the
+            // bank beside it at 400 a step, so it paid neither and went round to the west instead: out of 868,
+            // -2518 to x 706 by z -2782, back east to 820, -2900, and south from there. `Roads are Hard` laid it so
+            // on 28 November 2026 - 405 stations of hairpin, out of the village and back - and the owner
+            // photographed what that looks like: two roads out of Hobbiton where he laid one, the left one his own
+            // and stopping, the right one this arm coming back east across z -2878 on a line he never meant.
             //
-            // **The junction's own water is why arm two bends west.** The owner's word on 28 November 2026 is
-            // that the line from Hobbiton to Bucklebury has one bridge on it and only one - the stone one before
-            // the town - because he placed the route to cross nothing else. The drawing puts a second water
-            // across any line drawn from 868, -2518 toward the bridge: the Hobbiton side's own, x 864 to 900 and
-            // wider, running from the village's south end at z -2866 up to where it meets the town's channel at
-            // z -2630, and thirty to forty columns across where a straight line meets it. The walk would not pay
-            // the toll for that, and a lane is sixteen blocks of the drawing - so a one-column edge of a channel
-            // is invisible to it - and it did what a lane walk does: ran the line down the water's western edge,
-            // waded the last column of it for eighteen blocks, and left the dense pass to cut that as an
-            // eighteen-column span at x 863. A fresh world stood it (`Bucklebury Ferry`, 28 November 2026) - the
-            // second bridge, over water the road was meant to pass round. **820, -2900 is round it:** the map is
-            // dry from z -2872 down and west of x 808, so both halves read as one dry section each (`868, -2518`
-            // to `820, -2900`, and `820, -2900` to `1140, -3131`) and the only span on the whole line is the
-            // stone one. The bend is 809 blocks against the straight line's 671 - 138 longer - and the
-            // alternative is the oak bridge standing at x 863.
+            // His road already carries the line clear of that water - 868, -2518 to 597, -2787 is a section that
+            // crosses nothing - so the second arm begins on its far end, and asks the drawing nothing it has not
+            // already answered. **597, -2787 to 1140, -3131 is one dry section its whole length:** no water, no
+            // span, 543 blocks east and 344 south, which `tools/sampleprobe` reads as a single road. The bend at
+            // 820, -2900 was this arm's way round the village's water; it is gone with the old beginning, because
+            // there is nothing left on this line for it to go round.
             //
-            // The crossing arm runs from 1140, -3131 to 1380, -3200: out of the block arm two ends on, across the
-            // river once, and on to Bucklebury's own west edge. It read 1203, -3131 to 1271, -3131 when the owner
-            // first pinned it, and 1140 to 1320 when it was first lengthened; both planned badly, and the second
-            // is what a fresh world laid on 28 November 2026 (`Bucklebury Ferry`). **Two ends alone do not make a
-            // crossing:** a span takes the sixteen blocks either side of its banks into itself (`EXIT_REACH`), so
-            // an end ten blocks off the water plans its stretch of road *backwards* - that was the 1203 end, seven
-            // stations running back to 1197 - and that is why the west end stands 75 blocks off the near bank.
+            // The crossing arm runs from 1140, -3131 to 1380, -3200: out of the block this arm ends on, across the
+            // river once, and on to Bucklebury's own west edge, where it stops and waits for the owner to lay the
+            // rest of the way into the town (his word, 28 November 2026). It read 1203, -3131 to 1271, -3131 when
+            // the owner first pinned it, and 1140 to 1320 when it was first lengthened; both planned badly, and the
+            // second is what a fresh world laid on 28 November 2026 (`Bucklebury Ferry`). **Two ends alone do not
+            // make a crossing:** a span takes the sixteen blocks either side of its banks into itself
+            // (`EXIT_REACH`), so an end ten blocks off the water plans its stretch of road *backwards* - that was
+            // the 1203 end, seven stations running back to 1197 - and that is why the west end stands 75 blocks off
+            // the near bank.
             //
             // **A due-east line crosses this river twice.** The channel runs north-north-east - its middle is
             // x 1237 at z -3145 and x 1273 at z -3061 - so a leg along z -3131 runs *along* it, and the walk,
@@ -153,9 +152,7 @@ public final class Roads {
             // road in from 1140, -3131, **one** span of thirty-nine columns between the banks at 1239 and 1277 on
             // z -3212 at deck 85, and a road on to 1380, -3200. Length on the old row mends nothing: 1320 gives
             // the same two spans and 1400 still gives two.
-            new Named("tolkienmobs:roads/planned_1166_-3126_868_-2518", Kind.WILD, false, at(868, -2518),
-                    at(820, -2900), null),
-            new Named("tolkienmobs:roads/planned_1140_-3131_820_-2900", Kind.WILD, false, at(820, -2900),
+            new Named("tolkienmobs:roads/planned_597_-2787_1140_-3131", Kind.WILD, false, at(597, -2787),
                     at(1140, -3131), null),
             new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1140, -3131),
                     at(1380, -3200), "bucklebury"));
