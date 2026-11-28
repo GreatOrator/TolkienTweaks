@@ -154,8 +154,8 @@ public final class Roads {
             // the same two spans and 1400 still gives two.
             new Named("tolkienmobs:roads/planned_597_-2787_1140_-3131", Kind.WILD, false, at(597, -2787),
                     at(1140, -3131), null),
-            new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1140, -3131),
-                    at(1380, -3200), "bucklebury"));
+            new Named("tolkienmobs:roads/planned_1379_-3183_1140_-3131", Kind.WILD, false, at(1140, -3131),
+                    at(1379, -3183), "bucklebury"));
 
     // What is not in the table, and why - written beside it rather than left to be guessed at:
     // `planned_1284_-3128_1166_-3126` was planned from 1284, -3128 to the same junction with no bridge word, so its
