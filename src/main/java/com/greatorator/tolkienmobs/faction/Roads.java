@@ -103,15 +103,17 @@ public final class Roads {
      * it would not be in the list at all.
      */
     private static final List<Named> NETWORK = List.of(
-            // The road the owner walked on 27 November 2026 out of 868, -2518 and away north-west to 597, -2787, which
-            // he added to this table himself (`a945a485`): three wide of the country's own surface, and the save he
-            // walked it in, `Bucklebury - Redux`, holds it laid across 297 stations. It is not folded into the two arms
-            // below that meet it at 868, -2518 - his word on the day is to leave them separate - so the junction is
-            // three roads meeting, and each of them is its own two ends.
+            // The road the owner walked on 27 November 2026, out of 868, -2518 and away north-west to 597, -2787,
+            // which he added to this table himself (`a945a485`): three wide of the country's own surface, and the
+            // save he walked it in, `Bucklebury - Redux`, holds it laid across 297 stations. It is written from its
+            // far end so that it *ends* on the junction the arm below begins on: the three lines are three roads
+            // meeting there - his word on the day, and each of them its own two ends - but with this one the other
+            // way round the first two both *began* on 868, -2518, and a fresh world read the pair as two roads out
+            // of one block rather than one line through it (28 November 2026).
 
             /* Hobbiton -> Bucklebury */
-            new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(868, -2518),
-                    at(597, -2787), null),
+            new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(597, -2787),
+                    at(868, -2518), null),
             // The two arms on to the bridge, written in the order the road is walked: out of the junction at
             // 868, -2518 and away to the bridge, each beginning on the block the one before it ends on. They read
             // the other way round until 28 November 2026 - from the bridge back to the junction - and a fresh
