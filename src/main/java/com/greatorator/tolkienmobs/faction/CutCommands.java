@@ -128,6 +128,14 @@ public final class CutCommands {
      * land at the footprint's line stands under eight over the build in every column of the band.
      */
     private static final int RIM_CAP = 12;
+    /**
+     * How far under the top of a column the band will look for the ground it stands on, in blocks.
+     * <p>
+     * A crown is ten or twelve blocks deep at most, so forty is more than any tree needs and still short of the air
+     * over a cave: a column whose ground is further under its top than this has a hole in it rather than country the
+     * band can join, and is left exactly as it stands.
+     */
+    private static final int COLUMN_DEPTH = 40;
     /** Templates already read this session, keyed by cut and piece, so a cut laid twice is parsed once. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
     /** A cut's own shape, keyed by cut, so a clearing or a drape is answered once. */
@@ -435,13 +443,12 @@ public final class CutCommands {
                 if (down > ceiling) {
                     banked++;
                     // A graded bank is ground and not a cut face: its top course is grass, the way the country's own
-                    // risers are, whatever stone the cut opened underneath it. A crown is not ground, though, and the
-                    // bank's height is measured without leaves, so where the country stands in a tree the height the
-                    // bank keeps falls inside the tree - and the grass laid on the leaf the sweep stopped at stood on a
-                    // crown: a plate of grass on top of every tree along the rim, which the owner photographed on
-                    // 27 November. The bank is laid under its own top instead, the tree still inside it carried into
-                    // the bank's soil, so its grass goes on ground wherever a tree stood. Where the column holds no
-                    // ground under its leaves at all - a crown over air - nothing is laid and the leaves stay.
+                    // risers are, whatever stone the cut opened underneath it. The bank's line is the ground's now -
+                    // {@link #rim} reads down through the wood - so the fill under this column's grass begins on the
+                    // ground the tree grew in, and the tree above that line is the sweep's and comes off with the rest
+                    // of the country over the build. The walk is kept as the guard for a line that still lands inside
+                    // a tree: the bank is laid under its own top, so its grass goes on ground wherever a tree stood.
+                    // Where the column holds no ground under its leaves at all - a crown over air - nothing is laid.
                     int foot = down;
                     BlockState under = level.getBlockState(at.set(x, foot, z));
                     while (foot > ceiling && tree(under)) {
@@ -490,9 +497,11 @@ public final class CutCommands {
      * How much of the country a column at the cut's own edge keeps standing over the build, in blocks.
      * <p>
      * The bank is the country's own height at the column, weighted by how far in the column stands: all of it at the
-     * footprint's line, nought at the band's foot. Because the height is the column's own and not a plane laid through
-     * the box, the bank follows the land's contour: where the country is high it keeps more ground, so the foot of the
-     * slope wanders with the hill instead of running parallel to the rectangle. The foot is jittered a column at a time
+     * footprint's line, nought at the band's foot. That height is the ground the column stands on and not the top of
+     * anything growing in it - see {@link #footing}, which is what keeps a tree off the bank's line. Because it is the
+     * column's own and not a plane laid through the box, the bank follows the land's contour: where the country is
+     * high it keeps more ground, so the foot of the slope wanders with the hill instead of running parallel to the
+     * rectangle. The foot is jittered a column at a time
      * as well, so no two neighbouring columns end their bank at the same distance in.
      * <p>
      * Three cases keep the sweep as it always was: a column where the country already stands at or under the cut's own
@@ -506,11 +515,37 @@ public final class CutCommands {
         int reach = RIM_FEATHER + wander(x, z);
         int inside = rimDistance(xi, zi, wide, deep);
         if (inside >= reach) return 0;
-        int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
-        if (ground <= ceiling) return 0;
+        int ground = footing(level, x, z);
+        if (ground == Integer.MIN_VALUE || ground <= ceiling) return 0;
         if (!level.getBlockState(new BlockPos(x, ground, z)).getFluidState().isEmpty()) return 0;
         int over = Math.min(ground - ceiling, RIM_CAP);
         return Math.max(0, Math.min(over, (int) Math.round(over * (reach - inside) / (double) reach)));
+    }
+
+    /**
+     * The ground a column of the band stands on, read down through whatever grows on it, or {@link Integer#MIN_VALUE}.
+     * <p>
+     * A height answers with the highest thing in the column, and a height without leaves still answers with a trunk:
+     * read from either, a tree standing in the band was the country's own height there, and the bank was kept up to
+     * its wood or its crown. The fill that laid the bank then ran from the ground to that line, and the ground came
+     * out of it in terraces shaped like the tree - grass on every step, dirt under it, the leaves standing in the
+     * steps - which is what the owner photographed on 28 November 2026 and asked to stop: the country had been
+     * shaped as if the tree were part of the land. The band joins ground, so the ground is what it is measured on:
+     * the read walks down through leaves, wood and the air a bough reaches over, and stops at the first block that
+     * is solid or holds a fluid, which is the country's own ground or the water standing on it. A tree's own wood is
+     * solid and is walked through as well, which is why the tree is tested first.
+     */
+    private static int footing(ServerLevel level, int x, int z) {
+        int top = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
+                level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
+        if (top <= level.getMinY()) return Integer.MIN_VALUE;
+        int floor = Math.max(level.getMinY(), top - COLUMN_DEPTH);
+        BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
+        BlockState state = level.getBlockState(at.set(x, top, z));
+        while (top > floor && (tree(state) || (!state.isSolid() && state.getFluidState().isEmpty()))) {
+            state = level.getBlockState(at.set(x, --top, z));
+        }
+        return top;
     }
 
     /**

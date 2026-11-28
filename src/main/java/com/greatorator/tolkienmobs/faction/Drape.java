@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -265,6 +266,15 @@ public final class Drape {
     public static final int RULES = 1;
 
     /**
+     * How far under the top of a column the ring will look for the ground it stands on, in blocks.
+     * <p>
+     * A crown is ten or twelve blocks deep at most, so forty is more than any tree needs and still short of the air
+     * over a cave: a column whose ground is further under its top than this is a hole rather than a column the ring
+     * can carry, and is left exactly as it stands.
+     */
+    private static final int COLUMN_DEPTH = 40;
+
+    /**
      * How far out any build's ring dresses when nobody says otherwise, in blocks.
      * <p>
      * The camp's own number, which is the smallest ring that reads as ground rather than as a plinth: the wall is met
@@ -323,6 +333,15 @@ public final class Drape {
      * Water is left exactly as it was, and a column standing in water's own bed is not dressed at all: a spring is the
      * ground's, not the drape's. A column whose crown hangs over air is read down to the first ground - a big crown
      * always hangs over something - so nothing is ever laid in the air under a tree.
+     * <p>
+     * A column is measured on the ground it stands on, not on the top of the tree growing in it, which is what
+     * {@link #standing} reads. The cap is eased from the build's own shape to that height, so a height taken from a
+     * crown carried the ring up into the canopy: the fill rose through the leaves, and its top course - the block the
+     * column's skin was, a leaf where a leaf was the skin - came out as a flat plate of leaves at the crown's own
+     * level, with the ground beside it stepped into terraces shaped like the tree. That is the ground the owner
+     * photographed on 28 November 2026 and asked to stop: the country was being shaped as if the trees were part of
+     * the land. So a column is measured on its ground, and a column a tree stands over is left exactly as it stands:
+     * a shoulder is laid on ground and never through a crown, which is the rule the village's own bank follows.
      */
     public static Counts dress(ServerLevel level, Declaration drape) {
         Box box = drape.box();
@@ -350,18 +369,26 @@ public final class Drape {
                 if (roof == Integer.MIN_VALUE) continue;
                 int x = box.lowX() + dx;
                 int z = box.lowZ() + dz;
-                int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
-                if (surface <= level.getMinY()) continue;
+                Footing foot = footing(level, x, z);
+                if (foot.ground() == Integer.MIN_VALUE) continue;
+                int surface = foot.ground();
                 if (wet(level, x, surface + 1, z)) continue;
                 if (out == 0) {
                     // Inside the walls the ground comes down to the build's own floor rather than to its roof, and
                     // nothing the build stands is what is cut: a keep's height is the cap, so a cut at the roofline
                     // leaves the ground filling the ruin to the top of it and the whole thing reads as a mound of dirt.
+                    // The cut is read from the top of the column, crown and all, as it always was: a country tree
+                    // inside the walls comes off with the ground it stood in, so nothing is left hanging over a cut.
                     int bottom = floor[nearX + nearZ * wide];
                     if (bottom == Integer.MIN_VALUE) continue;
-                    inside += inside(level, cursor, base, nearX, nearZ, x, z, surface, base + bottom, outline.own());
+                    inside += inside(level, cursor, base, nearX, nearZ, x, z, crown(level, x, z), base + bottom,
+                            outline.own());
                     continue;
                 }
+                // A tree's column of the ring is the tree's: a bank laid through a crown comes up as grass on the
+                // leaves, and one laid under it leaves a pit round the trunk. Anything growing on the ground that is
+                // not a tree - a fern, a tuft - is passed over by the read itself and does not stop the join.
+                if (foot.tree()) continue;
                 double share = Math.min(1.0D, out / (double) ring);
                 double ease = share * share * (3.0D - 2.0D * share);
                 int cap = (int) Math.round(base + roof + (surface - base - roof) * ease);
@@ -435,6 +462,54 @@ public final class Drape {
             }
         }
         return new Counts(0, filled, 0);
+    }
+
+    /**
+     * The ground a column stands on, read down through whatever grows on it, and whether a tree stands over it.
+     * <p>
+     * A height answers with the highest thing in the column, and a height without leaves still answers with a trunk.
+     * Read from either, a tree in the ring was the country's own height there, and the ring was carried up to its wood
+     * or its crown - the plate of leaves and the terraced ground beside it that the owner photographed on
+     * 28 November 2026. The read walks down from the top of the column, through leaves, wood and the air a bough
+     * reaches over, and stops at the first block that is solid or holds a fluid: the country's own ground, or the
+     * water standing on it, which the ring leaves alone exactly as it always did. A tree's own wood is solid and is
+     * walked through as well, which is why it is tested first. {@code tree} says the walk passed any, so the ring can
+     * leave that column as the tree has it.
+     */
+    private record Footing(int ground, boolean tree) {
+        static final Footing NONE = new Footing(Integer.MIN_VALUE, false);
+    }
+
+    /** The ground a column stands on and what it found there, or {@link Footing#NONE} where there is no column. */
+    private static Footing footing(ServerLevel level, int x, int z) {
+        int top = crown(level, x, z);
+        if (top <= level.getMinY()) return Footing.NONE;
+        int floor = Math.max(level.getMinY(), top - COLUMN_DEPTH);
+        BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
+        BlockState state = level.getBlockState(at.set(x, top, z));
+        boolean wood = false;
+        while (top > floor && (tree(state) || (!state.isSolid() && state.getFluidState().isEmpty()))) {
+            wood |= tree(state);
+            state = level.getBlockState(at.set(x, --top, z));
+        }
+        return new Footing(top, wood);
+    }
+
+    /** The highest thing in a column, leaves and all, which is where a read down to the ground begins. */
+    private static int crown(ServerLevel level, int x, int z) {
+        return Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z),
+                level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z)) - 1;
+    }
+
+    /**
+     * Whether a block is part of a tree rather than part of the ground: leaves, a trunk, a fungus stem.
+     * <p>
+     * The tags carry this mod's leaves - the hardened ones included - but its logs and wood are in no tag, so the
+     * name is read as well. The same reading the city's pass uses, because a shoulder and a ring are one rule.
+     */
+    private static boolean tree(BlockState state) {
+        return state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)
+                || tree(BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString());
     }
 
     /**
