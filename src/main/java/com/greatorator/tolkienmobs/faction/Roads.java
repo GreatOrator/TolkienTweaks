@@ -119,17 +119,21 @@ public final class Roads {
             // the other way round until 28 November 2026 - from the bridge back to the junction - and a fresh
             // world's sections counted their first stretch from the bridge end because of it.
             //
-            // The crossing arm's west end is 1180, -3131 rather than the bridge's own west foot at 1203, -3131,
-            // where the owner first put it: a span takes the sixteen blocks either side of its banks into itself
-            // (`EXIT_REACH`), so an end ten blocks off the water planned a six-block stretch *backwards* - the
-            // first fresh world to plan it laid seven stations running from 1203 back to 1197 - and the stretch
-            // that should have carried the bridge across the river was not a road at all. Thirty-three blocks
-            // west of the near bank is a stretch as long as the arm gives its bridge, and the same block is where
-            // the arm before it ends.
+            // The crossing arm runs from 1140, -3131 to 1320, -3131 and not between the bridge's own two banks at
+            // 1203 and 1271, where the owner first put it: a span takes the sixteen blocks either side of its
+            // banks into itself (`EXIT_REACH`), so an end ten blocks off the water planned a six-block stretch
+            // *backwards* - the first fresh world to plan it laid seven stations running from 1203 back to 1197 -
+            // and the stretch that should have carried the bridge across the river was not a road at all. The
+            // drawing at z -3131 (`ArdaMap.sample`, read 28 November 2026) has dry ground of 83 from 1140 to 1215,
+            // the channel from 1216 to 1254 - bed 71 to 80 under water at 82 - and dry ground from 1256 rising 83
+            // to 86 by 1320: a span of forty-two columns with seventy-five blocks of road before the near bank
+            // and sixty-four after the far one, so neither end is within reach of the water and either can be a
+            // few blocks out in a world that draws its banks differently. 1140 is also the block the arm before it
+            // ends on.
             new Named("tolkienmobs:roads/planned_1166_-3126_868_-2518", Kind.WILD, false, at(868, -2518),
-                    at(1180, -3131), null),
-            new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1180, -3131),
-                    at(1271, -3131), "bucklebury"));
+                    at(1140, -3131), null),
+            new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1140, -3131),
+                    at(1320, -3131), "bucklebury"));
 
     // What is not in the table, and why - written beside it rather than left to be guessed at:
     // `planned_1284_-3128_1166_-3126` was planned from 1284, -3128 to the same junction with no bridge word, so its
