@@ -112,10 +112,22 @@ public final class Roads {
             /* Hobbiton -> Bucklebury */
             new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(868, -2518),
                     at(597, -2787), null),
-            new Named("tolkienmobs:roads/planned_1166_-3126_868_-2518", Kind.WILD, false, at(1203, -3131),
-                    at(868, -2518), null),
-            new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1271, -3131),
-                    at(1203, -3131), "bucklebury"));
+            // The two arms on to the bridge, written in the order the road is walked: out of the junction at
+            // 868, -2518 and away to the bridge, each beginning on the block the one before it ends on. They read
+            // the other way round until 28 November 2026 - from the bridge back to the junction - and a fresh
+            // world's sections counted their first stretch from the bridge end because of it.
+            //
+            // The crossing arm's west end is 1180, -3131 rather than the bridge's own west foot at 1203, -3131,
+            // where the owner first put it: a span takes the sixteen blocks either side of its banks into itself
+            // (`EXIT_REACH`), so an end ten blocks off the water planned a six-block stretch *backwards* - the
+            // first fresh world to plan it laid seven stations running from 1203 back to 1197 - and the stretch
+            // that should have carried the bridge across the river was not a road at all. Thirty-three blocks
+            // west of the near bank is a stretch as long as the arm gives its bridge, and the same block is where
+            // the arm before it ends.
+            new Named("tolkienmobs:roads/planned_1166_-3126_868_-2518", Kind.WILD, false, at(868, -2518),
+                    at(1180, -3131), null),
+            new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1180, -3131),
+                    at(1271, -3131), "bucklebury"));
 
     // What is not in the table, and why - written beside it rather than left to be guessed at:
     // `planned_1284_-3128_1166_-3126` was planned from 1284, -3128 to the same junction with no bridge word, so its
