@@ -113,7 +113,7 @@ public final class Roads {
             // does not leave this block any more (see below), so the reason for the reversal went with it.
 
             /* Hobbiton -> Bucklebury */
-            new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(868, -2518),
+            new Named("tolkienmobs:roads/planned_597_-2787_864_-2509", Kind.WILD, false, at(864, -2509),
                     at(597, -2787), null),
             // **The road leaves Hobbiton once, and this arm starts where the owner's road stops.** It began on
             // 868, -2518 with the one above and could not get out of the junction southwards: the village's own
