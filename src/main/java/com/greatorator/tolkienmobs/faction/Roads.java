@@ -98,8 +98,8 @@ public final class Roads {
             // between them is the drawing's, and the ids the plan gives its sections are the same three the store names,
             // because an id is the road's two ends. The other road in that store, `planned_1387_-3196_14274_-3500`, is
             // not here - the owner's word on the same day: it is his mistake and he is laying it again.
-            new Named("tolkienmobs:roads/planned_1200_-3500_871_-2510", Kind.WILD, false, at(1200, -3500),
-                    at(871, -2510)));
+            new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(597, -2787),
+                    at(868, -2518)));
 
     /**
      * Every road the world knows about, which is nothing until one is named.
