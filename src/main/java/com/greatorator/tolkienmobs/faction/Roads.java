@@ -108,19 +108,14 @@ public final class Roads {
             // walked it in, `Bucklebury - Redux`, holds it laid across 297 stations. It is not folded into the two arms
             // below that meet it at 868, -2518 - his word on the day is to leave them separate - so the junction is
             // three roads meeting, and each of them is its own two ends.
-            new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(597, -2787),
+
+            /** Hobbiton -> Bucklebury */
+            new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(868, -2518),
+                    at(597, -2787), null),
+            new Named("tolkienmobs:roads/planned_1166_-3126_868_-2518", Kind.WILD, false, at(1203, -3131),
                     at(868, -2518), null),
-            // The junction's long arm, walked on the same day from 1166, -3126 up to 868, -2518: one dry stretch of
-            // 407 stations in that save and a span over the water it meets at z -2786. The span is the standard pair
-            // on purpose - the water there is the country's, not the town's - so no bridge is named on this line.
-            new Named("tolkienmobs:roads/planned_1166_-3126_868_-2518", Kind.WILD, false, at(1166, -3126),
-                    at(868, -2518), null),
-            // The last arm, from 1271, -3108 down to the same junction, and the one line here that names a bridge: he
-            // planned it with the word, so the span over the river west of the town carries `bucklebury_end` and
-            // `bucklebury_middle` in that save's store instead of the standard oak pair. Without the word on this line
-            // a fresh world plans the crossing in oak, which is the fault the word is here to keep out.
-            new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1271, -3108),
-                    at(1166, -3126), "bucklebury"));
+            new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1271, -3131),
+                    at(1203, -3131), "bucklebury"));
 
     // What is not in the table, and why - written beside it rather than left to be guessed at:
     // `planned_1284_-3128_1166_-3126` was planned from 1284, -3128 to the same junction with no bridge word, so its
