@@ -90,9 +90,11 @@ public final class Places extends SavedData {
      * given the towns, and the two things a town is are that the books call it one and that it stands: Rivendell, the
      * Shire's village, and Bree, which the catalogue has carried since the first act and no world has raised yet.
      * Gundabad is the fourth as of the owner's own list of visited builds: the hold is a town to a board rather than a
-     * camp, and a board pointing a traveller at the pass's own road wants the mountain's name on it.
+     * camp, and a board pointing a traveller at the pass's own road wants the mountain's name on it. Bucklebury is the
+     * fifth, added on 28 November 2026 when its mustering hall was sited: the town east of the Brandywine raises itself
+     * already, and a hall belongs to a town the catalogue knows.
      */
-    private static final Set<String> TOWNS = Set.of("hobbiton", "bree", "rivendell", "gundabad");
+    private static final Set<String> TOWNS = Set.of("hobbiton", "bucklebury", "bree", "rivendell", "gundabad");
 
     /**
      * The towns a board may point at, in the order the catalogue names them.
@@ -176,6 +178,9 @@ public final class Places extends SavedData {
             new Name("greenway", Alliance.WEST, true),
             new Name("barrows", Alliance.WEST, true),
             new Name("hobbiton", Alliance.WEST, false),
+            // The Eastfarthing's village east of the Brandywine, raised by its own pass: a name so a board may point at
+            // it and so its mustering hall has a town to belong to. The stone has nothing to say here.
+            new Name("bucklebury", Alliance.WEST, false),
             new Name("bree", Alliance.WEST, false),
             new Name("weathertop", Alliance.WEST, true),
             new Name("ford", Alliance.WEST, true),

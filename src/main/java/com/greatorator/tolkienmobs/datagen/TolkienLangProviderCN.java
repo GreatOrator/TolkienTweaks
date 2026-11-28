@@ -1074,6 +1074,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("place.tolkienmobs.barrows.line", "尸妖从内部挖开的那些土丘");
         this.add("place.tolkienmobs.hobbiton", "霍比屯");
         this.add("place.tolkienmobs.hobbiton.line", "霍比特人安静的家园");
+        this.add("place.tolkienmobs.bucklebury", "巴克尔伯里");
+        this.add("place.tolkienmobs.bucklebury.line", "白兰地河以东，东法兴的村庄");
         this.add("place.tolkienmobs.bree", "布理");
         this.add("place.tolkienmobs.bree.line", "一座小山下的人与霍比特人");
         this.add("place.tolkienmobs.weathertop", "风云顶");

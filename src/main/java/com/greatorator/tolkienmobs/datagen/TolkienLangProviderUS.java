@@ -1195,6 +1195,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("place.tolkienmobs.barrows.line", "the mounds the wights open from within");
         this.add("place.tolkienmobs.hobbiton", "Hobbiton");
         this.add("place.tolkienmobs.hobbiton.line", "quiet home of the hobbits");
+        this.add("place.tolkienmobs.bucklebury", "Bucklebury");
+        this.add("place.tolkienmobs.bucklebury.line", "the Eastfarthing's village beyond the Brandywine");
         this.add("place.tolkienmobs.bree", "Bree");
         this.add("place.tolkienmobs.bree.line", "men and hobbits under one hill");
         this.add("place.tolkienmobs.weathertop", "Weathertop");

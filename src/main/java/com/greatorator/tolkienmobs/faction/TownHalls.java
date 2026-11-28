@@ -127,15 +127,16 @@ public final class TownHalls extends SavedData {
     /**
      * Whether the town's own build is still to come, so that a hall at its pin would be laid over.
      * <p>
-     * The three towns that raise themselves answer here: the Shire's village and Bree from their notes, written when
-     * each pass finishes, and the valley from its marker, whose band count reaches the cut's own when the last band is
-     * down. Each pass lays, clears and dresses the ground its hall is pinned in, so a hall stood there first would be
+     * The towns that raise themselves answer here: the Shire's village, Bree and Bucklebury from their notes, written
+     * when each pass finishes, and the valley from its marker, whose band count reaches the cut's own when the last band
+     * is down. Each pass lays, clears and dresses the ground its hall is pinned in, so a hall stood there first would be
      * taken away with the country it was meant to stand on. A town with no build of its own has nothing to wait for, so
      * a hall pinned in one is stood straight away.
      */
     public static boolean waits(ServerLevel level, String town) {
         if ("hobbiton".equals(town)) return !Hobbiton.complete(level);
         if ("bree".equals(town)) return !Bree.complete(level);
+        if ("bucklebury".equals(town)) return !Bucklebury.complete(level);
         if ("rivendell".equals(town)) return !CityCommands.complete(level);
         return false;
     }

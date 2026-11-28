@@ -54,9 +54,11 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * <p>
  * It is {@link Bree}'s pass with Bucklebury's numbers, as that was {@link Hobbiton}'s with Bree's: the two builds want
  * the same four things in the same order, and then a fifth - Brandy Hall, stood on the town's own ground once the ring
- * is dressed. The hall is not {@code TownHalls}': that class stands one hall per alliance at a pin a hand walks, and
- * this is one build in one town, so its box is written here beside the town it belongs to. What is not here is the
- * village's own folk: Bucklebury has no faces of its own cut yet.
+ * is dressed. Brandy Hall is not {@code TownHalls}': that class stands one hall per alliance at a pin a hand walks, and
+ * this is one build in one town, so its box is written here beside the town it belongs to. Bucklebury is a town the
+ * catalogue knows now, so it has its alliance's mustering hall as well: that one is pinned in {@code Pins} and raised
+ * by {@code TownHalls} at the same points this class raises Brandy Hall, after the pass and never before it. What is
+ * not here is the village's own folk: Bucklebury has no faces of its own cut yet.
  * <p>
  * Nothing has to be asked for. A world made after this ships holds the town as soon as a player walks within
  * {@link #REACH} of its ground, which is the rule the village keeps when its config has the start-of-world pass off;
@@ -356,7 +358,12 @@ public final class Bucklebury {
         // clears the country out of its whole footprint and dresses the ring round it, so a hall laid before the pass
         // would be taken away by the ground it stands on.
         ServerLevel arda = event.getServer().getLevel(TolkienDimensions.ARDA);
-        if (arda != null && complete(arda)) hall(arda);
+        if (arda != null && complete(arda)) {
+            hall(arda);
+            // The mustering hall is the alliance's own, pinned like Hobbiton's and Bree's, so TownHalls raises it: it
+            // answers nothing while the note says the town is unfinished, and leaves a hall already standing alone.
+            TownHalls.raise(arda, "bucklebury");
+        }
     }
 
     @SubscribeEvent
@@ -403,8 +410,12 @@ public final class Bucklebury {
                 note(level, work.planted);
                 // Brandy Hall goes up with the town and after it: this pass has just laid the cut, cleared the
                 // footprint and dressed the ring, and a hall stood in that ground first would have been cleared with
-                // the country. After the note, so the hall finds the town finished rather than still coming up.
-                if (!work.dressOnly) hall(level);
+                // the country. After the note, so the hall finds the town finished rather than still coming up. The
+                // mustering hall follows it for the same reason, and its own wait reads the same note.
+                if (!work.dressOnly) {
+                    hall(level);
+                    TownHalls.raise(level, "bucklebury");
+                }
                 if (work.dressOnly) {
                     LOGGER.info("Bucklebury: the ground round the town is dressed in {} ticks ({} s)", work.ticks,
                             String.format(Locale.ROOT, "%.1f", work.ticks / 20.0D));

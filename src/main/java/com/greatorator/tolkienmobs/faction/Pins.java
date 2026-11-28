@@ -111,6 +111,16 @@ public final class Pins extends SavedData {
             // its floor course goes into the block the markers stand in, level with the ground round it. The pin is the
             // block a builder stands in, which is the course above the floor.
             Map.entry(TownHalls.key("bree"), new BlockPos(1024, 77, -32)),
+            // Bucklebury's mustering hall, sited on the owner's own block of 28 November 2026: 1481, 93, -3213, the grass
+            // he stood on between the two arms of the town's lake, 92 under his feet. A 16 by 16 box hung east and south
+            // of that block takes the water - the scan of `Road Construction - 2` puts 81 of its 256 columns in the lake -
+            // so the box is centred on him instead: 1473..1488 by -3221..-3206, dry in every column and the widest part
+            // of the spit, its ground 92 to 94. The pin is that box's own low corner, the convention Bree's follows, and
+            // its y is the block he stood in, 93, so the hall's ground course goes into the grass at 92 and its floor is
+            // level with the green round it. Laid turned half round like every hall, the notice board (template z 15, its
+            // south face) lands on the box's low-z face at 1477, 93, -3221, with the north door at 1480 to 1481, -3220
+            // beside it: the job board entrance faces north, the way the owner asked.
+            Map.entry(TownHalls.key("bucklebury"), new BlockPos(1473, 93, -3221)),
             // The Carrock, pinned where the owner stood it: the cut's own low north-west corner at 8307, 187, -4165, the
             // block /tmcut place carrock is given so the box lands where the owner already had it. The rock is cut rather
             // than templated, so Carrock.autospawn reads this pin on the first start of a world and lays the cut from it:
