@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 
 /**
  * Where each build's road leaves from, and how it crosses the water on the way down.
@@ -56,8 +57,21 @@ public final class Roads {
     /** The same window for a planned road: a hem either side of the line, and no more. */
     private static final int PLANNED_WANDER = 32;
 
-    /** One road the code names: its id, the width it is laid at, and the two blocks it runs between. */
-    private record Named(String id, Kind kind, boolean town, BlockPos from, BlockPos to) {
+    /**
+     * One road the code names: its id, the width it is laid at, the two blocks it runs between, and the bridge its
+     * spans are stood from where it has one.
+     * <p>
+     * The bridge is the word a command names it with - {@code bucklebury} - rather than the pair of pieces, so a line
+     * here says what the surveyor said and the pair stays in {@link #bridges()} with the rest of that bridge. A road
+     * crosses where the country takes it, so which of its sections is a span is the plan's answer and not this
+     * table's; the word is what {@link #bridge(String)} answers on when the plan comes back.
+     * <p>
+     * A word the table does not hold plans the standard pair, exactly as a span with no name gets it. That is the same
+     * answer the command gives a leg it crosses no water with, and it is the quieter of the two on purpose: this table
+     * is read as the class loads, and a mistyped bridge should plan a road of oak rather than stop a world from
+     * starting.
+     */
+    private record Named(String id, Kind kind, boolean town, BlockPos from, BlockPos to, String bridge) {
     }
 
     /** A block of the drawing named by its two coordinates: the height is the plan's business, not the road's. */
@@ -89,17 +103,33 @@ public final class Roads {
      * it would not be in the list at all.
      */
     private static final List<Named> NETWORK = List.of(
-            // The road the owner walked on 27 November 2026 from the block at 871, -2510, the first leg of the survey to
-            // go back in after the table was cleared. He planned it in `Bucklebury - 2` as
-            // `tolkienmobs:roads/planned_1200_-3500_871_-2510`: three wide of the country's own surface (`WILD`), from
-            // 1200, -3500 up to 871, -2510, with a span over the water it meets on the way, so the world's store holds
-            // three sections of it (`..._2` and `..._bridge_1` beside the road's own). The two ends and the kind are the
-            // whole of the record, exactly as the three Bree-to-Shire stretches were recorded on 25 November: the way
-            // between them is the drawing's, and the ids the plan gives its sections are the same three the store names,
-            // because an id is the road's two ends. The other road in that store, `planned_1387_-3196_14274_-3500`, is
-            // not here - the owner's word on the same day: it is his mistake and he is laying it again.
+            // The road the owner walked on 27 November 2026 out of 868, -2518 and away north-west to 597, -2787, which
+            // he added to this table himself (`a945a485`): three wide of the country's own surface, and the save he
+            // walked it in, `Bucklebury - Redux`, holds it laid across 297 stations. It is not folded into the two arms
+            // below that meet it at 868, -2518 - his word on the day is to leave them separate - so the junction is
+            // three roads meeting, and each of them is its own two ends.
             new Named("tolkienmobs:roads/planned_597_-2787_868_-2518", Kind.WILD, false, at(597, -2787),
-                    at(868, -2518)));
+                    at(868, -2518), null),
+            // The junction's long arm, walked on the same day from 1166, -3126 up to 868, -2518: one dry stretch of
+            // 407 stations in that save and a span over the water it meets at z -2786. The span is the standard pair
+            // on purpose - the water there is the country's, not the town's - so no bridge is named on this line.
+            new Named("tolkienmobs:roads/planned_1166_-3126_868_-2518", Kind.WILD, false, at(1166, -3126),
+                    at(868, -2518), null),
+            // The last arm, from 1271, -3108 down to the same junction, and the one line here that names a bridge: he
+            // planned it with the word, so the span over the river west of the town carries `bucklebury_end` and
+            // `bucklebury_middle` in that save's store instead of the standard oak pair. Without the word on this line
+            // a fresh world plans the crossing in oak, which is the fault the word is here to keep out.
+            new Named("tolkienmobs:roads/planned_1271_-3108_1166_-3126", Kind.WILD, false, at(1271, -3108),
+                    at(1166, -3126), "bucklebury"));
+
+    // What is not in the table, and why - written beside it rather than left to be guessed at:
+    // `planned_1284_-3128_1166_-3126` was planned from 1284, -3128 to the same junction with no bridge word, so its
+    // span is the standard oak pair, and it crosses the same river 23 blocks north of the stone one (its banks at
+    // z -3108, the stone span's at -3131). The owner's word on the day is to remove it: a road that is not in this
+    // table is a road a fresh world does not plan, and a world that has already walked it keeps what it laid, because
+    // nothing in the mod lifts a road. The line that stood here before the 597 one, `planned_1200_-3500_871_-2510`,
+    // went with the same edit - he replaced it - and that save still holds it laid, 307 stations in its `_2` with its
+    // span begun and not finished.
 
     /**
      * Every road the world knows about, which is nothing until one is named.
@@ -215,7 +245,8 @@ public final class Roads {
     private static List<Route> network(List<Route> walked) {
         List<Route> all = new ArrayList<>(walked);
         for (Named road : NETWORK) {
-            all.addAll(RoadPlan.of(road.id(), road.kind(), road.town(), road.from(), road.to()).sections());
+            Bridge stood = road.bridge() == null ? null : bridge(road.bridge());
+            all.addAll(RoadPlan.of(road.id(), road.kind(), road.town(), road.from(), road.to(), stood).sections());
         }
         return all;
     }
@@ -441,9 +472,15 @@ public final class Roads {
      *                    road it carries has been walked, and a bridge with no block answers no span
      * @param endPiece    the abutment piece, in the jar's structure folder
      * @param middlePiece the span piece between the abutments
-     * @param support     the block the pieces' piers are made of, and the block a pier is drawn to the bed in
+     * @param piers       the block the pieces' piers are made of, and the block a pier is drawn to the bed in,
+     *                    read when a span is stood ({@link #support()}) rather than when this table is built, because
+     *                    the Last Bridge's is a block this mod registers and the table is built as the class loads
      */
-    public record Bridge(String name, BlockPos at, String endPiece, String middlePiece, Block support) {
+    public record Bridge(String name, BlockPos at, String endPiece, String middlePiece, Supplier<Block> piers) {
+        /** The block a pier is drawn to the bed in: the pieces' own, read now rather than with the table. */
+        public Block support() {
+            return piers.get();
+        }
     }
 
     /**
@@ -478,6 +515,11 @@ public final class Roads {
      * the far abutment. The deck row is 65 either way and the span stands, but it is not the fit the crossing it was
      * drawn for had.
      * <p>
+     * <b>The road the owner walked out of 1271, -3108 names the same pair by word</b>, so the stone bridge is stood
+     * on the river west of the town too, wherever that water lies, without a block on it here - his plan of 27
+     * November 2026 carries `bucklebury_end` and `bucklebury_middle` for that crossing, and the line in
+     * {@link #NETWORK} carries the word that writes them.
+     * <p>
      * <b>The Last Bridge is listed, with its pieces and without its crossing.</b> {@code last_end} and
      * {@code last_middle} are the owner's pair for the Last Bridge, where the East-West Road crosses the Mitheithel,
      * and they are in the jar beside the standard pair: an abutment seventeen long and twelve high on its own bank, a
@@ -496,19 +538,22 @@ public final class Roads {
     private static List<Bridge> BRIDGES;
 
     /**
-     * The table, read the first time a span asks for it rather than when this class is loaded.
+     * The table, read the first time a bridge is asked about rather than when this class is loaded.
      * <p>
-     * The Last Bridge's piers are made of a block this mod registers, and a table held in an initialiser would ask the
-     * registry for it whenever the first line of {@link Roads} happened to run, which is not necessarily after the
-     * blocks are in it. One read of the mod's own blocks is cheap, and naming a bridge is still one line here.
+     * A road in {@link #NETWORK} may name a bridge, and that table is planned as this class loads, so this one is read
+     * at class load after all - but only its names, its blocks and its pieces. The Last Bridge's piers are a block this
+     * mod registers, and a table whose entries held the block would ask the registry whenever the first line of
+     * {@link Roads} happened to run, which is not necessarily after the blocks are in it: the block is therefore held
+     * as a supplier and read when a span is stood, so a named road here can say which bridge it is without that.
+     * Naming a bridge is still one line either way.
      */
     private static List<Bridge> bridges() {
         if (BRIDGES == null) {
             BRIDGES = List.of(
                     new Bridge("Bucklebury", at(438, -49), "bucklebury_end", "bucklebury_middle",
-                            Blocks.COBBLESTONE_WALL),
+                            () -> Blocks.COBBLESTONE_WALL),
                     new Bridge("Last Bridge", null, "last_end", "last_middle",
-                            TolkienBlocks.WALL_COBBLED_DWARVEN_STONE.get()));
+                            () -> TolkienBlocks.WALL_COBBLED_DWARVEN_STONE.get()));
         }
         return BRIDGES;
     }
